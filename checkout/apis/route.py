@@ -823,10 +823,12 @@ async def webhook(request: Request):
             )
             for item_id in subscription_id:
                 item = await StudyMaterialCategories.get(id=item_id)
+                updated_at = datetime.now(tz)
+
                 await StudyMaterialOrderItems.create(
                     order=order,
                     item_id=item,
-
+                    created_at=updated_at
                 )
 
         return JSONResponse(
