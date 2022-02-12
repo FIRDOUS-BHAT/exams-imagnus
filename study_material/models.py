@@ -92,6 +92,7 @@ class StudyMaterialOrderInstance(Model):
     bill_amount = fields.IntField(null=True, blank=True)
     payment_status = fields.IntEnumField(
         PayStatus, default=PayStatus.pending)
+    source = fields.CharField(3, default='app')
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
 
@@ -171,7 +172,7 @@ class TestSeriesOrders(Model):
         PayStatus, default=PayStatus.pending)
     source = fields.CharField(3, default='app')
     updated_at = fields.DatetimeField(auto_now=True)
-    created_at = fields.DatetimeField(add_auto_now=True)
+    created_at = fields.DatetimeField(auto_now_add=True)
 
 
 Tortoise.init_models(["study_material.models",
