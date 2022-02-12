@@ -802,10 +802,12 @@ async def webhook(request: Request):
                 student = await Student.get(id=student_id)
                 ts_instance = await StudyMaterialCourse.get(id=subscription_id)
                 if not await TestSeriesOrders.exists(student__id=student_id, test_series_id=subscription_id):
+                    updated_at = datetime.now(tz)
+
                     await TestSeriesOrders.create(student=student, test_series=ts_instance,
                                                   razorpay_payment_id=payment_id, razorpay_order_id=order_id,
-                                                  bill_amount=payment_amount / 100, payment_status=2, source=source
-
+                                                  bill_amount=payment_amount / 100, payment_status=2, source=source,
+                                                  created_at=updated_at
                                                   )
 
         elif order_type == 'material':
