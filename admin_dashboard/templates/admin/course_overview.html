@@ -1,0 +1,149 @@
+ {% extends "base.html" %}
+         {% block content %}
+
+  <div class="wrapper">
+         <div class="sa4d25">
+            <div class="container">
+               <div class="row">
+                  <div class="col-lg-12 tab-panel" id="pills-discount" role="tabpanel">
+                     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                           <div class="panel-heading" role="tab" id="headingOne">
+                              <div class="panel-title adcrse1250">
+                                 <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                 Add Course Overview
+                                 </a>
+                              </div>
+                           </div>
+                           <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                              <div class="panel-body adcrse_body">
+                                 <div class="row">
+                                    <div class="col-lg-12">
+                                       <div class="discount_form">
+
+                                          <div class="row">
+                                             <div class="col-lg-4 col-md-5">
+                                                <div class="col-lg-12 col-md-6 mt-30">
+                                                   <div class="lbel25">
+                                                      <label>Course Name* </label>
+                                                   </div>
+                                                   <form action="/admin/add_course_overview/" method="post" enctype="multipart/form-data">
+                                                   <select name="course" class="ui hj145 dropdown cntry152 prompt srch_explore" required>
+                                                      <option value="">Select Course
+                                                      {% if courses %}
+                                                      {% for course in courses %}
+                                                      <option value="{{ course.id }}">{{ course.name }} </option>
+
+                                                      {% endfor %}
+                                                      {% else %}
+                                                         <option value="" disabled>No Courses available </option>
+                                                {% endif %}
+                                                   </select>
+                                                </div>
+                                             </div>
+                                             <div class="col-lg-8 col-md-7">
+                                                <div class="row">
+                                                   <div class="col-lg-12 col-md-6">
+                                                      <div class="course_des_textarea mt-30 lbel25">
+                                                         <label>Course Overview* </label>
+                                                         <div class="course_des_bg">
+                                                            <div class="textarea_dt">
+                                                               <div class="ui form swdh339">
+                                                                  <div class="field">
+                                                                     <textarea rows="6" name="overview"  placeholder="Insert course overview." required></textarea>
+                                                                  </div>
+                                                               </div>
+                                                            </div>
+                                                         </div>
+                                                      </div>
+                                                   </div>
+                                                   <div class="col-lg-12 col-md-6">
+                                                      <div class="course_des_textarea mt-10 lbel25">
+                                                         <label>Course Examinations* </label>
+                                                         <div class="course_des_bg">
+                                                            <div class="textarea_dt">
+                                                               <div class="ui form swdh339">
+                                                                  <div class="field">
+                                                                     <textarea rows="2" name="examination" placeholder="Insert course examinations like: 1. Preliminary examination,2. Mains Examination.3. Interview" required></textarea>
+                                                                  </div>
+                                                               </div>
+                                                            </div>
+                                                         </div>
+                                                      </div>
+                                                   </div>
+                                                   <div class="col-lg-12 col-md-6">
+                                                      <div class="course_des_textarea mt-10 lbel25">
+                                                         <label>Course Syllabus* </label>
+                                                         <div class="course_des_bg">
+                                                            <div class="textarea_dt">
+                                                               <div class="ui form swdh339">
+                                                                  <div class="field">
+                                                                     <textarea rows="6" name="syllabus" placeholder="Insert course syllabus." required></textarea>
+                                                                  </div>
+                                                               </div>
+                                                            </div>
+                                                         </div>
+                                                      </div>
+                                                      <button type="submit" class="btn btn-success mt-20"> Submit</button>
+                                                      </form>
+                                                   </div>
+                                                </div>
+                                             </div>
+                                          </div>
+
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row">
+                  <div class="col-lg-12">
+                     <h2 class="st_title"> View Course Overview </h2>
+                  </div>
+                  </div>
+                  <div class="col-lg-12 col-md-7 mt-10">
+                     <div class="table-responsive">
+                        {% if overviews %}
+                        <table class="table ucp-table earning__table">
+                           <thead class="thead-s">
+                              <tr>
+                                 <th scope="col" class="text-center">S No. </th>
+                                 <th scope="col" class="text-center">Course Name </th>
+                                 <th scope="col" class="text-center">Overview </th>
+                                 <th scope="col" class="text-center">Examinations </th>
+                                 <th scope="col" class="text-center">Syllabus </th>
+                                 <th class="text-center" scope="col">Action </th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                           {% for overview in overviews %}
+                              <tr>
+                                 <td>00{{ loop.index }} </td>
+                                 <td class="text-center">{{ overview.course.name }} </td>
+                                 <td class="text-center">{{ overview.overview }} </td>
+                                 <td class="text-center">{% set exams = overview.examination.split('|') %}
+                                       {% for exam in exams %}
+                                          {{ exam }}
+                                          {% endfor %}
+                                 </td>
+                                 <td class="text-center">{{ overview.overview }} </td>
+                                 <td class="text-center">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" title="Edit" class="gray-s"><i class="uil uil-edit-alt"></i></a>
+                                 </td>
+                              </tr>
+                              {% endfor %}
+
+
+                           </tbody>
+                        </table>
+                        {% endif %}
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+        {% endblock %}

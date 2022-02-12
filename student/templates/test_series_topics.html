@@ -1,0 +1,66 @@
+ {% extends "student_dashboard_base.html" %}
+         {% block content %}
+
+
+
+         <div class="sa4d25">
+            <div class="container-fluid">
+               <div class="row">
+                  <div class="col-lg-12 title-icon">
+                     <h3 class="title"><i class="uil-clipboard-alt"></i>Gravitational Force - Test Series </h3>
+                  </div>
+               </div>
+               <div class="row">
+
+                  {% for test_series in test_series_list %}
+
+                  <div class="col-xl-6 col-lg-6 col-md-6">
+                     <div class="card_dash activee  mb-30">
+                        <div class="card_dash_left">
+                           <h5><b class="clr_brown">{{ loop.index }}.</b> {{ test_series.title }} </h5>
+                           <ul class="country_list">
+   <li>
+      <div class="country_item">
+         <div class="country_item_left">
+            <span><i class="uil uil-comment-alt-exclamation"></i> Questions </span>
+         </div>
+         <div class="country_item_right">
+            <span>{{ test_series.no_of_qstns }} </span>
+         </div>
+      </div>
+   </li>
+   <li>
+      <div class="country_item">
+         <div class="country_item_left">
+            <span><i class="uil uil-book-open"></i>Marks</span>
+         </div>
+         <div class="country_item_right">
+            <span>{{ test_series.marks }} </span>
+         </div>
+      </div>
+   </li>
+   <li>
+      <div class="country_item">
+         <div class="country_item_left">
+            <span><i class="uil uil-compass"></i>Time</span>
+         </div>
+         <div class="country_item_right">
+            <span>{{ test_series.time_duration }} Minutes </span>
+         </div>
+      </div>
+   </li>
+</ul>
+
+<a href="/student/attempt_test/{{cid}}/{{test_series.id}}/" class="upload_btn sbmitt mt-20">Start Now</a>
+                        </div>
+                     </div>
+                  </div>
+                     {% endfor %}
+
+
+
+               </div>
+            </div>
+         </div>
+
+      {% endblock %}

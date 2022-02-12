@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+     <title>Admin Login || I-Magnus Academy </title>
+     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     <meta charset="UTF-8" />
+   <meta http-equiv="refresh" content="300">
+     <!-- External CSS libraries -->
+     
+     <!-- Favicon icon -->
+     <link rel="shortcut icon" href="/static/student_assets/images/fav.png" type="image/x-icon" />
+
+     <!-- Google fonts -->
+
+     <!-- Custom Stylesheet -->
+<!--     <link type="text/css" rel="stylesheet" href="/static/student_assets/css/style.css" />-->
+
+
+   <!-- Favicon icon -->
+   <link rel="shortcut icon" href="/static/student_assets/images/fav.png" type="image/x-icon" />
+   
+   <!-- Google fonts -->
+   <link href="/static/admin/css/night-mode.css" rel="preload" as="style" />
+   <!-- Custom Stylesheet -->
+   <!--     <link type="text/css" rel="stylesheet" href="/static/student_assets/css/style.css" />-->
+    <link type="text/css" rel="stylesheet" href="/static/admin/vendor/bootstrap/css/bootstrap.min.css" />
+   <link rel="icon" type="image/png" href="/static/admin/images/fav.png" />
+   <link href="/static/admin/vendor/unicons-2.0.1/css/unicons.css" rel='preload' as="style" />
+   <link href="/static/admin/css/vertical-responsive-menu1.min.css" rel="preload" as="style" />
+   <link href="/static/admin/css/instructor-dashboard.css" rel="preload" as="style" />
+   <link href="/static/admin/css/instructor-responsive.css" rel="preload" as="style" />
+ 
+   <link href="/static/admin/css/jquery-steps.css" rel="preload" as="style" />
+   <link href="/static/admin/vendor/fontawesome-free/css/all.min.css" rel="preload" as="style" />
+   <link href="/static/admin/vendor/OwlCarousel/assets/owl.carousel.css" rel="preload" as="style" />
+   <link href="/static/admin/vendor/OwlCarousel/assets/owl.theme.default.min.css" rel="preload" as="style" />
+   <link rel="preload" type="text/css" href="/static/admin/vendor/semantic/semantic.min.css" as="style" />
+   
+   
+   <link href="/static/admin/vendor/unicons-2.0.1/css/unicons.css" rel='stylesheet' />
+   <link href="/static/admin/css/vertical-responsive-menu1.min.css" rel="stylesheet" />
+   <link href="/static/admin/css/instructor-dashboard.css" rel="stylesheet" />
+   <link href="/static/admin/css/instructor-responsive.css" rel="stylesheet" />
+   <link href="/static/admin/css/night-mode.css" rel="stylesheet" />
+   <link href="/static/admin/css/jquery-steps.css" rel="stylesheet" />
+   <link href="/static/admin/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" />
+   <link href="/static/admin/vendor/OwlCarousel/assets/owl.carousel.css" rel="stylesheet" />
+   <link href="/static/admin/vendor/OwlCarousel/assets/owl.theme.default.min.css" rel="stylesheet" />
+   <link href="/static/admin/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+   <link rel="stylesheet" type="text/css" href="/static/admin/vendor/semantic/semantic.min.css" />
+   <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css" rel="stylesheet" />
+   <link href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+ 
+   </head>
+   <body>
+      <header class="header clearfix">
+         <div class="main_logo" id="logo">
+            <a href="/admin/"><img src="/static/admin/images/logo.png" class="logo" alt=""></a>
+            <a href="/admin/"><img class="logo-inverse logo" src="/static/admin/images/logo.png" alt="" /></a>
+         </div>
+         <button type="button" id="toggleMenu" class="toggle_menu">
+         <i class='uil uil-bars'></i></button>
+         <button id="collapse_menu" class="collapse_menu">
+         <i class="uil uil-bars collapse_menu--icon "></i>
+         <span class="collapse_menu--label"></span>
+         </button>
+         <div class="header_right">
+            <ul>
+               <li class="ui dropdown">
+                  <a href="#" class="option_links" title="Notifications"><i class='uil uil-bell'></i><span class="noti_count">3 </span></a>
+                  <div class="menu dropdown_mn">
+                     <a href="#" class="channel_my item">
+                        <div class="profile_link">
+
+                           <div class="pd_content">
+                              <h6>Rock William </h6>
+                              <p>Like Your Comment On _____  <strong>How to create sidebar ____ </strong>. </p>
+                              <span class="nm_time">2 min ago </span>
+                           </div>
+                        </div>
+                     </a>
+                     <a href="#" class="channel_my item">
+                        <div class="profile_link">
+                           <img src="/static/admin/images/left-imgs/img-2.jpg" alt="" />
+                           <div class="pd_content">
+                              <h6>Jassica Smith </h6>
+                              <p>Added New Review In _____  <strong>Full Stack PHP Developer </strong>. </p>
+                              <span class="nm_time">12 min ago </span>
+                           </div>
+                        </div>
+                     </a>
+                     <a href="#" class="channel_my item">
+                        <div class="profile_link">
+                           <img src="/static/admin/images/left-imgs/img-9.jpg" alt="" />
+                           <div class="pd_content">
+                              <p> Your Membership Approved  <strong>Upload Video </strong>. </p>
+                              <span class="nm_time">20 min ago </span>
+                           </div>
+                        </div>
+                     </a>
+                     <a class="vbm_btn" href="instructor_notifications">View All  <i class='uil uil-arrow-right'></i></a>
+                  </div>
+               </li>
+               <li class="ui dropdown">
+                  <a href="#" class="opts_account" title="Account">
+                  <img src="/static/admin/images/hd_dp.jpg" alt="" />
+                  </a>
+                  <div class="menu dropdown_account">
+                     <div class="channel_my">
+                        <div class="profile_link">
+                           <img src="/static/admin/images/hd_dp.jpg" alt="" />
+                           <div class="pd_content">
+                              <div class="rhte85">
+                                 <h6>Admin </h6>
+                                 <div class="mef78" title="Verify">
+                                    <i class='uil uil-check-circle'></i>
+                                 </div>
+                              </div>
+                              <span><a href="../../cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2e494f434c4142171a1d6e49434f4742004d4143">[email&#160;protected] </a></span>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="night_mode_switch__btn">
+                        <a href="#" id="night-mode" class="btn-night-mode">
+                        <i class="uil uil-moon"></i> Night mode
+                        <span class="btn-night-mode-switch">
+                        <span class="uk-switch-button"></span>
+                        </span>
+                        </a>
+                     </div>
+                     <a href="/admin/logout/" class="item channel_item">Sign Out </a>
+                  </div>
+               </li>
+            </ul>
+         </div>
+      </header>
+      <nav class="vertical_nav">
+         <div class="left_section menu_left" id="js-menu">
+            <div class="left_section">
+               <ul>
+                  <li class="menu--item">
+                     <a href="/admin/" class="menu--link {{ 'active' if admin_active else ''}}" title="Dashboard">
+                     <i class="uil uil-apps menu--icon"></i>
+                     <span class="menu--label">Dashboard </span>
+                     </a>
+                  </li>
+                 
+
+                  <li class="menu--item">
+                     <a href="/admin/orders/" class="menu--link {{ 'active' if orders_active else ''}}" title="Create Course">
+                     <i class='uil uil-plus-circle menu--icon'></i>
+                     <span class="menu--label">Orders </span>
+                     </a>
+                  </li>
+
+                  <li class="menu--item">
+                     <a href="/admin/create_course/" class="menu--link {{ 'active' if create_order_active else ''}}" title="Create Course">
+                     <i class='uil uil-plus-circle menu--icon'></i>
+                     <span class="menu--label">Create Course </span>
+                     </a>
+                  </li>
+                  <li class="menu--item">
+                     <a href="/admin/course_category/" class="menu--link {{ 'active' if course_category else ''}}" title="Courses">
+                     <i class='uil uil-book-alt menu--icon'></i>
+                     <span class="menu--label">Course Category</span>
+                     </a>
+                  </li>
+                
+                  <li class="menu--item">
+                     <a href="/admin/course_overview/" class="menu--link {{ 'active' if course_overview_active else ''}}" title="Add Course Overview">
+                     <i class='uil uil-copy-landscape menu--icon'></i>
+                     <span class="menu--label">Add Course Overview</span>
+                     </a>
+                  </li>
+                  <li class="menu--item">
+                     <a href="/admin/live_classes/" class="menu--link {{ 'active' if live_classes_active else ''}}" title="Add Course Overview">
+                     <i class='uil uil-copy-landscape menu--icon'></i>
+                     <span class="menu--label">Add live classes</span>
+                     </a>
+                  </li>
+                  <li class="menu--item">
+                     <a href="/admin/student/registrations/" class="menu--link {{ 'active' if registrations_active else ''}}" title="Messages">
+                     <i class='uil uil-user menu--icon'></i>
+                     <span class="menu--label">Registrations </span>
+                     </a>
+                  </li>
+
+                   <li class="menu--item ">
+                     <a href="/admin/subscription_plan/" class="menu--link {{ 'active' if subscription_plan_active else ''}}" title="Add Subscription Plan">
+                     <i class='uil uil-plus-circle menu--icon'></i>
+                     <span class="menu--label">Subscription Plans </span>
+                     </a>
+                  </li>
+                  <li class="menu--item ">
+                     <a href="/admin/scholarship/testseries/" class="menu--link {{ 'active' if testseries else ''}}" title="Add Scholarship Test Series">
+                     <i class='uil uil-plus-circle menu--icon'></i>
+                     <span class="menu--label">Scholarship Test Series </span>
+                     </a>
+                  </li>
+                  <li class="menu--item">
+                     <a href="#" class="menu--link" title="Messages">
+                     <i class='uil uil-comments menu--icon'></i>
+                     <span class="menu--label">Messages </span>
+                     </a>
+                  </li>
+                  <li class="menu--item">
+                     <a href="/admin/student_enquiries/" class="menu--link {{ 'active' if admin_active else ''}}" title="Messages">
+                     <i class='uil uil-users-alt menu--icon'></i>
+                     <span class="menu--label">Enquiries </span>
+                     </a>
+                  </li>
+                  <li class="menu--item">
+                     <a href="/admin/student/scholarship/registrations/" class="menu--link {{ 'active' if scholarship_registrations else ''}}" title="Messages">
+                        <i class='uil uil-users-alt menu--icon'></i>
+                        <span class="menu--label">Scholarship Registrations </span>
+                     </a>
+                  </li>
+                   <li class="menu--item">
+                     <a href="/admin/student/interview/registrations/" class="menu--link {{ 'active' if scholarship_registrations else ''}}" title="Messages">
+                        <i class='uil uil-users-alt menu--icon'></i>
+                        <span class="menu--label">Interview Registration  </span>
+                     </a>
+                  </li>
+                  <li class="menu--item">
+                     <a href="#" class="menu--link" title="Notifications">
+                     <i class='uil uil-bell menu--icon'></i>
+                     <span class="menu--label">Notifications </span>
+                     </a>
+                  </li>
+                  <li class="menu--item">
+                     <a href="#" class="menu--link" title="Reviews">
+                     <i class='uil uil-star menu--icon'></i>
+                     <span class="menu--label">Reviews </span>
+                     </a>
+                  </li>
+                  <li class="menu--item">
+                     <a href="/admin/add_study_material/" class="menu--link {{ 'active' if add_study_material_active else ''}}" title="Reviews">
+                     <i class='uil uil-star menu--icon'></i>
+                     <span class="menu--label">Study Material </span>
+                     </a>
+                  </li>
+
+                  <li class="menu--item ">
+                     <a href="/admin/reply_doubts/" class="menu--link {{ 'active' if subscription_plan_active else ''}}"
+                        title="Add Subscription Plan">
+                        <i class='uil uil-plus-circle menu--icon'></i>
+                        <span class="menu--label">Doubts </span>
+                     </a>
+                  </li>
+
+
+<!--                  <li class="menu&#45;&#45;item">-->
+<!--                     <a href="instructor_earning" class="menu&#45;&#45;link" title="Earning">-->
+<!--                     <i class='uil uil-dollar-sign menu&#45;&#45;icon'></i>-->
+<!--                     <span class="menu&#45;&#45;label">Earning </span>-->
+<!--                     </a>-->
+<!--                  </li>-->
+               </ul>
+            </div>
+            <div class="left_section pt-2">
+               <ul>
+                  <li class="menu--item">
+                     <a href="#" class="menu--link" title="Setting">
+                     <i class='uil uil-cog menu--icon'></i>
+                     <span class="menu--label">Setting </span>
+                     </a>
+                  </li>
+                  <li class="menu--item">
+                     <a href="#" class="menu--link" title="Send Feedback">
+                     <i class='uil uil-comment-alt-exclamation menu--icon'></i>
+                     <span class="menu--label">Send Feedback </span>
+                     </a>
+                  </li>
+               </ul>
+            </div>
+         </div>
+      </nav>
+
+     {% block content %}{% endblock %}
+
+      <!-- Modal for add preference-->
+         <div id="preference" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+               <!-- Modal content-->
+               <div class="modal-content">
+                  <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                     margin-right: 5px;">&times;</button>
+                  <div class="modal-header">
+                     <h4 class="modal-title">Add Preference</h4>
+                  </div>
+                  <div class="modal-body">
+                     <form action="/add_preference" method="post">
+                     <div class="col-lg-12 col-md-6">
+                        <div class="ui search focus lbel25">
+                           <label>Course Preference* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="text" placeholder="Insert your course preference title." name="pref_name" data-purpose="edit-course-title" maxlength="60"  value="">
+                              <div class="badge_num">60 </div>
+                           </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-success mt-20"> Submit</button>
+                     </div>
+                        </form>
+                  </div>
+                  <div class="modal-footer">
+                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <!-- Modal for add courses-->
+         <div id="course" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+               <!-- Modal content-->
+               <div class="modal-content">
+                  <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                     margin-right: 5px;">&times;</button>
+                  <div class="modal-header">
+                     <h4 class="modal-title">Add Course</h4>
+                  </div>
+                  <div class="modal-body">
+                     <form action="/create_course" method="post" enctype="multipart/form-data">
+                     <div class="col-lg-12 col-md-6">
+                        <div class="lbel25">
+                           <label>Course Preferences* </label>
+                        </div>
+                        <select name="pref_id" class="ui hj145 dropdown cntry152 prompt srch_explore" required>
+                           <option value="">Select Preferences
+                           {% for pref in pref_names %}
+                           <option value="{{ pref.id }}">{{ pref.name }} </option>
+                           {% endfor %}
+                        </select>
+                     </div>
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Course Name* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="text" placeholder="Insert your course preference title."
+                                     name="name" data-purpose="edit-course-title" maxlength="60"  value="">
+                              <div class="badge_num">60 </div>
+                           </div>
+                        </div>
+                     </div>
+                      <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label class="form-label" for="customFile"> Mobile Icon*</label>
+                           <input type="file" name="icon_image" class="form-control btn btn-danger" />
+                        </div>
+                          <div class="ui search focus lbel25">
+                           <label class="form-label" for="customFile"> Web Icon*</label>
+                           <input type="file" name="web_icon" class="form-control btn btn-danger" />
+                        </div>
+                        <button type="submit" class="btn btn-success mt-20"> Submit Course</button>
+                     </div>
+                     </form>
+                  </div>
+                  <div class="modal-footer">
+                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+
+          <!-- Modal for add category-->
+         <div id="category" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+               <!-- Modal content-->
+               <div class="modal-content">
+                  <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                     margin-right: 5px;">&times;</button>
+                  <div class="modal-header">
+                     <h4 class="modal-title">Add Category</h4>
+                  </div>
+                  <div class="modal-body">
+                     <form action="/add_category" method="post" enctype="multipart/form-data">
+
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Category Name* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="text" placeholder="Enter category name." name="cat_name" data-purpose="edit-course-title" maxlength="60"  value="">
+                              <div class="badge_num">60 </div>
+                           </div>
+                        </div>
+                     </div>
+                      <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label class="form-label" for="customFile"> Icon Image*</label>
+                           <input type="file" name="icon_image" class="form-control btn btn-danger"  />
+                        </div>
+                        <button type="submit" class="btn btn-success mt-20"> Submit Course</button>
+                     </div>
+                     </form>
+                  </div>
+                  <div class="modal-footer">
+                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+          <!-- Modal for edit courses-->
+         <div id="edit_course" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+               <!-- Modal content-->
+               <div class="modal-content">
+                  <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                     margin-right: 5px;">&times;</button>
+                  <div class="modal-header">
+                     <h4 class="modal-title">Add Course</h4>
+                  </div>
+                  <div class="modal-body">
+                     <form action="/edit_course" method="post" enctype="multipart/form-data">
+                     <div class="col-lg-12 col-md-6">
+                        <div class="lbel25">
+                           <label>Course Preferences* </label>
+                        </div>
+                        <input type="hidden" name="edit_course_id" id="edit_course_id">
+                        <select name="edit_pref_id" id="pref_id" class="ui hj145 dropdown cntry152 prompt srch_explore" disabled>
+
+
+                        </select>
+                     </div>
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Course Name* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" id="edit_c_name" type="text" placeholder="Insert your course preference title."
+                                     name="edit_name" data-purpose="edit-course-title" maxlength="60"  value="">
+                              <div class="badge_num">60 </div>
+                           </div>
+                        </div>
+                     </div>
+                      <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label class="form-label" for="customFile"> Mobile Icon*</label>
+                           <input type="file" name="edit_icon_image" class="form-control btn btn-danger" />
+                        </div>
+                          <div class="ui search focus lbel25">
+                           <label class="form-label" for="customFile"> Web Icon*</label>
+                           <input type="file" name="edit_web_icon" class="form-control btn btn-danger" />
+                        </div>
+                        <button type="submit" class="btn btn-success mt-20"> Submit Course</button>
+                     </div>
+                     </form>
+                  </div>
+                  <div class="modal-footer">
+                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+         <!-- Modal for add category-->
+         <div id="edit_category" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+               <!-- Modal content-->
+               <div class="modal-content">
+                  <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                     margin-right: 5px;">&times;</button>
+                  <div class="modal-header">
+                     <h4 class="modal-title">Edit Category</h4>
+                  </div>
+                  <div class="modal-body">
+                     <form action="/edit_category" method="post" enctype="multipart/form-data">
+
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Category Name* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="text" placeholder="Enter category name." name="cat_name" data-purpose="edit-course-title" maxlength="60"  value="">
+                              <div class="badge_num">60 </div>
+                           </div>
+                        </div>
+                     </div>
+                        <input type="hidden" name="edit_cat_id" id="edit_cat_id" />
+                      <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label class="form-label" for="customFile"> Icon Image*</label>
+                           <input type="file" name="icon_image" class="form-control btn btn-danger"  />
+                        </div>
+                        <button type="submit" class="btn btn-success mt-20"> Submit Course</button>
+                     </div>
+                     </form>
+                  </div>
+                  <div class="modal-footer">
+                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+          <!-- Modal for add category subjects-->
+          <div id="add_cat_subjects" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+               <!-- Modal content-->
+               <div class="modal-content">
+                  <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                     margin-right: 5px;">&times;</button>
+                  <div class="modal-header">
+                     <h4 class="modal-title">Add Subject</h4>
+                  </div>
+                  <div class="modal-body">
+                     <form action="/add_subject" method="post">
+                     <div class="col-lg-12 col-md-6">
+                        <div class="ui search focus lbel25">
+                           <label>Category Subject* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="text" placeholder="Enter category Subject." name="subject_name" data-purpose="" maxlength="60"  required>
+                              
+                           </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-success mt-20"> Submit</button>
+                     </div>
+                        </form>
+                  </div>
+                  <div class="modal-footer">
+                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+
+
+
+           <!-- Modal for add topic-->
+         <div id="topic" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+               <!-- Modal content-->
+               <div class="modal-content">
+                  <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                     margin-right: 5px;">&times;</button>
+                  <div class="modal-header">
+                     <h4 class="modal-title">Add Category Subjects</h4>
+                  </div>
+                  <div class="modal-body">
+                     <form action="/admin/topics/" method="post" enctype="multipart/form-data">
+                     <div class="col-lg-12 col-md-6">
+                        <div class="lbel25">
+                           <label>Choose Category </label>
+                        </div>
+                        <select name="topic_cat_id" class="ui hj145 dropdown cntry152 prompt srch_explore" required>
+                           <option value="">Select Category
+                           {% for cat in categories %}
+                           <option value="{{ cat.id }}">{{ cat.name }} </option>
+                           {% endfor %}
+                        </select>
+                     </div>
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Enter Subject </label>
+                        
+                           <div class="ui left icon input swdh19">
+                              <input type="text" class="prompt srch_explore" placeholder="Enter topic name" name="cat_topic_title">
+                             
+                              <!-- <select name="subject_id" class="ui hj145 dropdown cntry152 prompt srch_explore" required multiple>
+                                 <option value="">Select Subject
+                                 {% for subject in subjects %}
+                                 <option value="{{ subject.id }}">{{ subject.name }} </option>
+                                 {% endfor %}
+                              </select>         <div class="badge_num">60 </div> -->
+                           </div>
+                           
+                           <small><i>Enter multiple subjects with pipe (|) separated</i></small>
+                        </div>
+                     </div>
+                      <div class="col-lg-12 col-md-6 mt-10">
+
+                        <button type="submit" class="btn btn-success mt-20"> Submit </button>
+                     </div>
+                     </form>
+                  </div>
+                  <div class="modal-footer">
+                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+      
+<!-- Modal -->
+<div
+class="modal fade"
+id="lecture_delete_modal"
+tabindex="-1"
+aria-labelledby="exampleModalLabel"
+aria-hidden="true"
+>
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+      <button
+        type="button"
+        class="btn-close"
+        data-mdb-dismiss="modal"
+        aria-label="Close"
+      ></button>
+    </div>
+    <div class="modal-body">...</div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">
+        Close
+      </button>
+      <button type="button" class="btn btn-primary">Save changes</button>
+    </div>
+  </div>
+</div>
+</div>
+
+   
+      </div>
+<!--      <script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>-->
+<!--      <script src="{{ url_for('static', path='/admin/js/vertical-responsive-menu.min.js') }}"></script>-->
+<!--      <script src="{{ url_for('static', path='/admin/js/jquery-3.3.1.min.js') }}"></script>-->
+<!--      <script src="{{ url_for('static', path='/admin/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>-->
+<!--      <script src="{{ url_for('static', path='/admin/vendor/OwlCarousel/owl.carousel.js') }}"></script>-->
+<!--      <script src="{{ url_for('static', path='/admin/vendor/semantic/semantic.min.js') }}"></script>-->
+<!--      <script src="{{ url_for('static', path='/admin/js/custom.js') }}"></script>-->
+<!--      <script src="{{ url_for('static', path='/admin/js/night-mode.js') }}"></script>-->
+<!--      <script src="{{ url_for('static', path='/admin/js/jquery-steps.min.js') }}"></script>-->
+
+        
+        <script  data-cfasync="false" href="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+      <script src="/static/admin/js/vertical-responsive-menu.min.js"></script>
+      <script  src="/static/admin/js/jquery-3.3.1.min.js"></script>
+      <script  src="/static/admin/vendor/OwlCarousel/owl.carousel.js"></script>
+      <script src="/static/admin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+      <script  src="/static/admin/vendor/semantic/semantic.min.js"></script>
+      <script  src="/static/admin/js/custom.js"></script>
+      <script  src="/static/admin/js/night-mode.js"></script>
+      <script  src="/static/admin/js/jquery-steps.min.js"></script>
+
+      <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+      <script src="https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js"></script>
+      <script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.flash.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+      <script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.html5.min.js"></script>
+      <script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.print.min.js"></script>
+
+
+      <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+     <script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha384-qlmct0AOBiA2VPZkMY3+2WqkHtIQ9lSdAsAn5RUJD/3vA5MKDgSGcdmIv4ycVxyn" crossorigin="anonymous"></script>
+   <script src="/static/admin/js/js-snackbar.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+   <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
+   integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
+   crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+
+        $(document).ready(function() {
+      $('#example,.example').DataTable({
+          "paging": true,
+           "processing": true,
+         buttons: [
+            'excel', 'csv', 'pdf', 'print', 'copy',
+         ],
+      });} );
+
+         $('#add-course-tab').steps({
+           onFinish: function () {
+         	alert('Wizard Completed');
+           }
+         });
+
+         $(document).on('click','.edit_category', function(e){
+
+            let cat_id = e.target.getAttribute('data-cat_id');
+
+            $('#edit_cat_id').val(cat_id)
+
+         })
+
+
+         $(document).on('click','.edit_course', function(e){
+
+            let course_id = e.target.getAttribute('data-id')
+            let pref_name = e.target.getAttribute('data-preference')
+            let course_name = e.target.getAttribute('data-course')
+
+            $('#pref_id').html('<option>'+ pref_name +'</option>')
+            $('#edit_c_name').val(course_name)
+            $('#edit_course_id').val(course_id)
+
+         })
+
+    //      $(function() {
+    //
+    // var bar = $('.bar');
+    // var percent = $('.percent');
+    // var status = $('#status');
+//
+// <!--    $('#add_video_form').ajaxForm({-->
+// <!--        beforeSend: function() {-->
+// <!--            status.empty();-->
+// <!--            var percentVal = '0%';-->
+// <!--            bar.width(percentVal);-->
+// <!--            percent.html(percentVal);-->
+// <!--        },-->
+// <!--        uploadProgress: function(event, position, total, percentComplete) {-->
+// <!--            var percentVal = percentComplete + '%';-->
+// <!--            bar.width(percentVal);-->
+// <!--            percent.html(percentVal);-->
+// <!--        },-->
+// <!--        complete: function(xhr) {-->
+// <!--            status.html(xhr.responseText);-->
+// <!--        }-->
+// <!--    });-->
+// <!--});-->
+
+
+// $('#upload_video').on('click', function () {
+//
+//
+//   $.ajax({
+//     // Your server script to process the upload
+//     url: '/admin/add_category_lecture/',
+//     type: 'POST',
+//     // Form data
+//     data: new FormData($('#add_video_form')[0]),
+//
+//
+//     // Tell jQuery not to process data or worry about content-type
+//     // You *must* include these options!
+//     cache: false,
+//     contentType: false,
+//     processData: false,
+//
+//     // Custom XMLHttpRequest
+//     xhr: function () {
+//       var myXhr = $.ajaxSettings.xhr();
+//       if (myXhr.upload) {
+//         // For handling the progress of the upload
+//         myXhr.upload.addEventListener('progress', function (e) {
+//           if (e.lengthComputable) {
+//             $('progress').attr({
+//               value: e.loaded,
+//               max: e.total,
+//             });
+//           }
+//         }, false);
+//       }
+//       return myXhr;
+//     }
+//   });
+// });
+
+
+$(document).on('click','#live_classes_access', function(e){
+    if ($('#live_classes_checkbox').is(':checked')) {
+      $('#live_classes_checkbox').val(1)
+    }else{
+    $('#live_classes_checkbox').val(0)
+    }
+})
+
+
+
+$(document).on('change', '#existing_courses', function(e){
+
+let course_id = $(this).val()
+if(course_id){
+
+   data = {"course_id": course_id,}
+
+   fetch('/admin/get_existing_course_categories/',{
+      method: 'POST',
+      body: JSON.stringify(data)
+   }).then(res => res.json())
+   .then(response => {
+      if(response){
+         $('#existing_course_category').html('')
+         $('#existing_course_category').append('<option value="">Choose Category</option>')
+      for(let x in response) {
+        
+         $('#existing_course_category').append('<option value="'+response[x].category.id+'">'+response[x].category.name+'</option>')
+      }
+
+   }else{
+      $('#existing_course_category').html('')
+
+   }
+      
+   })
+
+}
+
+})
+
+
+
+$(document).on('change', '#existing_course_category', function(e){
+
+   let course_id = $('#existing_courses').val()
+   let category_id =  $(this).val()
+   if(category_id && course_id){
+
+      data = {"course_id": course_id, "category_id": category_id}
+
+      fetch('/admin/get_existing_lecture_topics/',{
+         method: 'POST',
+         body: JSON.stringify(data)
+      }).then(res => res.json())
+      .then(response => {
+         if(response){
+            $('#existing_course_topics').html('')
+            $('#existing_course_topics').append('<option value="">Choose topic</option>')
+         for(let x in response) {
+           
+            $('#existing_course_topics').append('<option value="'+response[x].topic.id+'">'+response[x].topic.name+'</option>')
+         }
+
+      }else{
+         $('#existing_course_topics').html('')
+
+      }
+         
+      })
+
+   }
+  
+})
+
+
+$(document).on('change', '#existing_course_topics', function(e){
+   let topic_id = $(this).val()
+   let course_id = $('#existing_courses').val()
+   let category_id = $('#existing_course_category').val()
+   if(topic)
+   {
+      data = {"course_id": course_id, "category_id": category_id, "topic_id": topic_id}
+      fetch('/admin/get_existing_lectures/',{
+         method: 'POST',
+         body: JSON.stringify(data)
+      } ).then(res => res.json())
+      .then(resp => {
+
+         $('#exiting_category_topics_lectures').html('')
+
+         for(let i in resp) {
+
+            $('#exiting_category_topics_lectures').append('<option value="'+ resp[i].id+'">'+ resp[i].title +'</option>')
+         }
+
+      })
+   }
+   
+
+})
+
+
+$(document).on('click','.edit_video_lecture', function(e){
+
+  $('#lecture1').modal('show');
+
+  title = e.target.getAttribute('data-title')
+  description = e.target.getAttribute('data-description')
+  lid = e.target.getAttribute('data-lid')
+  thumbnail = e.target.getAttribute('data-thumbnail')
+  order_display = e.target.getAttribute('data-order_display')
+  web_url = e.target.getAttribute('data-web_url')
+
+  $('#edit_lid').val(lid)
+  $('#edit_lecture_title').val(title)
+  $('#edit_lecture_description').val(description)
+  $('#video_thumbnail_url').val(thumbnail)
+  $('#lecture_order_display').val(order_display)
+  $('#edit_lecture_web_url').val(web_url)
+
+
+})
+
+$(document).on('click', '.repeat_notification', function(e){
+   let course = e.target.getAttribute('data-course')
+   let category = e.target.getAttribute('data-category')
+   let topic = e.target.getAttribute('data-topic')
+   let title = e.target.getAttribute('data-title')
+   let lec_id = e.target.getAttribute('data-lec_id')
+   let source = e.target.getAttribute('data-source')
+
+   fetch('/send_repeated_notifications/'+course+'/'+category+'/'+topic+'/'+source +'/'+lec_id+'/'+title+'/', {
+      method: 'GET',
+   }).then(res => res.json())
+      .then(response => {
+         if (response) {
+               alert("sent")
+         } else {
+           
+
+         }
+
+      })
+
+})
+
+
+$(document).on('click', '.delete_content', function(e){
+
+   let id = e.target.getAttribute('data-id')
+   let url = e.target.getAttribute('data-url')
+  
+   swal({
+  title: "Are you sure?",
+  text: "Once deleted, you will not be able to recover this file!",
+  icon: "warning",
+  buttons: true,
+  dangerMode: true,
+})
+.then((willDelete) => {
+  if (willDelete) {
+     fetch(url, {
+        method: 'DELETE',
+     })
+     .then(res => res.json())
+
+     .then(response => {
+
+      swal("Poof! Your file has been deleted!", {
+      icon: "success",
+
+     })
+   })
+   .then(response => {
+      setTimeout(function(){ document.location.reload(); }, 2000);
+      
+
+   })
+
+     
+    
+  } else {
+    swal("Your file is safe!");
+  }
+});
+})
+
+
+$(document).on('click', '.edit_category_topic', function(e){
+
+   title = e.target.getAttribute('data-title')
+   orderNumb = e.target.getAttribute('data-orderNumb')
+  ctid = e.target.getAttribute('data-ctid')
+
+  $('#edit_ctid').val(ctid)
+ 
+  $('#display_order_no').val(orderNumb)
+
+   $('#edit_category_topic_modal').modal('show')
+})
+
+/*uploading file progress bar */
+
+
+// Get a reference to the progress bar, wrapper & status label
+var progress = document.getElementById("progress");
+var progress_wrapper = document.getElementById("progress_wrapper");
+var progress_status = document.getElementById("progress_status");
+
+// Get a reference to the 3 buttons
+var upload_btn = document.getElementById("upload_btn");
+var loading_btn = document.getElementById("loading_btn");
+var cancel_btn = document.getElementById("cancel_btn");
+
+// Get a reference to the alert wrapper
+var alert_wrapper = document.getElementById("alert_wrapper");
+
+
+var file_input_label = document.getElementById("file_input_label");
+
+// Function to show alerts
+function show_alert(message, alert) {
+
+//    var html_to_insert = `<div id="alert" class="alert alert-${alert} alert-dismissible fade show" role="alert">
+//       <span>${message}</span>
+//       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+//         <span aria-hidden="true">×</span>
+//       </button>
+//     </div>`;
+
+//     // with .innerHTML, destroys event listeners
+//  document.getElementById('alert_wrapper').innerHTML += html_to_insert;
+
+// // with .insertAdjacentHTML, preserves event listeners
+// document.getElementById('alert_wrapper').insertAdjacentHTML('beforeend', html_to_insert);
+
+
+
+
+alert_wrapper.innerHTML = `
+    <div id="alert" class="alert alert-${alert} alert-dismissible fade show" role="alert">
+      <span>${message}</span>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  `
+
+
+
+}
+
+// Function to upload file
+function upload(url) {
+
+// Get a reference to the file input element & input label 
+var input = document.getElementById("file_input");
+var thumbnail = document.getElementById("video_thumbnail");
+let course_id = document.getElementById("course_id").value;
+let category_id = document.getElementById("category_id").value;
+let course_topic_id = document.getElementById("course_topic_id").value;
+let topic_id = document.getElementById("topic_id").value;
+let lecture_title = document.getElementById("title").value;
+let video_description = document.getElementById("description").value;
+
+
+  // Reject if the file input is empty & throw alert
+  if (!input.value) {
+
+    show_alert("No Video selected", "warning")
+
+    return;
+
+  }
+
+
+  //thumbnail validation
+
+  if (!thumbnail.value) {
+
+         show_alert("No thumbnail selected", "warning")
+
+         return;
+
+}
+
+
+if (!lecture_title) {
+
+show_alert("No title chosen", "warning")
+
+return;
+
+}
+
+if (!video_description) {
+
+show_alert("No Description chosen", "warning")
+
+return;
+
+}
+
+
+
+
+  // Create a new FormData instance
+  var data = new FormData();
+
+  // Create a XMLHTTPRequest instance
+  var request = new XMLHttpRequest();
+
+  // Set the response type
+  request.responseType = "json";
+
+  // Clear any existing alerts
+  alert_wrapper.innerHTML = "";
+
+  // Disable the input during upload
+  input.disabled = true;
+
+  // Hide the upload button
+  upload_btn.classList.add("d-none");
+
+  // Show the loading button
+  loading_btn.classList.remove("d-none");
+
+  // Show the cancel button
+  cancel_btn.classList.remove("d-none");
+
+  // Show the progress bar
+  progress_wrapper.classList.remove("d-none");
+
+  // Get a reference to the file
+  var file = input.files[0];
+  var video_thumbnail = thumbnail.files[0];
+
+  // Get a reference to the filename
+  var filename = file.name;
+
+  // Get a reference to the filesize & set a cookie
+  var filesize = file.size;
+  document.cookie = `filesize=${filesize}`;
+
+  
+
+  // Append the file to the FormData instance
+  data.append("lecture_link", file);
+  data.append("video_thumbnail", video_thumbnail);
+
+  data.append("course_id", course_id);
+  
+  data.append("category_id", category_id);
+  data.append("course_topic_id", course_topic_id);
+  data.append("topic_id", topic_id);
+  data.append("lecture_title", lecture_title);
+  data.append("video_description", video_description);
+
+  // request progress handler
+  request.upload.addEventListener("progress", function (e) {
+
+    // Get the loaded amount and total filesize (bytes)
+    var loaded = e.loaded;
+    var total = e.total
+
+    // Calculate percent uploaded
+    var percent_complete = (loaded / total) * 100;
+
+    // Update the progress text and progress bar
+    progress.setAttribute("style", `width: ${Math.floor(percent_complete)}%`);
+    progress_status.innerText = `${Math.floor(percent_complete)}% uploaded`;
+
+  })
+
+  // request load handler (transfer complete)
+  request.addEventListener("load", function (e) {
+
+    if (request.status == 200) {
+
+      show_alert(`${request.response.message}`, "success");
+
+    }
+    else {
+
+      show_alert(`Error uploading file`, "danger");
+
+    }
+
+    reset();
+
+  });
+
+  // request error handler
+  request.addEventListener("error", function (e) {
+
+    reset();
+
+    show_alert(`Error uploading file`, "warning");
+
+  });
+
+  // request abort handler
+  request.addEventListener("abort", function (e) {
+
+    reset();
+
+    show_alert(`Upload cancelled`, "primary");
+
+  });
+
+  // Open and send the request
+  request.open("post", url);
+  request.send(data);
+
+  cancel_btn.addEventListener("click", function () {
+
+    request.abort();
+
+  })
+
+}
+
+// Function to update the input placeholder
+function input_filename() {
+
+  file_input_label.innerText = input.files[0].name;
+
+}
+
+// Function to reset the page
+function reset() {
+
+  // Clear the input
+  input.value = null;
+
+  // Hide the cancel button
+  cancel_btn.classList.add("d-none");
+
+  // Reset the input element
+  input.disabled = false;
+
+  // Show the upload button
+  upload_btn.classList.remove("d-none");
+
+  // Hide the loading button
+  loading_btn.classList.add("d-none");
+
+  // Hide the progress bar
+  progress_wrapper.classList.add("d-none");
+
+  // Reset the progress bar state
+  progress.setAttribute("style", `width: 0%`);
+
+  // Reset the input placeholder
+  file_input_label.innerText = "Select file";
+
+}
+
+$(document).on('click','.live_class_delete', function(e){
+
+   let did = e.target.getAttribute('data-did')
+   $('#live_class_id').val(did)
+
+
+})
+
+
+$('.edit_subscription').click(function(e){
+
+   $('#edit_subscription').modal('show')
+
+   $('#edit_course_name').val(e.target.getAttribute('data-course_name'))
+   $('#edit_plan_validity').val(e.target.getAttribute('data-plan_validity'))
+   $('#edit_plan_price').val(e.target.getAttribute('data-plan_price'))
+   $('#edit_subscription_name').val(e.target.getAttribute('data-subscription_name'))
+   $('#edit_no_of_videos').val(e.target.getAttribute('data-no_of_videos'))
+   $('#edit_no_of_tests').val(e.target.getAttribute('data-no_of_tests'))
+   $('#edit_no_of_notes').val(e.target.getAttribute('data-no_of_notes'))
+   $('#edit_sid').val(e.target.getAttribute('data-sid'))
+})
+
+$('.close').click(function () {
+
+    $('#edit_subscription').modal('hide')
+
+})
+
+
+
+$('#add_reply').click(function (e) {
+
+   reply = $('#get_reply').val()
+
+   $('#reply').text(reply)
+
+   let qid = e.target.getAttribute('data-qid')
+   data = {'qid': qid, 'reply': reply}
+   fetch('/admin/update_query_reply/',{
+      method: 'POST', // or 'PUT'
+      body: JSON.stringify(data)
+   })
+
+
+   $('#get_reply').val('')
+
+
+})
+
+
+   $('.queries').click(function(e) {
+      $('.queries').removeClass('active')
+      $(this).toggleClass('active')
+
+      $('#enquiry').text(e.target.getAttribute('data-enquiry'))
+
+      let enquiry = $(this).find('.current_enquiry').val();
+      let reply = $(this).find('.current_reply').val();
+      let student = $(this).find('.current_student').val();
+      let qid = $(this).find('.current_qid').val();
+      let time_duration = $(this).find('.current_time_duration').val();
+      let replied_at = $(this).find('.current_replied_at').val();
+      
+
+      $('#student_name').text(student)
+      $('#enquiry').text(enquiry)
+      $('#reply').text(reply)
+      $('#time_duration').text(time_duration)
+      $('#replied_at').text(replied_at)
+      $('#add_reply').attr('data-qid', qid)
+
+         
+
+     
+   })
+
+
+   document.getElementById('search').onclick = function (e){
+      let mobile = document.getElementById("srch_mobile").value;
+      if (mobile.length == 10){
+            let source = document.getElementById("source").value;
+         data = {"mobile": mobile, "source": source}
+         fetch('/search_order/', {
+            method: 'POST',
+            body: JSON.stringify(data)
+         })
+         .then(res => res.json())
+         .then(response => {
+             document.getElementById('show_search').innerHTML = ''
+             resp = response.message
+             if(response.source == 'course_orders'){
+            for(let i in resp){
+               created_at = new Date('resp[i].created_at').toLocaleDateString('en-us', { weekday: "long", year: "numeric", month: "short", day: "numeric" }) 
+               console.log(created_at)
+               let mode =  (resp[i].payment_mode==1)?'online':'offline'
+               let status = (resp[i].payment_status == 1)?"Pending":"Confirmed"
+               console.log(resp)
+              
+            document.getElementById('show_search').innerHTML += '<tr class="text-center"><td td > 00'+i+' </td><td><b class="course_active">'+resp[i].student__fullname+'<br>'+mobile+'</b></td><td>'+resp[i].subscription__course__name+'</td><td>'+mode+'</td><td class="text-success">'+resp[i].order_id+'<br>/'+resp[i].payment_id+'</td><td>'+resp[i].bill_amount+'</td><td>'+status+'</td><td>'+ resp[i].source+'</td><td>'+ resp[i].created_at+'</td></tr>'
+            }
+         }
+
+         })
+      }
+   }
+
+   document.getElementById('srch_mobile').onkeydown = (e)=>{
+       if (e.keyCode == 13)
+         document.getElementById('search').click();
+
+   }
+
+
+      </script>
+
+
+{% if error_message %}
+
+<script>
+
+SnackBar({
+          message: "{{error_message}}",
+          fixed: true,
+          status: "error",
+          position: "tr" // bl, tl, tr, br
+                     });
+</script>
+
+{% endif %}
+   </body>
+</html>

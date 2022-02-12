@@ -1,0 +1,199 @@
+ {% extends "base.html" %}
+         {% block content %}
+
+
+<div class="wrapper">
+         <div class="sa4d25">
+            <div class="container">
+               <div class="row">
+                  <div class="col-md-12">
+                     <div class="card_dash1">
+                        <div class="card_dash_left1"> 
+                           <h2 class="st_title">{{ course.name }} [{{ category.name }}] Topics</h2>
+                        </div>
+                        <div class="card_dash_right1">
+                           <button class="create_btn_dash" data-toggle="modal" data-target="#course"> Add Course Topic </button>
+                        </div>
+                     </div>
+                  </div>
+                 
+               </div>
+               
+               <div class="row">
+                  <div class="col-lg-12 col-md-7">
+                     <div class="table-responsive mt-30">
+                        <table class="table ucp-table earning__table" id="example">
+                           <thead class="thead-s">
+                              <tr>
+                                 <th class="text-center" scope="col">Cat ID </th>
+                                 <th class="text-center" scope="col">Display Order No. </th>
+                                 <th class="text-center" scope="col">Topic Name </th>
+                                 <th class="text-center" scope="col">Video lectures </th>
+                                  <th class="text-center" scope="col">PDF Notes </th>
+                                  <th class="text-center" scope="col">Test Series </th>
+                                  <th class="text-center" scope="col">Controls </th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                           {% for cct in course_category_topics %}
+                              <tr>
+                                 <td class="text-center">IMC-00{{loop.index}} </td>
+                                 <td class="text-center">{{ cct.order_seq }} </td>
+
+<!--                                 <td class="text-center">{{ cct.created_at.strftime('%d-%m-%Y %I:%M:%S %p') }} </td>-->
+<!--                                 <td class="text-center">{{ cct.category.course.name }} </td>-->
+<!--                                 <td class="text-center">{{ cct.category.category.name }} </td>-->
+                                 <td class="text-center"><a href="/admin/category_lectures/{{ course.slug }}/{{ category.slug }}/{{ cct.topic.slug }}/">
+                                    {{ cct.topic.name }} </a>
+                                 </td>
+                                 <td class="text-center">{{ cct.CategoryLectures|length }}</td>
+                                 <td class="text-center">{{ cct.CategoryNotes|length }}</td>
+                                 <td class="text-center">{{ cct.CategoryTestSeries|length }}</td>
+                                 <td class="text-center">
+                                    <a href="#" data-title="{{ cct.topic.name }}" data-orderNumb="{{ cct.order_seq }}" data-ctid="{{ cct.id }}" data-description="" title="Edit" class="gray-s edit_category_topic"><i data-title="{{ cct.topic.name }}" data-orderNumb="{{ cct.order_seq }}" data-ctid="{{ cct.id }}" data-description="" class="uil uil-edit-alt"></i></a>
+                                    <a href="#"  title="Delete" data-lid="" class="gray-s delete_lecture"><i class="uil uil-trash-alt"></i></a>
+                                 </td>
+
+                              </tr>
+                           {% endfor %}
+
+                           </tbody>
+                        </table>
+                     </div>
+                  </div>
+                  
+               </div>
+            </div>
+         </div>
+        
+         <!-- Modal for add category Topic-->
+         <div id="course" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+               <!-- Modal content-->
+               <div class="modal-content">
+                  <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                     margin-right: 5px;">&times;</button>
+                  <div class="modal-header">
+                     <h4 class="modal-title">Add Category Topic</h4>
+                  </div>
+                  <form action="/add_lectures_titles/" method="post">
+                  <div class="modal-body">
+                     <div class="col-lg-12 col-md-6">
+                        <div class="lbel25">
+                           <label>Select Course* </label>
+                        </div>
+                        <input type="hidden" name="course_category" value="{{ course_category_id }}">
+                        <select class="ui hj145 dropdown cntry152 prompt srch_explore" name="topic_course">
+                           <option value="{{ course.id }}">{{ course.name }} </option>
+                        </select>
+                     </div>
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="lbel25">
+                           <label>Select Category* </label>
+                        </div>
+                        <select class="ui hj145 dropdown cntry152 prompt srch_explore" name="topic_category">
+                           <option value="{{ category.id }}">{{ category.name }} </option>
+
+                        </select>
+                     </div>
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Topic Name* </label>
+                           <div class="ui left icon input swdh19">
+
+                            <select class="ui hj145 dropdown cntry152 prompt srch_explore" name="title">
+                               <option value="">Select topic </option>
+
+                               {% for topic in topics %}
+
+                           <option value="{{ topic.id }}">{{ topic.name  }} </option>
+                               {% endfor %}
+
+                        </select>
+                              <div class="badge_num">60 </div>
+                           </div>
+                        </div>
+                        <button type="submit" class="btn btn-success mt-20"> Submit </button>
+                     </div>
+                      
+                  </div>
+                     </form>
+                  <div class="modal-footer">
+                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+
+
+           <!-- Modal for edit category Topic-->
+           <div id="edit_category_topic_modal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+               <!-- Modal content-->
+               <div class="modal-content">
+                  <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                     margin-right: 5px;">&times;</button>
+                  <div class="modal-header">
+                     <h4 class="modal-title">Add Category Topic</h4>
+                  </div>
+                  <form action="/admin/edit_category_topic_titles/{{course.slug}}/{{category.slug}}/" method="post">
+                  <div class="modal-body">
+                     <div class="col-lg-12 col-md-6">
+                        <div class="lbel25">
+                           <label>Select Course* </label>
+                        </div>
+                        <input type="hidden" name="edit_ctid" id="edit_ctid" required>
+                        <input type="hidden" name="course_category" value="{{ course_category_id }}">
+                        <select class="ui hj145 dropdown cntry152 prompt srch_explore" name="topic_course">
+                           <option value="{{ course.id }}">{{ course.name }} </option>
+                        </select>
+                     </div>
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="lbel25">
+                           <label>Select Category* </label>
+                        </div>
+                        <select class="ui hj145 dropdown cntry152 prompt srch_explore" name="topic_category">
+                           <option value="{{ category.id }}">{{ category.name }} </option>
+
+                        </select>
+                     </div>
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Topic Name* </label>
+                           <div class="ui left icon input swdh19">
+
+                            <select class="ui hj145 dropdown cntry152 prompt srch_explore" name="title">
+                               <option value="">Select topic </option>
+
+                               {% for topic in topics %}
+
+                           <option value="{{ topic.id }}">{{ topic.name  }} </option>
+                               {% endfor %}
+
+                        </select>
+                              <div class="badge_num">60 </div>
+                           </div>
+                        </div>
+                        <div class="ui search focus lbel25">
+                        <label>Display Ordering* </label>
+                        <div class="ui left icon input swdh19">
+                           <input type="number" name="display_order_no" id="display_order_no">
+
+                           </div>
+                           </div>
+
+                        <button type="submit" class="btn btn-success mt-20"> Submit </button>
+                     </div>
+                      
+                  </div>
+                     </form>
+                  <div class="modal-footer">
+                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+
+          {% endblock %}

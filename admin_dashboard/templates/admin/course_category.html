@@ -1,0 +1,118 @@
+ {% extends "base.html" %}
+         {% block content %}
+      <div class="wrapper">
+         <div class="sa4d25">
+            <div class="container">
+               <div class="row">
+                   <div class="col-md-12">
+                     <div class="card_dash1">
+                        <div class="card_dash_left1">
+                           <h2 class="st_title">Course Category</h2>
+                        </div>
+                        <div class="card_dash_right1">
+                           <button class="create_btn_dash" data-toggle="modal" data-target="#course">Create Add Category </button>
+                        </div>
+                     </div>
+                  </div>
+
+               </div>
+
+               <div class="row">
+                  <div class="col-lg-12 col-md-7">
+                     <div class="table-responsive mt-30">
+                         {% if course_categories %}
+                        <table class="table ucp-table earning__table" id="example">
+                           <thead class="thead-s">
+                              <tr>
+                                 <th class="text-center" scope="col">Cat ID </th>
+<!--                                 <th class="text-center" scope="col">Creation Date </th>-->
+                                 <th class="text-center" scope="col">Course Name </th>
+                                 <th class="text-center" scope="col">Category Name </th>
+<!--                                 <th class="text-center" scope="col">Category Image </th>-->
+<!--                                 <th class="text-center" scope="col">Action </th>-->
+                              </tr>
+                           </thead>
+                           <tbody>
+                           {% for course in course_categories %}
+
+                              <tr>
+                                 <td class="text-center">IMC-00{{loop.index}} </td>
+<!--                                 <td class="text-center">{{ course.created_at.strftime('%d-%m-%Y %I:%M:%S %p') }} </td>-->
+                                 <td class="text-center"> {{ course.name }}</td>
+                                 <td class="text-center">
+                                {% for cat in course.categories %}
+                                     <a href="/admin/chapters/{{ course.slug }}/{{ cat.category.slug }}/">
+                                     {{ cat.category.name }}
+                                         {{ "| " if not loop.last else "" }}
+
+                                         </a>
+                                  {% endfor %}
+                                   </td>
+
+                              </tr>
+
+                           {% endfor %}
+
+                           </tbody>
+                        </table>
+                        {% else %}
+                                <p><center>No category available</center></p>
+                        {% endif %}
+                     </div>
+                  </div>
+
+               </div>
+            </div>
+         </div>
+
+         <!-- Modal for add category-->
+         <div id="course" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+               <!-- Modal content-->
+               <div class="modal-content">
+                  <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                     margin-right: 5px;">&times;</button>
+                  <div class="modal-header">
+                     <h4 class="modal-title">Add Category</h4>
+                  </div>
+                  <form method="post" action="/admin/add_category/" enctype="multipart/form-data">
+                  <div class="modal-body">
+                     <div class="col-lg-12 col-md-6">
+                        <div class="lbel25">
+                           <label>Select Course* </label>
+                        </div>
+                        <select name="courses" class="ui hj145 dropdown cntry152 prompt srch_explore" multiple>
+                           <option value="">Select Course</option>
+                           {% for course in courses %}
+                           <option value="{{ course.id  }}">{{ course.name  }} </option>
+                          {% endfor %}
+                        </select>
+                     </div>
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Category Name* </label>
+                           <div class="ui left icon input swdh19">
+<!--                              <input class="prompt srch_explore" type="text" placeholder="Insert your course category title." name="category_name" data-purpose="edit-course-title" maxlength="60" id="main[title]" value="">-->
+                            <select name="categories" class="ui hj145 dropdown cntry152 prompt srch_explore" multiple>
+                              <option value="">Select Course</option>
+                              {% for cat in categories %}
+                              <option value="{{ cat.id  }}">{{ cat.name  }} </option>
+                             {% endfor %}
+                           </select>
+                              <div class="badge_num">60 </div>
+                           </div>
+                        </div>
+                     </div>
+                      <div class="col-lg-12 col-md-6 mt-10">
+                        <button type="submit" class="btn btn-success mt-20"> Submit Category</button>
+                     </div>
+                  </div>
+                     </form>
+                  <div class="modal-footer">
+                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+      {% endblock %}

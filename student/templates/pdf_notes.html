@@ -1,0 +1,41 @@
+ {% extends "student_dashboard_base.html" %}
+         {% block content %}
+
+
+
+
+         <div class="sa4d25">
+            <div class="container-fluid">
+                {% for each_course_obj in course_cat_obj%}
+               <div class="row">
+                  <div class="col-lg-12 title-icon">
+                     <h3 class="title"><i class="uil uil-play"></i>{{ each_course_obj.category.name }} - PDF Notes </h3>
+                  </div>
+               </div>
+
+
+               <div class="row">
+                   {% for each_topic in each_course_obj.notes %}
+                  <div class="col-xl-3 col-lg-6 col-md-6">
+                    <a href="/student/view_notes/{{cid}}/{{ each_topic.topic.id }}/{{ each_course_obj.category.slug }}/{{ each_topic.topic.slug }}/">
+                     <div class="card_dash activee  mb-30">
+                        <div class="card_dash_left">
+                           <h5><b class="clr_brown">{{ loop.index }}.</b> {{ each_topic.topic.name }} </h5>
+                           <span class="crdbg_2">Total Notes -  {{ each_topic.CategoryNotes|length }}</span>
+                        </div>
+                     </div>
+                    </a>
+                  </div>
+
+                   {% endfor %}
+               </div>
+
+
+                {% endfor %}
+
+
+
+            </div>
+         </div>
+
+      {% endblock %}

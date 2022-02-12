@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="wrapper">
+    <div class="sa4d25">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card_dash1">
+                        <div class="card_dash_left1">
+                            <h2 class="st_title">Registrations</h2>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12 col-md-7">
+                    <div class="table-responsive mt-30">
+                        {% if students %}
+                        <table class="table ucp-table" id="example">
+                            <thead class="thead-s">
+                                <tr>
+                                    <th class="text-center" scope="col">S No. </th>
+                                    <th class="cell-ta" scope="col">Student Name </th>
+                                    <th class="text-center" scope="col">Email </th>
+                                    <th class="text-center" scope="col">Mobile Number </th>
+                                    <th class="text-center" scope="col">Registered @ </th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student in students %}
+                                <tr>
+                                    <td class="text-center">00{{ loop.index }} </td>
+                                    <td class="cell-ta"><a href="/admin/student_details/{{ student.id }}/">{{
+                                            student.name }} </a></td>
+                                    <td class="text-center"><b class="course_active">{{ student.email }}</b></td>
+                                    <td class="text-center">{{ student.mobile }} </td>
+                                    <td class="text-center">{{ student.created_at.strftime('%d %b %Y, %I:%M:%S %p') }}
+                                    </td>
+
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <p class="text-center">No Student Registered</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for add category-->
+    <div id="course" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                     margin-right: 5px;">&times;</button>
+                <div class="modal-header">
+                    <h4 class="modal-title">Add Category</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12 col-md-6">
+                        <div class="lbel25">
+                            <label>Select Course* </label>
+                        </div>
+                        <select class="ui hj145 dropdown cntry152 prompt srch_explore">
+                            <option value="">Select Course
+                            <option value="1">UPSC </option>
+                            <option value="2">MPPSC </option>
+                        </select>
+                    </div>
+                    <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                            <label>Category Name* </label>
+                            <div class="ui left icon input swdh19">
+                                <input class="prompt srch_explore" type="text"
+                                    placeholder="Insert your course category title." name="title"
+                                    data-purpose="edit-course-title" maxlength="60" id="main[title]" value="">
+                                <div class="badge_num">60 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                            <label class="form-label" for="customFile"> Course Icon*</label>
+                            <input type="file" class="form-control btn btn-danger" id="customFile" />
+                        </div>
+                        <button type="submit" class="btn btn-success mt-20"> Submit Category</button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endblock %}

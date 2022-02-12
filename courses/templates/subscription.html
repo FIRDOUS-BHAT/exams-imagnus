@@ -1,0 +1,132 @@
+ {% extends "base.html" %}
+         {% block content %}
+
+			 <!-- ============================ Page Title Start================================== -->
+			<section class="page-title pt-0">
+			 <div class="image-cover ed_detail_head lg theme-ov" style="background:#f4f4f4 url(https://im.indiatimes.in/media/content/2018/Nov/national_exam_1542712309.jpg);" data-overlay="9">
+				 <div class="container">
+					<div class="col-lg-12 col-md-12">
+							 <div class="breadcrumbs-wrap">
+								 <h1 class="breadcrumb-title">Subscription Plans</h1>
+								 <nav aria-label="breadcrumb">
+									 <ol class="breadcrumb">
+										 <li class="breadcrumb-item"><a href="#" class="text-white">Home </a></li>
+										 <li class="breadcrumb-item active" aria-current="page">Courses </li>
+										 <li class="breadcrumb-item active" aria-current="page">Subscription Plan </li>
+									 </ol>
+								 </nav>
+							 </div>
+						 </div>
+				 </div>
+			 </div>
+			 </section>
+			 <!-- ============================ Page Title End ================================== -->
+
+			 <!-- ============================ Pricing Start ================================== -->
+			 <section class="pt-0">
+
+				 <div class="container">
+
+					 <div class="row">
+
+						 <!-- Single Package -->
+						 {% for plan in plans %}
+						 <div class="col-lg-4 col-md-4">
+							 <div class="packages_wrapping">
+
+								 <div class="packages_headers">
+									 <i class="{{ plan.SubscriptionPlan.icon_image }}"></i>
+									 <h4 class="packages_pr_title">{{ plan.SubscriptionPlan.name }} </h4>
+									 <span class="packages_price-subtitle">{{ plan.SubscriptionPlan.sub_title }} </span>
+
+								 </div>
+								 <div class="packages_price">
+									 <h4 class="value">₹{{  "{:,}".format(plan.plan_price) }} </h4>
+								 </div>
+								 <div class="packages_middlebody">
+									 <ul>
+
+
+										 <li>100+ Hours of content</li>
+										 {% if plan.live_classes_access %}
+										 <li>Live & Recorded Lectures </li>
+										 {% endif %}
+										 <li>Test Series: {{ plan.no_of_videos }} </li>
+										 <li>PDF Notes: {{ plan.no_of_notes }} </li>
+										 <li>{{ plan.validity }} Month Validity </li>
+
+									 </ul>
+								 </div>
+								 <div class="packages_bottombody">
+									 <a href="/students/subscription_plan/{{ plan.id }}/checkout/" class="btn-pricing">Choose Plan </a>
+								 </div>
+
+							 </div>
+						 </div>
+						{% endfor %}
+						 <!-- Single Package -->
+<!--						 <div class="col-lg-4 col-md-4">-->
+<!--							 <div class="packages_wrapping recommended">-->
+
+<!--								 <div class="packages_headers">-->
+<!--									 <i class="lni-diamond"></i>-->
+<!--									 <h4 class="packages_pr_title">Platinum Package </h4>-->
+<!--									 <span class="packages_price-subtitle">Start With Platinum Package </span>-->
+<!--								 </div>-->
+<!--								 <div class="packages_price">-->
+<!--									 <h4 class="value text-white">₹6,500  </h4>-->
+<!--								 </div>-->
+<!--								 <div class="packages_middlebody">-->
+<!--									 <ul>-->
+<!--										 <li>5+ Listings </li>-->
+<!--										 <li>Contact With Agent </li>-->
+<!--										 <li>3 Month Validity </li>-->
+<!--									 </ul>-->
+<!--								 </div>-->
+<!--								 <div class="packages_bottombody">-->
+<!--									 <a href="checkout.html" class="btn-pricing">Choose Plan </a>-->
+<!--								 </div>-->
+
+<!--							 </div>-->
+<!--						 </div>-->
+
+<!--						 &lt;!&ndash; Single Package &ndash;&gt;-->
+<!--						 <div class="col-lg-4 col-md-4">-->
+<!--							 <div class="packages_wrapping">-->
+
+<!--								 <div class="packages_headers">-->
+<!--									 <i class="lni-invention"></i>-->
+<!--									 <h4 class="packages_pr_title">Standard Package </h4>-->
+<!--									 <span class="packages_price-subtitle">Start With Standard Package </span>-->
+<!--								 </div>-->
+<!--								 <div class="packages_price">-->
+<!--									 <h4 class="pr-value">₹8,500  </h4>-->
+<!--								 </div>-->
+<!--								 <div class="packages_middlebody">-->
+<!--									 <ul>-->
+<!--										 <li>5+ Listings </li>-->
+<!--										 <li>Contact With Agent </li>-->
+<!--										 <li>3 Month Validity </li>-->
+<!--									 </ul>-->
+<!--								 </div>-->
+<!--								 <div class="packages_bottombody">-->
+<!--									 <a href="checkout.html" class="btn-pricing">Choose Plan </a>-->
+<!--								 </div>-->
+
+<!--							 </div>-->
+<!--						 </div>-->
+
+					 </div>
+
+				 </div>
+
+			 </section>
+			 <!-- ============================ Pricing End ================================== -->
+
+
+
+		 <!-- ============================================================== -->
+		 <!-- End Wrapper -->
+		 <!-- ============================================================== -->
+
+		 {% endblock %}

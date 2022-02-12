@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		 <meta charset="utf-8" />
+		 <meta name="author" content="www.frebsite.nl" />
+		 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+         <title>I-Magnus Academy | Best Online Coaching for Competitive and Recruitment Exams Preparation | Elearning   </title>
+		 <!-- favicon
+		============================================ -->
+         <link rel="shortcut icon" type="image/x-icon" href="/static/courses_assets/img/fav.png">
+         <!-- Custom CSS -->
+         <link href="/static/courses_assets/css/styles.css" rel="stylesheet" />
+
+		 <!-- Custom Color Option -->
+		 <link href="/static/courses_assets/css/colors.css" rel="stylesheet" />
+</head>
+<body>
+      <!-- ============================================================== -->
+         <!-- Preloader - style you can find in spinners.css -->
+         <!-- ============================================================== -->
+         <div id="preloader"><div class="preloader"><span></span><span></span></div></div>
+
+
+         <!-- ============================================================== -->
+         <!-- Main wrapper - style you can find in pages.scss -->
+         <!-- ============================================================== -->
+         <div id="main-wrapper">
+
+             <!-- ============================================================== -->
+             <!-- Top header  -->
+
+			<!-- Start Navigation -->
+			  <div class="header header-light head-shadow">
+				 <div class="container">
+					 <nav id="navigation" class="navigation navigation-landscape">
+						 <div class="nav-header">
+							 <a class="nav-brand" href="https://www.imagnus.in">
+								 <img src="https://www.imagnus.in/images/logo.png" class="logo" alt="" />
+							 </a>
+							 <div class="nav-toggle"></div>
+						 </div>
+						 <div class="nav-menus-wrapper" style="transition-property: none;">
+							 <ul class="nav-menu">
+
+								 <li class=""><a href="https://www.imagnus.in">Home <span class="submenu-indicator"></span></a>
+
+								 </li>
+
+								 <li class=""><a href="https://www.imagnus.in/about_us">Why I-Magnus </a></li>
+
+								 <li><a href="/student/preference/">Courses </a>
+
+									<li><a href="/exam_study_material/">Study Material </a>
+   
+									<li><a href="testseries.html">Test Series </a>
+
+								 </li><li><a href="https://www.imagnus.in/contact-us">Contact Us</a></li>
+
+							 </ul>
+
+							 <ul class="nav-menu nav-menu-social align-to-right">
+								  <li><a href="#"><i class="ti-user"></i> My Account <span class="submenu-indicator"></span></a>
+									 <ul class="nav-dropdown nav-submenu">
+										<li><a href="/student/new-dashboard/">Dashboard </a></li>
+										<li><a href="/student/my-account/">Profile </a></li>
+										<li><a href="/student/my-orders/">Payment History </a></li>
+										<li style="cursor: pointer;">
+											<a ><form id="logout_form" action="/logout/" method="post" >
+											 <span onclick="document.getElementById('logout_form').submit();">Logout </span></form></a>
+											</li>
+										
+
+									 </ul>
+								 </li>
+							 </ul>
+						 </div>
+					 </nav>
+				 </div>
+			 </div>
+			 <!-- End Navigation -->
+			 <div class="clearfix"></div>
+
+ <!-- ============================ Dashboard: My Order Start ================================== -->
+        
+ <section class="gray pt-0">
+    <div class="container-fluid">
+       <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12">
+             <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                   <li class="breadcrumb-item"><a href="#">Test Series</a></li>
+                   <li class="breadcrumb-item active" aria-current="page">Scholorship Test Result</li>
+                </ol>
+             </nav>
+          </div>
+       </div>
+       <!-- Row -->
+       <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12">
+             <div class="container">
+                <div class="row">
+                  
+                </div>
+                <!-- Row -->
+                        <div class="row">
+                             <div class="col-lg-5 col-md-6 col-sm-6">
+                                <div class="ground-list ground-hover-list mb-20">
+                                    <div class="ground ground-list-single">
+                                      <div class="card-test p-10">
+                                        <div class="btn-circle-40 btn-success"><i class="ti-check-box"></i></div>
+                                        <div class="ground-content mt-10">
+                                            <h6>Correct Answer</h6>
+                                            <small class="text-fade">{{ result_details.correct }}</small>
+                                        </div>
+                                      </div>
+                                      <div class="card-test p-10">
+                                        <div class="btn-circle-40 btn-danger"><i class="ti-close"></i></div>
+                                        <div class="ground-content mt-10">
+                                            <h6>Wrong Answer</h6>
+                                            <small class="text-fade">{{ result_details.wrong_ans }}</small>
+                                        </div>
+                                      </div>
+                                      <div class="card-test p-10">
+                                        <div class="btn-circle-40 btn-warning"><i class="ti-info-alt"></i></div>
+                                        <div class="ground-content mt-10">
+                                            <h6>Not Attempted</h6>
+                                            <small class="text-fade">{{ result_details.not_visited }}</small>
+                                        </div>
+                                      </div>
+                                    </div>	
+                                 </div>
+                               </div>
+                               <div class="col-lg-3 col-md-6 col-sm-6 dashboard_container">
+                                <div class="dashboard_container_header">
+                                          <div class="row">
+                                          <div class="col-lg-8 col-md-12 col-sm-12">
+                                            <h5 class="title">Selection List </h5>
+                                            <p style="font-size: 13px;">Will be announced at 10:30 AM on Aug 03, 2021.</p>
+                                          </div>
+                                           <div class="col-lg-4 col-md-12 col-sm-12">
+                                            <img src="https://image.flaticon.com/icons/png/512/473/473406.png" class="img-fluid">
+                                          </div>
+                                     </div>
+                                     </div>
+                            </div> 
+                                <div class="col-lg-4 col-md-6 col-sm-6">
+                                   <div class="dashboard_stats_wrap-test widget-4">
+                                   <div class="dashboard_stats_wrap_content">
+                                       <h4>{{result_details.correct}}/<span class="text-default">{{total_qstns}}</span></h4> <span>Total Score</span>
+                                   </div>
+                                <div class="dashboard_stats_wrap-icon"><i class="ti-pie-chart"></i></div>
+                            </div>
+                                    </div>
+                   <!-- <div class="col-lg-12 col-md-12 col-sm-12">
+                      <div class="dashboard_container">
+                         <div class="dashboard_container_header">
+                            <div class="dashboard_fl_1">
+                               <h4 class="f-w">Rank 150/<span class="text-danger f-15">1200</span></h4>
+                            </div>
+                         </div>
+                         <div class="dashboard_container_body">
+                            <div class="table-responsive">
+                               <table class="table">
+                                  <thead class="thead">
+                                     <tr>
+                                        <th scope="col">Rank Id </th>
+                                        <th scope="col">Student Name</th>
+                                        <th scope="col"></th>
+                                        <th scope="col"> </th>
+                                        <th scope="col">Status </th>
+                                     </tr>
+                                  </thead>
+                                  <tbody>
+                                     <tr>
+                                        <th scope="row">#1 </th>
+                                        <td>Ravi Singh </td>
+                                        <td> </td>
+                                        <td></td>
+                                        <td><span class="payment_status complete">Completed </span></td>
+                                     </tr>
+                                    
+                                  </tbody>
+                               </table>
+                            </div>
+                         </div>
+                      </div>
+                   </div> -->
+               
+                   <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="col-lg-12 col-md-12 col-sm-12 dashboard_container">
+                       <div class="dashboard_container_header">
+                          <div class="row dashboard_fl_1">
+                            <div class="col-lg-5 col-md-12 col-sm-12">
+                              <img src="https://www.imagnus.in/images/home-promo.png" class="img-fluid">
+                            </div>
+                            <div class="col-lg-7 col-md-12 col-sm-12">
+                              <h2 class="pt-5 title m-b10">Start Your Exam Preparation Now! </h2>
+                              <p class="mb-10">Learn from India's best teachers and clear your doubts in real time. Schedule timely reminders and study in the comfort of your home. Learn and compete with other students in real time.</p>
+                                   <div class="education_block_author">
+              <a href="https://www.imagnus.in/" class="btn btn-primary btn-md"> Visit Website <i class="fa fa-share text-white"></i></a>
+             </div>
+                            </div>
+                       </div>
+                       </div>
+                    </div>
+                 </div>
+                   
+
+
+                </div>
+                <!-- /Row -->
+             </div>
+          </div>
+          <!-- Row -->
+       </div>
+       <!-- /Row -->
+    </div>
+<!-- Row -->
+</section>
+<!-- ============================ Dashboard: My Order Start End ================================== -->
+ <!-- ============================ Footer Start ================================== -->
+ <footer class="dark-footer skin-dark-footer">
+    <div>
+        <div class="container">
+            <div class="row">
+
+                <div class="col-lg-3 col-md-3">
+                    <div class="footer-widget">
+                        <div class="logo">
+                          <h2 style="color: #fff;">I-Magnus</h2>
+                        </div>
+                        <div class="footer-add">
+                            <ul>
+                        <li>
+                            <i class="fa fa-phone"></i>
+                            <span>+91 9826297935 </span><br>
+                            <i class="fa fa-phone"></i>
+                            <span>+91 9111665500 </span>
+                        </li>
+                        <li>
+                            <i class="fa fa-envelope"></i>
+                            <span>info@imagnus.in </span><br>
+                             <i class="fa fa-envelope"></i>
+                            <span>support@imagnus.in </span>
+                        </li>
+                        <li>
+                            <i class="fa fa-map-marker"></i>
+                            <span>174, Near Bombay Hospital, Indore, Madhya Pradesh 452010, India </span>
+                        </li>
+                    </ul>
+                        </div>
+
+                    </div>
+                </div>
+               <div class="col-lg-3 col-md-3">
+                    <div class="footer-widget">
+                        <h4 class="widget-title">Our links </h4>
+                        <ul class="text-white">
+                    <li><a href="https://www.imagnus.in">Home </a></li>
+                    <li><a href="https://www.imagnus.in/about_us">About Us </a></li>
+                    <li><a href="https://www.imagnus.in/terms-conditions">terms and Conditions </a></li>
+                    <li><a href="https://www.imagnus.in/privacy-policy">Privacy Policy </a></li>
+                    <li><a href="https://www.imagnus.in/disclaimer">Disclaimer </a></li>
+                    <li><a href="https://www.imagnus.in/contact-us">Contacts</a></li>
+                </ul>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-3">
+                    <div class="footer-widget">
+                        <h4 class="widget-title">Top Courses </h4>
+                        <ul class="footer-menu">
+                    <li><a href="https://www.imagnus.in/best-online-mp-constable-coaching-classes-in-indore">MP Constable </a></li>
+                    <li><a href="https://www.imagnus.in/best-online-neet-coaching-classes-in-indore">NEET </a></li>
+                    <li><a href="https://www.imagnus.in/best-online-nursing-coaching-classes-in-indore">Nursing </a></li>
+                    <li><a href="https://www.imagnus.in/best-online-bank-po-coaching-classes-in-indore">Bank PO</a></li>
+                    <li><a href="https://www.imagnus.in/best-online-aiims-coaching-classes-in-indore">AIIMS  </a></li>
+                    <li><a href="https://www.imagnus.in/best-online-iit-jee-coaching-classes-in-indore">IIT-JEE  </a></li>
+                    <li><a href="https://www.imagnus.in/best-online-upsc-coaching-classes-in-indore">UPSC  </a></li>
+                    <li><a href="https://www.imagnus.in/best-online-ssc-coaching-classes-in-indore">SSC  </a></li>
+                </ul>
+                    </div>
+                </div>
+
+
+                <div class="col-lg-3 col-md-12">
+                    <div class="footer-widget">
+                        <h4 class="widget-title">Download Apps </h4>
+                        <a href="#" class="other-store-link">
+                            <div class="other-store-app">
+                                <div class="os-app-icon">
+                                    <i class="lni-playstore theme-cl"></i>
+                                </div>
+                                <div class="os-app-caps">
+                                   Google Play
+                                    <span>Get It Now </span>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="#" class="other-store-link">
+                            <div class="other-store-app">
+                                <div class="os-app-icon">
+                                    <i class="lni-apple theme-cl"></i>
+                                </div>
+                                <div class="os-app-caps">
+                                   App Store
+                                    <span>Now it Available </span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <div class="container">
+            <div class="row align-items-center">
+
+                <div class="col-lg-6 col-md-6">
+                    <p class="mb-0">Copyright © I-Magnus Academy 2021. All rights reserved. </p>
+                </div>
+
+                <div class="col-lg-6 col-md-6 text-right">
+                    <ul class="footer-bottom-social">
+                        <li><a href="#"><i class="ti-facebook"></i></a></li>
+                        <li><a href="#"><i class="ti-twitter"></i></a></li>
+                        <li><a href="#"><i class="ti-instagram"></i></a></li>
+                        <li><a href="#"><i class="ti-linkedin"></i></a></li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- ============================ Footer End ================================== -->
+<a id="back2Top" class="top-scroll" title="Back to top" href="#"><i class="ti-arrow-up"></i></a>
+
+
+</div>
+ 
+<script src="/static/courses_assets/js/jquery.min.js"></script>
+		 <script src="/static/courses_assets/js/popper.min.js"></script>
+		 <script src="/static/courses_assets/js/bootstrap.min.js"></script>
+		 <script src="/static/courses_assets/js/select2.min.js"></script>
+		 <script src="/static/courses_assets/js/slick.js"></script>
+		 <script src="/static/courses_assets/js/jquery.counterup.min.js"></script>
+		 <script src="/static/courses_assets/js/counterup.min.js"></script>
+		 <script src="/static/courses_assets/js/custom.js"></script>
+		 <script src="/static/courses_assets/js/FileSaver.js"></script>
+
+</body>
+</html>
+

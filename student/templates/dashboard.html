@@ -1,0 +1,165 @@
+ {% extends "student_dashboard_base.html" %}
+         {% block content %}
+
+
+         <div class="sa4d25">
+            <div class="container-fluid">
+               <div class="row">
+                  <div class="col-lg-12">
+                     <h2 class="st_title"><i class="uil uil-apps"></i>  Dashboard - {{cname}} </h2>
+                  </div>
+                  <div class="col-xl-3 col-lg-6 col-md-6">
+                     <div class="card_dash">
+                        <div class="card_dash_left">
+                           <h5>Live Classes </h5>
+                           <h2>{{ live_class_count }} </h2>
+                           <span class="crdbg_1">New Live Classes -  {{today_live_class_count}}</span>
+                        </div>
+                        <div class="card_dash_right">
+                           <img src="/static/student_assets/images/promotion.svg" alt="" />
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-xl-3 col-lg-6 col-md-6">
+                     <div class="card_dash">
+                        <div class="card_dash_left">
+                           <h5> Lectures </h5>
+                           <h2>{{ lectures_count }} </h2>
+                           <span class="crdbg_2">New lectures - {{today_lectures_count}} </span>
+                        </div>
+                        <div class="card_dash_right">
+                           <img src="/static/student_assets/images/online-course.svg" alt="" />
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-xl-3 col-lg-6 col-md-6">
+                     <div class="card_dash">
+                        <div class="card_dash_left">
+                           <h5>Test Series </h5>
+                           <h2>{{ test_series_count }} </h2>
+                           <span class="crdbg_3">New Test Series - {{today_test_series_count}} </span>
+                        </div>
+                        <div class="card_dash_right">
+                           <img src="/static/student_assets/images/graduation-cap.svg" alt="" />
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-xl-3 col-lg-6 col-md-6">
+                     <div class="card_dash">
+                        <div class="card_dash_left">
+                           <h5>PDF Notes </h5>
+                           <h2>{{ notes_count }}</h2>
+                           <span class="crdbg_4">New  PDF Notes - {{today_notes_count}} </span>
+                        </div>
+                        <div class="card_dash_right">
+                           <img src="/static/student_assets/images/knowledge.svg" alt="" />
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+               <div class="review_all120 mt-30">
+                     <div class="review_item_course_title">
+                        <a>Live Classes </a>
+                     </div>
+                  </div>
+                  <div class="row">
+
+                     {% if live_classes %}
+                     {% for class in live_classes %}
+                     
+                     <div class="col-xl-4 col-lg-6 col-md-6">
+                        <a href="/student/view_live_lecture/{{cid}}/{{ class.id }}/">
+                           <div class="card_dashh">
+                              <img src="{{class.thumbnail}}" class="actives">
+                           </div>
+                           <div class="card_dash_left mt-10">
+                              <span class="crdbg_3">Polity</span> Hindi/English
+                              <h6 class="mt-10">{{ class.title }} </h6>
+                              <b class="clr_red">Lesson 1 • Started at {{ class.streaming_time }}</b>
+                              <h6 class="mt-20">By: {{ class.instructor.name }}</h6>
+                           </div>
+                        </a>
+                     </div>
+                     {% endfor %}
+                     {% else %}
+                     <div class="center mt-30 mb-30">No Live Class Yet.</div>
+                     {% endif %}
+                  
+                  
+                  
+                  </div>
+
+
+               <div class="review_all120 mt-30">
+                  <div class="review_item_course_title">
+                     <a>Course Categories </a>
+                  </div>
+               </div>
+               <div class="row">
+                  {% for content in records %}
+                 
+
+                  <div class="col-lg-4 col-md-12">
+                     <div class="top_countries mt-20">
+                        <div class="card_category">
+                        <div class="card_dash_left">
+                          <h5> {{ content.category.name }}</h5>
+                          
+                           <span class="crdbg_3">Course Overview </span>
+                        </div>
+                        <div class="card_dash_right">
+                           <img src="{{ content.category.icon_image }}" alt="" />
+                        </div>
+                     </div>
+                        <ul class="country_list">
+                           <li>
+                             
+                              <div class="country_item">
+                                 <div class="country_item_left">
+                                    <span><i class="fa fa-file-video-o" aria-hidden="true"></i>
+                                    <a href="/student/video_lectures/course/{{cid}}/category/{{content.category.id}}/"> Video Lectures</a>
+                                    </span>
+                                 </div>
+                                 <div class="country_item_right">
+                                    <span class="js-earnings__earnings t-currency">{{ content.lectures }}</span>
+                                 </div>
+                              </div>
+                           </li>
+                           <li>
+                              <div class="country_item">
+                                 <div class="country_item_left">
+                                    <span><i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                    <a href="/student/pdf_notes/course/{{cid}}/category/{{content.category.id}}/"> PDF Notes </a>
+                                    </span>
+                                 </div>
+                                 <div class="country_item_right">
+                                    <span>{{ content.notes }}</span>
+                                 </div>
+                              </div>
+                           </li>
+                           <li>
+                              <div class="country_item">
+                                 <div class="country_item_left">
+                                    <span><i class="fa fa-file-text-o" aria-hidden="true"></i>
+                                    <a href="/student/test_series/course/{{cid}}/category/{{content.category.id}}/"> Test Series </a>
+                                    </span>
+                                 </div>
+                                 <div class="country_item_right">
+                                    <span>{{ content.test_series }} </span>
+                                 </div>
+                              </div>
+                           </li>
+                        </ul>
+                     </div>
+                  </div>
+                
+                  {% endfor %}
+                
+               </div>
+
+           
+            </div>
+         </div>
+
+  {% endblock %}

@@ -1,0 +1,226 @@
+
+{% extends "base.html" %}
+         {% block content %}
+
+<!-- ============================ Hero Banner  Start================================== -->
+<section class="themes-bg" data-wow-duration="2s" data-wow-delay="0.2s">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2 col-md-12"></div>
+            <div class="col-lg-8 col-md-12 mt-20 mb-20">
+                <div class="text-center">
+                    <img src="https://grdp.co/cdn-cgi/image/quality=100,width=68,f=auto/https://gs-post-images.grdp.co/2020/3/mppsc-img1584973559379-28.png-rs-high-webp.png"
+                        class="c-img">
+                    <h4 class="text-white title mt-20 m-b10">{{ c_name }} </h4>
+                    <p class="text-bis">Start with the {{c_name}} mock test for the upcoming {{c_name}} exam at
+                        i-Magnus. Attempt {{c_name}} test series 2021 in Hindi and English. </p>
+                    <ul class="row">
+                        <li class="text-white mr-20"><i class="fa fa-check-circle" aria-hidden="true"></i> 20 Prelims &
+                            10 Mains Mock Tests</li>
+                        <li class="text-white mr-20"><i class="fa fa-check-circle" aria-hidden="true"></i> Available in
+                            Hindi & English</li>
+                        <li class="text-white mr-20"><i class="fa fa-check-circle" aria-hidden="true"></i> All mock
+                            tests with the latest pattern</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ============================ Hero Banner End ================================== -->
+<!-- ============================ Featured Courses Start ================================== -->
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 col-md-6 mb-10 mt-20">
+                <!-- <h6 class="text-primary"> UNIT-1 (History,Culture and Literature) </h6> -->
+                <p class="text-right"><a href="" class="text-success">View All </a></p>
+            </div>
+           
+            <div class="col-lg-3 col-md-6">
+                <div class="education_block_grid style_2">
+                    <div class="cources_facts mt-20">
+                        <ul class="cources_facts_list">
+                            <li class="facts-2">English &amp; Hindi </li>
+                        </ul>
+                        <p class="text-center mt-20 ht"><a>{{ category_course.course.name}} Test Series Bundle </a></p>
+                    </div>
+                    <div class="table-responsive mt-10">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Bundle Price</th>
+                                    <td>₹{{category_course.bundle_price}}</td>
+                                </tr>
+
+                                <tr>
+                                    <th scope="row">Discount Price</th>
+                                    <td>₹{{category_course.bundle_dsc_price}}</td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="education_block_footer">
+                        <div class="education_block_author">
+                        </div>
+                        <div class="lecture">
+                            <button type="button" id="rzp-button1" class="btn btn-primary btn-block btn-md"><i
+                                    class="fa fa-lock text-white"></i> Unlock Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           
+           
+
+        </div>
+       
+       
+       
+    </div>
+</section>
+<!-- ============================ Featured Courses End ================================== -->
+<!-- ========================== About Facts List Section =============================== -->
+<section class="bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="list_facts_wrap">
+                    <div class="sec-heading mb-3">
+                        <h2> Benefits of <span class="theme-cl">Test Series</span></h2>
+                    </div>
+                    <div class="list_facts">
+                        <div class="list_facts_icons"><i class="ti-desktop"></i></div>
+                        <div class="list_facts_caption">
+                            <h4>Updated Syllabus</h4>
+                            <p>Each and every aspect of the topic described in compliance with the updated syllabus.</p>
+                        </div>
+                    </div>
+                    <div class="list_facts">
+                        <div class="list_facts_icons"><i class="ti-heart"></i></div>
+                        <div class="list_facts_caption">
+                            <h4>Important Facts</h4>
+                            <p>All the relevant topics cover introduction, features, important facts and figures,
+                                analysis, etc.</p>
+                        </div>
+                    </div>
+                    <div class="list_facts">
+                        <div class="list_facts_icons"><i class="ti-harddrives"></i></div>
+                        <div class="list_facts_caption">
+                            <h4>Boost Understanding</h4>
+                            <p>The notes have a proper linkage of subjects with current affairs to boost understanding.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="list_facts_wrap_img">
+                    <img src="assets/img/ic.png" class="img-fluid" alt="" />
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<script>
+
+
+
+
+    document.getElementById('rzp-button1').onclick = function (e) {
+
+        data = { "amount": "{{category_course.bundle_dsc_price}}" }
+        fetch('/create_test_series_order_id/', {
+            method: 'POST', // or 'PUT'
+            body: JSON.stringify(data),// data can be `string` or {object}!
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+            .then(res => res.json())
+            .then(response => {
+
+                if (response.status == true) {
+                    var options = {
+                        "key": "{{razorpay_key }}", // Enter the Key ID generated from the Dashboard
+                        "amount": "{{ (category_course.bundle_dsc_price)*100 }}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                        "currency": "INR",
+                        "name": "Imagnus",
+                        "description": "Imagnus Study Material",
+                        "image": "/static/courses_assets/img/imagnus-logo.jpg",
+                        "order_id": response.order_id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                        "callback_url": "{{ app_url }}/student/my-purchases/",
+                        "prefill": {
+                            "name": "{{ student_name }}",
+                            "email": "{{ email }}",
+                            "contact": "{{ mobile }}"
+                        },
+                        "handler": function (response) {
+                            // alert(response.razorpay_payment_id);
+                            // alert(response.razorpay_order_id);
+                            // alert(response.razorpay_signature)
+
+                            var data = {
+                                "razorpay_payment_id": response.razorpay_payment_id,
+                                "razorpay_order_id": response.razorpay_order_id,
+                                "razorpay_signature": response.razorpay_signature,
+                                 "amount": "{{category_course.bundle_dsc_price}}",
+                                "series_id": "{{ category_course.id}}"
+
+
+                            }
+
+                            fetch('/test_series_place_order/', {
+                                method: 'POST',
+                                body: JSON.stringify(data),
+                                headers: {
+                                    "Content-Type": "application/json"
+                                }
+                            })
+                                .then((result) => {
+                                    return result.json();
+                                }).then((res) => {
+                                    if (res.status == true) {
+                                        window.location.href = res.redirectUrl
+                                    }
+
+                                });
+
+                        },
+                        "notes": {
+                            "address": "Razorpay Corporate Office"
+                        },
+                        "theme": {
+                            "color": "#3399cc"
+                        }
+                    };
+                } else if (response.status == false) {
+                    alert(response.detail)
+                }
+
+                var rzp1 = new Razorpay(options);
+                rzp1.open();
+                e.preventDefault();
+
+
+            })
+            .catch(error => console.error('Error:', error));
+
+
+
+
+    }
+
+    /* razorpay ends */
+
+
+
+
+
+
+</script>
+{% endblock %}

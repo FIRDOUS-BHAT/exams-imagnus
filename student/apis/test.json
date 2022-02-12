@@ -1,0 +1,51 @@
+{
+  "status": true,
+  "message": {
+    "id": "ce22d3d5-37a4-4257-a7b7-6d031d78d818",
+    "fullname": "Jitendra singh",
+    "mobile": "6260668725",
+    "email": "bhadoriyajitendrasingh10890@gmail.com",
+    "dp": "https://ik.imagekit.io/imagnus/student-avatars/default_pp.png",
+    "created_at": "2021-08-02T20:05:03.072375+05:30",
+    "subscriptions": [
+      {
+        "subscription": {
+          "id": "4c0ae595-62e1-4a27-9c59-39430e8f20cb",
+          "SubscriptionPlan": {
+            "id": "af643c2d-e5bc-4861-b4ab-56c63d656b9f",
+            "name": "Basic Package"
+          },
+          "validity": 3,
+          "plan_price": 10000,
+          "created_at": "2021-08-13T09:48:57.418942+05:30"
+        },
+        "expiry_date": "2021-12-17T15:14:26.249613+05:30",
+        "course": {
+          "id": "7ba4f817-ae2f-4849-8279-10cc3a2a1268",
+          "name": "MPPSC MAINS (HINDI)",
+          "slug": "mppsc-mains-hindi"
+        },
+        "time_left": "2486027.690359"
+      },
+      {
+        "subscription": {
+          "id": "b7406458-8b67-4da3-a199-46b87003d1a2",
+          "SubscriptionPlan": {
+            "id": "266908af-167e-4af7-b3f5-c0c4db209ad2",
+            "name": "Special Package"
+          },
+          "validity": 3,
+          "plan_price": 1000,
+          "created_at": "2021-08-13T10:00:34.279042+05:30"
+        },
+        "expiry_date": "2021-12-27T12:16:06.718286+05:30",
+        "course": {
+          "id": "eda0406b-6a2b-4f1f-bd4d-82d52f05af73",
+          "name": "Special MP GK",
+          "slug": "special-mp-gk"
+        },
+        "time_left": "3339326.84251"
+      }
+    ]
+  }
+}

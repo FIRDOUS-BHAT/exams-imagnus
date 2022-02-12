@@ -1,0 +1,107 @@
+ {% extends "base.html" %}
+         {% block content %}
+
+ <div class="clearfix"></div>
+			 <!-- ============================================================== -->
+			 <!-- Top header  -->
+			 <!-- ============================================================== -->
+
+
+			 <!-- ============================ Dashboard: My Order Start ================================== -->
+			 <section class="gray pt-0">
+				 <div class="container-fluid">
+
+					 <!-- Row -->
+					 <div class="row">
+
+						 <div class="col-lg-3 col-md-3 p-4">
+							 <div class="dashboard-navbar">
+
+								 <div class="d-user-avater">
+									 <img src="https://thumbs.dreamstime.com/b/avatar-human-man-people-person-profile-user-blue-dotted-line-icon-148749238.jpg" class="img-fluid avater" alt="" />
+									 <h4>{{ student.fullname }} </h4>
+									 <span>+91 {{ student.mobile }} </span>
+								 </div>
+
+								 <div class="d-navigation">
+									 <ul id="side-menu">
+										 <li class="active"><a href="#"><i class="ti-heart"></i>My Profile </a></li>
+										 <li><a href="/student/my-orders/"><i class="ti-shopping-cart"></i>My Order </a></li>
+										 <li><a href="#"><i class="ti-power-off"></i>Log Out </a></li>
+									 </ul>
+								 </div>
+
+							 </div>
+
+
+						 </div>
+
+						 <div class="col-lg-9 col-md-9 col-sm-12">
+
+
+							 <!-- Row -->
+							 <div class="row">
+								 <div class="col-lg-12 col-md-12 col-sm-12 pt-4">
+									 <div class="dashboard_container">
+										 <div class="dashboard_container_header">
+											 <div class="dashboard_fl_1">
+												 <h4> Profile Detail </h4>
+											 </div>
+										 </div>
+										 <div class="dashboard_container_body p-4">
+											 <!-- Basic info -->
+											 <div class="submit-section">
+												 <div class="form-row">
+
+													 <div class="form-group col-md-6">
+														 <label>Full Name: </label>
+														 <input type="text" class="form-control" placeholder="Enter full name...." value="{{ student.fullname }}" />
+													 </div>
+
+													 <div class="form-group col-md-6">
+														 <label>Email Id: </label>
+														 <input type="email" class="form-control" placeholder="abc@abc.com" value="{{ student.email }}">
+													 </div>
+
+													  <div class="form-group col-md-6">
+														 <label>Phone Number: </label>
+														 <input type="tel" class="form-control" placeholder="+91 | Phone Number" value="{{ student.mobile }}">
+													 </div>
+
+													 <!-- <div class="form-group col-md-6">
+														 <label>Student Image </label>
+														 <form action="/upload-target" class="dropzone dz-clickable primary-dropzone">
+															 <div class="dz-default dz-message">
+																 <i class="ti-gallery"></i>
+																 <span>Drag & Drop Your Image </span>
+															 </div>
+														 </form>
+													 </div> -->
+
+												 </div>
+											 </div>
+											 <!-- Basic info -->
+
+										 </div>
+
+									 </div>
+								 </div>
+							 </div>
+							 <!-- /Row -->
+
+
+							 <!-- <div class="row">
+								 <div class="form-group col-lg-12 col-md-12">
+									 <button class="btn btn-theme" type="submit">Save details </button>
+								 </div>
+							 </div> -->
+
+						 </div>
+
+					 </div>
+					 <!-- Row -->
+
+				 </div>
+			 </section>
+			 <!-- ============================ Dashboard: My Order Start End ================================== -->
+			 {% endblock %}

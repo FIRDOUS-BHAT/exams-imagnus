@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+ <!-- ============================ Dashboard: My Order Start ================================== -->
+ <!-- <div class="container-fluid gray">
+    <h4 class="pt-10">Scholarship Test - Total Questions: 100</h4><hr>
+ </div> -->
+ <div class="container-fluid">
+   <h4 class="pt-10">Welcome {{ studentName }},</h4>
+   <hr>
+</div>
+ <div class="container-fluid" id="test_series_page">
+    <div class="col-12">
+       <div class="all_msg_bg">
+          <div class="row no-gutters">
+             <div class="col-xl-9 col-lg-9 col-md-12">
+                <div class="chatbox_right">
+                   <div class="chat_header">
+                      <div class="user-status">
+                         <div class="user">
+                            <img src="https://imagnus.in/student/images/dashboard/atom.png" class="catg" alt="">
+                         </div>
+                         <p class="user-status-title"><span class="bold">Scholarship Test</span></p>
+                         <p class="user-status-tag online">Total Questions: 100 </p>
+                         <!-- <p class="user-status-tag online">Physics </p> -->
+                      </div>
+                   </div>
+                   <div class="messages-line simplebar-content-wrapper2" style="padding-right: 10px;">
+                      <div class="simplebar-content-wrapper2 activee">
+                         <div class="user-status">
+                            <div class="ques_item">
+                               <div class="ques_title">
+                                  <span>Q. <span id="new_qsn_no">1</span> :- </span>
+                                 <span id="new_qsn"> {{ qstns[0]['question'] }}</span>
+                               </div>
+                               <div class="ui form">
+                                  <div class="grouped fields">
+                                     <div class="field fltr-radio">
+                                        <ul class="no-ul-list">
+                                           <li>
+                                              <input id="a-p" class="checkbox-custom" value="opt_1" name="example1" type="radio">
+                                              <label for="a-p" class="checkbox-custom-label" id="opt_1_text">{{ qstns[0]['opt_1'] }}</label>
+                                           </li>
+                                           <li>
+                                              <input id="a-c" class="checkbox-custom" value="opt_2" name="example1" type="radio">
+                                              <label for="a-c" class="checkbox-custom-label" id="opt_2_text">{{ qstns[0]['opt_2'] }}</label>
+                                           </li>
+                                           <li>
+                                              <input id="a-b" class="checkbox-custom" value="opt_3" name="example1"type="radio">
+                                              <label for="a-b" class="checkbox-custom-label" id="opt_3_text">{{ qstns[0]['opt_3'] }}</label>
+                                           </li>
+                                           <li>
+                                              <input id="a-d" class="checkbox-custom" value="opt_4" name="example1" type="radio">
+                                              <label for="a-d" class="checkbox-custom-label" id="opt_4_text">{{ qstns[0]['opt_4'] }}</label>
+                                           </li>
+                                        </ul>
+                                     </div>
+                                  </div>
+                               </div>
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+                   <button id="submit_question" data-callback="/student/scholarship/testSeriesQstns/{{test_id}}/{{qstns[counter].id}}/{{qstns[counter+1].id}}/{{lang}}/{{counter}}/" class="btn btn-primary btn-md mb-40" title="save & next" style="margin-left: 10px;margin-bottom:20px;">Save &amp; Next</button>
+                </div>
+             </div>
+            
+                <div class="col-xl-3 col-lg-3 col-md-12">
+                <div class="msg_search">
+                   <div class="ui search focus">
+                      <div class="ui left icon input swdh11 swdh15">
+                         <div class="certi_form rght1528">
+                            <div class="test_timer_bg">
+                               <ul class="test_timer_left">
+                                  <li>
+                                     <div class="timer_time">
+                                        <h4>{{ qstn_count }} </h4>
+                                        <p>Questions </p>
+                                     </div>
+                                  </li>
+                                  <li>
+                                     <div class="timer_time">
+                                        <h4 id="timer">{{ time_duration }}:00</h4>
+                                        <p>Minutes </p>
+                                     </div>
+                                  </li>
+                               </ul>
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+                <div class="simplebar-content-wrapper">
+                   <div class="group_messages">
+                      <div class="chat__message__dt active">
+                         <div class="user-status" id="qstn_arr">
+                             {% for i in range(qstn_count) %}
+                             {% if loop.index==1 %}
+                            <button style="border:2px solid #333 !important" class="steps_btn">1</button>
+                            {% else %}
+                            <button class="steps_btn">{{ i+1 }}</button>
+                            {% endif %}
+                            {% endfor %}
+                            
+                          
+                         </div>
+                      </div>
+                   </div>
+                </div>
+                <input type="hidden" id="callback_url" name="callback-url" value="/student/scholarship/testSeriesQstns/{{test_id}}/{{qstns[counter].id}}/{{qstns[counter+1].id}}/{{lang}}/{{counter}}/">
+                    <div id="exam_summary" class="d-navigation">
+                            <ul id="side-menu">
+                                <li class="active text-center"><a href=""  data-toggle="modal" data-target="#myModal">Submit <i class="ti-ti-arrow-circle-right"></i></a></li>
+                            
+                            </ul>
+                        </div>
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
+ <!-- ============================ Dashboard: My Order Start End ================================== -->
+ <!-- Modal -->
+ <!-- Modal -->
+ <div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+       <!-- Modal content-->
+       <div class="modal-content">
+          <div class="modal-header">
+             <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body text-center">
+             <h4> Exam Summary</h4>
+             <div class="row">
+               <div class="table-responsive mt-20 mb-20">
+                                        <table class="table table-bordered">
+                                            <thead class="thead-success">
+                                                <tr>
+                                                    <th scope="col">Questions</th>
+                                                    <th scope="col">Attempted</th>
+                                                    <th scope="col">Skipped</th>
+                                                    <th scope="col">Not Visited</th>
+                                                   
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>{{qstn_count}}</td>
+                                                    <td><span id="attempted">0</span></td>
+                                                    <td><span id="skipped">0</span></td>
+                                                    <td><span id="not_seen">0</span></td>
+                                                </tr>
+                                                
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    
+             </div>
+             
+                                        <h4 class="text-center">Are you sure you want to submit?</h4>
+                                       
+                                        <form action="/submit/scholarship/testseries/" method="post">
+                                          <button type="button" data-dismiss="modal" class="btn btn-primary btn-md mr-2">No</button>
+                                          <button type="submit" class="btn btn-success btn-md">Yes</button>
+                                         </form>
+          </div>
+          
+       </div>
+    </div>
+ </div>
+ <!-- End Modal -->
+
+
+ <script>
+
+// window.onbeforeunload = function(evt) {
+//     var message = "Are you sure?";
+
+//     /* InternetExplorer/Firefox*/
+//     var e = evt || window.event
+//     e.returnValue = message
+
+//     /* WebKit browser */
+//     return message;
+// }
+
+function goFullscreen() {
+            // Must be called as a result of user interaction to work
+            mf = document.getElementById("test_series_page");
+            mf.webkitRequestFullscreen();
+            mf.style.display="";
+        }
+        function fullscreenChanged() {
+            if (document.webkitFullscreenElement == null) {
+                mf = document.getElementById("test_series_page");
+                mf.style.display="none";
+            }
+        }
+      //   document.onwebkitfullscreenchange = fullscreenChanged;
+      //   document.documentElement.onclick = goFullscreen;
+      //   document.onkeydown = goFullscreen;
+        
+        document.querySelector("input").addEventListener("keydown",function(e){
+         var charCode = e.charCode || e.keyCode || e.which;
+         if (charCode == 27){
+               alert("Escape is not allowed!");
+            return false;
+         }
+});
+
+ </script>
+
+{% endblock %}

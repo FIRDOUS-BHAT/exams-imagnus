@@ -1,0 +1,82 @@
+
+{% extends "base.html"%}
+{% block content %}
+
+
+<div class="wrapper">
+    <div class="sa4d25">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2 class="st_title"><i class="uil uil-apps"></i> Dashboard </h2>
+                </div>
+                <div class="col-xl-4 col-lg-6 col-md-6">
+                    <div class="card_dash">
+                        <div class="card_dash_left">
+                            <h5>Total Courses </h5>
+                            <h2 id="course_count">{{course_count}} </h2>
+                            <span class="crdbg_3">New 5 </span>
+                        </div>
+                        <div class="card_dash_right">
+                            <img src="images/dashboard/online-course.svg" alt="" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-6 col-md-6">
+                    <div class="card_dash">
+                        <div class="card_dash_left">
+                            <h5>Course Orders </h5>
+                            <h2 id="course_order">{{course_order}} </h2>
+                            <span class="crdbg_2">Today 25 </span>
+                        </div>
+                        <div class="card_dash_right">
+                            <img src="images/dashboard/graduation-cap.svg" alt="" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-6 col-md-6">
+                    <div class="card_dash">
+                        <div class="card_dash_left">
+                            <h5>Total Students </h5>
+                            <h2 id="student_count">{{ student_count }} </h2>
+                            <span class="crdbg_4">Today 45 </span>
+                        </div>
+                        <div class="card_dash_right">
+                            <img src="images/dashboard/knowledge.svg" alt="" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+          
+        </div>
+    </div>
+
+
+    
+        <script>
+            let ws_url = "{{ws_url}}"
+            var ws = new WebSocket(ws_url+"/ws");
+            input = ''
+            setInterval(() => ws.send('echo'), 3000)
+               
+            ws.onmessage = function(event) {
+                var messages = document.getElementById('course_count')
+                let course_order = document.getElementById('course_order')
+                let student_count = document.getElementById('student_count')
+                let data = JSON.parse(event.data)
+                
+                messages.innerHTML = data.course_count
+                course_order.innerHTML = data['course_order']
+                student_count.innerHTML = data['student_count']
+
+               
+            };
+            function sendMessage(event) {
+                var input = document.getElementById("messageText")
+                ws.send(input.value)
+                input.value = ''
+                event.preventDefault()
+            }
+        </script>
+
+{% endblock content %}

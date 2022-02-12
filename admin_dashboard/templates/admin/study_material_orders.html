@@ -1,0 +1,119 @@
+
+{% extends "base.html" %}
+{% block content %}
+
+
+
+
+ <div class="wrapper">
+    <div class="sa4d25">
+       <div class="container-fluid">
+           <div class="row">
+                <div class="col-lg-12">
+                <h2 class="st_title"><i class="uil uil-user"></i> Study Material Orders </h2>
+             </div>
+
+            <div class="col-lg-2 col-md-2 col-sm-2">
+               <div class="form-group list-filter-item">
+                  <label>Student Mobile No.</label>
+                  <input type="text" id="srch_mobile" class="form-control input-sm">
+               </div>
+            </div>
+               <div class="col-lg-2 col-md-2 col-sm-2">
+                  <div class="form-group" style="margin-top:32px">
+               
+                     <button class="btn-primary" id="search">Search</button>
+               
+                  </div>
+               </div>
+             <div class="col-lg-12 col-md-7">
+                <div  class="table mt-20">
+<table class="table ucp-table" id="example0">
+ <thead class="thead-s">
+    <tr  class="text-center">
+       <th scope="col">S No. </th>
+       <th scope="col">Student Name </th>
+       <th scope="col">Course Name </th>
+       <th scope="col">Category </th>
+       <th scope="col">Order Id </th>
+       <th scope="col">Payment Id </th>
+       <th scope="col">Amount </th>
+       <th scope="col">Created At</th>
+    </tr>
+ </thead>
+ <tbody>
+     {% for order in orders %}
+    <tr  class="text-center">
+       <td>00{{ loop.index }} </td>
+       <td><b class="course_active">{{ order.student.fullname }} <br> {{ order.student.mobile }}</b></td>
+       {% if order.student.student[0] %}
+       <td>{{ order.student.student[0].course.name }}</td>
+       {% else %}
+       <td> </td>
+       {% endif %}
+      <td>
+       {% for items in order.order_StudyMaterialOrderInstance %}
+      {{ items.item_id.name }}<br>
+       {% endfor %}
+      </td>
+       <td class="text-success">{{ order.razorpay_order_id }}/<br>{{ order.razorpay_payment_id }}</td>
+      
+       <td>Rs.{{ order.bill_amount }}</td>
+       <td>{{ order.created_at.strftime('%d %b %Y, %I:%M:%S %p') }}</td>
+    </tr>
+    {% endfor %}
+ </tbody>
+</table>
+<div class="row">
+   <div class="col-sm-12 col-md-5">
+      <div class="dataTables_info" id="example_info" role="status" aria-live="polite">Showing
+         {{((page*perPage)-perPage)+1}} to {{page*perPage}} of {{data_count}} entries
+      </div>
+   </div>
+   <div class="col-sm-12 col-md-7">
+      <div class="dataTables_paginate paging_simple_numbers" id="example_paginate">
+         <ul class="pagination">
+            <li class="paginate_button page-item previous {{'disabled' if page ==1 else ''}}" id="example_previous">
+               <a href="/admin/study_material_orders/?page={{page-1}}&perPage=10" aria-controls="example" data-dt-idx="0"
+                  tabindex="0" class="page-link">Previous</a>
+            </li>
+            <li class="paginate_button page-item active">
+               <a href="/admin/study_material_orders/?page={{page}}&perPage=10" aria-controls="example" data-dt-idx="1"
+                  tabindex="0" class="page-link">{{page}}</a>
+            </li>
+            <li class="paginate_button page-item ">
+               <a href="/admin/study_material_orders/?page={{page+1}}&perPage=10" aria-controls="example" data-dt-idx="1"
+                  tabindex="0" class="page-link">{{page+1}}</a>
+            </li>
+            <li class="paginate_button page-item ">
+               <a href="/admin/study_material_orders/?page={{page+2}}&perPage=10" aria-controls="example" data-dt-idx="1"
+                  tabindex="0" class="page-link">{{page+2}}</a>
+            </li>
+            <li class="paginate_button page-item ">
+               <a href="/admin/study_material_orders/?page={{page+3}}&perPage=10" aria-controls="example" data-dt-idx="1"
+                  tabindex="0" class="page-link">{{page+3}}</a>
+            </li>
+            <li class="paginate_button page-item">
+               <a href="/admin/study_material_orders/?page={{page+4}}&perPage=10" aria-controls="example" data-dt-idx="1"
+                  tabindex="0" class="page-link">{{page+4}}</a>
+            </li>
+            <li class="paginate_button page-item ">
+               <a href="/admin/study_material_orders/?page={{page+5}}&perPage=10" aria-controls="example" data-dt-idx="1"
+                  tabindex="0" class="page-link">{{page+5}}</a>
+            </li>
+            <li class="paginate_button page-item next" id="example_next">
+               <a href="/admin/study_material_orders/?page={{page+6}}&perPage=10" aria-controls="example" data-dt-idx="2"
+                  tabindex="0" class="page-link">Next</a>
+            </li>
+         </ul>
+      </div>
+   </div>
+</div>
+</div>
+             </div>
+             
+          </div>
+       </div>
+    </div>
+
+    {% endblock %}

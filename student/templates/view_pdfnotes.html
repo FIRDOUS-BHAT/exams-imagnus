@@ -1,0 +1,96 @@
+   {% extends "student_dashboard_base.html" %}
+         {% block content %}
+
+   <div class="sa4d25">
+            <div class="container-fluid">
+
+               <div class="row">
+                  <div class="col-12">
+                     <div class="all_msg_bg">
+                        <div class="row no-gutters">
+                            <div class="col-xl-8 col-lg-7 col-md-12">
+                              <div class="chatbox_right">
+                                 <div class="chat_header">
+                                    <div class="user-status">
+                                       <div class="user">
+                                          <img src="{{category_image}}" class="catg" alt="">
+                                       </div>
+                                       <p class="user-status-title"><span class="bold">{{category_name}}: <span id="new_title">{{ notes_list[0].title }}  </span> </span></p>
+                                       <p class="user-status-tag online">{{category_name}}</p>
+                                       <p class="user-status-tag online">{{topic_name}} </p>
+                                    </div>
+                                 </div>
+                                 <div class="messages-line simplebar-content-wrapper2 scrollstyle_4">
+                                     <div class='embed-responsive' style='padding-bottom:150%'>
+                                    <object data='URL.pdf' type='application/pdf' width='100%' height='100%'></object>
+                                    <embed id="new_url" src="{{ notes_list[0].notes_url }}" type="application/pdf">
+                                 </div>
+
+                                 </div>
+
+                              </div>
+                           </div>
+                           <div class="col-xl-4 col-lg-5 col-md-12">
+                              <div class="msg_search">
+                                 <div class="ui search focus">
+                                    <div class="ui left icon input swdh11 swdh15">
+                                       <input class="prompt srch_explore" type="text" placeholder="Search Lectures...">
+                                       <i class="uil uil-search-alt icon icon8"></i>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="simplebar-content-wrapper">
+                                 <div class="group_messages">
+                                    <div class="chat__message__dt active" data-url="{{ notes_list[0].notes_url }}"
+                                         data-title="{{ notes_list[0].title }}">
+                                       <div class="user-status" data-url="{{ notes_list[0].notes_url }}"
+                                         data-title="{{ notes_list[0].title }}">
+                                          <div class="user-avatar" data-url="{{ notes_list[0].notes_url }}"
+                                         data-title="{{ notes_list[0].title }}">
+                                             <img src="{{ notes_list[0].thumbnail }}" alt="" data-url="{{ notes_list[0].notes_url }}"
+                                         data-title="{{ notes_list[0].title }}">
+                                             <div class="msg__badge" data-url="{{ notes_list[0].notes_url }}"
+                                         data-title="{{ notes_list[0].title }}"> 1 </div>
+                                          </div>
+                                          <p class="user-status-title" data-url="{{ notes_list[0].notes_url }}"
+                                         data-title="{{ notes_list[0].title }}"><span class="bold" data-url="{{ notes_list[0].notes_url }}"
+                                         data-title="{{ notes_list[0].title }}">
+                                             {{ notes_list[0].title }}
+                                          </span></p>
+
+                                       </div>
+                                    </div>
+
+                                    {% for n in range(1, notes_list|length) %}
+                                    <div class="chat__message__dt" data-url="{{ notes_list[n].notes_url }}"
+                                         data-title="{{ notes_list[n].title }}">
+                                       <div class="user-status" data-url="{{ notes_list[n].notes_url }}"
+                                         data-title="{{ notes_list[n].title }}">
+                                          <div class="user-avatar" data-url="{{ notes_list[n].notes_url }}"
+                                         data-title="{{ notes_list[n].title }}">
+                                             <img src="{{ notes_list[n].thumbnail }}" alt="" data-url="{{ notes_list[n].notes_url }}"
+                                         data-title="{{ notes_list[n].title }}">
+                                             <div class="msg__badge" data-url="{{ notes_list[n].notes_url }}"
+                                         data-title="{{ notes_list[n].title }}"> {{n+1}}  </div>
+                                          </div>
+                                          <p class="user-status-title" data-url="{{ notes_list[n].notes_url }}"
+                                         data-title="{{ notes_list[n].title }}"><span class="bold" data-url="{{ notes_list[n].notes_url }}"
+                                         data-title="{{ notes_list[n].title }}">
+                                            {{ notes_list[n].title }}
+                                          </span></p>
+                                       </div>
+                                    </div>
+                                    {% endfor %}
+
+                                 </div>
+                              </div>
+                           </div>
+
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+    {% endblock %}

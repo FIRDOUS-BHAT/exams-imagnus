@@ -1,0 +1,403 @@
+ {% extends "base.html" %}
+         {% block content %}
+      <div class="wrapper">
+         <div class="sa4d25">
+            <div class="container">
+               <div class="row">
+                  <div class="col-lg-12">
+                     <h2 class="st_title"><i class="uil uil-book"></i> Add Subscription Plan </h2>
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-lg-4 col-md-5">
+                     <div class="top_countries mt-30">
+                        <div class="top_countries_title">
+                           <h2>Subscription Plan </h2>
+                        </div>
+                        <div class="payout_content">
+                           <div class="payout__added">
+                              <strong>Total Plan: </strong>
+                              0{{ plan_obj|length }}
+                           </div>
+                           <p><button class="payout__btn" data-toggle="modal" data-target="#preference">add subscription plan </button></p>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-lg-8 col-md-7">
+                     <div class="table-responsive mt-30">
+                        <table class="table ucp-table earning__table example">
+                           <thead class="thead-s">
+                              <tr>
+                                 <th scope="col">S No. </th>
+                                 <th scope="col">Subscription Plan </th>
+                                 <th class="text-center" scope="col"> Title </th>
+                                 <th class="text-center" scope="col"> Icon Image</th>
+                                 <th class="text-center" scope="col">Action </th>
+                              </tr>
+                           </thead>
+                           {% if plan_obj %}
+                           <tbody>
+                           {% for plan in plan_obj %}
+                              <tr>
+                                 <td>{{loop.index}} </td>
+                                 <td>{{ plan.name }} </td>
+                                 <td class="text-center">{{ plan.sub_title }}</td>
+                                 <td>
+                                   <i class="lni-layers"></i>
+                                 </td>
+                                 <td class="text-center">
+                                    <a href="#" title="Edit" class="gray-s"><i class="uil uil-edit-alt"></i></a>
+                                    <a href="#" title="Delete" class="gray-s"><i class="uil uil-trash-alt"></i></a>
+                                 </td>
+                              </tr>
+                             {% endfor %}
+                           </tbody>
+                        </table>
+                        {% else %}
+                        <p>No records available </p>
+                        {% endif %}
+                     </div>
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-lg-4 col-md-5">
+                     <div class="top_countries mt-30">
+                        <div class="top_countries_title">
+                           <h2> Packages Price</h2>
+                        </div>
+                        <div class="payout_content">
+                           <div class="payout__added">
+                              <strong>Total Packages: </strong>
+                              {{ course_plans|length }}
+                           </div>
+                           <p><button class="payout__btn" data-toggle="modal" data-target="#course">add packages price </button></p>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-lg-8 col-md-7">
+                     <div class="table-responsive mt-30">
+                        {% if course_plans %}
+                        <table class="table ucp-table earning__table example">
+                           <thead class="thead-s">
+                              <tr>
+                                 <th class="text-center" scope="col">ID </th>
+                                 <th class="text-center" scope="col">Course </th>
+                                 <th class="text-center" scope="col">Package </th>
+                                 <th class="text-center" scope="col">Validity</th>
+                                 <th class="text-center" scope="col">Price </th>
+                                 <th class="text-center" scope="col">Video Lectures </th>
+                                 <th class="text-center" scope="col">Test Series </th>
+                                 <th class="text-center" scope="col">PDF Notes </th>
+                                 <th class="text-center" scope="col">Live Classes </th>
+                                 <th class="text-center" scope="col">Action </th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                           {% for course_plan in course_plans %}
+                              <tr>
+                                 <td class="text-center">IM-00{{loop.index}}<br><small>( {{ course_plan.id }})</small></td>
+                                 <td class="text-center">{{ course_plan.course.name }} </td>
+                                 <td class="text-center">{{ course_plan.SubscriptionPlan.name }} </td>
+                                 <td class="text-center">{{ course_plan.validity }} months</td>
+                                 <td class="text-center">Rs.{{ course_plan.plan_price }}</td>
+                                 <td class="text-center">{{ course_plan.no_of_videos }}</td>
+                                 <td class="text-center">{{ course_plan.no_of_tests }}</td>
+                                 <td class="text-center">{{ course_plan.no_of_notes }}</td>
+                               
+                                 <td class="text-center">{% if course_plan.live_classes_access: %}
+                                      {{"Yes"}}
+                                    {% else %}
+                                    {{"No"}}
+                                    {% endif %}
+                                 </td>
+                                 <td class="text-center">
+                                    <a title="Edit" class="edit_subscription gray-s" data-course_name="{{ course_plan.course.name }}" data-plan_price="{{ course_plan.plan_price }}" 
+                                    data-no_of_videos="{{ course_plan.no_of_videos }}" data-no_of_tests="{{ course_plan.no_of_tests }}" data-subscription_name="{{ course_plan.SubscriptionPlan.name }}"
+                                    data-no_of_notes="{{ course_plan.no_of_notes }}"  data-plan_validity="{{ course_plan.validity }}" data-sid="{{ course_plan.id }}">
+                                    
+                                    <i class="uil uil-edit-alt" data-course_name="{{ course_plan.course.name }}" data-plan_price="{{ course_plan.plan_price }}" 
+                                    data-no_of_videos="{{ course_plan.no_of_videos }}" data-no_of_tests="{{ course_plan.no_of_tests }}" data-plan_validity="{{ course_plan.validity }}"
+                                    data-no_of_notes="{{ course_plan.no_of_notes }}" data-sid="{{ course_plan.id }}" data-subscription_name="{{ course_plan.SubscriptionPlan.name }}"></i></a>
+                                    <a title="Delete" class="gray-s"><i class="uil uil-trash-alt"></i></a>
+                                 </td>
+                              </tr>
+                           {% endfor %}
+
+                           </tbody>
+                        </table>
+                        {% else %}
+                         <p>No data available</p>
+                        {% endif %}
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <!-- Modal for add subscription plans-->
+         <div id="preference" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+               <!-- Modal content-->
+               <form method="post" action="/admin/add_subscription_plan/" enctype="multipart/form-data">
+               <div class="modal-content">
+                  <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                     margin-right: 5px;">&times;</button>
+                  <div class="modal-header">
+                     <h4 class="modal-title">Add Subscription Plan</h4>
+                  </div>
+                  <div class="modal-body">
+                     <div class="col-lg-12 col-md-6">
+                        <div class="ui search focus lbel25">
+                           <label>Subscription Name* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="text" placeholder="subscription plan name." name="plan_name" data-purpose="edit-course-title" maxlength="60" id="main[title]" required>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-lg-12 col-md-6  mt-10">
+                        <div class="ui search focus lbel25">
+                           <label> Plan Sub Title* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="text" placeholder="Insert your subscription plan title." name="sub_title" data-purpose="edit-course-title" maxlength="60" id="main[title]" required>
+                           </div>
+                        </div>
+                     </div>
+                   <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label class="form-label" for="customFile"> Icon Image*</label>
+                           <input type="text" name="icon_image" class="form-control" placeholder="enter fa fa-icon code" id="customFile">
+                        </div>
+                        <button type="submit" class="btn btn-success mt-20"> Submit Plan</button>
+                     </div>
+                     
+                  </div>
+                  <div class="modal-footer">
+                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+               </div>
+                  </form>
+            </div>
+         </div>
+
+         <!-- Modal for edit subscription plans-->
+         <div id="edit_subscription" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+               <!-- Modal content-->
+               <form method="post" action="/admin/edit_subscription_plan/" enctype="multipart/form-data">
+                  <div class="modal-content">
+                     <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                              margin-right: 5px;">&times;</button>
+                     <div class="modal-header">
+                        <h4 class="modal-title">Edit Subscription Plan</h4>
+                     </div>
+                     <input type="hidden" id="edit_sid" name="edit_sid">
+                     <div class="modal-body">
+                        <div class="col-lg-12 col-md-6">
+                           <div class="ui search focus lbel25">
+                              <label>Course Name </label>
+                              <div class="ui left icon input swdh19">
+                                 <input class="prompt srch_explore" type="text" placeholder="course name."
+                                     data-purpose="edit-course-title" maxlength="60" id="edit_course_name" readonly>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="row">
+                        <div class="col-lg-6 col-md-6  mt-10">
+                           <div class="ui search focus lbel25">
+                              <label> Subscription Name* </label>
+                              <div class="ui left icon input swdh19">
+                                 <input class="prompt srch_explore" type="text"
+                                    placeholder="Insert your subscription plan." name="sub_title"
+                                    data-purpose="edit-course-title" maxlength="60" id="edit_subscription_name" readonly required>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="col-lg-3 col-md-3 mt-10">
+                           <div class="ui search focus lbel25">
+                              <label class="form-label" for="customFile"> Plan Price*</label>
+                              <input type="digit" name="edit_plan_price" class="form-control" placeholder="enter fa fa-icon code"
+                                 id="edit_plan_price">
+                           </div>
+                        </div>
+                        <div class="col-lg-3 col-md-3 mt-10">
+                           <div class="ui search focus lbel25">
+                              <label class="form-label" for="customFile"> Discount Price*</label>
+                              <input type="digit" name="edit_discount_plan_price" class="form-control" placeholder="enter fa fa-icon code"
+                                 id="edit_plan_price">
+                           </div>
+                        </div>
+
+
+                        </div>
+
+                        <div class="row">
+                        <div class="col-lg-3 col-md-3 mt-10">
+                           <div class="ui search focus lbel25">
+                              <label class="form-label" for="customFile"> Plan Validity*</label>
+                              <input type="digit" name="edit_plan_validity" class="form-control" placeholder="enter fa fa-icon code"
+                                 id="edit_plan_validity">
+                           </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 mt-10">
+                           <div class="ui search focus lbel25">
+                              <label class="form-label" for="customFile"> Videos Count </label>
+                              <input type="digit" name="edit_no_of_videos" class="form-control" placeholder="enter fa fa-icon code"
+                                 id="edit_no_of_videos">
+                           </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 mt-10">
+                           <div class="ui search focus lbel25">
+                              <label class="form-label" for="customFile"> Notes Count </label>
+                              <input type="digit" name="edit_no_of_notes" class="form-control" placeholder="enter fa fa-icon code"
+                                 id="edit_no_of_notes">
+                           </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 mt-10">
+                           <div class="ui search focus lbel25">
+                              <label class="form-label" for="customFile"> Series Count </label>
+                              <input type="digit" name="edit_no_of_tests" class="form-control" placeholder="enter fa fa-icon code"
+                                 id="edit_no_of_tests">
+                           </div>
+                           <button type="submit" class="btn btn-success mt-20"> Submit Plan</button>
+                        </div>
+
+
+                        </div>
+         
+                     </div>
+                     <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                     </div>
+                  </div>
+               </form>
+            </div>
+         </div>
+
+         <!-- Modal for Course Subscriptions-->
+         <div id="course" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg">
+               <!-- Modal content-->
+               <div class="modal-content">
+                  <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                     margin-right: 5px;">&times;</button>
+                  <div class="modal-header">
+                     <h4 class="modal-title">Course Plans</h4>
+                  </div>
+                  <form id="" action="/admin/add_course_subscription_plan/" method="post">
+                  <div class="modal-body row" style="padding: 2rem;">
+                      <div class="col-lg-6 col-md-6 mt-10">
+                        <div class="lbel25">
+                           <label>Choose Course* </label>
+                        </div>
+                        <select name="course" class="ui hj145 dropdown cntry152 prompt srch_explore" required>
+                           <option value="">Select Course </option>
+                           {% for course in courses %}
+
+                           <option value="{{ course.id  }}">{{ course.name  }}</option>
+                            {% endfor %}
+                        </select>
+                     </div>
+                     <div class="col-lg-6 col-md-6 mt-10">
+                        <div class="lbel25">
+                           <label>Subscription Package* </label>
+                        </div>
+                        <select name="package_name" class="ui hj145 dropdown cntry152 prompt srch_explore" required>
+                           <option value="">Select Package
+                           {% for plan in plan_obj %}
+                           <option value="{{ plan.id }}">{{ plan.name }}</option>
+                          {% endfor %}
+                        </select>
+                     </div>
+                          <div class="col-lg-6 col-md-6 mt-10">
+                        <div class="lbel25">
+                           <label>Subscription Validity* </label>
+                        </div>
+                        <select name="validity" class="ui hj145 dropdown cntry152 prompt srch_explore">
+                           <option value="">Select Package
+                           <option value="1">1 Month</option>
+                           <option value="3">3 Months</option>
+                           <option value="3">4 Months</option>
+                           <option value="6">6 Months</option>
+                           <option value="9">9 Months</option>
+                           <option value="12">12 Months</option>
+                           <option value="24">24 Months</option>
+                        </select>
+                     </div>
+                     <div class="col-lg-3 col-md-3 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Package Price* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="number" placeholder="Enter package price." name="plan_price" data-purpose="edit-course-title" maxlength="60" id="main[title]" required>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-lg-3 col-md-3 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Package Discount Price* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="number" placeholder="Enter package discount price." name="discount_plan_price"
+                                 data-purpose="edit-course-title" maxlength="60" required>
+                           </div>
+                        </div>
+                     </div>
+
+                     <div class="col-lg-4 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Video Lectures(Total 150)* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="number" placeholder="Insert lectures notes." name="no_of_videos" data-purpose="edit-course-title" maxlength="60" id="main[title]" value="">
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-lg-4 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>PDF Notes(Total 120)* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="number" placeholder="Insert pdf notes count." name="no_of_notes" data-purpose="edit-course-title" maxlength="60" id="main[title]" value="">
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-lg-4 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Test Series(Total 250)* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="number" placeholder="Insert test series count." name="no_of_tests" data-purpose="edit-course-title" maxlength="60" id="main[title]" value="">
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-lg-12 col-md-6 mt-20">
+                        <div class="ui toggle checkbox _1457s2" id="live_classes_access">
+                           <input type="checkbox"  id="live_classes_checkbox" name="live_classes_access" value="0" />
+                           <label>Live Classes </label>
+                        </div>
+                        <br>
+                        <button type="submit" class="btn btn-success mt-20"> Submit Plan</button>
+
+<!--                     <div class="col-lg-12 col-md-12">-->
+<!--                                                <div class="course_des_textarea mt-10 lbel25">-->
+<!--                                                   <label>Packages Features* </label>-->
+<!--                                                   <div class="course_des_bg">-->
+<!--                                                      <div class="textarea_dt">-->
+<!--                                                         <div class="ui form swdh339">-->
+<!--                                                            <div class="field">-->
+<!--                                                               <textarea rows="3" name="plan_features" id="id_course_features" placeholder="Insert your packages features" required></textarea>-->
+<!--                                                            </div>-->
+<!--                                                         </div>-->
+<!--                                                      </div>-->
+<!--                                                   </div>-->
+<!--                                                </div>-->
+<!--                                                <button type="submit" class="btn btn-success mt-20"> Submit Course</button>-->
+<!--                                             </div>-->
+                      
+                  </div>
+                  </div>
+                  <div class="modal-footer">
+                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                  </form>
+               </div>
+            </div>
+         </div>
+        {% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+ <div class="wrapper">
+    <div class="sa4d25">
+       <div class="container-fluid">
+          <div class="row">
+             <div class="col-lg-12">
+                <h2 class="st_title"><i class="uil uil-apps"></i> Total Orders </h2>
+             </div>
+             <div class="col-xl-4 col-lg-6 col-md-6">
+                <div class="card_dash">
+                   <div class="card_dash_left">
+                      <h5>Courses Subscriptions</h5>
+                      <h2>{{ course_ord_cnt }} </h2>
+                      <a href="/admin/course_orders/?page=1&perPage=10"><span class="crdbg_3">view orders</span></a>
+                   </div>
+                   <div class="card_dash_right">
+                      <img src="/static/admin/images/dashboard/online-course.svg" alt="" />
+                   </div>
+                </div>
+             </div>
+             <div class="col-xl-4 col-lg-6 col-md-6">
+                <div class="card_dash">
+                   <div class="card_dash_left">
+                      <h5>Total Study Material </h5>
+                      <h2>{{ std_m_count }} </h2>
+                      <a href="/admin/study_material_orders/?page=1&perPage=10"><span class="crdbg_2">view orders </span></a>
+                   </div>
+                   <div class="card_dash_right">
+                      <img src="/static/admin/images/dashboard/graduation-cap.svg" alt="" />
+                   </div>
+                </div>
+             </div>
+             <div class="col-xl-4 col-lg-6 col-md-6">
+                <div class="card_dash">
+                   <div class="card_dash_left">
+                      <h5>Total Test Series  </h5>
+                      <h2>{{test_series_count}} </h2>
+                      <a href="/admin/test_series_orders/?page=1&perPage=10"><span class="crdbg_4">view orders </span></a>
+                   </div>
+                   <div class="card_dash_right">
+                      <img src="/static/admin/images/dashboard/knowledge.svg" alt="" />
+                   </div>
+                </div>
+             </div>
+          </div>
+       </div>
+       </div>
+
+       {% endblock %}
