@@ -1,4 +1,5 @@
 from functools import lru_cache
+import json
 from aiohttp import RequestInfo
 from fastapi_pagination import request
 import razorpay
@@ -773,7 +774,7 @@ async def generate_order_from_webhook(student_id, payment_id, order_id, subscrip
 async def webhook(request: Request):
     try:
         data = await request.json()
-        print(data)
+        # print(data)
         # print("============================================")
         payment_id = data['payload']['payment']['entity']['id']
         order_id = data['payload']['payment']['entity']['order_id']
@@ -821,7 +822,11 @@ async def webhook(request: Request):
                 package_mode=package_mode,
 
             )
-            for item_id in subscription_id:
+            import ast
+            
+            item_list = ast.literal_eval(subscription_id)
+            for item_id in item_list:
+                
                 item = await StudyMaterialCategories.get(id=item_id)
                 updated_at = datetime.now(tz)
 
