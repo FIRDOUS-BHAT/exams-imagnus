@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+
+ <!-- ============================ Dashboard: My Order Start ================================== -->
+ <div class="container-fluid">
+    <h4 class="pt-10">Welcome {{ studentName }},</h4>
+    <hr>
+ </div>
+ <div class="container">
+    <h4 class="text-center">Scholarship Test 2021</h4>
+    <div class="list_facts  mt-30">
+       <div class="list_facts_caption">
+          <h4>1. Total Questions and Marks</h4>
+          <p>The paper contains 100 questions which carry 100 marks.</p>
+       </div>
+    </div>
+    <div class="list_facts">
+       <div class="list_facts_caption">
+          <h4>2. Time Duration</h4>
+          <p>The duration of paper is 2 hours.</p>
+       </div>
+    </div>
+    <div class="list_facts">
+       <div class="list_facts_caption">
+          <h4>3. Marking</h4>
+          <p>No marks will be awarded or deducted for un-attempt questions.</p>
+       </div>
+    </div>
+    <div class="list_facts">
+       <div class="list_facts_caption">
+          <h4>4. Pull Options</h4>
+          <p>There would be four options for each quetions.</p>
+       </div>
+    </div>
+ </div>
+ <footer class="light-footer skin-light-footer">
+    <form action="/scholarship/test/" method="get">
+             <div class="container list_facts ">
+                <div class="mt-20">
+                   <h6>
+                      Choose langauge 
+                      <select class="btn btn-primary btn-sm" name="lang" id="language" required>
+                         <option value="">Select language </option>
+                         <option value="en">English</option>
+                         <option value="hin">Hindi</option>
+                      </select>
+                   </h6>
+                   <p><input type="checkbox" name="" required>
+                      <label class="text-primary"> The system provided to me is in proper working conditions. I have read and understood the instructions given above.</label>
+                   </p>
+                </div>
+             </div>
+    <div class="footer-bottom">
+       <div class="container-fluid">
+          <div class="row">
+             <button type="submit" class="btn btn-primary btn-block hover">I am ready to begin</button>
+          </div>
+       </div>
+    </div>
+    </form>
+ </footer>
+ <!-- ============================ Dashboard: My Order Start End ================================== -->
+ <!-- End Modal -->
+ <a id="back2Top" class="top-scroll" title="Back to top" href="#"><i class="ti-arrow-up"></i></a>
+</div>
+ {% endblock %}

@@ -1,0 +1,791 @@
+ {% extends "base.html" %}
+         {% block content %}
+          <div class="wrapper">
+             <div class = "container">
+
+         <nav aria-label = "breadcrumb">
+            <!--Add the "breadcrumb" class to ul element that represents the breadcrumb-->
+            <ul class = "breadcrumb">
+               <!--Add the ".breadcrumb-item" class to each li element within the breadcrumb-->
+               <li class = "breadcrumb-item"><a href = "#">Home</a></li>
+               <li class = "breadcrumb-item"><a href="/admin/chapters/{{ course.slug }}/{{ category.slug }}/">{{ category }}</a></li>
+               <!--Add the "active" class to li element to represent the current page-->
+               <li class = "breadcrumb-item active" aria-current = "page">{{ topic.name }}</li>
+            </ul>
+         </nav>
+      </div>
+         <div class="sa4d25">
+            <div class="container-fluid">
+               <div class="row">
+                  <div class="col-md-12">
+                     <div class="my_courses_tabs">
+                        <ul class="nav nav-pills my_crse_nav" id="pills-tab" role="tablist">
+                           <li class="nav-item">
+                              <a class="nav-link active" id="pills-my-courses-tab" data-toggle="pill" href="#pills-my-courses" role="tab" aria-controls="pills-my-courses" aria-selected="true"><i class="uil uil-book-alt"></i>Course Lectures </a>
+                           </li>
+                           <li class="nav-item">
+                              <a class="nav-link" id="pills-my-purchases-tab" data-toggle="pill" href="#pills-my-purchases" role="tab" aria-controls="pills-my-purchases" aria-selected="false"><i class="uil uil-download-alt"></i>PDF Notes </a>
+                           </li>
+                           <li class="nav-item">
+                              <a class="nav-link" id="pills-upcoming-courses-tab" data-toggle="pill" href="#pills-upcoming-courses" role="tab" aria-controls="pills-upcoming-courses" aria-selected="false"><i class="uil uil-upload-alt"></i>Test Series </a>
+                           </li>
+                        </ul>
+                        <div class="tab-content" id="pills-tabContent">
+                           <div class="tab-pane fade show active" id="pills-my-courses" role="tabpanel">
+                              <div class="row">
+                                 <div class="col-md-12">
+                                    <div class="card_dash1 mt-20">
+                                       <div class="card_dash_left1">
+                                          <h2 class="st_title">Course Lecture</h2>
+                                       </div>
+                                       <div class="card_dash_right1">
+                                          <button class="create_btn_dash" data-toggle="modal" data-target="#existing_lecture"> Add From Existing Lectures </button>
+                                       </div>
+                                       <div class="card_dash_right1">
+                                          <button class="create_btn_dash" data-toggle="modal" data-target="#lecture"> Add New Lecture </button>
+                                       </div>
+                                       <div class="card_dash_right1">
+                                          <button class="create_btn_dash" data-toggle="modal" data-target="#lecture1"> Add New Lecture </button>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="table-responsive mt-30">
+                                 {% if lectures %}
+                                 <table class="table ucp-table" id="example">
+                                    <thead class="thead-s">
+                                       <tr>
+                                          <th class="text-center" scope="col">ID </th>
+                                          <th class="cell-ta">Course  </th>
+                                          <th class="text-center" scope="col">Category </th>
+                                          <th class="text-center" scope="col">Course Content Title </th>
+                                          <th class="text-center" scope="col">Lecture Title </th>
+                                          <th class="text-center" scope="col">Lecture </th>
+                                          <th class="text-center" scope="col"> File </th>
+                                          <th class="text-center" scope="col">Controls </th>
+                                       </tr>
+
+                                    </thead>
+                                    <tbody>
+                                      {% for lec in lectures %}
+
+                                       <tr>
+                                          <td class="text-center">{{loop.index}} </td>
+                                          <td class="cell-ta">{{ lec.category_topic.category.course.name }} </td>
+                                          <td class="text-center">{{ lec.category_topic.category.category.name }} </td>
+                                          <td class="text-center">{{ lec.category_topic.topic.name }} </td>
+                                          <td class="text-center">{{ lec.title }} </td>
+                                          <td class="text-center">1 </td>
+                                          <td class="text-center"><a href="/admin/video_lecture/?link={{ lec.web_video_url }}" target="_blank">Watch it </a></td>
+                                          <td class="text-center">
+                                             <a href="#" data-title="{{ lec.title }}" data-thumbnail="{{ lec.app_thumbnail }}" data-lid="{{ lec.id}}" data-description="{{ lec.discription }}" title="Edit" class="gray-s edit_video_lecture"><i data-title="{{ lec.title }}" data-thumbnail="{{ lec.app_thumbnail }}" data-lid="{{ lec.id}}" data-description="{{ lec.discription }}" class="uil uil-edit-alt"></i></a>
+                                             <a href="#"  title="Delete" data-lid="{{ lec.id}}" class="gray-s delete_lecture"><i class="uil uil-trash-alt"></i></a>
+                                          </td>
+                                       </tr>
+                                      {% endfor %}
+
+                                    </tbody>
+                                 </table>
+                                 {% else %}
+                                 <p><center>No data available</center></p>
+
+                                  {% endif %}
+                              </div>
+                           </div>
+                           <div class="tab-pane fade" id="pills-my-purchases" role="tabpanel">
+                                <div class="row">
+                                 <div class="col-md-12">
+                                    <div class="card_dash1 mt-20">
+                                       <div class="card_dash_left1">
+                                          <h2 class="st_title">PDF Notes</h2>
+                                       </div>
+                                       <div class="card_dash_right1">
+                                          <button class="create_btn_dash" data-toggle="modal" data-target="#notes"> Add PDF Notes </button>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="table-responsive mt-30">
+                                  {% if notes %}
+                                 <table class="table ucp-table">
+                                    <thead class="thead-s">
+
+                                       <tr>
+                                          <th class="text-center" scope="col">ID </th>
+                                          <th class="cell-ta">Course  </th>
+                                          <th class="text-center" scope="col">Category </th>
+                                          <th class="text-center" scope="col">Course Content Title </th>
+                                          <th class="text-center" scope="col">Notes Title </th>
+                                          <th class="text-center" scope="col">Notes </th>
+                                          <th class="text-center" scope="col"> File </th>
+                                          <th class="text-center" scope="col">Controls </th>
+                                       </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for note in notes %}
+
+                                       <tr>
+                                          <td class="text-center">{{loop.index}}</td>
+                                          <td class="cell-ta">{{ note.category_topic.category.course.name }} </td>
+                                          <td class="text-center">{{ note.category_topic.category.category.name }} </td>
+                                          <td class="text-center">{{ note.category_topic.topic.name }} </td>
+                                          <td class="text-center">{{ note.title }} </td>
+                                          <td class="text-center">1 </td>
+                                          <td class="text-center"><a href="{{ note.notes_url }}" target="_blank">PDF </a></td>
+                                          <td class="text-center">
+                                             <a href="#" title="Edit" class="gray-s"><i class="uil uil-edit-alt"></i></a>
+                                             <a href="#" title="Delete" class="gray-s"><i class="uil uil-trash-alt"></i></a>
+                                          </td>
+                                       </tr>
+                                    {% endfor %}
+
+                                    </tbody>
+                                 </table>
+                                 {% else %}
+                                 <p><center>No data available</center></p>
+                                  {% endif %}
+                              </div>
+                           </div>
+                           <div class="tab-pane fade" id="pills-upcoming-courses" role="tabpanel">
+                                <div class="row">
+                                 <div class="col-md-12">
+                                    <div class="card_dash1 mt-20">
+                                       <div class="card_dash_left1">
+                                          <h2 class="st_title">Test Series</h2>
+                                       </div>
+                                       <div class="card_dash_right1">
+                                          <button class="create_btn_dash" data-toggle="modal" data-target="#testseries">Add Test Series  </button>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="table-responsive mt-30">
+                                 {% if test_series%}
+                                 <table class="table ucp-table">
+                                    <thead class="thead-s">
+                                       <tr>
+                                          <th class="text-center" scope="col">ID </th>
+                                          <th class="text-center" scope="col">Test series Title </th>
+                                          <th class="text-center" scope="col">Test series </th>
+                                          <th class="text-center" scope="col"> File </th>
+                                          <th class="text-center" scope="col">Controls </th>
+                                       </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for test in test_series %}
+                                       <tr>
+                                          <td class="text-center">{{ loop.index}} </td>
+                                          <td class="text-center">{{ test.title }} </td>
+                                          <td class="text-center">{{ test.series_no }} </td>
+                                          <td class="text-center"><a href="#">Optional </a></td>
+                                          <td class="text-center">
+                                             <a href="#" title="Edit" class="gray-s"><i class="uil uil-edit-alt"></i></a>
+                                             <a href="#" title="Delete" class="gray-s"><i class="uil uil-trash-alt"></i></a>
+                                          </td>
+                                       </tr>
+                                    {% endfor %}
+
+                                    </tbody>
+                                 </table>
+                                 {% else %}
+                                 <p class="text-center">No data available</p>
+                                 {% endif %}
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <!-- Modal for add new Lectures-->
+         <div id="lecture" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg">
+               <!-- Modal content-->
+               <div class="modal-content">
+                  <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                     margin-right: 5px;">&times;</button>
+                  <div class="modal-header">
+                     <h4 class="modal-title">Add Lectures</h4>
+                  </div>
+                  <form id="add_video_form" action="/admin/add_category_lecture/" method="post" enctype="multipart/form-data">
+                  <div class="modal-body">
+                     <div class="row">
+                     <div class="col-lg-4 col-md-4">
+                        <input type="hidden" name="CourseCategory" value="{{ course_category_id }}">
+                        <div class="lbel25">
+                           <label> Course* </label>
+                        </div>
+                        <input type="hidden" id="course_topic_id" name="course_topic_id" value="{{ course_topic_id }}">
+                        <input type="hidden" id="course_id" name="course_id" value="{{ course.id}}">
+                        <input type="hidden" id="category_id" name="category_id" value="{{ category.id }}">
+                        <input type="hidden" id="topic_id" name="topic_id" value="{{ topic.id }}">
+
+                         <div class="ui left icon input swdh19">
+                        <input value="{{ course.name }}" readonly class="ui hj145 dropdown cntry152 prompt srch_explore">
+                        </div>
+                     </div>
+                     <div class="col-lg-4 col-md-4">
+                        <div class="lbel25">
+                           <label> Category* </label>
+                        </div>
+                         <div class="ui left icon input swdh19">
+                        <input class="prompt srch_explore" readonly type="text" value="{{ category.name }}"/>
+                        </div>
+                     </div>
+                     <div class="col-lg-4 col-md-4">
+                        <div class="ui search focus lbel25">
+                           <label>Topic* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="text" value="{{ topic.name }}" readonly placeholder="Insert your course category title." name="title" data-purpose="edit-course-title" maxlength="60" id="main[title]" value="">
+                           </div>
+                        </div>
+                     </div>
+                        </div>
+                     <div class="row">
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Lecture Title* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" id="title" type="text" name="lecture_title" data-purpose="edit-course-title">
+                           </div>
+                        </div>
+                     </div>
+                     </div>
+                     <div class="row">
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Lecture Description* </label>
+                           <div class="ui left icon input swdh19">
+                              <textarea class="prompt srch_explore form-control" id="description" type="text" placeholder="Enter lecture description." name="video_description" data-purpose="edit-course-title"></textarea>
+                           </div>
+                        </div>
+                     </div>
+
+                        </div>
+                     <div class="row">
+                     <div class="col-lg-6 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label> Video Thumbnail* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" id="video_thumbnail" type="file" accept="image/*" name="video_thumbnail" data-purpose="edit-course-title" maxlength="1000"  value="">
+                           </div>
+                        </div>
+                     </div>
+
+                      <div class="col-lg-6 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Lecture Video URL* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="file" id="file_input" oninput="input_filename();"  name="lecture_link" accept="video/*" data-purpose="edit-course-title" >
+                           </div>
+                        </div>
+
+                        <button type="button" onclick="upload('/admin/add_category_lecture/');" id="upload_btn" class="btn btn-success mt-20"> Submit Lecture</button>
+
+                        <button class="btn btn-primary d-none" id="loading_btn" type="button" disabled>
+                           <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                           Uploading...
+                         </button>
+               
+                         <button type="button" id="cancel_btn" class="btn btn-secondary d-none">Cancel upload</button>
+               
+
+                     </div>
+                         </div>
+                  </div>
+
+                  <div id="progress_wrapper" class="d-none">
+                     <label id="progress_status"></label>
+                     <div class="progress mb-3">
+                       <div id="progress" class="progress-bar" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                     </div>
+                   </div>
+           
+                   <div id="alert_wrapper"></div>
+                     </form>
+                  <div class="modal-footer">
+                     <button type="submit" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+         <div id="lecture1" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg">
+               <!-- Modal content-->
+               <div class="modal-content">
+                  <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                     margin-right: 5px;">&times;</button>
+                  <div class="modal-header">
+                     <h4 class="modal-title">Add Lectures</h4>
+                  </div>
+                  <form id="add_video_form" action="/admin/edit_category_lecture/" method="post" enctype="multipart/form-data">
+                  <div class="modal-body">
+                     <div class="row">
+                     <div class="col-lg-4 col-md-4">
+                        <input type="hidden" name="CourseCategory" value="{{ course_category_id }}">
+                        <div class="lbel25">
+                           <label> Course* </label>
+                        </div>
+                        <input type="hidden" name="course_topic_id" value="{{ course_topic_id }}">
+                        <input type="hidden" name="course_id" value="{{ course.id}}">
+                        <input type="hidden" name="category_id" value="{{ category.id }}">
+                        <input type="hidden" name="topic_id" value="{{ topic.id }}">
+
+                         <div class="ui left icon input swdh19">
+                        <input value="{{ course.name }}" readonly class="ui hj145 dropdown cntry152 prompt srch_explore">
+                        </div>
+                     </div>
+                     <div class="col-lg-4 col-md-4">
+                        <div class="lbel25">
+                           <label> Category* </label>
+                        </div>
+                         <div class="ui left icon input swdh19">
+                        <input class="prompt srch_explore" readonly type="text" value="{{ category.name }}"/>
+                        </div>
+                     </div>
+                     <div class="col-lg-4 col-md-4">
+                        <div class="ui search focus lbel25">
+                           <label>Topic* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="text" value="{{ topic.name }}" readonly placeholder="Insert your course category title." name="title" data-purpose="edit-course-title" maxlength="60" id="main[title]" value="">
+                           </div>
+                        </div>
+                     </div>
+                        </div>
+                     <div class="row">
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <input type="hidden" id="edit_lid" name="edit_lid">
+                           <label>Lecture Title* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="text" placeholder="Enter lecture title." name="lecture_title" data-purpose="edit-course-title" id="edit_lecture_title" value="">
+                           </div>
+                        </div>
+                     </div>
+                     </div>
+                     <div class="row">
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Lecture Description* </label>
+                           <div class="ui left icon input swdh19">
+                              <textarea class="prompt srch_explore form-control" type="text" id="edit_lecture_description" placeholder="Enter lecture description." name="video_description" data-purpose="edit-course-title"></textarea>
+                           </div>
+                        </div>
+                     </div>
+
+                        </div>
+                     <div class="row">
+                     <div class="col-lg-6 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label> Video Thumbnail* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="file" accept="image/*" name="video_thumbnail" data-purpose="edit-course-title" maxlength="1000"  value="">
+                              <input type="hidden" name="video_thumbnail_url" id="video_thumbnail_url">
+                           </div>
+                        </div>
+                     </div>
+
+                      
+                         </div>
+
+                         <div class="col-lg-6 col-md-6 mt-10">
+                           <button type="submit" class="btn btn-success mt-20"> Submit </button>
+   
+                        </div>
+                  </div>
+
+<!--                       <div class="progress">-->
+<!--                         <div class="bar"></div >-->
+<!--                         <div class="percent" style="padding:10px;">0%</div >-->
+<!--                     </div>-->
+<!--                     <progress></progress>-->
+<!--                     <div id="status"></div>-->
+                     </form>
+                  <div class="modal-footer">
+                     <button type="submit" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+
+          <!-- Modal for add from existing Lectures-->
+          <div id="existing_lecture" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg">
+               <!-- Modal content-->
+               <div class="modal-content">
+                  <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                     margin-right: 5px;">&times;</button>
+                  <div class="modal-header">
+                     <h4 class="modal-title">Copy From existing Lectures</h4>
+                  </div>
+                  <form id="add_video_form" action="/admin/add_from_existing_category_lectures/" method="post" enctype="multipart/form-data">
+                  <div class="modal-body">
+                     <input type="hidden" name="course_topic_id" value="{{ course_topic_id }}">
+                        <input type="hidden" name="course_id" value="{{ course.id}}">
+                        <input type="hidden" name="existing_category_id" id="existing_category_id" name="category_id" value="{{ category.id }}">
+                        <input type="hidden" name="topic_id" value="{{ topic.id }}">
+                        <input type="hidden" name="CourseCategory" value="{{ course_category_id }}">
+                     <div class="row">
+                     <div class="col-lg-4 col-md-4">
+                        <input type="hidden" name="CourseCategory" value="{{ course_category_id }}">
+                        <div class="lbel25">
+                           <label> Course* </label>
+                        </div>
+                         <div class="ui left icon input swdh19">
+                        <input value="{{ course.name }}" readonly class="ui hj145 dropdown cntry152 prompt srch_explore">
+                        </div>
+                     </div>
+                     <div class="col-lg-4 col-md-4">
+                        <div class="lbel25">
+                           <label> Category* </label>
+                        </div>
+                         <div class="ui left icon input swdh19">
+                        <input class="prompt srch_explore" readonly type="text" value="{{ category.name }}"/>
+                        </div>
+                     </div>
+                     <div class="col-lg-4 col-md-4">
+                        <div class="ui search focus lbel25">
+                           <label>Topic* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="text" value="{{ topic.name }}" readonly placeholder="Insert your course category title." name="title" data-purpose="edit-course-title" maxlength="60" id="main[title]" value="">
+                           </div>
+                        </div>
+                     </div>
+                        </div>
+                        <div class="row mt-10 mb-10">    
+                        <h5>Existing Lectures</h5>
+                        </div>
+                        <div class="row">
+                           <div class="col-lg-3 col-md-4">
+                             
+                              <div class="lbel25">
+                                 <label> Choose From Course* </label>
+                              </div>
+                               <div class="ui left icon input swdh19">
+                              <select id="existing_courses" name="existing_courses" class="form-control hj145 dropdown cntry152 prompt srch_explore" required>
+                                 <option value="">Select course</option>
+                                 {% if existed_courses %}
+                                    {% for course in existed_courses %}
+                                    <option value="{{ course.course.id }}">{{ course.course.name }}</option>
+                                    {% endfor %}
+                                 {% endif %}
+                                 </select>
+                              </div>
+                           </div>
+                           <div class="col-lg-3 col-md-4">
+                              <div class="lbel25">
+                                 <label> Category* </label>
+                              </div>
+                               <div class="ui left icon input swdh19">
+                              <input class="prompt form-control srch_explore" id="existing_course_category" type="text" value="{{ category.name }}"/>
+                              </div>
+                           </div>
+                           <div class="col-lg-3 col-md-4">
+                              <div class="ui search focus lbel25">
+                                 <label>Topic* </label>
+                                 <div class="ui left icon input swdh19">
+                                 <select class="prompt form-control srch_explore" name="exiting_category_topics" id="existing_course_topics">
+                                   
+                                 </select>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="col-lg-3 col-md-4">
+                              <div class="ui search focus lbel25">
+                                 <label>Topic Lectures* </label>
+                                 <div class="ui left icon input swdh19">
+                                 <select class="prompt form-control srch_explore" name="exiting_category_topics_lectures" id="exiting_category_topics_lectures">
+                                   
+                                 </select>
+                                 </div>
+                              </div>
+                           </div>
+
+                              </div>
+                     <div class="row">
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Lecture Title* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="text" id="lecture_title" placeholder="Enter lecture title." name="lecture_title" data-purpose="edit-course-title" maxlength="60" id="main[title]" value="">
+                           </div>
+                        </div>
+                     </div>
+                     </div>
+                     <div class="row">
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Lecture Description* </label>
+                           <div class="ui left icon input swdh19">
+                              <textarea class="prompt srch_explore form-control" type="text" id="video_description" placeholder="Enter lecture description." name="video_description" data-purpose="edit-course-title"></textarea>
+                           </div>
+                        </div>
+                     </div>
+
+                        </div>
+                     <div class="row">
+                     <div class="col-lg-6 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label> Video Thumbnail* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="file" accept="image/*" name="video_thumbnail" data-purpose="edit-course-title" maxlength="1000"  value="">
+                           </div>
+                        </div>
+                     </div>
+
+                         </div>
+                         <button type="submit"  class="btn btn-success mt-20"> Submit Lecture</button>
+
+                  </div>
+
+<!--                       <div class="progress">-->
+<!--                         <div class="bar"></div >-->
+<!--                         <div class="percent" style="padding:10px;">0%</div >-->
+<!--                     </div>-->
+<!--                     <progress></progress>-->
+<!--                     <div id="status"></div>-->
+                     </form>
+                  <div class="modal-footer">
+                     <button type="submit" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+
+
+
+<!-- Category Notes -->
+          <div id="notes" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg">
+               <!-- Modal content-->
+               <div class="modal-content">
+                  <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                     margin-right: 5px;">&times;</button>
+                  <div class="modal-header">
+                     <h4 class="modal-title">Add Notes</h4>
+                  </div>
+                  <form action="/admin/add_category_notes/" method="post" enctype="multipart/form-data">
+                  <div class="modal-body">
+                     <div class="col-lg-12 col-md-6">
+                        <input type="hidden" name="CourseCategory" value="{{ course_category_id }}">
+                        <div class="lbel25">
+                           <label> Course* </label>
+                        </div>
+                        <input type="hidden" name="course_topic_id" value="{{ course_topic_id }}">
+                        <input type="hidden" name="course_id" value="{{ course.id}}">
+                        <input type="hidden" name="category_id" value="{{ category.id }}">
+                        <input type="hidden" name="topic_id" value="{{ topic.id }}">
+
+                         <div class="ui left icon input swdh19">
+                        <input value="{{ course.name }}" readonly class="ui hj145 dropdown cntry152 prompt srch_explore">
+                        </div>
+
+                     </div>
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="lbel25">
+                           <label> Category* </label>
+                        </div>
+                         <div class="ui left icon input swdh19">
+                        <input class="prompt srch_explore" readonly type="text" value="{{ category.name }}"/>
+                        </div>
+                     </div>
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Course Content Title* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="text" value="{{ topic.name }}" readonly placeholder="Insert your course category title." name="title" data-purpose="edit-course-title" maxlength="60" id="main[title]" value="">
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Notes Title* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="text" placeholder="Enter title." name="notes_title" data-purpose="edit-course-title" maxlength="60" id="main[title]" value="" required>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="row">
+                     <div class="col-lg-6 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Upload Thumbnail* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="file" name="notes_thumbnail" accept="image/*" data-purpose="edit-course-title" maxlength="1000" id="main[title]" value="" required>
+
+                           </div>
+                        </div>
+
+                     </div>
+
+                         <div class="col-lg-6 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Upload Notes File* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="file" name="lecture_note" accept="application/pdf" data-purpose="edit-course-title" maxlength="1000" id="main[title]" value="" required>
+                           </div>
+                        </div>
+                        <button type="submit" class="btn btn-lg btn-success mt-20"> Submit</button>
+                     </div>
+                        </div>
+                  </div>
+                     </form>
+                  <div class="modal-footer">
+                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+             <!--Add test series model -->
+
+  <div id="testseries" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg">
+               <!-- Modal content-->
+               <div class="modal-content">
+                  <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                     margin-right: 5px;">&times;</button>
+                  <div class="modal-header">
+                     <h4 class="modal-title">Add Test Series</h4>
+                  </div>
+                  <form action="/admin/add_category_test_series/" method="post" enctype="multipart/form-data">
+                  <div class="modal-body">
+                     <div class="row">
+                     <div class="col-lg-6 col-md-3">
+                        <input type="hidden" name="CourseCategory" value="{{ course_category_id }}">
+                        <div class="lbel25">
+                           <label> Course* </label>
+                        </div>
+                        <input type="hidden" name="course_topic_id" value="{{ course_topic_id }}">
+                        <input type="hidden" name="course_id" value="{{ course.id}}">
+                        <input type="hidden" name="category_id" value="{{ category.id }}">
+                        <input type="hidden" name="topic_id" value="{{ topic.id }}">
+
+                         <div class="ui left icon input swdh19">
+                        <input value="{{ course.name }}" readonly class="ui hj145 dropdown cntry152 prompt srch_explore">
+                        </div>
+
+                     </div>
+                     <div class="col-lg-6 col-md-3">
+                        <div class="lbel25">
+                           <label> Category* </label>
+                        </div>
+                         <div class="ui left icon input swdh19">
+                        <input class="prompt srch_explore" readonly type="text" value="{{ category.name }}"/>
+                        </div>
+                      </div>
+                     </div>
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Course Content Title* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="text" value="{{ topic.name }}" readonly placeholder="Insert your course category title." name="title" data-purpose="edit-course-title" maxlength="60" id="main[title]" value="">
+
+                           </div>
+                        </div>
+                     </div>
+                     <div class="row">
+                     <div class="col-lg-6 col-md-3 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Test Series Title* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="text" placeholder="Enter title." name="test_series_title" data-purpose="edit-course-title" maxlength="60" id="main[title]" value="" required>
+
+                           </div>
+                        </div>
+                     </div>
+                      <div class="col-lg-6 col-md-3 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Series No. </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="number" placeholder="Enter series no." name="series_no" data-purpose="edit-course-title" maxlength="60" required>
+
+                           </div>
+                        </div>
+                     </div>
+                        </div>
+                     <div class="row">
+                      <div class="col-lg-6 col-md-3 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Time Duration in minutes </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="number" placeholder="time in minutes" name="time_duration" data-purpose="edit-course-title" maxlength="60" required>
+
+                           </div>
+                        </div>
+                     </div>
+                          <div class="col-lg-6 col-md-3 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Total Marks </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="number" placeholder="how many marks?" name="marks" data-purpose="edit-course-title" maxlength="60" required>
+
+                           </div>
+                        </div>
+                     </div>
+
+                        </div>
+                     <div class="row">
+
+                     <div class="col-lg-6 col-md-3 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Upload test series Thumbnail* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="file" name="test_series_thumbnail" accept="image/*"
+                                     data-purpose="edit-course-title" maxlength="1000" value="" required>
+
+                           </div>
+                        </div>
+
+                     </div>
+
+                        <div class="col-lg-6 col-md-3 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Upload test series File* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="file" name="lecture_test_series" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" data-purpose="edit-course-title" maxlength="1000" id="main[title]" value="" required>
+
+                           </div>
+                        </div>
+                        <button type="submit" class="btn-lg btn-success mt-20"> Submit</button>
+                     </div>
+
+                  </div>
+                     </form>
+                  <div class="modal-footer">
+                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+
+
+         <div id="lecture_delete_modal" class="modal fade" role="dialog" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog">
+               <!-- Modal content-->
+               <div class="modal-content">
+                  <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                     margin-right: 5px;">×</button>
+                  <div class="modal-header">
+                     <h5 class="modal-title">Delete Live Class</h5>
+                  </div>
+                  <form method="post" action="/admin/delete_live_classs/">
+                  <div class="modal-body ">
+                     <div class="col-lg-12 col-md-6">
+                        <p>Are you sure to delete this class?</p>
+                        <input type="hidden" name="live_class_id" id="live_class_id" required>
+                        <button type="submit" class="btn btn-success">  Yes</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                     </div>
+                  </div>
+                </form>
+                   </div>
+                  </div>
+                 
+               </div>
+
+         {% endblock %}

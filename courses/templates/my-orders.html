@@ -1,0 +1,101 @@
+ {% extends "base.html" %}
+         {% block content %}
+
+ 		<div class="clearfix"></div>
+
+			 <!-- ============================ Dashboard: My Order Start ================================== -->
+			 <section class="gray pt-0">
+				 <div class="container-fluid">
+
+					<div class="row">
+						<div class="col-lg-12 col-md-12 col-sm-12 pt-4 pb-2">
+						   <nav aria-label="breadcrumb">
+							  <ol class="breadcrumb bg-white">
+								 <li class="breadcrumb-item"><a href="#">Home</a></li>
+								 <li class="breadcrumb-item active" aria-current="page">Payment History</li>
+							  </ol>
+						   </nav>
+						</div>
+					 </div>
+
+					 <!-- Row -->
+					 <div class="row">
+
+						
+						<div class="container">
+						 <div class="col-lg-12 col-md-9 col-sm-12">
+
+
+							 <!-- Row -->
+							<div class="row">
+								 <div class="col-lg-12 col-md-12 col-sm-12 pt-4">
+									 <div class="dashboard_container">
+										 <div class="dashboard_container_header">
+											 <div class="dashboard_fl_1">
+												 <h4>View Order </h4>
+											 </div>
+										 </div>
+										 <div class="dashboard_container_body">
+											 <div class="table-responsive">
+												 <table class="table">
+													 <thead class="thead-dark">
+														 <tr>
+															 <th scope="col">Order </th>
+															 <th scope="col">Date </th>
+															 <th scope="col">Course Name</th>
+															 <th scope="col">Packages/Study Material</th>
+															 <th scope="col">Total </th>
+															 <th scope="col">Status </th>
+														 </tr>
+													 </thead>
+													 <tbody>
+														 {% if orders %}
+														 {% for order in orders %}
+														 <tr>
+															 <th scope="row">#IMG00{{ loop.index }} </th>
+															 <td>{{ order.created_at.strftime('%d %b %Y, %I:%M:%S %p') }} </td>
+															 <td>{{ order.subscription.course.name }} </td>
+															 <td>{{ order.subscription.SubscriptionPlan.name }} </td>
+															 <td>Rs. {{ order.bill_amount }}.00 </td>
+															 <td><span class="payment_status complete">Completed </span></td>
+
+														 </tr>
+														 {% endfor %}
+														 {% endif %}
+														 {% if stdMaterialOrders%}
+														 {% for order in stdMaterialOrders %} 
+														 <tr>
+															<th scope="row">#IMG00{{ loop.index }} </th>
+															<td>{{ order.created_at.strftime('%d %b %Y, %I:%M:%S %p') }} </td>
+															<td>{{ order.item_id.course.course.name }} </td>
+															<td>{{ order.item_id.name }} </td>
+															<td>Rs. {{ order.bill_amount }}.00 </td>
+															<td><span class="payment_status complete">Completed </span></td>
+
+														</tr>
+														
+														 {% endfor %}
+														 {% endif %}
+
+														 
+
+													 </tbody>
+												 </table>
+											 </div>
+										 </div>
+
+									 </div>
+								 </div>
+							 </div>
+							 <!-- /Row -->
+
+						 </div>
+						 </div>
+
+					 </div>
+					 <!-- Row -->
+
+				 </div>
+			 </section>
+			 <!-- ============================ Dashboard: My Order Start End ================================== -->
+			 {% endblock %}

@@ -1,0 +1,47 @@
+ {% extends "student_dashboard_base.html" %}
+         {% block content %}
+
+
+
+         <div class="sa4d25">
+            <div class="container-fluid">
+               <div class="row">
+                  <div class="col-lg-12 title-icon">
+                     <h3 class="title"><i class="uil-telescope"></i>Live Classes </h3>
+                  </div>
+               </div>
+               <div class="row">
+               {% if live_classes %}
+                {% for class in live_classes %}
+
+                  <div class="col-xl-4 col-lg-6 col-md-6">
+                    <a href="/student/view_live_lecture/{{cid}}/{{ class.id }}/">
+                     <div class="card_dashh">
+                           <img src="{{class.thumbnail}}" class="actives">
+                     </div>
+                     <div class="card_dash_left mt-10">
+                         <span class="crdbg_3">Polity</span> Hindi/English
+                           <h6 class="mt-10">{{ class.title }} </h6>
+                           <b class="clr_red">Lesson 1 • Started at {{ class.streaming_time }}</b>
+                           <h6 class="mt-20">By: {{ class.instructor.name }}</h6>
+                        </div>
+                    </a>
+                  </div>
+                  {% endfor %}
+
+               {% else %} 
+               <div class="center">No Live Class Yet.</div>  
+               {% endif %}
+
+
+               </div>
+               <!-- <div class="row mt-30">
+                  <div class="col-lg-12 title-icon">
+                     <h3 class="title"><i class="uil uil-play"></i>Previous Classes </h3>
+                  </div>
+               </div> -->
+             
+            </div>
+         </div>
+
+       {% endblock %}

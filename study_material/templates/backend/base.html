@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+     <title>Admin Login || I-Magnus Academy </title>
+     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     <meta charset="UTF-8" />
+     <!-- External CSS libraries -->
+
+     <!-- Favicon icon -->
+     <link rel="shortcut icon" href="/static/student_assets/images/fav.png" type="image/x-icon" />
+
+
+     <!-- Custom Stylesheet -->
+<!--     <link type="text/css" rel="stylesheet" href="/static/student_assets/css/style.css" />-->
+
+     <link rel="icon" type="image/png" href="/static/admin/images/fav.png" />
+      <link href="/static/admin/vendor/unicons-2.0.1/css/unicons.css" rel='preload' as="style"/>
+      <link href="/static/admin/css/vertical-responsive-menu1.min.css" rel="preload" as="style"/>
+      <link href="/static/admin/css/instructor-dashboard.css" rel="preload" as="style"/>
+      <link href="/static/admin/css/instructor-responsive.css" rel="preload" as="style"/>
+      <link href="/static/admin/css/night-mode.css" rel="preload" as="style"/>
+      <link href="/static/admin/css/jquery-steps.css" rel="preload" as="style"/>
+      <link href="/static/admin/vendor/fontawesome-free/css/all.min.css" rel="preload" as="style"/>
+      <link href="/static/admin/vendor/OwlCarousel/assets/owl.carousel.css" rel="preload" as="style"/>
+      <link href="/static/admin/vendor/OwlCarousel/assets/owl.theme.default.min.css" rel="preload" as="style"/>
+      <link href="/static/admin/vendor/bootstrap/css/bootstrap.min.css" rel="preload" as="style"/>
+      <link rel="preload" type="text/css" href="/static/admin/vendor/semantic/semantic.min.css" as="style"/>
+
+
+      <link href="/static/admin/vendor/unicons-2.0.1/css/unicons.css" rel='stylesheet' />
+      <link href="/static/admin/css/vertical-responsive-menu1.min.css" rel="stylesheet" />
+      <link href="/static/admin/css/instructor-dashboard.css" rel="stylesheet" />
+      <link href="/static/admin/css/instructor-responsive.css" rel="stylesheet" />
+      <link href="/static/admin/css/night-mode.css" rel="stylesheet" />
+      <link href="/static/admin/css/jquery-steps.css" rel="stylesheet" />
+      <link href="/static/admin/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" />
+      <link href="/static/admin/vendor/OwlCarousel/assets/owl.carousel.css" rel="stylesheet" />
+      <link href="/static/admin/vendor/OwlCarousel/assets/owl.theme.default.min.css" rel="stylesheet"/>
+      <link href="/static/admin/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+      <link rel="stylesheet" type="text/css" href="/static/admin/vendor/semantic/semantic.min.css" />
+     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css" rel="stylesheet" />
+      <link href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+
+   </head>
+   <body>
+      <header class="header clearfix">
+         <div class="main_logo" id="logo">
+            <a href="index"><img src="/static/admin/images/logo.png" class="logo" alt=""></a>
+            <a href="index"><img class="logo-inverse logo" src="/static/admin/images/logo.png" alt="" /></a>
+         </div>
+         <button type="button" id="toggleMenu" class="toggle_menu">
+         <i class='uil uil-bars'></i></button>
+         <button id="collapse_menu" class="collapse_menu">
+         <i class="uil uil-bars collapse_menu--icon "></i>
+         <span class="collapse_menu--label"></span>
+         </button>
+         <div class="header_right">
+            <ul>
+               <li class="ui dropdown">
+                  <a href="#" class="option_links" title="Notifications"><i class='uil uil-bell'></i><span class="noti_count">3 </span></a>
+                  <div class="menu dropdown_mn">
+                     <a href="#" class="channel_my item">
+                        <div class="profile_link">
+                         
+                           <div class="pd_content">
+                              <h6>Rock William </h6>
+                              <p>Like Your Comment On _____  <strong>How to create sidebar ____ </strong>. </p>
+                              <span class="nm_time">2 min ago </span>
+                           </div>
+                        </div>
+                     </a>
+                     <a href="#" class="channel_my item">
+                        <div class="profile_link">
+                           <img src="/static/admin/images/left-imgs/img-2.jpg" alt="" />
+                           <div class="pd_content">
+                              <h6>Jassica Smith </h6>
+                              <p>Added New Review In _____  <strong>Full Stack PHP Developer </strong>. </p>
+                              <span class="nm_time">12 min ago </span>
+                           </div>
+                        </div>
+                     </a>
+                     <a href="#" class="channel_my item">
+                        <div class="profile_link">
+                           <img src="/static/admin/images/left-imgs/img-9.jpg" alt="" />
+                           <div class="pd_content">
+                              <p> Your Membership Approved  <strong>Upload Video </strong>. </p>
+                              <span class="nm_time">20 min ago </span>
+                           </div>
+                        </div>
+                     </a>
+                     <a class="vbm_btn" href="instructor_notifications">View All  <i class='uil uil-arrow-right'></i></a>
+                  </div>
+               </li>
+               <li class="ui dropdown">
+                  <a href="#" class="opts_account" title="Account">
+                  <img src="/static/admin/images/hd_dp.jpg" alt="" />
+                  </a>
+                  <div class="menu dropdown_account">
+                     <div class="channel_my">
+                        <div class="profile_link">
+                           <img src="/static/admin/images/hd_dp.jpg" alt="" />
+                           <div class="pd_content">
+                              <div class="rhte85">
+                                 <h6>Joginder Singh </h6>
+                                 <div class="mef78" title="Verify">
+                                    <i class='uil uil-check-circle'></i>
+                                 </div>
+                              </div>
+                              <span><a href="../../cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2e494f434c4142171a1d6e49434f4742004d4143">[email&#160;protected] </a></span>
+                           </div>
+                        </div>
+                        <a href="my_instructor_profile_view" class="dp_link_12">View Instructor Profile </a>
+                     </div>
+                     <div class="night_mode_switch__btn">
+                        <a href="#" id="night-mode" class="btn-night-mode">
+                        <i class="uil uil-moon"></i> Night mode
+                        <span class="btn-night-mode-switch">
+                        <span class="uk-switch-button"></span>
+                        </span>
+                        </a>
+                     </div>
+                     <a href="setting" class="item channel_item">Setting </a>
+                     <a href="/admin/logout/" class="item channel_item">Sign Out </a>
+                  </div>
+               </li>
+            </ul>
+         </div>
+      </header>
+      <nav class="vertical_nav">
+         <div class="left_section menu_left" id="js-menu">
+            <div class="left_section">
+               <ul>
+                  <li class="menu--item">
+                     <a href="/admin/" class="menu--link" title="Dashboard">
+                     <i class="uil uil-apps menu--icon"></i>
+                     <span class="menu--label">Dashboard </span>
+                     </a>
+                  </li>
+                  <li class="menu--item">
+                     <a href=" /admin/orders/" class="menu--link" title="Create Course">
+                     <i class='uil uil-plus-circle menu--icon'></i>
+                     <span class="menu--label">Orders </span>
+                     </a>
+                  </li>
+                  <li class="menu--item">
+                     <a href="/admin/create_course/" class="menu--link" title="Create Course">
+                     <i class='uil uil-plus-circle menu--icon'></i>
+                     <span class="menu--label">Create Course </span>
+                     </a>
+                  </li>
+                  <li class="menu--item">
+                     <a href="/admin/course_category/" class="menu--link" title="Courses">
+                     <i class='uil uil-book-alt menu--icon'></i>
+                     <span class="menu--label">Course Category</span>
+                     </a>
+                  </li>
+                  <li class="menu--item">
+                     <a href="/admin/course_overview/" class="menu--link " title="Add Course Overview">
+                     <i class='uil uil-copy-landscape menu--icon'></i>
+                     <span class="menu--label">Add Course Overview</span>
+                     </a>
+                  </li>
+                  <li class="menu--item">
+                     <a href="/admin/student/registrations/" class="menu--link" title="Messages">
+                     <i class='uil uil-user menu--icon'></i>
+                     <span class="menu--label">Registrations </span>
+                     </a>
+                  </li>
+
+                   <li class="menu--item ">
+                     <a href="/admin/subscription_plan/" class="menu--link" title="Add Subscription Plan">
+                     <i class='uil uil-plus-circle menu--icon'></i>
+                     <span class="menu--label">Subscription Plans </span>
+                     </a>
+                  </li>
+                  <li class="menu--item">
+                     <a href="#" class="menu--link" title="Messages">
+                     <i class='uil uil-comments menu--icon'></i>
+                     <span class="menu--label">Messages </span>
+                     </a>
+                  </li>
+                  <li class="menu--item">
+                     <a href="/admin/student_enquiries/" class="menu--link" title="Messages">
+                     <i class='uil uil-users-alt menu--icon'></i>
+                     <span class="menu--label">Enquiries </span>
+                     </a>
+                  </li>
+                  <li class="menu--item">
+                     <a href="#" class="menu--link" title="Notifications">
+                     <i class='uil uil-bell menu--icon'></i>
+                     <span class="menu--label">Notifications </span>
+                     </a>
+                  </li>
+                  <li class="menu--item">
+                     <a href="#" class="menu--link" title="Reviews">
+                     <i class='uil uil-star menu--icon'></i>
+                     <span class="menu--label">Reviews </span>
+                     </a>
+                  </li>
+                  <li class="menu--item">
+                     <a href="/admin/add_study_material/" class="menu--link" title="Reviews">
+                     <i class='uil uil-star menu--icon'></i>
+                     <span class="menu--label">Study Material </span>
+                     </a>
+                  </li>
+
+               </ul>
+            </div>
+            <div class="left_section pt-2">
+               <ul>
+                  <li class="menu--item">
+                     <a href="#" class="menu--link" title="Setting">
+                     <i class='uil uil-cog menu--icon'></i>
+                     <span class="menu--label">Setting </span>
+                     </a>
+                  </li>
+                  <li class="menu--item">
+                     <a href="#" class="menu--link" title="Send Feedback">
+                     <i class='uil uil-comment-alt-exclamation menu--icon'></i>
+                     <span class="menu--label">Send Feedback </span>
+                     </a>
+                  </li>
+               </ul>
+            </div>
+         </div>
+      </nav>
+
+     {% block content %}{% endblock %}
+
+
+           <!-- Modal for add preference-->
+         <div id="material" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+               <!-- Modal content-->
+               <div class="modal-content">
+                  <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                     margin-right: 5px;">&times;</button>
+                  <div class="modal-header">
+                     <h4 class="modal-title">Add Study Material</h4>
+                  </div>
+                   <form method="post" action="/admin/post_study_material_name/">
+                  <div class="modal-body">
+                     <div class="col-lg-12 col-md-6">
+                        <div class="ui search focus lbel25">
+                           <label>Study Material* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="text" placeholder="Enter your study material title." required name="sname" data-purpose="edit-course-title" maxlength="60" id="main[title]" value="">
+                              <div class="badge_num">60 </div>
+                           </div>
+                        </div>
+                        <button type="submit" class="btn btn-success mt-20"> Submit</button>
+                     </div>
+                  </div>
+                       </form>
+                  <div class="modal-footer">
+                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+          <!-- Modal for add courses-->
+         <div id="course" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+               <!-- Modal content-->
+               <div class="modal-content">
+                  <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                     margin-right: 5px;">&times;</button>
+                  <div class="modal-header">
+                     <h4 class="modal-title">Add Course</h4>
+                  </div>
+                  <form action="/admin/add_study_material_course/" method="post" enctype="multipart/form-data">
+                  <div class="modal-body">
+                     <div class="col-lg-12 col-md-6">
+                        <div class="lbel25">
+                           <label>Study Material* </label>
+                        </div>
+                        <select name="study_material_id" required class="ui hj145 dropdown cntry152 prompt srch_explore">
+                           <option value="">Select Study Material </option>
+                            {% for name in study_material_names %}
+                           <option value="{{ name.id }}">{{ name.name }}</option>
+                            {% endfor %}
+
+                        </select>
+                     </div>
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Course Name* </label>
+                           <div class="ui left icon input swdh19">
+                           <select name="course_id" class="ui hj145 dropdown cntry152 prompt srch_explore">
+                           <option value="">Select Course Name </option>
+                           {% for course in courses %}
+                           <option value="{{ course.id }}">{{ course.name }} </option>
+                            {% endfor %}
+                        </select>
+
+                           </div>
+                        </div>
+                     </div>
+                     <div class="row">
+                        <div class="col-lg-6 col-md-6 mt-10">
+                           <div class="ui search focus lbel25">
+                              <label class="form-label" for="customFile"> Bundle Price*</label>
+                              <input type="digit" placeholder="Enter price" name="bundle_price" class="form-control" required />
+                           </div>
+                        
+                        </div>
+
+
+                        <div class="col-lg-6 col-md-6 mt-10">
+                           <div class="ui search focus lbel25">
+                              <label class="form-label" for="customFile">  Discount Bundle Price*</label>
+                              <input type="digit" placeholder="Enter discounted price" name="discount_price" class="form-control" required />
+                           </div>
+                        
+                        </div>
+                      </div>
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label class="form-label" for="customFile"> Course Image*</label>
+                           <input type="file" name="icon_image" accept="image/*" class="form-control btn btn-danger"  />
+                        </div>
+                        <button type="submit" class="btn btn-success mt-20"> Submit Course</button>
+                     </div>
+
+    
+                  </div>
+                  </form>
+                  <div class="modal-footer">
+                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+
+        
+
+
+    <footer class="footer mt-40">
+            <div class="container-fluid">
+               <div class="row">
+                  <div class="col-lg-12">
+                     <div class="footer_bottm">
+                        <div class="row">
+                           <div class="col-md-6">
+                              <ul class="fotb_left">
+                                 <li>
+                                    <a href="index">
+                                       <div class="footer_logo">
+                                          <img src="/static/admin/images/fav.png" alt="" />
+                                       </div>
+                                    </a>
+                                 </li>
+                                 <li>
+                                    <p>© 2021  <strong>Imagnus Academy </strong>. All Rights Reserved. </p>
+                                 </li>
+                              </ul>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </footer>
+
+
+
+      </div>
+
+      <!-- Modal for add courses-->
+      <div id="categories" class="modal fade" role="dialog">
+         <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+               <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                           margin-right: 5px;">&times;</button>
+               <div class="modal-header">
+                  <h4 class="modal-title">Add Categories</h4>
+               </div>
+               <form action="/admin/add_study_material_category/" method="post" enctype="multipart/form-data">
+                  <div class="modal-body">
+                     <div class="col-lg-12 col-md-6">
+                        <div class="lbel25">
+                           <label>Study Material* </label>
+                        </div>
+                        <select id="study_material_id" name="study_material_id"
+                           class="study_material_id ui hj145 dropdown cntry152 prompt srch_explore">
+                           <option value="">Select Study Material </option>
+                           {% for name in study_material_names %}
+                           <option value="{{ name.id }}" {{ 'disabled' if loop.index == 2 else ''}}>{{ name.name }}</option>
+                           {% endfor %}
+      
+                        </select>
+                     </div>
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="lbel25">
+                           <label>Course Name* </label>
+                        </div>
+                        <select name="course_id" id="course_id" class="course_id ui hj145 dropdown cntry152 prompt srch_explore">
+                           <option value="">Select Course Name </option>
+      
+                        </select>
+                     </div>
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Category Name* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="text" required
+                                 placeholder="Enter course category title." name="category_name"
+                                 data-purpose="edit-course-title" maxlength="60">
+                              <div class="badge_num">60 </div>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Chapter Name* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="text" required
+                                 placeholder="Enter course category title." name="chapter_name"
+                                 data-purpose="edit-course-title" maxlength="60">
+                              <div class="badge_num">60 </div>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Original Price* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="number" placeholder="Enter category original price."
+                                 name="org_price" data-purpose="edit-course-title" maxlength="60">
+                              <div class="badge_num">60 </div>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Discount Price* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="number" placeholder="Enter category discount price."
+                                 name="d_price" data-purpose="edit-course-title" maxlength="60">
+                              <div class="badge_num">60 </div>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label class="form-label" for="customFile"> Category Image*</label>
+                           <input type="file" name="icon_image" accept="image/*" class="form-control btn btn-danger" required
+                              name="category_icon" />
+                        </div>
+                        <div class="ui search focus lbel25">
+                           <label class="form-label" for="customFile">Upload Study Material File*</label>
+                           <input type="file" name="material_file" accept="application/pdf" required class="form-control btn btn-danger" />
+                        </div>
+                        <button type="submit" class="btn btn-success mt-20"> Submit Course</button>
+                     </div>
+                  </div>
+               </form>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+               </div>
+            </div>
+         </div>
+      </div>
+
+
+         <div id="testseries" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg">
+               <!-- Modal content-->
+               <div class="modal-content">
+                  <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                                       margin-right: 5px;">&times;</button>
+                  <div class="modal-header">
+                     <h4 class="modal-title">Add Test Series</h4>
+                  </div>
+                  <form action="/admin/add_study_material_test_series/" method="post" enctype="multipart/form-data">
+                     <div class="modal-body">
+                        <div class="row">
+                           <div class="col-lg-6 col-md-6 mt-10">
+                              <div class="lbel25">
+                                 <label>Study Material* </label>
+                              </div>
+                              <select name="study_material_id" id="ts_study_material_id" class="study_material_id ui hj145 dropdown cntry152 prompt srch_explore">
+                                 <option value="">Select Study Material </option>
+                                 {% for name in study_material_names %}
+                                 
+                                 <option value="{{ name.id }}" {{ 'disabled' if loop.index == 1 else ''}}>{{ name.name }}</option>
+                                
+                                 {% endfor %}
+                           
+                              </select>
+                           </div>
+                           <div class="col-lg-6 col-md-6 mt-10">
+                              <div class="lbel25">
+                                 <label>Course Name* </label>
+                              </div>
+                              <select name="course_id" id="ts_course_id" class="course_id ui hj145 dropdown cntry152 prompt srch_explore">
+                                 <option value="">Select Course Name </option>
+                           
+                           
+                              </select>
+                           </div>
+                        </div>
+                                    <div class="row">
+                                    <div class="col-lg-6 col-md-6 mt-10">
+                                       <div class="ui search focus lbel25">
+                                          <label>Category Name* </label>
+                                          <div class="ui left icon input swdh19">
+                                             <input class="prompt srch_explore" type="text" required placeholder="Enter course category title."
+                                                name="category_name" data-purpose="edit-course-title" maxlength="60">
+                                            
+                                          </div>
+                                       </div>
+                                    </div>
+                                       <div class="col-lg-6 col-md-6 mt-10">
+                                          <div class="ui search focus lbel25">
+                                             <label>Chapter Name* </label>
+                                             <div class="ui left icon input swdh19">
+                                                <input class="prompt srch_explore" type="text" required placeholder="Enter course category title."
+                                                   name="chapter_name" data-purpose="edit-course-title" maxlength="60">
+                                               
+                                             </div>
+                                          </div>
+                                       </div>
+                                       </div>
+                                       <div class="col-lg-6 col-md-3 mt-10">
+                                          <div class="ui search focus lbel25">
+                                             <label>Number of Questions *</label>
+                                             <div class="ui left icon input swdh19">
+                                                <input class="prompt srch_explore" type="number" placeholder="No. of Questions" name="no_of_qstns"
+                                                   data-purpose="edit-course-title" maxlength="60" required>
+                                       
+                                             </div>
+                                          </div>
+                                       </div>
+                        <div class="row">
+                           <div class="col-lg-6 col-md-3 mt-10">
+                              <div class="ui search focus lbel25">
+                                 <label>Time Duration (minutes) *</label>
+                                 <div class="ui left icon input swdh19">
+                                    <input class="prompt srch_explore" type="number" placeholder="time in minutes"
+                                       name="time_duration" data-purpose="edit-course-title" maxlength="60" required>
+         
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="col-lg-6 col-md-3 mt-10">
+                              <div class="ui search focus lbel25">
+                                 <label>Total Marks *</label>
+                                 <div class="ui left icon input swdh19">
+                                    <input class="prompt srch_explore" type="number" placeholder="how many marks?" name="marks"
+                                       data-purpose="edit-course-title" maxlength="60" required>
+         
+                                 </div>
+                              </div>
+                           </div>
+         
+                        </div>
+                        <div class="row">
+         
+                           <div class="col-lg-6 col-md-3 mt-10">
+                              <div class="ui search focus lbel25">
+                                 <label>Upload test series Thumbnail* </label>
+                                 <div class="ui left icon input swdh19">
+                                    <input class="prompt srch_explore" type="file" name="test_series_thumbnail" accept="image/*"
+                                       data-purpose="edit-course-title" maxlength="1000" value="" required>
+         
+                                 </div>
+                              </div>
+         
+                           </div>
+         
+                           <div class="col-lg-6 col-md-3 mt-10">
+                              <div class="ui search focus lbel25">
+                                 <label>Upload test series File* </label>
+                                 <div class="ui left icon input swdh19">
+                                    <input class="prompt srch_explore" type="file" name="lecture_test_series"
+                                       accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                                       data-purpose="edit-course-title" maxlength="1000" value="" required>
+         
+                                 </div>
+                              </div>
+                              <button type="submit" class="btn-lg btn-success mt-20"> Submit</button>
+                           </div>
+         
+                        </div>
+                  </form>
+                  <div class="modal-footer">
+                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+
+
+
+<!--      <script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>-->
+<!--      <script src="{{ url_for('static', path='/admin/js/vertical-responsive-menu.min.js') }}"></script>-->
+<!--      <script src="{{ url_for('static', path='/admin/js/jquery-3.3.1.min.js') }}"></script>-->
+<!--      <script src="{{ url_for('static', path='/admin/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>-->
+<!--      <script src="{{ url_for('static', path='/admin/vendor/OwlCarousel/owl.carousel.js') }}"></script>-->
+<!--      <script src="{{ url_for('static', path='/admin/vendor/semantic/semantic.min.js') }}"></script>-->
+<!--      <script src="{{ url_for('static', path='/admin/js/custom.js') }}"></script>-->
+<!--      <script src="{{ url_for('static', path='/admin/js/night-mode.js') }}"></script>-->
+<!--      <script src="{{ url_for('static', path='/admin/js/jquery-steps.min.js') }}"></script>-->
+
+        <script  data-cfasync="false" href="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+      <script src="/static/admin/js/vertical-responsive-menu.min.js"></script>
+      <script  src="/static/admin/js/jquery-3.3.1.min.js"></script>
+      <script  src="/static/admin/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+      <script  src="/static/admin/vendor/OwlCarousel/owl.carousel.js"></script>
+      <script  src="/static/admin/vendor/semantic/semantic.min.js"></script>
+      <script  src="/static/admin/js/custom.js"></script>
+      <script  src="/static/admin/js/night-mode.js"></script>
+      <script  src="/static/admin/js/jquery-steps.min.js"></script>
+      <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+     <script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha384-qlmct0AOBiA2VPZkMY3+2WqkHtIQ9lSdAsAn5RUJD/3vA5MKDgSGcdmIv4ycVxyn" crossorigin="anonymous"></script>
+   <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+
+
+   <script>
+
+
+   $(document).on('click', '.delete_content', function (e) {
+
+      let id = e.target.getAttribute('data-id')
+      let url = e.target.getAttribute('data-url')
+
+      swal({
+         title: "Are you sure?",
+         text: "Once deleted, you will not be able to recover this file!",
+         icon: "warning",
+         buttons: true,
+         dangerMode: true,
+      })
+         .then((willDelete) => {
+            if (willDelete) {
+               fetch(url, {
+                  method: 'DELETE',
+               })
+                  .then(res => res.json())
+
+                  .then(response => {
+
+                     if(response.status){
+
+                     swal("Poof! Your file has been deleted!", {
+                        icon: "success",
+
+                     })
+                     }
+                  })
+                  .then(response => {
+                     setTimeout(function () { document.location.reload(); }, 2000);
+
+
+                  })
+
+
+
+            } else {
+               swal("Your file is safe!");
+            }
+         });
+   })
+
+
+$(document).on('change','#study_material_id', function(){
+   
+
+   let mid = $(this).val()
+   
+   if(mid){
+      data = JSON.stringify({ "mid": mid })
+      fetch('/admin/get_study_material_course/', {
+        method: 'POST', // or 'PUT'
+        body: data,
+        cache: "default", // no-store, reload, no-cache, force-cache, or only-if-cached 
+      }).then(response => response.json())
+      .then(response => {
+         if(response){
+         $('#course_id').html('')
+         $('#course_id').html('<option value="">Select Course</option>')
+         for(let x in response){
+            $('#course_id').append('<option value="'+ response[x].course.id+'">'+ response[x].course.name +'</option>')
+
+         }
+      }
+      else if(response == []){
+         $('#course_id').html('<option value="">No Course Found</option>')
+      }
+      })
+
+   }
+
+
+})
+
+ 
+
+
+
+   $(document).on('change', '#ts_study_material_id', function () {
+
+
+      let mid = $(this).val()
+
+      if (mid) {
+         data = JSON.stringify({ "mid": mid })
+         fetch('/admin/get_study_material_course/', {
+            method: 'POST', // or 'PUT'
+            body: data,
+            cache: "default", // no-store, reload, no-cache, force-cache, or only-if-cached 
+         }).then(response => response.json())
+            .then(response => {
+               if (response) {
+                  $('#ts_course_id').html('')
+                  $('#ts_course_id').html('<option value="">Select Course</option>')
+                  for (let x in response) {
+                     $('#ts_course_id').append('<option value="' + response[x].course.id + '">' + response[x].course.name + '</option>')
+
+                  }
+               }
+               else if (response == []) {
+                  $('#ts_course_id').html('<option value="">No Course Found</option>')
+               }
+            })
+
+      }
+
+
+   })
+
+ 
+ 
+ </script>
+   </body>
+</html>

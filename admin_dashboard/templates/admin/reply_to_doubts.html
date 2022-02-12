@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<div class="wrapper">
+    <div class="sa4d25">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2 class="st_title"><i class="uil uil-comments"></i> Messages</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="all_msg_bg">
+                        <div class="row no-gutters">
+                            <div class="col-xl-4 col-lg-5 col-md-12">
+                                <div class="msg_search">
+                                    <div class="ui search focus">
+                                        <div class="ui left icon input swdh11 swdh15">
+                                            <input class="prompt srch_explore" type="text"
+                                                placeholder="Search Messages...">
+                                            <i class="uil uil-search-alt icon icon8"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="simplebar-content-wrapper">
+                                    <div class="group_messages">
+                                        {% for doubt in doubts %}
+                                        
+                                        <div class="chat__message__dt queries {{ 'active' if loop.index == 1 else '' }}" 
+                                        data-enquiry="{{ doubt.enquiry }}" data-reply="{{ doubt.reply }}" data-qid="{{ doubt.id }}">
+                                            <input type="hidden" class="current_enquiry" value="{{ doubt.enquiry }}">
+                                            <input type="hidden" class="current_reply" value="{{ doubt.reply }}">
+                                            <input type="hidden" class="current_student" value="{{ doubt.student_name }}">
+                                            <input type="hidden" class="current_qid" value="{{ doubt.id }}">
+                                            <input type="hidden" class="current_time_duration" value="{{ doubt.dated_at }}">
+                                            <input type="hidden" class="current_replied_at" value="{{ doubt.updated_at }}">
+
+                                            <div class="user-status">
+                                                <div class="user-avatar">
+                                                  
+                                                    <div class="msg__badge"></div>
+                                                  
+                                                </div>
+                                                <p class="user-status-title"><span class="bold">{{ doubt.student_name }}<br>
+                                                    <small>{{doubt.mobile}}</small></span></p>
+                                                <p class="user-status-text">{{ doubt.enquiry }}</p>
+                                                <p class="user-status-time floaty">{{ doubt.dated_at }}</p>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                   
+                                    </div>
+                                </div>
+                            </div>
+
+                        {% for recent in doubts[-1:] %}
+
+                       
+
+                            <div class="col-xl-8 col-lg-7 col-md-12">
+                                <div class="chatbox_right">
+                                    <div class="chat_header">
+                                        <div class="user-status">
+                                            <div class="user-avatar">
+                                            </div>
+                                            <p class="user-status-title"><span class="bold" id="student_name">{{ recent.student_name }}</span></p>
+                                            <p class="user-status-tag online">Online</p>
+                                            <div class="user-status-time floaty eps_dots eps_dots5 more_dropdown">
+                                                <a href="#"><i class="uil uil-ellipsis-h"></i></a>
+                                                <div class="dropdown-content">
+                                                    <span><i class="uil uil-trash-alt"></i>Delete</span>
+                                                    <span><i class="uil uil-ban"></i>Block</span>
+                                                    <span><i class="uil uil-windsock"></i>Report</span>
+                                                    <span><i class="uil uil-volume-mute"></i>Mute</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="messages-line simplebar-content-wrapper2 scrollstyle_4">
+                                        <div class="mCustomScrollbar">
+                                           
+                                            <div class="main-message-box st3">
+                                                <div class="message-dt st3">
+                                                    <div class="message-inner-dt">
+                                                        <p id="enquiry">{{ recent.enquiry}}</p>
+                                                    </div>
+                                                    <span id="time_duration">{{ recent.dated_at }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="main-message-box ta-right">
+                                                <div class="message-dt">
+                                                    <div class="message-inner-dt">
+                                                        <p id="reply">{{ recent.reply }}</p>
+                                                    </div>
+                                                    <span id="replied_at">{{ recent.updated_at }}</span>
+                                                </div>
+                                            </div>
+                                           
+                                         
+                                            <!-- <div class="main-message-box st3">
+                                                <div class="message-dt st3">
+                                                    <div class="message-inner-dt">
+                                                        <p>....</p>
+                                                    </div>
+                                                    <span>Typing...</span>
+                                                </div>
+                                            </div> -->
+                                        </div>
+                                    </div>
+                                    <div class="message-send-area">
+                                        <form>
+                                            <div class="mf-field">
+                                                <div class="ui search focus input__msg">
+                                                    <div class="ui left icon input swdh19">
+                                                        <input class="prompt srch_explore" type="text"
+                                                            id="get_reply"
+                                                            name="chat_widget_message_text_2"
+                                                            placeholder="Write a message...">
+                                                    </div>
+                                                </div>
+                                                <button data-qid="{{ recent.id }}" class="add_msg" id="add_reply" type="button"><i
+                                                        data-qid="{{ recent.id }}" class="uil uil-message"></i></button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                           
+                        {% endfor %}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock content %}

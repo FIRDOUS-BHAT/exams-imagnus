@@ -1,0 +1,36 @@
+ {% extends "student_dashboard_base.html" %}
+         {% block content %}
+
+
+
+         <div class="sa4d25">
+            <div class="container-fluid">
+                {% for cat in course_cat_obj %}
+               <div class="row">
+                  <div class="col-lg-12 title-icon">
+                     <h3 class="title"><i class="uil-clipboard-alt"></i>{{ cat.category.name }} - Test Series </h3>
+                  </div>
+               </div>
+
+               <div class="row">
+                  {% for topic in cat.categories_topics %}
+                  <div class="col-xl-3 col-lg-6 col-md-6">
+                    <a href="/student/test_series_topics/{{cid}}/{{topic.id}}/">
+                     <div class="card_dash activee  mb-30">
+                        <div class="card_dash_left">
+                           <h5><b class="clr_brown">{{ loop.index }}.</b> {{ topic.topic.name }} </h5>
+                           <span class="crdbg_2">Total Test Series - {{ topic.CategoryTestSeries|length }}</span>
+                        </div>
+                     </div>
+                    </a>
+                  </div>
+                {% endfor %}
+               </div>
+
+
+                {% endfor %}
+
+            </div>
+         </div>
+
+         {% endblock %}

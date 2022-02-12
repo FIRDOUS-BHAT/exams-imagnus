@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+         {% block content %}
+
+
+ <section class="page-title pt-0">
+			 <div class="image-cover ed_detail_head lg theme-ov" style="background:#f4f4f4 url(https://im.indiatimes.in/media/content/2018/Nov/national_exam_1542712309.jpg);" data-overlay="9">
+				 <div class="container">
+					<div class="col-lg-12 col-md-12">
+							 <div class="breadcrumbs-wrap">
+								 <h1 class="breadcrumb-title">Exams E-Notes</h1>
+								 <nav aria-label="breadcrumb">
+									 <ol class="breadcrumb" style="background: #faebd700;">
+										 <li class="breadcrumb-item"><a href="#" class="text-white">Home </a></li>
+										 <li class="breadcrumb-item active" aria-current="page">Exams E-Notes </li>
+									 </ol>
+								 </nav>
+							 </div>
+						 </div>
+				 </div>
+			 </div>
+			 </section>
+			 <!-- ============================ Page Title End ================================== -->
+
+
+			 <!-- ============================ Full Width Courses  ================================== -->
+			 <section class="pt-0">
+				 <div class="container">
+					 <!-- Row -->
+					 <div class="row">
+
+						 <div class="col-lg-12 col-md-12 col-sm-12">
+							 <div class="row">
+							    <div class="col-lg-12 col-md-6 section-head style-1 text-center mb-30">
+					               <h6 class="sub-title bgl-primary m-b20 text-primary"> Examinations </h6>
+					               <h2><span class="theme-cl">{{ c_name }} </span> E-Notes 2021</h2>
+				             </div>
+								 <!-- Cource Grid 1 -->
+
+								  {% for cat in course_categories %}
+								 <div class="col-lg-4 col-md-6">
+									 <div class="education_block_grid style_2">
+										 <div class="education_block_thumb">
+											<a href="course-detail.html"><img src="{{ cat.web_icon }}" class="img-fluid" alt="" /></a>
+											<div class="education_ratting">{{ cat.topic_name }}</div>
+										</div>
+
+										<div class="cources_facts mt-20">
+											 <ul class="cources_facts_list">
+												 <li class="facts-1">{{ cat.course.course.name }} </li>
+											 </ul>
+										 </div>
+
+										 <div class="education_block_body text-center">
+											 <h4 class="bl-title"><a>{{ cat.name }} </a></h4>
+										 </div>
+
+
+										 <div class="cources_info_style3 text-center">
+											<p class="m-b0">Course Price <del>Rs.{{ cat.price }}</del> </p>
+											<h4 class="text-danger">Discount Price : Rs.{{ cat.discount_price }}</h4>
+										 </div>
+
+
+										 <div class="education_block_footer">
+											 <div class="education_block_author">
+												<a href="/exam_study_material/checkout/{{ cat.id }}/" class="btn btn-primary btn-md"><i class="fa fa-cart-plus text-white"></i> Buy Now</a>
+											 </div>
+
+										 </div>
+
+									 </div>
+								 </div>
+								  {% endfor %}
+
+
+
+
+						 </div>
+
+					 </div>
+					 <!-- Row -->
+
+				 </div>
+			 </section>
+			 <!-- ============================ Full Width Courses End ================================== -->
+
+  {% endblock %}

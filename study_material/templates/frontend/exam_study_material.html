@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+         {% block content %}
+
+<!-- ============================ Hero Banner  Start================================== -->
+			<section class="newsletter themes-bg1 inverse-theme" data-wow-duration="2s" data-wow-delay="0.2s">
+				 <div class="container">
+					 <div class="row">
+						 <div class="col-lg-6 col-md-6 mt-20">
+							 <div class="text-left">
+								 <h2 class="text-white title m-b10">All the Study Material is available in Hindi & English. </h2>
+								 <p>In our e-Notes, you will find the content in a precise as well as conceptual manner. Explicitly designed presentation to develop interest and avoid fuzziness. The notes have a proper linkage of subjects with current affairs to make the answers more effective than other competitors. </p>
+
+							 </div>
+						 </div>
+						 <div class="col-lg-6 col-md-6">
+
+					<div class="row">
+						<div class="col-md-12">
+							<div id="testimonials_style" class="slick-carousel-3 arrow_middle">
+								<div class="testimonial-detail">
+									<div class="client-detail-box">
+										<div class="img-responsive">
+										  <img src="/static/courses_assets/img/a3.png" alt="imagnus academy online coaching classes" style="height:240px; margin:0 auto;">
+										</div>
+
+									</div>
+
+								</div>
+
+								<div class="testimonial-detail">
+									<div class="client-detail-box">
+									<div class="img-responsive">
+										  <img src="/static/courses_assets/img/ia.png" alt="imagnus academy online coaching classes" style="height:240px; margin:0 auto;">
+										</div>
+
+									</div>
+
+								</div>
+
+								<div class="testimonial-detail">
+									<div class="client-detail-box">
+									<div class="img-responsive">
+										  <img src="/static/courses_assets/img/a2.png" alt="imagnus academy online coaching classes" style="height:240px; margin:0 auto;">
+										</div>
+
+									</div>
+
+								</div>
+
+
+							</div>
+						</div>
+					</div>
+						 </div>
+
+					 </div>
+				 </div>
+			 </section>
+
+
+
+			<!-- ============================ Hero Banner End ================================== -->
+
+			<!-- ============================ Featured Courses Start ================================== -->
+			<section>
+				<div class="container">
+
+					<div class="row justify-content-center">
+					    <div class="col-lg-12 col-md-6 section-head style-1 text-center mb-30">
+					               <h6 class="sub-title bgl-primary m-b20 text-primary"> Examinations </h6>
+					               <h2><span class="theme-cl">Available </span> Exams E-Notes</h2>
+				             </div>
+
+					</div>
+
+					<div class="row">
+
+						{% for course in category_course %}
+					  <div class="col-lg-4 col-md-4 col-sm-6">
+						  {% if flag == 'pdf-notes' %}
+							<a href="/exam_study_notes/{{ course.id }}/">
+					      {% else %}
+						<a href="/testseries/{{ course.id }}/">
+						  {% endif%}
+							    <div class="edu_category">
+								<div class="edu_cat_icons">
+									<span class="pic-main" href="#"><img src="{{ course.web_icon }}" class="img-fluid" alt=""></span>
+								</div>
+								<div class="edu_cat_data">
+									<h4 class="title">{{ course.course.name }}</h4>
+									<ul class="meta text-success">
+										<li class="video"><i class="ti-layers-alt"></i>
+										    {% if flag == 'pdf-notes'%}
+											{{ course.StudyMaterialCourse|length }} {{flag}}</li>
+											{% else%}
+											{{ course.StudyMaterialTSCourse|length }} {{flag}}</li>
+
+											{%endif%}
+											
+									</ul>
+								</div>
+							</div>
+							</a>
+						</div>
+						 {% endfor %}
+
+
+
+					</div>
+				</div>
+			</section>
+			<!-- ============================ Featured Courses End ================================== -->
+
+
+
+			<!-- ========================== About Facts List Section =============================== -->
+			<section class="bg-light">
+				<div class="container">
+
+					<div class="row align-items-center">
+
+						<div class="col-lg-6 col-md-6 col-sm-12">
+							<div class="list_facts_wrap">
+								<div class="sec-heading mb-3">
+									<h2> Benefits of <span class="theme-cl">Study Material</span></h2>
+								</div>
+								<div class="list_facts">
+									<div class="list_facts_icons"><i class="ti-desktop"></i></div>
+									<div class="list_facts_caption">
+										<h4>Updated Syllabus</h4>
+										<p>Each and every aspect of the topic described in compliance with the updated syllabus.</p>
+									</div>
+								</div>
+								<div class="list_facts">
+									<div class="list_facts_icons"><i class="ti-heart"></i></div>
+									<div class="list_facts_caption">
+										<h4>Important Facts</h4>
+										<p>All the relevant topics cover introduction, features, important facts and figures, analysis, etc.</p>
+									</div>
+								</div>
+								<div class="list_facts">
+									<div class="list_facts_icons"><i class="ti-harddrives"></i></div>
+									<div class="list_facts_caption">
+										<h4>Boost Understanding</h4>
+										<p>The notes have a proper linkage of subjects with current affairs to boost understanding.</p>
+									</div>
+								</div>
+
+							</div>
+
+						</div>
+
+						<div class="col-lg-6 col-md-6 col-sm-12">
+							<div class="list_facts_wrap_img">
+
+								<img src="/static/courses_assets/img/ic.png" class="img-fluid" alt="" />
+
+							</div>
+						</div>
+
+					</div>
+
+				</div>
+			</section>
+			<!-- ========================== About Facts List Section =============================== -->
+
+
+ {% endblock %}

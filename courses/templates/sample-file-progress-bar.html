@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href='https://fonts.googleapis.com/css?family=Titillium+Web:400' rel='stylesheet' type='text/css'>
+<style type="text/css">
+
+body {
+	margin: 0;
+	font-family: "Titillium Web";
+	font-size: 15px;
+}
+
+#demo-container {
+	width: 400px;
+	margin: 60px auto;
+}
+
+#download-button {
+	background-color: white;
+	color: #2980b9;
+	border: 2px solid #2980b9;
+	font-family: inherit;
+	outline: none;
+	min-width: 100px;
+	padding: 10px;
+	font-size: inherit;
+	border-radius: 2px;
+	cursor: pointer;
+	display: block;
+	margin: 0 auto;
+}
+
+#start-download {
+	text-align: center;
+	display: none;
+}
+
+#download-progress-container {
+	border: 1px solid #cccccc;
+	padding: 4px;
+	display: none;
+	height: 20px;
+}
+
+#download-progress {
+	background-color: #2980b9;
+	display: inline-block;
+	height: 100%;
+}
+
+#save-file {
+	color: #2980b9;
+	text-decoration: none;
+	display: none;
+	text-align: center;
+}
+
+#save-file:hover {
+	text-decoration: underline;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="demo-container">
+	<button id="download-button">Download</button>
+	<div id="download-ui-container">
+		<div id="start-download">Starting Download..</div>
+		<div id="download-progress-container"><div id="download-progress"></div></div>
+		<a id="save-file">Save File</a>
+	</div>
+</div>
+
+<script>
+
+var _OBJECT_URL;
+
+document.querySelector('#download-button').addEventListener('click', function() {
+	var request = new XMLHttpRequest();
+    request.addEventListener('readystatechange', function(e) {
+    	if(request.readyState == 2 && request.status == 200) {
+    		document.querySelector('#start-download').style.display = 'block';
+    		document.querySelector('#download-button').style.display = 'none';
+    	}
+    	else if(request.readyState == 3) {
+    		document.querySelector('#download-progress-container').style.display = 'block';
+    		document.querySelector('#start-download').style.display = 'none';
+    	}
+    	else if(request.readyState == 4) {
+    		_OBJECT_URL = URL.createObjectURL(request.response);
+
+    		document.querySelector('#save-file').setAttribute('href', _OBJECT_URL);
+    		document.querySelector('#save-file').setAttribute('download', 'img.jpeg');
+    		
+    		document.querySelector('#save-file').style.display = 'block';
+    		document.querySelector('#download-progress-container').style.display = 'none';
+
+    		setTimeout(function() {
+    			window.URL.revokeObjectURL(_OBJECT_URL);
+
+    			document.querySelector('#download-button').style.display = 'block';
+    			document.querySelector('#save-file').style.display = 'none';
+    		}, 60*1000);
+    	}
+    });
+    request.addEventListener('progress', function(e) {
+    	var percent_complete = (e.loaded / e.total)*100;
+    	document.querySelector('#download-progress').style.width = percent_complete + '%';
+    });
+    request.responseType = 'blob';
+   
+    url = "https://testing-bucket-s3-uploader.s3.amazonaws.com/study_material/notes/MPPSC%20PRE%20UNIT%203.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=&X-Amz-Date=20210812T060959Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=REDACTED"
+    request.open('get', url); 
+    request.setRequestHeader("Access-Control-Allow-Origin","http://127.0.0.1:8000/");
+    request.send(); 
+});
+
+</script>
+
+</body>
+</html>

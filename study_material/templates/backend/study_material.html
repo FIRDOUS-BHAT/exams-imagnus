@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+         {% block content %}
+
+ <div class="wrapper">
+         <div class="sa4d25">
+            <div class="container">
+               <div class="row">
+                  <div class="col-lg-12">
+                     <h2 class="st_title"><i class="uil uil-book"></i> Create Study Material </h2>
+                  </div>
+               </div>
+
+               <div class="row">
+                  <div class="col-lg-4 col-md-5">
+                     <div class="top_countries mt-30">
+                        <div class="top_countries_title">
+                           <h2> Study Material</h2>
+                        </div>
+                        <div class="payout_content">
+                           <div class="payout__added">
+                              <strong>Total Material: </strong>
+                               {{ study_material_names|length }}
+                           </div>
+                           <p><button class="payout__btn" data-toggle="modal" data-target="#material">add material </button></p>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-lg-8 col-md-7">
+                     <div class="table-responsive mt-30">
+                         {% if study_material_names %}
+                        <table class="table ucp-table earning__table">
+                           <thead class="thead-s">
+                              <tr class="text-center">
+                                 <th scope="col">ID </th>
+                                 <th scope="col">Material Name </th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                           {% for name in study_material_names %}
+                              <tr class="text-center">
+                                 <td>IM-00{{loop.index}} </td>
+                                 <td>{{ name.name }} </td>
+
+                              </tr>
+                             {% endfor %}
+
+                           </tbody>
+                        </table>
+                         {% else %}
+                         <div class="text-center">No data available</div>
+                         {% endif %}
+                     </div>
+                  </div>
+               </div>
+
+               <div class="row">
+                  <div class="col-lg-4 col-md-5">
+                     <div class="top_countries mt-30">
+                        <div class="top_countries_title">
+                           <h2> Courses</h2>
+                        </div>
+                        <div class="payout_content">
+                           <div class="payout__added">
+                              <strong>Total Courses: </strong>
+                              {{ category_course|length }}
+                           </div>
+                           <p><button class="payout__btn" data-toggle="modal" data-target="#course">add courses </button></p>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-lg-8 col-md-7">
+                     <div class="table-responsive mt-30">
+                         {% if category_course %}
+                        <table class="table ucp-table earning__table">
+                           <thead class="thead-s">
+                              <tr>
+                                 <th scope="col">ID </th>
+                                 <th scope="col">Material Name </th>
+                                 <th scope="col">Course Name </th>
+                                 <th scope="col">Bundle Price </th>
+                                 <th scope="col">Discount Price </th>
+                                 <th scope="col">Course Image </th>
+
+                              </tr>
+                           </thead>
+                           <tbody>
+                           {% for course in category_course %}
+                              <tr>
+                                 <td>IM-00{{loop.index}} </td>
+                                 <td>{{ course.material.name }}</td>
+                                 <td>{{ course.course.name }} </td>
+                                 <td>{{ course.bundle_price }}</td>
+                                 <td>{{ course.bundle_dsc_price }}</td>
+                                
+                                 <td>
+                                    <div class="thumb_img float-center"><img src="{{ course.web_icon }}" alt=""></div>
+                                 </td>
+
+                              </tr>
+                           {% endfor %}
+
+                           </tbody>
+                        </table>
+                          {% else %}
+                                <div style="text-align: center;">No Course available</div>
+                            {% endif %}
+                     </div>
+                  </div>
+               </div>
+
+               <div class="row">
+                  <div class="col-lg-4 col-md-5">
+                     <div class="top_countries mt-30">
+                        <div class="top_countries_title">
+                           <h2> Course Categories</h2>
+                        </div>
+                        <div class="payout_content">
+                           <div class="payout__added">
+                              <strong>Total Categories: </strong>
+                              {{ study_material_categories_obj|length }}
+                           </div>
+                           <p><button class="payout__btn" data-toggle="modal" data-target="#categories">Add PDF Notes </button></p>
+                           <p><button class="payout__btn" data-toggle="modal" data-target="#testseries">Add Test Series</button></p>
+
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-lg-8 col-md-7">
+                     <div class="table-responsive mt-30">
+                        {% if study_material_categories_obj %}
+                         <table class="table ucp-table earning__table">
+                           <thead class="thead-s">
+                              <tr>
+                                 <th scope="col">ID </th>
+                                 <th scope="col">Material Name </th>
+                                 <th scope="col">Course Name </th>
+                                 <th scope="col">Category Name </th>
+                                 <th scope="col">Category Image </th>
+                                 <th scope="col">Course Price </th>
+                                 <th scope="col">Discount Price </th>
+                                 <th scope="col">Actions </th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                           {% for cat in study_material_categories_obj %}
+                              <tr>
+                                 <td>IM-00{{ loop.index }} </td>
+                                 <td>{{ cat.topic_name }}</td>
+                                 <td>{{ cat.course.course.name }}</td>
+                                 <td>{{ cat.name }}</td>
+                                 <td>
+                                    <div class="thumb_img float-center"><img src="{{ cat.web_icon }}" alt=""></div>
+                                 </td>
+                                 <td><a href="course_category.html">Rs.{{ cat.price }} </a></td>
+                                 <td><a href="course_category.html">Rs.{{ cat.discount_price }} </a></td>
+                                 <td >
+                                    <a href="#" title="Edit" class="gray-s"><i class="uil uil-edit-alt"></i></a>
+                                    <a title="Delete" data-id="{{cat.id }}" data-url="/admin/delete_studyMaterial/{{ cat.id }}"
+                                       class="gray-s delete_content"><i class="uil uil-trash-alt" data-id="{{cat.id }}"
+                                          data-url="/admin/delete_studyMaterial/{{ cat.id }}"></i></a>
+                                 </td>
+                              </tr>
+                           {% endfor %}
+                           
+                           </tbody>
+                        </table>
+                        {% else %}
+                        <div class="text-center">No data available</div>
+                        {% endif %}
+                     </div>
+                  </div>
+             
+
+                  <div class="col-lg-8 col-md-7">
+                     <div class="table-responsive mt-30">
+                        {% if testseries_obj %}
+                        <table class="table ucp-table earning__table">
+                           <thead class="thead-s">
+                              <tr>
+                                 <th scope="col">ID </th>
+                                 <th scope="col">Material Name </th>
+                                 <th scope="col">Course Name </th>
+                                 <th scope="col">Category Name </th>
+                                 <th scope="col">Category Image </th>
+                                 <th scope="col">Course Price </th>
+                                 <th scope="col">Discount Price </th>
+                                 <th scope="col">Actions </th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              {% for cat in testseries_obj %}
+                              <tr>
+                                 <td>IM-00{{ loop.index }} </td>
+                                 <td>{{ cat.topic_name }}</td>
+                                 <td>{{ cat.course.course.name }}</td>
+                                 <td>{{ cat.cat_name }}</td>
+                                 <td>
+                                    <div class="thumb_img float-center"><img src="{{ cat.thumbnail }}" alt=""></div>
+                                 </td>
+                                 <td><a href="course_category.html">Rs.{{ cat.price }} </a></td>
+                                 <td><a href="course_category.html">Rs.{{ cat.discount_price }} </a></td>
+                                 <td>
+                                    <a href="#" title="Edit" class="gray-s"><i class="uil uil-edit-alt"></i></a>
+                                    <a title="Delete" data-id="{{cat.id }}" data-url="/admin/delete_studyMaterial/{{ cat.id }}"
+                                       class="gray-s delete_content"><i class="uil uil-trash-alt" data-id="{{cat.id }}"
+                                          data-url="/admin/delete_studyMaterial/{{ cat.id }}"></i></a>
+                                 </td>
+                              </tr>
+                              {% endfor %}
+                  
+                           </tbody>
+                        </table>
+                        {% else %}
+                        <div class="text-center">No data available</div>
+                        {% endif %}
+                     </div>
+                  </div>
+             
+             
+               </div>
+            </div>
+         </div>
+
+
+
+
+  {% endblock %}

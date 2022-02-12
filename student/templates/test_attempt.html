@@ -1,0 +1,230 @@
+ {% extends "student_dashboard_base.html" %}
+         {% block content %}
+
+  <div class="sa4d25">
+            <div class="container-fluid">
+               <div class="row">
+                  <div class="col-12">
+                     <div class="all_msg_bg">
+                        <div class="row no-gutters">
+                           <div class="col-xl-8 col-lg-7 col-md-12">
+                              <div class="chatbox_right">
+                                 <div class="chat_header">
+                                    <div class="user-status">
+                                       <div class="user">
+                                          <img src="images/dashboard/atom.png" class="catg" alt="">
+                                       </div>
+                                       <p class="user-status-title"><span class="bold">Particle dynamics: Centre of mass and laboratory coordinates </span></p>
+                                       <p class="user-status-tag online">UPSC Optionals (Paper I) </p>
+                                       <p class="user-status-tag online">Physics </p>
+
+                                    </div>
+                                 </div>
+
+
+                                 <div class="messages-line simplebar-content-wrapper2 scrollstyle_4">
+                                    <div class="simplebar-content-wrapper activee">
+                                       <div class="user-status">
+                                          <div class="ques_item">
+                                             <div class="ques_title">
+                                                <span>Ques <span id="new_qsn_no">1</span> :- </span>
+                                                <span id="new_qsn">{{ qstns[0].question }}</span>
+                                             </div>
+                                             <div class="ui form">
+                                                <div class="grouped fields">
+                                                   <div class="field fltr-radio">
+                                                      <div class="ui radio checkbox checked">
+                                                         <input type="radio" value="opt_1" name="example1" tabindex="0" class="hidden">
+                                                         <label id="opt_1_text">{{ qstns[0].opt_1 }} </label>
+                                                      </div>
+                                                   </div>
+                                                   <div class="field">
+                                                      <div class="ui radio checkbox">
+                                                         <input type="radio" value="opt_2" name="example1" tabindex="0" class="hidden">
+                                                         <label id="opt_2_text">{{ qstns[0].opt_2 }} </label>
+                                                      </div>
+                                                   </div>
+                                                   <div class="field">
+                                                      <div class="ui radio checkbox">
+                                                         <input type="radio" value="opt_3" name="example1" tabindex="0" class="hidden">
+                                                         <label id="opt_3_text">{{ qstns[0].opt_3 }} </label>
+                                                      </div>
+                                                   </div>
+                                                   <div class="field fltr-radio">
+                                                      <div class="ui radio checkbox">
+                                                         <input type="radio" value="opt_4" name="example1" tabindex="0" class="hidden">
+                                                         <label id="opt_4_text">{{ qstns[0].opt_4 }} </label>
+                                                      </div>
+                                                   </div>
+                                                </div>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <button class="upload_btn" data-callback="/student/submit/testSeriesQstns/{{cid}}/{{tid}}/{{qstns[counter].id}}/{{qstns[counter+1].id}}/{{counter}}/" id="submit_question" title="submit" style="margin-left: 10px;">Save & Next</button>
+                                 <button class="upload_btn sbmit" title="submit" data-toggle="modal" data-target="#myModal">Submit Testseries</button>
+
+
+                              </div>
+                           </div>
+                           <div class="col-xl-4 col-lg-5 col-md-12">
+                              <div class="msg_search">
+                                 <div class="ui search focus">
+                                    <div class="ui left icon input swdh11 swdh15">
+                                       <div class="certi_form rght1528">
+                                          <div class="test_timer_bg">
+                                             <ul class="test_timer_left">
+                                                <li>
+                                                   <div class="timer_time">
+                                                      <h4>{{ qstn_nos }} </h4>
+                                                      <p>Questions </p>
+                                                   </div>
+                                                </li>
+                                                <li>
+                                                   <div class="timer_time">
+                                                      <h4 id="timer">{{ time_duration }}</h4>
+                                                      <p>Minutes </p>
+                                                   </div>
+                                                </li>
+                                             </ul>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="simplebar-content-wrapper">
+                                 <div class="group_messages">
+                                    <div class="chat__message__dt active">
+                                       <div class="user-status">
+                                          <button class="btn btn-default steps_btn">1</button>
+                                          <button class="btn btn-default steps_btn">2</button>
+                                          <button class="btn btn-default steps_btn">3</button>
+                                          <button class="btn btn-default steps_btn">4</button>
+                                          <button class="btn btn-default steps_btn">5</button>
+                                          <button class="btn btn-default steps_btn">6</button>
+                                          <button class="btn btn-default steps_btn">7</button>
+                                          <button class="btn btn-default steps_btn">8</button>
+                                          <button class="btn btn-default steps_btn">9</button>
+                                          <button class="btn btn-default steps_btn">10</button>
+                                          <button class="btn btn-default steps_btn">11</button>
+                                          <button class="btn btn-default steps_btn">12</button>
+                                          <button class="btn btn-default steps_btn">13</button>
+                                          <button class="btn btn-default steps_btn">14</button>
+                                          <button class="btn btn-default steps_btn">15</button>
+                                          <button class="btn btn-default steps_btn">16</button>
+                                          <button class="btn btn-default steps_btn">17</button>
+                                          <button class="btn btn-default steps_btn">18</button>
+                                          <button class="btn btn-default steps_btn">19</button>
+                                          <button class="btn btn-default steps_btn">20</button>
+                                          <button class="btn btn-default steps_btn">21</button>
+                                          <button class="btn btn-default steps_btn">22</button>
+                                          <button class="btn btn-default steps_btn">23</button>
+                                          <button class="btn btn-default steps_btn">24</button>
+                                          <button class="btn btn-default steps_btn">25</button>
+                                          <button class="btn btn-default steps_btn">26</button>
+                                          <button class="btn btn-default steps_btn">27</button>
+                                          <button class="btn btn-default steps_btn">28</button>
+                                          <button class="btn btn-default steps_btn">29</button>
+                                          <button class="btn btn-default steps_btn">30</button>
+                                          <button class="btn btn-default steps_btn">31</button>
+                                          <button class="btn btn-default steps_btn">32</button>
+                                          <button class="btn btn-default steps_btn">33</button>
+                                          <button class="btn btn-default steps_btn">34</button>
+                                          <button class="btn btn-default steps_btn">35</button>
+                                          <button class="btn btn-default steps_btn">36</button>
+                                          <button class="btn btn-default steps_btn">37</button>
+                                          <button class="btn btn-default steps_btn">38</button>
+                                          <button class="btn btn-default steps_btn">39</button>
+                                          <button class="btn btn-default steps_btn">40</button>
+
+
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+         <!-- Modal -->
+  <div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+          <h4 class="text-center"> Submit your test</h4>
+       <div class="table-responsive">
+                        <table class="table ucp-table earning__table">
+                           <thead class="thead-s">
+                              <tr>
+                                 <th class="text-center">No. of questions </th>
+                                 <th class="text-center">Answered </th>
+                                 <th class="text-center">Not Answered </th>
+                                 <th class="text-center">Not Attempted </th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              <tr>
+                                 <td class="text-center">100 </td>
+                                 <td class="text-center">23</td>
+                                 <td class="text-center">72 </td>
+                                 <td class="text-center">12 </td>
+
+                              </tr>
+
+                           </tbody>
+                        </table>
+                     </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-success">Submit</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  var y = document.getElementsByClassName('wrapper');
+
+console.log(y[0])
+y[0].requestFullscreen()
+
+
+
+   function startTimer(duration, display) {
+      var timer = duration, minutes, seconds;
+      var x = setInterval(function () {
+         minutes = parseInt(timer / 60, 10);
+         seconds = parseInt(timer % 60, 10);
+         minutes = minutes < 10 ? "0" + minutes : minutes;
+         seconds = seconds < 10 ? "0" + seconds : seconds;
+         display.textContent = minutes + ":" + seconds;
+
+         if (--timer < 0) {
+            //timer = duration;
+            clearInterval(x);
+            $('#myModal').modal('show')
+         }
+      }, 1000);
+   }
+
+   window.onload = function () {
+      var y = $('#timer').text() * 60,
+         display = document.querySelector('#timer');
+      startTimer(y, display);
+   };
+
+
+</script>
+    {% endblock %}

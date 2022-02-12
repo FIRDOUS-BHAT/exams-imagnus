@@ -1,0 +1,22 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+ 	
+#  [branch "main"]
+#  	remote = codecommit-origin
+# 	merge = refs/heads/main
+#  [credential]
+#  	UseHttpPath = true
+# 	helper = !aws codecommit credential-helper $@
+#  [remote "codecommit-origin"]
+#  	url = https://git-codecommit.ap-south-1.amazonaws.com/v1/repos/exams.imagnus.in
+#  	fetch = +refs/heads/*:refs/remotes/codecommit-origin/*
+#  	pushurl = https://git-codecommit.ap-south-1.amazonaws.com/v1/repos/exams.imagnus.in
+ [remote "origin"]
+  	url = git@github.com:FIRDOUS-BHAT/exams.imagnus.in.git
+ 	fetch = +refs/heads/*:refs/remotes/origin/*
+ [branch "main"]
+ 	remote = origin
+ 	merge = refs/heads/main

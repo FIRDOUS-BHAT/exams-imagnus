@@ -1,0 +1,191 @@
+
+ {% extends "base.html" %}
+ {% block content %}
+
+
+
+
+<div class="wrapper">
+    <div class="sa4d25">
+       <div class="container-fluid">
+          <div class="card_dash1">
+             <div class="card_dash_left1">
+                <h2 class="st_title">Live Classes</h2>
+             </div>
+             <div class="card_dash_right1">
+                <button class="create_btn_dash" data-toggle="modal" data-target="#course"> Add Live Classes </button>
+             </div>
+          </div>
+          <div class="row">
+             <div class="col-lg-12 col-md-7">
+                <div  class="table mt-20">
+                   <table class="table ucp-table" id="example">
+                      <thead class="thead-s">
+                         <tr  class="text-center">
+                            <th scope="col">S No. </th>
+                            <th scope="col">Course </th>
+                            <th scope="col">Instructor </th>
+                            <th scope="col">Timing </th>
+                            <th scope="col">Topic Name </th>
+                            <th scope="col">Live class url </th>
+                            <th scope="col">Mode </th>
+                            <th scope="col">Action </th>
+                            <th scope="col">Send <br>Notifications</th>
+                         </tr>
+                      </thead>
+                      {% if live_classes %}
+                      <tbody>
+                          {% for class in live_classes %}
+                         <tr  class="text-center">
+                            <td>00{{ loop.index }} </td>
+                            <td><b class="course_active">{{ class.course.name}} </b></td>
+                            <td>{{ class.instructor.name }}</td>
+                            <td>{{ class.streaming_time }}</td>
+                            <td>{{ class.title }}</td>
+                            <td><a href="{{ class.url }}" >{{ class.url }}</a></td>
+                            <td>{{ 'Paid' if class.is_paid else 'Free' }}</td>
+                            <td><a href="#" title="Delete" class="gray-s live_class_delete" data-did="{{ class.id }}" data-toggle="modal" data-target="#Delete"><i data-did="{{ class.id }}" class="uil uil-trash-alt"></i></a></td>
+                            <td><button title="This will repeat the push notification" type="button"
+                              class="btn btn-outline-warning waves-effect px-3 repeat_notification" data-source="live" data-lec_id="{{ class.id }}"
+                              data-title="{{ class.title }}" data-course="{{ class.course.id}}" data-category="null"
+                              data-topic="{{ class.title }}"><i class="fas fa-rocket" aria-hidden="true" data-lec_id="{{ class.id }}"
+                                 data-title="{{ class.title }}" data-course="{{ class.course.id}}" data-category="null" data-source="live"
+                                 data-topic="{{ class.id }}"></i></button> </td>  
+                           </tr>
+                         {% endfor %}
+                      </tbody>
+                      {% endif %}
+                   </table>
+                </div>
+             </div>
+          </div>
+       </div>
+    </div>
+    <!-- Modal for add category-->
+    <div id="course" class="modal fade" role="dialog">
+       <div class="modal-dialog modal-lg">
+          <!-- Modal content-->
+          <div class="modal-content">
+             <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                margin-right: 5px;">&times;</button>
+             <div class="modal-header">
+                <h4 class="modal-title">Add Live Class</h4>
+             </div>
+             <form method="post" action="/admin/add_live_class/" enctype="multipart/form-data">
+             <div class="modal-body ">
+               <div class="col-lg-12 col-md-12"> 
+                <div class="row"> 
+                 <div class="col-lg-4 col-md-6">
+                   <div class="lbel25">
+                      <label>Select Course* </label>
+                   </div>
+                   <select name="course_id" class="ui hj145 dropdown cntry152 prompt srch_explore" multiple="" required>
+                      <option value="">Select Course 
+                      {% for course in courses %}    
+                      <option value="{{ course.id }}">{{ course.name }} </option>
+                     {% endfor %}
+                   </select>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                   <div class="lbel25">
+                      <label>Select Instructor* </label>
+                   </div>
+                   <select name="instructor_id" class="ui hj145 dropdown cntry152 prompt srch_explore" required>
+                      <option value="">Choose Name 
+                      {% for instructor in instructors %}    
+                      <option value="{{ instructor.id }}">{{ instructor.name }} </option>
+                      {% endfor %}
+                     
+                      
+                   </select>
+                </div>
+                
+                 <div class="col-lg-4 col-md-6">
+                   <div class="lbel25">
+                      <label>Select Mode* </label>
+                   </div>
+                   <select name="mode" class="ui hj145 dropdown cntry152 prompt srch_explore">
+                      <option value="">Choose 
+                      <option value="1">Paid Class</option>
+                      <option value="0">Free Class</option>
+                   </select>
+                </div>
+                
+                 <div class="col-lg-4 col-md-6 mt-10">
+                   <div class="ui search focus lbel25">
+                      <label>Timing* </label>
+                      <div class="ui left icon input swdh19">
+                         <input class="prompt srch_explore" type="datetime-local" placeholder="Ex: 09:30 AM" name="stream_time" data-purpose="edit-course-title" required>
+                      </div>
+                   </div>
+                </div>
+                
+                <div class="col-lg-8 col-md-6 mt-10">
+                   <div class="ui search focus lbel25">
+                      <label>Topic Name* </label>
+                      <div class="ui left icon input swdh19">
+                         <input class="prompt srch_explore" type="text" placeholder="Insert your topic title." name="title" data-purpose="edit-course-title" maxlength="200" required>
+                         <div class="badge_num">200 </div>
+                      </div>
+                   </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6 mt-10">
+                   <div class="ui search focus lbel25">
+                      <label class="form-label" for="customFile"> Class Banner Image*</label>
+                      <input type="file" name="thumbnail"  accept="image/*" class="form-control btn btn-danger">
+                   </div>
+                </div>
+                
+                <div class="col-lg-8 col-md-6 mt-10">
+                   <div class="ui search focus lbel25">
+                      <label>Live class url* </label>
+                      <div class="ui left icon input swdh19">
+                         <input class="prompt srch_explore" type="text" placeholder="Insert class url..." name="url" data-purpose="edit-course-title" maxlength="200">
+                         <div class="badge_num">200 </div>
+                      </div>
+                   </div>
+                </div>
+               
+                <div class="col-lg-12 col-md-6">
+                   <button type="submit" class="btn btn-success mt-20"> Submit Class</button>
+                </div>
+             </div>
+              </div>
+             </div>
+            </form>
+
+             <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+             </div>
+          </div>
+       </div>
+    </div>
+
+
+
+    <div id="Delete" class="modal fade" role="dialog" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+           <!-- Modal content-->
+           <div class="modal-content">
+              <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                 margin-right: 5px;">×</button>
+              <div class="modal-header">
+                 <h5 class="modal-title">Delete Live Class</h5>
+              </div>
+              <form method="post" action="/admin/delete_live_classs/">
+              <div class="modal-body ">
+                 <div class="col-lg-12 col-md-6">
+                    <p>Are you sure to delete this class?</p>
+                    <input type="hidden" name="live_class_id" id="live_class_id" required>
+                    <button type="submit" class="btn btn-success">  Yes</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                 </div>
+              </div>
+            </form>
+               </div>
+              </div>
+             
+           </div>
+</div>
+    {% endblock %}

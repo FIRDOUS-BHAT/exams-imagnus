@@ -1,0 +1,284 @@
+ {% extends "base.html" %}
+         {% block content %}
+      <div class="wrapper">
+         <div class="sa4d25">
+            <div class="container">
+               <div class="row">
+                  <div class="col-lg-12">
+                     <h2 class="st_title"><i class="uil uil-book"></i> Create New Course </h2>
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-lg-4 col-md-5">
+                     <div class="top_countries mt-30">
+                        <div class="top_countries_title">
+                           <h2> Course Preference </h2>
+                        </div>
+                        <div class="payout_content">
+                           <div class="payout__added">
+                              <strong>Total Preferences: </strong>
+                              {{ pref_names|length }}
+                           </div>
+                           <p><button class="payout__btn" data-toggle="modal" data-target="#preference">add course preference </button></p>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-lg-8 col-md-7">
+                     <div class="table-responsive mt-30">
+                         {% if pref_names %}
+                        <table class="table ucp-table earning__table" id="example">
+                           <thead class="thead-s">
+                              <tr>
+                                 <th scope="col">S No. </th>
+                                 <th scope="col">Creation Date </th>
+                                 <th scope="col">Preference Name </th>
+                              </tr>
+                           </thead>
+
+                           <tbody>
+                           {% for pref in pref_names %}
+
+                              <tr>
+                                 <td>00{{loop.index}} </td>
+                                 <td>{{ pref.created_at.strftime('%d-%m-%Y %I:%M:%S %p') }}</td>
+                                  <td>{{ pref.name }} </td>
+                              </tr>
+                            {% endfor %}
+                           </tbody>
+                        </table>
+                         {% else %}
+                                <p><center>No Preference available</center></p>
+                            {% endif %}
+                     </div>
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-lg-4 col-md-5">
+                     <div class="top_countries mt-30">
+                        <div class="top_countries_title">
+                           <h2> Courses</h2>
+                        </div>
+                        <div class="payout_content">
+                           <div class="payout__added">
+                              <strong>Total Courses: </strong>
+                              {{ courses|length }}
+                           </div>
+                           <p><button class="payout__btn" data-toggle="modal" data-target="#course">Add Course </button></p>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-lg-8 col-md-7">
+                     <div class="table-responsive mt-30">
+                        {% if courses %}
+                        <table class="table ucp-table earning__table example" >
+                           <thead class="thead-s">
+                              <tr>
+                                 <th class="text-center" scope="col">ID </th>
+                                 <th class="text-center" scope="col">Creation Date </th>
+                                 <th class="text-center" scope="col">Preference </th>
+                                 <th class="text-center" scope="col">Mobile Image </th>
+                                 <th class="text-center" scope="col"> Web Image</th>
+                                 <th class="text-center" scope="col">Course </th>
+                                 <th class="text-center" scope="col">Action </th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                           {% for course in courses %}
+                              <tr>
+                                 <td class="text-center">IM-00{{loop.index}} </td>
+                                 <td class="text-center">{{ course.created_at.strftime('%d-%m-%Y %I:%M:%S %p') }} </td>
+                                 <td class="text-center">{{ course.preference.name }} </td>
+                                 <td class="text-center">
+                                    <div class="thumb_img"><img src="{{ course.icon_image }}" alt=""></div>
+                                 </td>
+                                 <td class="text-center">
+                                    <div class="thumb_img"><img src="{{ course.web_icon }}" alt=""></div>
+                                 </td>
+                                 <td class="text-center">{{ course.name  }} </td>
+                                 <td class="text-center">
+                                    <a class="edit_course" data-id="{{ course.id }}" data-preference="{{ course.preference.name }}"
+                                       data-course="{{ course.name  }}" data-toggle="modal" data-target="#edit_course"
+                                       title="Edit" class="gray-s"><i class="uil uil-edit-alt"
+                                                                      data-id="{{ course.id }}"
+                                                                      data-preference="{{ course.preference.name }}"
+                                                                      data-course="{{ course.name  }}"></i>
+                                    </a>
+                                    <a  title="Delete" class="gray-s"><i class="uil uil-trash-alt"></i></a>
+                                 </td>
+                              </tr>
+                           {% endfor %}
+                           </tbody>
+                        </table>
+                          {% else %}
+                                <p><div style="text-align: center;">No Course available</div></p>
+                            {% endif %}
+                     </div>
+                  </div>
+
+               </div>
+
+                  <div class="row">
+                  <div class="col-lg-4 col-md-5">
+                     <div class="top_countries mt-30">
+                        <div class="top_countries_title">
+                           <h2> Categories</h2>
+                        </div>
+                        <div class="payout_content">
+                           <div class="payout__added">
+                              <strong>Total Categories: </strong>
+                              {{ categories|length }}
+                           </div>
+                           <p><button class="payout__btn" data-toggle="modal" data-target="#category">Add Category </button></p>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-lg-8 col-md-7">
+                     <div class="table-responsive mt-30">
+                        {% if categories %}
+                        <table class="table ucp-table earning__table example" >
+                           <thead class="thead-s">
+                              <tr>
+                                 <th class="text-center" scope="col">ID </th>
+                                 <th class="text-center" scope="col">Creation Date </th>
+                                 <th class="text-center" scope="col">Category Image </th>
+                                 <th class="text-center" scope="col">Category Name </th>
+                                 <th class="text-center" scope="col">Action </th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                           {% for cat in categories %}
+                              <tr>
+                                 <td class="text-center">IM-00{{loop.index}} </td>
+                                 <td class="text-center">{{ cat.created_at.strftime('%d-%m-%Y %I:%M:%S %p') }} </td>
+
+                                 <td class="text-center">
+                                    <div class="thumb_img"><img src="{{ cat.icon_image }}" alt=""></div>
+                                 </td>
+                                 <td class="text-center">{{ cat.name  }} </td>
+                                 <td class="text-center">
+                                    <a data-toggle="modal" data-target="#edit_category" title="Edit" data-cat_id="{{ cat.id }}" class="gray-s edit_category"><i class="uil uil-edit-alt" data-cat_id="{{ cat.id }}"></i></a>
+                                    <a href="#" title="Delete" class="gray-s"><i class="uil uil-trash-alt"></i></a>
+                                 </td>
+                              </tr>
+                           {% endfor %}
+                           </tbody>
+                        </table>
+                          {% else %}
+                                <p><div style="text-align: center;">No Category available</div></p>
+                            {% endif %}
+                     </div>
+                  </div>
+
+               </div>
+               <!-- <div class="row">
+                  <div class="col-lg-4 col-md-5">
+                     <div class="top_countries mt-30">
+                        <div class="top_countries_title">
+                           <h2> Category Subjects </h2>
+                        </div>
+                        <div class="payout_content">
+                           <div class="payout__added">
+                              <strong>Total Subjects: </strong>
+                              {{ subjects|length }}
+                           </div>
+                           <p><button class="payout__btn" data-toggle="modal" data-target="#add_cat_subjects">Add subject </button></p>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-lg-8 col-md-7">
+                     <div class="table-responsive mt-30">
+                         {% if subjects %}
+                        <table class="table ucp-table earning__table" id="example">
+                           <thead class="thead-s">
+                              <tr>
+                                 <th scope="col">S No. </th>
+                                 <th scope="col">Creation Date </th>
+                                 <th scope="col">Subject Name </th>
+                              </tr>
+                           </thead>
+
+                           <tbody>
+                           {% for subject in subjects %}
+
+                              <tr>
+                                 <td>00{{loop.index}} </td>
+                                 <td>{{ subject.created_at.strftime('%d-%m-%Y %I:%M:%S %p') }}</td>
+                                  <td>{{ subject.name }} </td>
+                              </tr>
+                            {% endfor %}
+                           </tbody>
+                        </table>
+                         {% else %}
+                                <p><center>No Subject available</center></p>
+                            {% endif %}
+                     </div>
+                  </div> -->
+               
+               </div> 
+
+
+                     <div class="row">
+                  <div class="col-lg-4 col-md-5">
+                     <div class="top_countries mt-30">
+                        <div class="top_countries_title">
+                           <h2> Category Topics</h2>
+                        </div>
+                        <div class="payout_content">
+                           <div class="payout__added">
+                              <strong>Total Topics: </strong>
+                              {{ topics|length }}
+                           </div>
+                           <p><button class="payout__btn" data-toggle="modal" data-target="#topic">Add Topic </button></p>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-lg-8 col-md-7">
+                     <div class="table-responsive mt-30">
+                        {% if topics %}
+                        <table class="table ucp-table earning__table example" >
+                           <thead class="thead-s">
+                              <tr>
+                                 <th class="text-center" scope="col">ID </th>
+                                 <th class="text-center" scope="col">Creation Date </th>
+                                 <th class="text-center" scope="col">Category Name </th>
+                                 <th class="text-center" scope="col">Topic Title </th>
+
+                                 <th class="text-center" scope="col">Action </th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                           {% for cat in categories %}
+                              <tr>
+                                 <td class="text-center">IM-00{{loop.index}} </td>
+                                 <td class="text-center">{{ cat.created_at.strftime('%d-%m-%Y %I:%M:%S %p') }} </td>
+
+                                 <td class="text-center">{{ cat.name  }} </td>
+                                 <td>
+                                    {% for topic in cat.topics %}
+                                    {{ topic.name  }}
+                                    {{ "| " if not loop.last else "" }}
+
+                                    {% endfor %}
+
+                                 </td>
+                                 <td class="text-center">
+                                    <a href="#" title="Edit" class="gray-s"><i class="uil uil-edit-alt"></i></a>
+                                    <a href="#" title="Delete" class="gray-s"><i class="uil uil-trash-alt"></i></a>
+                                 </td>
+                              </tr>
+                           {% endfor %}
+                           </tbody>
+                        </table>
+                          {% else %}
+                                <p><center>No Topics available</center></p>
+                            {% endif %}
+                     </div>
+                  </div>
+
+               </div>
+
+            </div>
+         </div>
+
+
+        {% endblock %}

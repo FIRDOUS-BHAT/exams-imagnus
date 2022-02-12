@@ -1,0 +1,111 @@
+ {% extends "base.html" %}
+         {% block content %}
+
+   <div class="wrapper">
+         <div class="sa4d25">
+            <div class="container">
+               <div class="row">
+                   <div class="col-md-12">
+                     <div class="card_dash1">
+                        <div class="card_dash_left1">
+                           <h2 class="st_title">Enquiries</h2>
+                        </div>
+
+                     </div>
+                  </div>
+
+               </div>
+
+               <div class="row">
+                  <div class="col-lg-12 col-md-7">
+                     <div  class="table mt-30">
+                         {% if enquiries %}
+
+   <table class="table ucp-table" id="example">
+      <thead class="thead-s">
+         <tr>
+            <th class="text-center" scope="col">S No. </th>
+            <th class="text-center" scope="col">Received Date</th>
+            <th class="text-center" scope="col">Student Name </th>
+            <th class="text-center" scope="col">Mobile No. </th>
+            <th class="text-center" scope="col">Email </th>
+            <th class="text-center" scope="col">City </th>
+            <th class="text-center" scope="col">Course Name </th>
+            <th class="text-center" scope="col">Message </th>
+            
+          
+         </tr>
+      </thead>
+      <tbody>
+       {% for enquiry in enquiries %}
+         <tr class="students_list">
+            <td class="text-center">00{{ loop.index }} </td>
+            <td class="text-center created_at">{{ enquiry.created_at.strftime('%d-%m-%Y %I:%M:%S %p') }} </td>
+            <td class="text-center student_name"><b class="course_active">{{ enquiry.name }} </b></td>
+            <td class="text-center student_mobile">+91 - {{ enquiry.mobile }} </td>
+            <td class="text-center student_email">{{ enquiry.email }} </td>
+            <td class="text-center student_city">{{ enquiry.city }} </td>
+            <td class="text-center student_course"> {{ enquiry.course }}</td>
+             <td class="text-center student_message">{{ enquiry.message }}</td>
+         </tr>
+        {% endfor %}
+      </tbody>
+   </table>
+                         {% else %}
+                         <p>No data available </p>
+                         {% endif %}
+
+</div>
+                  </div>
+
+               </div>
+            </div>
+         </div>
+
+         <!-- Modal for add category-->
+         <div id="course" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+               <!-- Modal content-->
+               <div class="modal-content">
+                  <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                     margin-right: 5px;">&times;</button>
+                  <div class="modal-header">
+                     <h4 class="modal-title">Add Category</h4>
+                  </div>
+                  <div class="modal-body">
+                     <div class="col-lg-12 col-md-6">
+                        <div class="lbel25">
+                           <label>Select Course* </label>
+                        </div>
+                        <select class="ui hj145 dropdown cntry152 prompt srch_explore">
+                           <option value="">Select Course
+                           <option value="1">UPSC </option>
+                           <option value="2">MPPSC </option>
+                        </select>
+                     </div>
+                     <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Category Name* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="text" placeholder="Insert your course category title." name="title" data-purpose="edit-course-title" maxlength="60" id="main[title]" value="">
+                              <div class="badge_num">60 </div>
+                           </div>
+                        </div>
+                     </div>
+                      <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label class="form-label" for="customFile"> Course Icon*</label>
+                           <input type="file" class="form-control btn btn-danger" id="customFile" />
+                        </div>
+                        <button type="submit" class="btn btn-success mt-20"> Submit Category</button>
+                     </div>
+                  </div>
+                  <div class="modal-footer">
+                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+
+  {% endblock %}

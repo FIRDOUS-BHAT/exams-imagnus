@@ -1,0 +1,93 @@
+ {% extends "base.html" %}
+         {% block content %}
+			 <div class="clearfix"></div>
+			 <!-- ============================================================== -->
+			 <!-- Top header  -->
+			  <!-- ============================ Page Title Start================================== -->
+			 <section class="page-title pt-0">
+			 <div class="image-cover ed_detail_head lg theme-ov" style="background:#f4f4f4 url(https://im.indiatimes.in/media/content/2018/Nov/national_exam_1542712309.jpg);" data-overlay="9">
+				 <div class="container">
+					<div class="col-lg-12 col-md-12">
+							 <div class="breadcrumbs-wrap">
+								 <h1 class="breadcrumb-title">Checkout</h1>
+								 <nav aria-label="breadcrumb">
+									 <ol class="breadcrumb">
+										 <li class="breadcrumb-item"><a href="#" class="text-white">Home </a></li>
+										 <li class="breadcrumb-item active" aria-current="page">Checkout </li>
+									 </ol>
+								 </nav>
+							 </div>
+						 </div>
+				 </div>
+			 </div>
+			 </section>
+			 <!-- ============================ Page Title End ================================== -->			
+
+			
+			 <!-- ============================ Add To cart ================================== -->
+			 <section class="pt-0">
+				 <div class="container">
+					 <form action="/payu_data" method="post" name="payuForm">
+<!--						 <form action="/student/payment/success/" method="post" name="payuForm">-->
+
+					 <div class="row">
+						 <div class="col-lg-8 col-md-12">
+						
+							 <div class="cart_totals checkout light_form mb-4">
+								
+								<div class="dashboard_single_course">
+									<div class="dashboard_single_course_thumb">
+										<img src="{{ subscription.course.web_icon }}" class="img-fluid" alt="">
+									
+									</div>
+									<div class="dashboard_single_course_caption">
+										<div class="dashboard_single_course_head">
+											<div class="dashboard_single_course_head_flex">
+												
+												<h2 class="dashboard_course_title">{{ subscription.course.name }}</h2>
+											</div>
+											
+										</div>
+										
+									</div>
+								</div>
+							 </div>
+							
+
+							
+						 </div>
+						
+						 <div class="col-lg-4 col-md-12">
+							 <!-- Total Cart -->
+							 <div class="cart_totals checkout">
+								 <h4>Order Summary </h4>
+								 <div class="cart-wrap">
+									 <ul class="cart_list">
+										 <li>Base price <strong>₹{{  "{:,.2f}".format(subscrip_price) }} </strong></li>
+										 <li>Discount <strong>00.00 </strong></li>
+										 <li>CGST <strong>00.00 </strong></li>
+										 <li>SGST <strong>00.00 </strong></li>
+									 </ul>
+									 <div class="flex_cart">
+										 <div class="flex_cart_1">
+											Total Cost
+										 </div>
+										 <div class="flex_cart_2">
+											₹{{  "{:,.2f}".format(subscrip_price) }}
+										 </div>
+									 </div>
+									 <button type="button" id="rzp-button1" class="btn checkout_btn">Proceed To Pay </button>
+								 </div>
+							 </div>
+						 </div>
+						
+					 </div>
+					</form>
+				 </div>
+			 </section>
+			 <!-- ============================ Add To cart End ================================== -->
+			
+
+			
+
+		 {% endblock %}

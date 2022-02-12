@@ -1,0 +1,81 @@
+ {% extends "base.html" %}
+         {% block content %}
+
+  <div class="wrapper">
+         <div class="sa4d25">
+            <div class="container">
+
+               <div class="row">
+                  <div class="col-lg-4 col-md-5">
+                     <div class="top_countries">
+                        <div class="top_countries_title">
+                           <h2> <b class="course_active"> Student Details</b> </h2>
+                        </div>
+                        <div class="payout_content">
+                           <div class="payout__added">
+                              <strong>Student Name: </strong>
+                             <b class="course_active"> {{ student.fullname }}</b>
+                           </div>
+                           <div class="payout__added">
+                              <strong>Email Id: </strong>
+                              {{ student.email }}
+                           </div>
+                           <div class="payout__added">
+                              <strong>Mobile No.: </strong>
+                              +91 {{ student.mobile }}
+                           </div>
+                           <div class="payout__added">
+                              <strong>Purchase Date: </strong>
+                              25 March 2020
+                           </div>
+                          <div class="payout__added">
+                              <strong>Preference: </strong>
+                              Recruitment Exams
+                           </div>
+                           <div class="payout__added">
+                              <strong>Course Preference: </strong>
+                              UPSC MAINS
+                           </div>
+                            <div class="payout__added">
+                              <strong>Package Type: </strong>
+                              Platinum Package
+                           </div>
+                           <div class="payout__added">
+                              <strong>Price: </strong>
+                              Rs.9800 /-
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="col-lg-8 col-md-8">
+                     <a href="#" class="">Notification Reminder </a>
+                     <div class="all_msg_bg">
+
+                        <div class="channel_my item all__noti5">
+                           <div class="profile_link">
+                              <img src="images/left-imgs/img-9.jpg" alt="">
+                              <div class="pd_content">
+                                 <p class="noti__text5"> Ravi Singh Membership Activated. </p>
+                                 <span class="nm_time">20 min ago </span>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="channel_my item all__noti5">
+                           <div class="profile_link">
+                              <img src="images/left-imgs/img-9.jpg" alt="">
+                              <div class="pd_content">
+                                 <p class="noti__text5"> Ravi Singh Course Approved.  </p>
+                                 <span class="nm_time">20 min ago </span>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+
+               </div>
+            </div>
+         </div>
+
+
+ {% endblock %}
