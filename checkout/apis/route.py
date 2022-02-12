@@ -774,7 +774,7 @@ async def generate_order_from_webhook(student_id, payment_id, order_id, subscrip
 async def webhook(request: Request):
     try:
         data = await request.json()
-        # print(data)
+        print(data)
         # print("============================================")
         payment_id = data['payload']['payment']['entity']['id']
         order_id = data['payload']['payment']['entity']['order_id']
@@ -819,14 +819,14 @@ async def webhook(request: Request):
                 razorpay_payment_id=payment_id,
                 razorpay_order_id=order_id,
                 bill_amount=payment_amount/100,
-                package_mode=package_mode,
+                package_mode=int(package_mode),
 
             )
             import ast
-            
+
             item_list = ast.literal_eval(subscription_id)
             for item_id in item_list:
-                
+
                 item = await StudyMaterialCategories.get(id=item_id)
                 updated_at = datetime.now(tz)
 

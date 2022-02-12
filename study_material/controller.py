@@ -294,7 +294,9 @@ async def exam_study_material(request: Request, cat_id: str, user=Depends(get_cu
                 'student_name': student.fullname,
                 'email': student.email,
                 'mobile': student.mobile,
-                'razorpay_key': razorpay_key
+                'razorpay_key': razorpay_key,
+                'student_id':user,
+                'subscription_id': cat_id
             })
         else:
             raise HTTPException(status_code=208, detail="Instance not found")
