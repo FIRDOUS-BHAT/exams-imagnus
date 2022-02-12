@@ -106,7 +106,7 @@ class StudyMaterialOrderItems(Model):
         "models.StudyMaterialCategories", related_name="item_id_StudyMaterialOrder", on_delete='CASCADE',
     )
     updated_at = fields.DatetimeField(auto_now=True)
-    created_at = fields.DatetimeField(add_auto_now=True)
+    created_at = fields.DatetimeField(auto_now_add=True)
 
 
 class MaterialDownloadRecord(Model):
