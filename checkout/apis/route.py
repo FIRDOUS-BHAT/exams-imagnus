@@ -817,7 +817,7 @@ async def webhook(request: Request):
                 student=student,
                 razorpay_payment_id=payment_id,
                 razorpay_order_id=order_id,
-                bill_amount=payment_amount,
+                bill_amount=payment_amount/100,
                 package_mode=package_mode,
 
             )
