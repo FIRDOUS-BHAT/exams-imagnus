@@ -774,7 +774,7 @@ async def generate_order_from_webhook(student_id, payment_id, order_id, subscrip
 async def webhook(request: Request):
     try:
         data = await request.json()
-        print(data)
+        # print(data)
         # print("============================================")
         payment_id = data['payload']['payment']['entity']['id']
         order_id = data['payload']['payment']['entity']['order_id']
