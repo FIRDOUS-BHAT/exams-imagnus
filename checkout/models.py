@@ -50,6 +50,25 @@ class paymentSession(Model):
     created_at = fields.DatetimeField(auto_now_add=True)
 
 
+class OrderTypeModes(IntEnum):
+    course = 1
+    material = 2
+    testseries = 3
+
+
+class MobileCart(Model):
+    id = fields.UUIDField(pk=True)
+    student = fields.ForeignKeyField(
+        "models.Student", related_name="mobile_cart", on_delete='CASCADE',
+    )
+    order_id = fields.CharField(100, unique=True)
+    order_type = fields.IntEnumField(
+        OrderTypeModes, default=OrderTypeModes.material)
+    subscription_ids = fields.TextField()
+    updated_at = fields.DatetimeField(auto_now=True)
+    created_at = fields.DatetimeField(auto_now_add=True)
+    
+
 Tortoise.init_models(["checkout.models", "student.models",
                      "admin_dashboard.models"], "models")
 PaymentRecords_Pydantic = pydantic_model_creator(PaymentRecords)
