@@ -15,7 +15,7 @@ from pydantic import BaseModel, validator
 from starlette.responses import JSONResponse
 from FCM.route import push_service
 from admin_dashboard.models import CourseSubscriptionPlans, Course
-from checkout.models import PaymentRecordsIn_Pydantic, PaymentRecords, PaymentRecords_Pydantic
+from checkout.models import MobileCart, PaymentRecordsIn_Pydantic, PaymentRecords, PaymentRecords_Pydantic
 from configs import appinfo
 from student.apis.pydantic_models import SubscriptionPlanPydantic
 from student.models import Student
@@ -823,20 +823,46 @@ async def webhook(request: Request):
 
             )
             import ast
+            if await MobileCart.exists(order_id=order_id):
 
-            item_list = ast.literal_eval(subscription_id)
-            for item_id in item_list:
+                cart_data = await MobileCart.get(student__id=student_id, order_id=order_id)
 
-                item = await StudyMaterialCategories.get(id=item_id)
-                updated_at = datetime.now(tz)
+                item_list = ast.literal_eval(cart_data.subscription_ids)
+                for item_id in item_list:
 
-                await StudyMaterialOrderItems.create(
-                    order=order,
-                    item_id=item,
-                    created_at=updated_at
-                )
+                    item = await StudyMaterialCategories.get(id=item_id)
+                    updated_at = datetime.now(tz)
 
+                    await StudyMaterialOrderItems.create(
+                        order=order,
+                        item_id=item,
+                        created_at=updated_at
+                    )
+                await MobileCart.get(order_id=order_id).delete()
+            else:
+                return JSONResponse({"status": False, "message": "order id invalid"})
         return JSONResponse(
             {"status": True, "message": "Order confirmed"}, status_code=200)
     except Exception as ex:
         return JSONResponse({"status": False, "message": str(ex)})
+
+
+class CartParams(BaseModel):
+    student_id: uuid.UUID
+    order_id: str
+    order_type: int
+    cart_ids: str
+
+
+@router.post('/mobile_cart/')
+async def mobile_cart(data: CartParams,  _=Depends(get_current_user)):
+    if await Student.exists(id=data.student_id):
+        student = await Student.get(id=data.student_id)
+        if not await MobileCart.exists(order_id=data.order_id):
+            await MobileCart.get(order_id=data.order_id).delete()
+            await MobileCart.create(student=student, order_id=data.order_id,
+                                    order_type=data.order_type, subscription_ids=data.cart_ids)
+    else:
+        return JSONResponse({"status": False, "message": "operation not permitted"}, status_code=422)
+
+    return JSONResponse({"status": True, "message": "Cart loaded"}, status_code=200)
