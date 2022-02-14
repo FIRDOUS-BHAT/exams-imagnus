@@ -142,13 +142,13 @@ document.getElementById('rzp-button1').onclick = function(e){
 		  // alert(response.razorpay_payment_id);
 		  // alert(response.razorpay_order_id);
 		  // alert(response.razorpay_signature)
-  
+			window.location.href = '/student/new-dashboard/'
 		  var data = {"razorpay_payment_id": response.razorpay_payment_id,
 					  "razorpay_order_id":response.razorpay_order_id,
 					  "razorpay_signature":response.razorpay_signature
 	  
 			  }
-    window.location.href = '/new-dashboard/'
+    
 	// 	  fetch('/submit_order/?place_order=True',{
 	// 		  method: 'POST',
 	// 		  body: JSON.stringify(data),
@@ -173,7 +173,7 @@ document.getElementById('rzp-button1').onclick = function(e){
 		  "subscription_id": "['{{subscription_id}}']",
 		  "order_type": "material",
 		  "coupon": "",
-		  "coupon_discount": "0",
+		  "coupon_discount": 0,
 		  "package_mode": 1
 	  },
 	  "theme": {

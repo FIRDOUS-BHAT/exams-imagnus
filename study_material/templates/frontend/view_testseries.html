@@ -163,7 +163,7 @@
                             // alert(response.razorpay_payment_id);
                             // alert(response.razorpay_order_id);
                             // alert(response.razorpay_signature)
-
+                            window.location.href = '/student/new-dashboard/'
                             var data = {
                                 "razorpay_payment_id": response.razorpay_payment_id,
                                 "razorpay_order_id": response.razorpay_order_id,
@@ -174,33 +174,38 @@
 
                             }
 
-                            fetch('/test_series_place_order/', {
-                                method: 'POST',
-                                body: JSON.stringify(data),
-                                headers: {
-                                    "Content-Type": "application/json"
-                                }
-                            })
-                                .then((result) => {
-                                    return result.json();
-                                }).then((res) => {
-                                    if (res.status == true) {
-                                        window.location.href = res.redirectUrl
-                                    }
+                            // fetch('/test_series_place_order/', {
+                            //     method: 'POST',
+                            //     body: JSON.stringify(data),
+                            //     headers: {
+                            //         "Content-Type": "application/json"
+                            //     }
+                            // })
+                            //     .then((result) => {
+                            //         return result.json();
+                            //     }).then((res) => {
+                            //         if (res.status == true) {
+                                        
+                            //         }
 
-                                });
+                            //     });
 
                         },
                         "notes": {
-                            "address": "Razorpay Corporate Office"
+                            "address": "",
+                            "student": "{{student_id}}",
+                            "source": "web",
+                            "subscription_id": "{{subscription_id}}",
+                            "order_type": "testseries",
+                            "coupon": "",
+                            "coupon_discount": 0,
+                            "package_mode": 2
                         },
                         "theme": {
                             "color": "#3399cc"
                         }
                     };
-                } else if (response.status == false) {
-                    alert(response.detail)
-                }
+                } 
 
                 var rzp1 = new Razorpay(options);
                 rzp1.open();
