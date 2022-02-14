@@ -257,6 +257,8 @@ async def view_test_series(request: Request, id: str,  user=Depends(get_current_
         'student_name': student.fullname,
         'email': student.email,
         'mobile': student.mobile,
+        'student_id': student.id,
+        'subscription_id': id,
         'razorpay_key': razorpay_key
 
     })
@@ -295,7 +297,7 @@ async def exam_study_material(request: Request, cat_id: str, user=Depends(get_cu
                 'email': student.email,
                 'mobile': student.mobile,
                 'razorpay_key': razorpay_key,
-                'student_id':user,
+                'student_id': user,
                 'subscription_id': cat_id
             })
         else:

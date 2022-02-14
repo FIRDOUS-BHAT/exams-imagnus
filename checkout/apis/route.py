@@ -778,71 +778,84 @@ async def webhook(request: Request):
         # print("============================================")
         payment_id = data['payload']['payment']['entity']['id']
         order_id = data['payload']['payment']['entity']['order_id']
-        student_email = data['payload']['payment']['entity']['email']
         payment_amount = data['payload']['payment']['entity']['amount']
-        source = data['payload']['payment']['entity']['notes']['source']
-        subscription_id = data['payload']['payment']['entity']['notes']['subscription_id']
-        order_type = data['payload']['payment']['entity']['notes']['order_type']
-        coupon = data['payload']['payment']['entity']['notes']['coupon']
-        coupon_discount = data['payload']['payment']['entity']['notes']['coupon_discount']
-        student_id = data['payload']['payment']['entity']['notes']['student']
-        package_mode = data['payload']['payment']['entity']['notes']['package_mode']
 
-        '''SAVING THE ORDER TO DATABASE GOES HERE'''
-        status = data['payload']['payment']['entity']['status']
-        if order_type == 'course':
-            if not await PaymentRecords.exists(payment_id=payment_id):
+        '''Temporary Use Web only'''
+        if data['payload']['payment']['entity']['notes']['source']:
+            source = data['payload']['payment']['entity']['notes']['source']
+            if source == 'web':
+                subscription_id = data['payload']['payment']['entity']['notes']['subscription_id']
+                order_type = data['payload']['payment']['entity']['notes']['order_type']
+                coupon = data['payload']['payment']['entity']['notes']['coupon']
+                coupon_discount = data['payload']['payment']['entity']['notes']['coupon_discount']
+                student_id = data['payload']['payment']['entity']['notes']['student']
+                package_mode = data['payload']['payment']['entity']['notes']['package_mode']
 
-                await generate_order_from_webhook(
-                    student_id, payment_id, order_id, subscription_id, payment_amount /
-                    100, source, coupon, coupon_discount, status
-                )
-        elif order_type == 'testseries':
+                '''SAVING THE ORDER TO DATABASE GOES HERE'''
+                status = data['payload']['payment']['entity']['status']
+                if order_type == 'course':
+                    if not await PaymentRecords.exists(payment_id=payment_id):
 
-            if await Student.exists(id=student_id):
-                student = await Student.get(id=student_id)
-                ts_instance = await StudyMaterialCourse.get(id=subscription_id)
-                if not await TestSeriesOrders.exists(student__id=student_id, test_series_id=subscription_id):
-                    updated_at = datetime.now(tz)
+                        await generate_order_from_webhook(
+                            student_id, payment_id, order_id, subscription_id, payment_amount /
+                            100, source, coupon, coupon_discount, status
+                        )
+                elif order_type == 'testseries':
 
-                    await TestSeriesOrders.create(student=student, test_series=ts_instance,
-                                                  razorpay_payment_id=payment_id, razorpay_order_id=order_id,
-                                                  bill_amount=payment_amount / 100, payment_status=2, source=source,
-                                                  created_at=updated_at
-                                                  )
+                    if await Student.exists(id=student_id):
+                        student = await Student.get(id=student_id)
+                        ts_instance = await StudyMaterialCourse.get(id=subscription_id)
+                        if not await TestSeriesOrders.exists(student__id=student_id, test_series_id=subscription_id):
+                            updated_at = datetime.now(tz)
 
-        elif order_type == 'material':
-            student = await Student.get(id=student_id)
+                            await TestSeriesOrders.create(student=student, test_series=ts_instance,
+                                                          razorpay_payment_id=payment_id, razorpay_order_id=order_id,
+                                                          bill_amount=payment_amount / 100, payment_status=2, source=source,
+                                                          created_at=updated_at
+                                                          )
 
-            order = await StudyMaterialOrderInstance.create(
-                student=student,
-                razorpay_payment_id=payment_id,
-                razorpay_order_id=order_id,
-                bill_amount=payment_amount/100,
-                package_mode=int(package_mode),
+                elif order_type == 'material':
+                    student = await Student.get(id=student_id)
 
-            )
-            import ast
-            if await MobileCart.exists(order_id=order_id):
+                    order = await StudyMaterialOrderInstance.create(
+                        student=student,
+                        razorpay_payment_id=payment_id,
+                        razorpay_order_id=order_id,
+                        bill_amount=payment_amount/100,
+                        package_mode=int(package_mode),
 
-                cart_data = await MobileCart.get(student__id=student_id, order_id=order_id)
-
-                item_list = ast.literal_eval(cart_data.subscription_ids)
-                for item_id in item_list:
-
-                    item = await StudyMaterialCategories.get(id=item_id)
-                    updated_at = datetime.now(tz)
-
-                    await StudyMaterialOrderItems.create(
-                        order=order,
-                        item_id=item,
-                        created_at=updated_at
                     )
-                await MobileCart.get(order_id=order_id).delete()
-            else:
-                return JSONResponse({"status": False, "message": "order id invalid"})
-        return JSONResponse(
-            {"status": True, "message": "Order confirmed"}, status_code=200)
+                    import ast
+                    if source == 'app':
+                        if await MobileCart.exists(order_id=order_id):
+
+                            cart_data = await MobileCart.get(student__id=student_id, order_id=order_id)
+
+                            item_list = ast.literal_eval(
+                                cart_data.subscription_ids)
+                        else:
+                            return JSONResponse({"status": False, "message": "order id invalid"})
+
+                    else:
+                        item_list = ast.literal_eval(
+                            subscription_id)
+                    for item_id in item_list:
+
+                        item = await StudyMaterialCategories.get(id=item_id)
+                        updated_at = datetime.now(tz)
+
+                        await StudyMaterialOrderItems.create(
+                            order=order,
+                            item_id=item,
+                            created_at=updated_at
+                        )
+                        await MobileCart.get(order_id=order_id).delete()
+
+                return JSONResponse(
+                    {"status": True, "message": "Order confirmed"}, status_code=200)
+
+        else:
+            return JSONResponse({"status": False, "message": "Request incomplete"}, status_code=200)
     except Exception as ex:
         return JSONResponse({"status": False, "message": str(ex)})
 
