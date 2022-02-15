@@ -311,13 +311,18 @@ async def exam_study_material(request: Request, cat_id: str, user=Depends(get_cu
 async def create_order_id(request: Request, user=Depends(get_current_user)):
     data = await request.json()
     amount = int(data['amount'])
-    order = client.order.create({
-        "amount": amount * 100,
-        "currency": "INR",
-        "receipt": 'order_rcptid_11'
-    })
+    subscription_id = data['subscription_id']
+    if not await TestSeriesOrders.exists(student__id=user, test_series_id=subscription_id):
 
-    return JSONResponse({"status": True, "order_id": order['id']}, status_code=200)
+        order = client.order.create({
+            "amount": amount * 100,
+            "currency": "INR",
+            "receipt": 'order_rcptid_11'
+        })
+
+        return JSONResponse({"status": True, "order_id": order['id']}, status_code=200)
+    else:
+        return JSONResponse({"status": False, "message": "You've already purchased this test series"})
 
 
 @router.post('/test_series_place_order/')
