@@ -133,7 +133,7 @@
 
     document.getElementById('rzp-button1').onclick = function (e) {
 
-        data = { "amount": "{{category_course.bundle_dsc_price}}" }
+        data = { "amount": "{{category_course.bundle_dsc_price}}", "subscription_id": "{{subscription_id}}", }
         fetch('/create_test_series_order_id/', {
             method: 'POST', // or 'PUT'
             body: JSON.stringify(data),// data can be `string` or {object}!
@@ -205,7 +205,10 @@
                             "color": "#3399cc"
                         }
                     };
-                } 
+                } else{
+                    Swal.fire(response.message)
+
+                }
 
                 var rzp1 = new Razorpay(options);
                 rzp1.open();
