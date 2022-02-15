@@ -49,6 +49,7 @@ google-auth==2.6.0
 greenlet==1.1.2
 h11==0.12.0
 httpcore==0.13.7
+httptools==0.3.0
 httpx==0.19.0
 idna==3.3
 imagekitio==2.2.8
@@ -111,8 +112,9 @@ tuspy==0.2.5
 typesystem==0.3.1
 typing_extensions==4.1.0
 urllib3==1.26.8
-uvicorn==0.17.1
+uvicorn==0.17.4
 uvloop==0.16.0
+watchgod==0.7
 websocket-client==1.2.3
 websockets==10.1
 wrapt==1.13.3

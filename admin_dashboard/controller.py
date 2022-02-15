@@ -923,6 +923,7 @@ async def fire_push_notification(course_obj, category_obj, topic_obj, saved_obj,
     async with httpx.AsyncClient() as client:
         content_obj = await client.get(requested_url)
         new_dict = content_obj.json()
+        print(new_dict)
         extra_notification_kwargs = {
             "open": message,
             "data_payload": new_dict[0]
