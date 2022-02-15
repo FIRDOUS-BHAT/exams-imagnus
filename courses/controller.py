@@ -123,7 +123,10 @@ async def course_details(request: Request, p_slug: str, c_slug: str, user=Depend
         plan_price = subscription[0].plan_price
 
         enrolled = await StudentChoices.filter(course=course).count()
-        overview = course_cat_obj[0].course.course_overview[0]
+        if course_cat_obj[0].course.course_overview:
+            overview = course_cat_obj[0].course.course_overview[0]
+        else:
+            overview = None
         lecture_count = await CourseCategoryLectures.filter(category_topic__category__course=course).count()
         course_name = course_cat_obj[0].course.name
 
@@ -142,7 +145,7 @@ async def course_details(request: Request, p_slug: str, c_slug: str, user=Depend
                                                    })
     except Exception as ex:
         return RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
-    #     return Response(status_code=208, detail=str(ex))
+        # raise HTTPException(status_code=208, detail=str(ex))
 
 
 @router.get('/students/subscription_plans/course/{course_slug}/')
