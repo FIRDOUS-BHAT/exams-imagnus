@@ -783,7 +783,7 @@ async def webhook(request: Request):
         '''Temporary Use Web only'''
         if data['payload']['payment']['entity']['notes']['source']:
             source = data['payload']['payment']['entity']['notes']['source']
-            if source == 'web':
+            if source == 'web' or source == 'app':
                 subscription_id = data['payload']['payment']['entity']['notes']['subscription_id']
                 order_type = data['payload']['payment']['entity']['notes']['order_type']
                 coupon = data['payload']['payment']['entity']['notes']['coupon']
