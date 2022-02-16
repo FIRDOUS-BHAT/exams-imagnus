@@ -28,7 +28,7 @@ from student.controller import get_current_user
 from student.models import Student
 from student_choices.models import StudentChoice_Pydantic, StudentChoices, activeSubscription
 from study_material.models import StudyMaterialCategories, StudyMaterialOrderInstance, \
-    StudyMaterialOrderInstance_Pydantic, StudyMaterialOrderItems, StudyMaterialOrderItems_Pydantic
+    StudyMaterialOrderInstance_Pydantic, StudyMaterialOrderItems, StudyMaterialOrderItems_Pydantic, TestSeriesOrders, TestSeriesOrders_Pydantic
 
 tz = pytz.timezone('Asia/Kolkata')
 updated_at = datetime.now(tz)
@@ -256,7 +256,15 @@ async def student_dashboard(request: Request, user=Depends(get_current_user)):
             #     StudyMaterialOrderItems.filter(item_id__student__id=user))
         else:
             std_m = None
-        total_order_count = course_count + std_m_count
+        test_series = await TestSeriesOrders.exists(student__id=user)
+        if test_series:
+            test_series_count = await TestSeriesOrders.filter(student__id=user).count()
+            testseries = await TestSeriesOrders_Pydantic.from_queryset(
+                TestSeriesOrders.filter(student__id=user)
+            )
+        else:
+            testseries = None
+        total_order_count = course_count + std_m_count + test_series_count
         if course_exist or std_m_exist:
             # return std_m
             return templates.TemplateResponse('new-dashboard.html',
@@ -265,7 +273,8 @@ async def student_dashboard(request: Request, user=Depends(get_current_user)):
                                                        'subscription_count': course_count,
                                                        'std_m_count': std_m_count,
                                                        'subscriptions': subscriptions,
-                                                       'std_ms': std_m
+                                                       'std_ms': std_m,
+                                                       'testseries': testseries
                                                        })
         else:
             return templates.TemplateResponse('new-dashboard.html',
@@ -277,8 +286,8 @@ async def student_dashboard(request: Request, user=Depends(get_current_user)):
                                                        'std_ms': std_m
                                                        })
     except Exception as ex:
-        # raise HTTPException(status_code=208, detail=str(ex))
-        return RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
+        raise HTTPException(status_code=208, detail=str(ex))
+        # return RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
 
 
 @router.get('/student/my-purchases/', )
