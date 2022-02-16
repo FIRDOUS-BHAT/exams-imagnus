@@ -801,7 +801,7 @@ async def webhook(request: Request):
                             100, source, coupon, coupon_discount, status
                         )
                 elif order_type == 'testseries':
-                    print("YES")
+                  
                     if await Student.exists(id=student_id):
                         student = await Student.get(id=student_id)
                         ts_instance = await StudyMaterialCourse.get(id=subscription_id)
