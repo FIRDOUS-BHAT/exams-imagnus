@@ -286,8 +286,8 @@ async def student_dashboard(request: Request, user=Depends(get_current_user)):
                                                        'std_ms': std_m
                                                        })
     except Exception as ex:
-        raise HTTPException(status_code=208, detail=str(ex))
-        # return RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
+        # raise HTTPException(status_code=208, detail=str(ex))
+        return RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
 
 
 @router.get('/student/my-purchases/', )
