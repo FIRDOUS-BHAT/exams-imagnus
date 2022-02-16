@@ -234,7 +234,7 @@ async def student_dashboard(request: Request, user=Depends(get_current_user)):
         course_exist = await PaymentRecords.exists(student__id=user)
         course_count = 0
         std_m_count = 0
-
+        test_series_count = 0
         import pytz
         tz = pytz.timezone('Asia/Kolkata')
         now = datetime.now(tz)
