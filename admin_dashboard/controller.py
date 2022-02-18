@@ -1709,8 +1709,8 @@ async def search_order(request: Request):
                          "payment_mode",
                          "payment_status", "source", "created_at"
                          )
-        elif data["source"] == 'test_series_orders':
-            orders = await StudyMaterialOrderInstance_Pydantic.from_queryset(
+        elif data["source"] == 'material_orders':
+            pay_objs = await StudyMaterialOrderInstance_Pydantic.from_queryset(
                 StudyMaterialOrderInstance.filter(
                     student=student
                 )
