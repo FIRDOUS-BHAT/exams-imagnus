@@ -2,7 +2,6 @@
 # You should customize this list as applicable to your project.
 # Learn more about .gitignore:
 #     https://www.atlassian.com/git/tutorials/saving-changes/gitignore
-venv
 # Node artifact files
 node_modules/
 dist/
@@ -46,8 +45,7 @@ Thumbs.db
 *.flv
 *.mov
 *.wmv
-venv
-.env
+
 alembic.ini
 db/migrations
 migrations
@@ -55,7 +53,6 @@ migrations
 /migrations/models/
 0_20210607212110_init.sql
 aerich-commands
-__pycache__/
 study_material/pqsl-commands.sql
 data_science_index.csv
 exams_imagnus_error_log.txt
@@ -72,7 +69,6 @@ pyvenv.cfg
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[cod]
 *$py.class
 
 # C extensions
@@ -82,7 +78,6 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
@@ -103,11 +98,9 @@ MANIFEST
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
-.env*
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
-*.env
 # Unit test / coverage reports
 htmlcov/
 .tox/
@@ -128,7 +121,6 @@ cover/
 *.pot
 
 # Django stuff:
-*.log
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
@@ -145,7 +137,6 @@ docs/_build/
 
 # PyBuilder
 .pybuilder/
-target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
@@ -178,13 +169,12 @@ celerybeat.pid
 
 # Environments
 
-.venv
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
-
+venv
 # Spyder project settings
 .spyderproject
 .spyproject
@@ -209,3 +199,4 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 .env_11
+*.env
