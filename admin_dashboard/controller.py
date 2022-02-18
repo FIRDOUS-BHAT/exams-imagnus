@@ -1715,6 +1715,14 @@ async def search_order(request: Request):
                     student=student
                 )
             )
+
+        elif data["source"] == 'testseries_orders':
+            pay_objs = await TestSeriesOrders_Pydantic.from_queryset(
+                TestSeriesOrders.filter(
+                    student=student
+                )
+            )
+
         return JSONResponse({"status": True, "source": data['source'], "message": jsonable_encoder(pay_objs)})
 
 

@@ -1312,16 +1312,13 @@ $('#add_reply').click(function (e) {
                console.log(created_at)
                let mode =  (resp[i].payment_mode==1)?'online':'offline'
                let status = (resp[i].payment_status == 1)?"Pending":"Confirmed"
-               console.log(resp)
+
               
             document.getElementById('show_search').innerHTML += '<tr class="text-center"><td td > 00'+i+' </td><td><b class="course_active">'+resp[i].student__fullname+'<br>'+mobile+'</b></td><td>'+resp[i].subscription__course__name+'</td><td>'+mode+'</td><td class="text-success">'+resp[i].order_id+'<br>/'+resp[i].payment_id+'</td><td>'+resp[i].bill_amount+'</td><td>'+status+'</td><td>'+ resp[i].source+'</td><td>'+ resp[i].created_at+'</td></tr>'
             }
          }else if(response.source == 'material_orders'){
 
-
           for(let i in resp){
-               console.log(resp)
-
             var first_half ='<tr  class="text-center"><td>00'+ (i+1) +' </td><td><b class="course_active">'+ resp[i].student.fullname +' <br> '+ resp[i].student.mobile +'</b></td><td>course name</td><td id="'+i+'_items"></td>';
             var items = resp[i].order_StudyMaterialOrderInstance
 
@@ -1334,17 +1331,27 @@ $('#add_reply').click(function (e) {
             document.getElementById(i+'_items').innerHTML += items[j].item_id.name+'<br/>';
 
             }
-
-
-
-
-
+            }
+          
 
             }
+              else if(response.source == 'testseries_orders'){
 
 
+               for (let i in resp) {
+
+
+               var tesseries_orders ='<tr class="text-center"><td>00'+(i+1)+' </td><td><b class="course_active">'+resp[i].student.fullname +' <br/> '+ resp[i].student.mobile +'</b></td><td>'+resp[i].test_series.course.name +'</td><td></td><td class="text-success">'+resp[i].razorpay_order_id +' / <br/> '+ resp[i].razorpay_payment_id +'</td><td>Rs.'+ resp[i].bill_amount +'</td><td>'+ resp[i].created_at +'</td></tr>';
+
+                document.getElementById('show_search').innerHTML += tesseries_orders
+
+               }
 
          }
+
+
+
+         
 
          })
       }
