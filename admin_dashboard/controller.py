@@ -1434,6 +1434,8 @@ async def get_orders(request: Request, page: int = Query(..., title="Page Number
     data_count = await PaymentRecords.all().count()
     segments = data_count/perPage
     # return orders
+    client_host = request.client.host
+
     return templates.TemplateResponse('course_orders.html',
                                       context={
                                           'request': request,
@@ -1441,8 +1443,8 @@ async def get_orders(request: Request, page: int = Query(..., title="Page Number
                                           'page_segments': segments,
                                           'page': page,
                                           'perPage': perPage,
-                                          'data_count': data_count
-
+                                          'data_count': data_count,
+                                          "client_host": client_host,
                                       })
 
 
