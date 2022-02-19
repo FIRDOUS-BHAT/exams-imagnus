@@ -25,7 +25,7 @@ from slugify import slugify
 from starlette.responses import RedirectResponse
 from tortoise.contrib.fastapi import HTTPNotFoundError
 from FCM.route import push_service
-from admin_dashboard.models import (Admin, Instructor, LiveClasses, LiveClasses_Pydantic, Preference, Course,
+from admin_dashboard.models import (Admin, AdminLoginTracker, Instructor, LiveClasses, LiveClasses_Pydantic, Preference, Course,
                                     Preference_Pydantic,
                                     CourseCategories, Course_Pydantic, Category_Pydantic, Category,
                                     CourseCategories_Pydantic, CourseCategoryLectures_Pydantic, CourseCategoryLectures,
@@ -151,40 +151,49 @@ async def admin_register(mobile: str, password: str):
 
 @router.post('/secure/admin/login/')
 async def login(request: Request, data: OAuth2PasswordRequestForm = Depends()):
-    mobile = data.username
-    password = data.password
-    mob_obj = await Admin.exists(mobile=mobile)
+    request_ip = request.client.host
+    # await AdminLoginTracker.create(ip=request_ip, allowed_users=1, current_users=1)
+    if await AdminLoginTracker.exists(ip=request_ip):
 
-    if not mob_obj:
-        request.session.update({"data": "Mobile number not found"})
-        return RedirectResponse(url="/administrator/login/",
+        mobile = data.username
+        password = data.password
+        mob_obj = await Admin.exists(mobile=mobile)
+
+        if not mob_obj:
+            request.session.update({"data": "Mobile number not found"})
+            return RedirectResponse(url="/administrator/login/",
+                                    status_code=status.HTTP_302_FOUND)
+        admin = await Admin.get(mobile=mobile)
+
+        if not admin:
+            raise InvalidCredentialsException
+        isValid = util.verify_password(password, admin.password)
+
+        if not isValid:
+            request.session.update({"data": "Incorrect password"})
+            return RedirectResponse(url="/administrator/login/",
+                                    status_code=status.HTTP_302_FOUND)
+
+        access_token = create_access_token(
+            data=dict(sub=jsonable_encoder(admin.id)), expires=timedelta(
+                hours=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        )
+
+        resp = RedirectResponse(url='/admin/',
                                 status_code=status.HTTP_302_FOUND)
-    admin = await Admin.get(mobile=mobile)
 
-    if not admin:
-        raise InvalidCredentialsException
-    isValid = util.verify_password(password, admin.password)
+        resp.set_cookie(
+            key=settings.admin_login,
+            value=access_token,
+            httponly=True
+        )
 
-    if not isValid:
-        request.session.update({"data": "Incorrect password"})
-        return RedirectResponse(url="/administrator/login/",
+        return resp
+    else:
+        resp = RedirectResponse(url='/administrator/login/',
                                 status_code=status.HTTP_302_FOUND)
-
-    access_token = create_access_token(
-        data=dict(sub=jsonable_encoder(admin.id)), expires=timedelta(
-            hours=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    )
-
-    resp = RedirectResponse(url='/admin/',
-                            status_code=status.HTTP_302_FOUND)
-
-    resp.set_cookie(
-        key=settings.admin_login,
-        value=access_token,
-        httponly=True
-    )
-
-    return resp
+        resp.delete_cookie(key=settings.admin_login)
+        return resp
 
 
 @router.get('/administrator/login/')
@@ -1753,10 +1762,10 @@ async def add_new_date():
     #     await StudentChoices.filter(id=each_obj.id).update(expiry_date=new_expiry_date, updated_at=updated_at)
     #     i = i + 1
     #     print(i)
-        # if (created.month == 8) or (created.month == 9) or (created.month == 10) or (created.month == 11):  # and exp_date.day <= 15
-        #     i = i + 1
-        #     # new_expiry_date = exp_date + relativedelta(months=2)
-        #     new_expiry_date = parser.parse('2022-02-28T23:59:59.410158+05:30')
-        #     await StudentChoices.filter(id=each_obj.id).update(expiry_date=new_expiry_date)
-        #     print(i)
+    # if (created.month == 8) or (created.month == 9) or (created.month == 10) or (created.month == 11):  # and exp_date.day <= 15
+    #     i = i + 1
+    #     # new_expiry_date = exp_date + relativedelta(months=2)
+    #     new_expiry_date = parser.parse('2022-02-28T23:59:59.410158+05:30')
+    #     await StudentChoices.filter(id=each_obj.id).update(expiry_date=new_expiry_date)
+    #     print(i)
     return {"done"}

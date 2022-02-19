@@ -12,6 +12,14 @@ class Admin(Model):
     created_at = fields.DatetimeField(auto_now_add=True)
 
 
+class AdminLoginTracker(Model):
+    id = fields.UUIDField(pk=True)
+    ip = fields.CharField(max_length=15, unique=True)
+    allowed_users = fields.IntField()
+    current_users = fields.IntField()
+    created_at = fields.DatetimeField(auto_now_add=True)
+
+
 class Preference(Model):
     """
     This references a Tournament
