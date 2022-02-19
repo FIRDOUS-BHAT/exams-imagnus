@@ -282,14 +282,18 @@ async def add_preference(pref_name: str = Form(...), user=Depends(get_current_us
 
 
 async def upload_images(s3, folder, image: UploadFile, user=Depends(get_current_user)):
+    dt = datetime.now()
+    image_name = (image.filename).split('.')
+    ts = datetime.timestamp(dt)
+    new_image_name = image_name[0]+'_'+str(ts)+'.'+image_name[1]
     upload_obj = upload_file_to_bucket(s3_client=s3, file_obj=image.file,
                                        bucket='testing-bucket-s3-uploader',
                                        folder=folder,
-                                       object_name=image.filename
+                                       object_name=new_image_name
                                        )
     if upload_obj:
         imagekit_url = imagekit.url({
-            "path": "/" + folder + "/" + image.filename,
+            "path": "/" + folder + "/" + new_image_name,
             "url_endpoint": "https://ik.imagekit.io/imagnus/",
             # "transformation": [{"height": "300", "width": "400"}],
         })
