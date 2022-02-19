@@ -152,7 +152,7 @@ async def admin_register(mobile: str, password: str):
 @router.post('/secure/admin/login/')
 async def login(request: Request, data: OAuth2PasswordRequestForm = Depends()):
     request_ip = request.client.host
-    # await AdminLoginTracker.create(ip=request_ip, allowed_users=1, current_users=1)
+    await AdminLoginTracker.create(ip=request_ip, allowed_users=1, current_users=1)
     if await AdminLoginTracker.exists(ip=request_ip):
 
         mobile = data.username
