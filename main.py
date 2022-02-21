@@ -64,7 +64,7 @@ config = Config(".env")
 #     TrustedHostMiddleware, allowed_hosts=[allowed_host, "*."+allowed_host]
 # )
 
-app.add_middleware(GZipMiddleware, minimum_size=1000)
+app.add_middleware(GZipMiddleware, minimum_size=500)
 
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
