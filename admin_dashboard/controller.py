@@ -155,8 +155,9 @@ async def login(request: Request, data: OAuth2PasswordRequestForm = Depends()):
     request_ip = request.client.host
     header = request.headers
     forwarded_for = context.data["X-Forwarded-For"]
+    forwarded_for = context.data["X-Forwarded-For"].split(',')
+    request_ip = forwarded_for[0]
 
-    print(forwarded_for)
     if await AccessToAdminArea.all().count() < 1:
         await AccessToAdminArea.create(is_enabled=True, allowed_users=1, current_users=1)
         if await AccessToAdminArea.exists(is_enabled=True):
