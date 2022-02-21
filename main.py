@@ -23,6 +23,7 @@ from scholarship_tests import controller as scholarshipController
 from send_mails import controller as mailController
 from student import controller as studentController
 from study_material import controller as studyMaterialController
+from starlette_context import middleware, plugins
 
 session = None
 # redis_client = Redis(host="localhost", port=6379)
@@ -63,7 +64,12 @@ config = Config(".env")
 # app.add_middleware(
 #     TrustedHostMiddleware, allowed_hosts=[allowed_host, "*."+allowed_host]
 # )
-
+app.add_middleware(
+    middleware.ContextMiddleware,
+    plugins=(
+        plugins.ForwardedForPlugin(),
+    ),
+)
 app.add_middleware(GZipMiddleware, minimum_size=500)
 
 
