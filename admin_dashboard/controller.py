@@ -153,7 +153,7 @@ async def admin_register(mobile: str, password: str):
 async def login(request: Request, data: OAuth2PasswordRequestForm = Depends()):
     request_ip = request.client.host
 
-    if await AccessToAdminArea.all.count() < 1:
+    if await AccessToAdminArea.all().count() < 1:
         await AccessToAdminArea.create(is_enabled=True, allowed_users=1, current_users=1)
         if await AccessToAdminArea.exists(is_enabled=True):
             if not await AdminLoginTracker.exists(ip=request_ip):
@@ -210,8 +210,8 @@ async def login(request: Request, data: OAuth2PasswordRequestForm = Depends()):
             return resp
         else:
             return RedirectResponse(url='/administrator/login/',
-                                status_code=status.HTTP_302_FOUND)
-    
+                                    status_code=status.HTTP_302_FOUND)
+
     else:
         resp = RedirectResponse(url='/administrator/login/',
                                 status_code=status.HTTP_302_FOUND)
