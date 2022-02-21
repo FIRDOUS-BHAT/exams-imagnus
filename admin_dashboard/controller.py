@@ -155,7 +155,7 @@ async def login(request: Request, data: OAuth2PasswordRequestForm = Depends()):
     request_ip = request.client.host
     header = request.headers
     forwarded_for = context.data["X-Forwarded-For"]
-    
+
     print(forwarded_for)
     if await AccessToAdminArea.all().count() < 1:
         await AccessToAdminArea.create(is_enabled=True, allowed_users=1, current_users=1)
@@ -1475,7 +1475,7 @@ async def get_orders(request: Request, page: int = Query(..., title="Page Number
     segments = data_count/perPage
     # return orders
     client_host = request.client.host
-    forwarded_for = context.data["X-Forwarded-For"]
+    forwarded_for = context.data["X-Forwarded-For"].split(',')
 
     return templates.TemplateResponse('course_orders.html',
                                       context={
@@ -1486,7 +1486,7 @@ async def get_orders(request: Request, page: int = Query(..., title="Page Number
                                           'perPage': perPage,
                                           'data_count': data_count,
                                           "client_host": client_host,
-                                          "forwarded_for": forwarded_for
+                                          "forwarded_for": forwarded_for[0]
                                       })
 
 
