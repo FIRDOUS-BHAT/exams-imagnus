@@ -12,6 +12,16 @@ class Admin(Model):
     created_at = fields.DatetimeField(auto_now_add=True)
 
 
+class AccessToAdminArea(Model):
+    id = fields.UUIDField(pk=True)
+    is_enabled = fields.BooleanField(default=True)
+    allowed_users = fields.IntField(default=1)
+    current_users = fields.IntField(default=1)
+    created_at = fields.DatetimeField(auto_now_add=True)
+
+        
+
+
 class AdminLoginTracker(Model):
     id = fields.UUIDField(pk=True)
     ip = fields.CharField(max_length=15, unique=True)
