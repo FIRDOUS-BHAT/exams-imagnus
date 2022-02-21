@@ -25,7 +25,7 @@ from slugify import slugify
 from starlette.responses import RedirectResponse
 from tortoise.contrib.fastapi import HTTPNotFoundError
 from FCM.route import push_service
-from admin_dashboard.models import (Admin, AdminLoginTracker, Instructor, LiveClasses, LiveClasses_Pydantic, Preference, Course,
+from admin_dashboard.models import (AccessToAdminArea, Admin, AdminLoginTracker, Instructor, LiveClasses, LiveClasses_Pydantic, Preference, Course,
                                     Preference_Pydantic,
                                     CourseCategories, Course_Pydantic, Category_Pydantic, Category,
                                     CourseCategories_Pydantic, CourseCategoryLectures_Pydantic, CourseCategoryLectures,
@@ -152,43 +152,66 @@ async def admin_register(mobile: str, password: str):
 @router.post('/secure/admin/login/')
 async def login(request: Request, data: OAuth2PasswordRequestForm = Depends()):
     request_ip = request.client.host
-    await AdminLoginTracker.create(ip=request_ip, allowed_users=1, current_users=1)
+
+    if await AccessToAdminArea.all.count() < 1:
+        await AccessToAdminArea.create(is_enabled=True, allowed_users=1, current_users=1)
+        if await AccessToAdminArea.exists(is_enabled=True):
+            if not await AdminLoginTracker.exists(ip=request_ip):
+                await AdminLoginTracker.create(ip=request_ip, allowed_users=1, current_users=1)
+            else:
+                trck_obj = await AdminLoginTracker.get(ip=request_ip)
+                trck_obj.allowed_users = trck_obj.allowed_users + 1
+                await trck_obj.save()
+    elif await AccessToAdminArea.exists(is_enabled=True):
+        if not await AdminLoginTracker.exists(ip=request_ip):
+            await AdminLoginTracker.create(ip=request_ip, allowed_users=1, current_users=1)
+        else:
+            trck_obj = await AdminLoginTracker.get(ip=request_ip)
+            trck_obj.allowed_users = trck_obj.allowed_users + 1
+            await trck_obj.save()
     if await AdminLoginTracker.exists(ip=request_ip):
+        ip_obj = await AdminLoginTracker.get(ip=request_ip)
+        if ip_obj.current_users < ip_obj.allowed_users:
+            ip_obj.current_users = ip_obj.current_users+1
+            await ip_obj.save()
+            mobile = data.username
+            password = data.password
+            mob_obj = await Admin.exists(mobile=mobile)
 
-        mobile = data.username
-        password = data.password
-        mob_obj = await Admin.exists(mobile=mobile)
+            if not mob_obj:
+                request.session.update({"data": "Mobile number not found"})
+                return RedirectResponse(url="/administrator/login/",
+                                        status_code=status.HTTP_302_FOUND)
+            admin = await Admin.get(mobile=mobile)
 
-        if not mob_obj:
-            request.session.update({"data": "Mobile number not found"})
-            return RedirectResponse(url="/administrator/login/",
+            if not admin:
+                raise InvalidCredentialsException
+            isValid = util.verify_password(password, admin.password)
+
+            if not isValid:
+                request.session.update({"data": "Incorrect password"})
+                return RedirectResponse(url="/administrator/login/",
+                                        status_code=status.HTTP_302_FOUND)
+
+            access_token = create_access_token(
+                data=dict(sub=jsonable_encoder(admin.id)), expires=timedelta(
+                    hours=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+            )
+
+            resp = RedirectResponse(url='/admin/',
                                     status_code=status.HTTP_302_FOUND)
-        admin = await Admin.get(mobile=mobile)
 
-        if not admin:
-            raise InvalidCredentialsException
-        isValid = util.verify_password(password, admin.password)
+            resp.set_cookie(
+                key=settings.admin_login,
+                value=access_token,
+                httponly=True
+            )
 
-        if not isValid:
-            request.session.update({"data": "Incorrect password"})
-            return RedirectResponse(url="/administrator/login/",
-                                    status_code=status.HTTP_302_FOUND)
-
-        access_token = create_access_token(
-            data=dict(sub=jsonable_encoder(admin.id)), expires=timedelta(
-                hours=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-        )
-
-        resp = RedirectResponse(url='/admin/',
+            return resp
+        else:
+            return RedirectResponse(url='/administrator/login/',
                                 status_code=status.HTTP_302_FOUND)
-
-        resp.set_cookie(
-            key=settings.admin_login,
-            value=access_token,
-            httponly=True
-        )
-
-        return resp
+    
     else:
         resp = RedirectResponse(url='/administrator/login/',
                                 status_code=status.HTTP_302_FOUND)
