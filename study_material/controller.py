@@ -199,6 +199,10 @@ async def delete_studymaterial(mid: str):
     await StudyMaterialCategories.filter(id=mid).delete()
     return {"status": True}
 
+@router.delete('/admin/delete_testseries/{mid}')
+async def delete_studymaterial(mid: str):
+    await StudyMaterialTestSeries.filter(id=mid).delete()
+    return {"status": True}
 
 @router.post('/admin/get_study_material_course/')
 async def get_study_material_course(request: Request):
