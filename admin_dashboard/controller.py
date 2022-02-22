@@ -209,8 +209,8 @@ async def login(request: Request, data: OAuth2PasswordRequestForm = Depends()):
         if await AdminLoginTracker.exists(ip=request_ip):
             ip_obj = await AdminLoginTracker.get(ip=request_ip)
             if ip_obj.current_users < ip_obj.allowed_users:
-                # ip_obj.current_users = ip_obj.current_users+1
-                # await ip_obj.save()
+                ip_obj.current_users = ip_obj.current_users+1
+                await ip_obj.save()
                 mobile = data.username
                 password = data.password
                 mob_obj = await Admin.exists(mobile=mobile)
