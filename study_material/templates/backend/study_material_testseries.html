@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+         {% block content %}
+
+ <div class="wrapper">
+         <div class="sa4d25">
+            <div class="container">
+               <div class="row">
+                  <div class="col-lg-12">
+                     <h2 class="st_title"><i class="uil uil-book"></i>  Test Series </h2>
+                  </div>
+               </div>
+
+              
+
+               <div class="row">
+                 
+             
+
+                  <div class="col-lg-12 col-md-12">
+                     <div class="table-responsive mt-30">
+                        {% if testseries_obj %}
+                        <table class="table ucp-table earning__table">
+                           <thead class="thead-s">
+                              <tr>
+                                 <th scope="col">ID </th>
+                                 <th scope="col">Material Name </th>
+                                 <th scope="col">Course Name </th>
+                                 <th scope="col">Category Name </th>
+                                 <th scope="col">Category Image </th>
+                                 <th scope="col">Course Price </th>
+                                 <th scope="col">Discount Price </th>
+                                 <th scope="col">Actions </th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              {% for cat in testseries_obj %}
+                              <tr>
+                                 <td>IM-00{{ loop.index }} </td>
+                                 <td>{{ cat.topic_name }}</td>
+                                 <td>{{ cat.course.course.name }}</td>
+                                 <td>{{ cat.cat_name }}</td>
+                                 <td>
+                                    <div class="thumb_img float-center"><img src="{{ cat.thumbnail }}" alt=""></div>
+                                 </td>
+                                 <td><a href="course_category.html">Rs.{{ cat.price }} </a></td>
+                                 <td><a href="course_category.html">Rs.{{ cat.discount_price }} </a></td>
+                                 <td>
+                                    <a href="#" title="Edit" class="gray-s"><i class="uil uil-edit-alt"></i></a>
+                                    <a title="Delete" data-id="{{cat.id }}" data-url="/admin/delete_studyMaterial/{{ cat.id }}"
+                                       class="gray-s delete_content"><i class="uil uil-trash-alt" data-id="{{cat.id }}"
+                                          data-url="/admin/delete_studyMaterial/{{ cat.id }}"></i></a>
+                                 </td>
+                              </tr>
+                              {% endfor %}
+                  
+                           </tbody>
+                        </table>
+                        {% else %}
+                        <div class="text-center">No data available</div>
+                        {% endif %}
+                     </div>
+                  </div>
+             
+             
+               </div>
+            </div>
+         </div>
+
+
+
+
+  {% endblock %}
