@@ -73,33 +73,33 @@
       <div class="dataTables_paginate paging_simple_numbers" id="example_paginate">
          <ul class="pagination">
             <li class="paginate_button page-item previous {{'disabled' if page ==1 else ''}}" id="example_previous">
-               <a href="/admin/course_orders/?page={{page-1}}&perPage=10"
+               <a href="/admin/course_orders/?page={{page-1}}&perPage={{perPage}}"
                   aria-controls="example" data-dt-idx="0" tabindex="0" class="page-link">Previous</a></li>
             <li class="paginate_button page-item active">
-               <a href="/admin/course_orders/?page={{page}}&perPage=10" aria-controls="example" data-dt-idx="1"
+               <a href="/admin/course_orders/?page={{page}}&perPage={{perPage}}" aria-controls="example" data-dt-idx="1"
                   tabindex="0" class="page-link">{{page}}</a></li>
                   <li class="paginate_button page-item ">
-                     <a href="/admin/course_orders/?page={{page+1}}&perPage=10" aria-controls="example" data-dt-idx="1" tabindex="0"
+                     <a href="/admin/course_orders/?page={{page+1}}&perPage={{perPage}}" aria-controls="example" data-dt-idx="1" tabindex="0"
                         class="page-link">{{page+1}}</a>
                   </li>
                   <li class="paginate_button page-item ">
-                     <a href="/admin/course_orders/?page={{page+2}}&perPage=10" aria-controls="example" data-dt-idx="1" tabindex="0"
+                     <a href="/admin/course_orders/?page={{page+2}}&perPage={{perPage}}" aria-controls="example" data-dt-idx="1" tabindex="0"
                         class="page-link">{{page+2}}</a>
                   </li>
                   <li class="paginate_button page-item ">
-                     <a href="/admin/course_orders/?page={{page+3}}&perPage=10" aria-controls="example" data-dt-idx="1" tabindex="0"
+                     <a href="/admin/course_orders/?page={{page+3}}&perPage={{perPage}}" aria-controls="example" data-dt-idx="1" tabindex="0"
                         class="page-link">{{page+3}}</a>
                   </li>
                   <li class="paginate_button page-item">
-                     <a href="/admin/course_orders/?page={{page+4}}&perPage=10" aria-controls="example" data-dt-idx="1" tabindex="0"
+                     <a href="/admin/course_orders/?page={{page+4}}&perPage={{perPage}}" aria-controls="example" data-dt-idx="1" tabindex="0"
                         class="page-link">{{page+4}}</a>
                   </li>
                   <li class="paginate_button page-item ">
-                     <a href="/admin/course_orders/?page={{page+5}}&perPage=10" aria-controls="example" data-dt-idx="1" tabindex="0"
+                     <a href="/admin/course_orders/?page={{page+5}}&perPage={{perPage}}" aria-controls="example" data-dt-idx="1" tabindex="0"
                         class="page-link">{{page+5}}</a>
                   </li>
             <li class="paginate_button page-item next" id="example_next">
-               <a href="/admin/course_orders/?page={{page+6}}&perPage=10" aria-controls="example"
+               <a href="/admin/course_orders/?page={{page+6}}&perPage={{perPage}}" aria-controls="example"
                   data-dt-idx="2" tabindex="0" class="page-link">Next</a></li>
          </ul>
       </div>
