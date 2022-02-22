@@ -117,18 +117,18 @@ def get_flashed_messages(request: Request):
 templates.env.globals['get_flashed_messages'] = get_flashed_messages
 
 
-async def check_login_auth(request):
-    if context.data["X-Forwarded-For"]:
-        ips = context.data["X-Forwarded-For"]
-        ips = "27.7.244.207,127.0.0.1"
-        forwarded_for = ips.split(',')
-        request_ip = forwarded_for[0]
-        if await AdminLoginTracker.exists(ip=request_ip):
-            return True
-        else:
-            flash(request, "Unauthorized Access", "danger")
-            return RedirectResponse(url="/administrator/login/",
-                                    status_code=status.HTTP_302_FOUND)
+async def check_login_auth():
+
+    ips = context.data["X-Forwarded-For"]
+    ips = "27.7.244.155,127.0.0.1"
+    forwarded_for = ips.split(',')
+    request_ip = forwarded_for[0]
+    if await AdminLoginTracker.exists(ip=request_ip):
+        print("True")
+        return True
+    else:
+        print("False")
+        return False
 
 
 async def get_current_user(session: str = Depends(get_cookie)):
@@ -155,9 +155,17 @@ async def get_current_user(session: str = Depends(get_cookie)):
 
 
 @router.get('/admin/logout/')
-def logout(user=Depends(get_current_user)):
+async def logout(user=Depends(get_current_user)):
     if user is None:
         return RedirectResponse(url="/administrator/login/", status_code=status.HTTP_302_FOUND)
+    ips = context.data["X-Forwarded-For"]
+    ips = "27.7.244.155,127.0.0.1"
+    forwarded_for = ips.split(',')
+    request_ip = forwarded_for[0]
+    if await AdminLoginTracker.exists(ip=request_ip):
+        ip_obj = await AdminLoginTracker.get(ip=request_ip)
+        ip_obj.current_users = ip_obj.current_users - 1
+        await ip_obj.save()
     resp = RedirectResponse(url='/administrator/login/',
                             status_code=status.HTTP_302_FOUND)
     resp.delete_cookie(key=settings.admin_login)
@@ -186,22 +194,23 @@ async def login(request: Request, data: OAuth2PasswordRequestForm = Depends()):
         request_ip = request.client.host
         header = request.headers
         ips = context.data["X-Forwarded-For"]
-        # ips = "27.7.244.207,127.0.0.1"
+        ips = "27.7.244.155,127.0.0.1"
         forwarded_for = ips.split(',')
         request_ip = forwarded_for[0]
 
         if await AccessToAdminArea.all().count() < 1:
-            await AccessToAdminArea.create(is_enabled=True, allowed_users=1, current_users=1)
+            await AccessToAdminArea.create(is_enabled=True, allowed_users=1, current_users=0)
             if await AccessToAdminArea.exists(is_enabled=True):
                 if not await AdminLoginTracker.exists(ip=request_ip):
-                    await AdminLoginTracker.create(ip=request_ip, allowed_users=1, current_users=1)
+                    await AdminLoginTracker.create(ip=request_ip, allowed_users=1, current_users=0)
                 else:
                     trck_obj = await AdminLoginTracker.get(ip=request_ip)
                     trck_obj.allowed_users = trck_obj.allowed_users + 1
                     await trck_obj.save()
         elif await AccessToAdminArea.exists(is_enabled=True):
             if not await AdminLoginTracker.exists(ip=request_ip):
-                await AdminLoginTracker.create(ip=request_ip, allowed_users=1, current_users=1)
+
+                await AdminLoginTracker.create(ip=request_ip, allowed_users=1, current_users=0)
             else:
                 trck_obj = await AdminLoginTracker.get(ip=request_ip)
                 trck_obj.allowed_users = trck_obj.allowed_users + 1
@@ -209,7 +218,9 @@ async def login(request: Request, data: OAuth2PasswordRequestForm = Depends()):
         if await AdminLoginTracker.exists(ip=request_ip):
             ip_obj = await AdminLoginTracker.get(ip=request_ip)
             if ip_obj.current_users < ip_obj.allowed_users:
-
+                print(request_ip)
+                ip_obj.current_users = ip_obj.current_users + 1
+                await ip_obj.save()
                 mobile = data.username
                 password = data.password
                 mob_obj = await Admin.exists(mobile=mobile)
@@ -249,7 +260,7 @@ async def login(request: Request, data: OAuth2PasswordRequestForm = Depends()):
 
                 return resp
             else:
-                flash(request, "You're not allowed access this panel", "danger")
+                flash(request, "You're not allowed to access this panel", "danger")
 
                 return RedirectResponse(url='/administrator/login/',
                                         status_code=status.HTTP_302_FOUND)
@@ -279,23 +290,27 @@ async def index(request: Request):
 @router.get('/admin/')
 async def index(request: Request, user=Depends(get_current_user)):
     try:
-        if user is None:
+        if not await check_login_auth():
+            flash(request, "Unauthorized Access", "danger")
             return RedirectResponse(url="/administrator/login/", status_code=status.HTTP_302_FOUND)
+        else:
+            if user is None:
+                return RedirectResponse(url="/administrator/login/", status_code=status.HTTP_302_FOUND)
 
-        course_count = await Course.all().count()
-        student_count = await Student.all().count()
-        enquiries_count = await StudentEnquriry.all().count()
-        course_order = await PaymentRecords.all().count()
-        return templates.TemplateResponse('dashboard.html', context={
-            'request': request,
-            'course_count': course_count,
-            'student_count': student_count,
-            'enquiries_count': enquiries_count,
-            'course_order': course_order,
-            'app_url': app_url,
-            'ws_url': settings.ws_url,
-            'admin_active': 'active',
-        })
+            course_count = await Course.all().count()
+            student_count = await Student.all().count()
+            enquiries_count = await StudentEnquriry.all().count()
+            course_order = await PaymentRecords.all().count()
+            return templates.TemplateResponse('dashboard.html', context={
+                'request': request,
+                'course_count': course_count,
+                'student_count': student_count,
+                'enquiries_count': enquiries_count,
+                'course_order': course_order,
+                'app_url': app_url,
+                'ws_url': settings.ws_url,
+                'admin_active': 'active',
+            })
     except Exception as ex:
         return RedirectResponse(url="/administrator/login/", status_code=status.HTTP_302_FOUND)
 
@@ -314,40 +329,41 @@ class Cat(BaseModel):
 @router.get("/admin/create_course/",)
 async def get_course_page(request: Request, user=Depends(get_current_user)):
     try:
+        if check_login_auth(request):
+            if user is None:
+                return RedirectResponse(url="/administrator/login/", status_code=status.HTTP_302_FOUND)
+            app_url = db_config().app_url
+            pref_obj = await Preference_Pydantic.from_queryset(Preference.all())
+            course_obj = await Course_Pydantic.from_queryset(Course.all())
+            category_obj = await Category_Pydantic.from_queryset(Category.all())
+            topic_obj = await Topics_Pydantic.from_queryset(Topics.all())
 
-        if user is None:
-            return RedirectResponse(url="/administrator/login/", status_code=status.HTTP_302_FOUND)
-        app_url = db_config().app_url
-        pref_obj = await Preference_Pydantic.from_queryset(Preference.all())
-        course_obj = await Course_Pydantic.from_queryset(Course.all())
-        category_obj = await Category_Pydantic.from_queryset(Category.all())
-        topic_obj = await Topics_Pydantic.from_queryset(Topics.all())
+            # return category_obj
 
-        # return category_obj
-
-        return templates.TemplateResponse('create_course.html', context={
-            'request': request,
-            'pref_names': pref_obj,
-            'courses': course_obj,
-            'categories': category_obj,
-            'topics': topic_obj,
-            'app_url': app_url,
-            'create_order_active': 'active',
-        })
+            return templates.TemplateResponse('create_course.html', context={
+                'request': request,
+                'pref_names': pref_obj,
+                'courses': course_obj,
+                'categories': category_obj,
+                'topics': topic_obj,
+                'app_url': app_url,
+                'create_order_active': 'active',
+            })
     except Exception as ex:
         # raise HTTPException(status_code=208, detail=str(ex))
         return RedirectResponse(url="/administrator/login/", status_code=status.HTTP_302_FOUND)
 
 
 @router.post("/add_preference")
-async def add_preference(pref_name: str = Form(...), user=Depends(get_current_user)):
-    if user is None:
-        return RedirectResponse(url="/administrator/login/", status_code=status.HTTP_302_FOUND)
-    res = await Preference.create(
-        name=pref_name, slug=slugify(pref_name),
-        updated_at=updated_at, created_at=updated_at
-    )
-    return RedirectResponse(url='/admin/create_course/', status_code=status.HTTP_303_SEE_OTHER)
+async def add_preference(request: Request, pref_name: str = Form(...), user=Depends(get_current_user)):
+    if check_login_auth(request):
+        if user is None:
+            return RedirectResponse(url="/administrator/login/", status_code=status.HTTP_302_FOUND)
+        res = await Preference.create(
+            name=pref_name, slug=slugify(pref_name),
+            updated_at=updated_at, created_at=updated_at
+        )
+        return RedirectResponse(url='/admin/create_course/', status_code=status.HTTP_303_SEE_OTHER)
 
 
 # """ Upload Image to S3"""
@@ -400,20 +416,21 @@ async def upload_pdf_notes(s3, folder, image: UploadFile, user=Depends(get_curre
 
 
 @router.post('/create_course', )
-async def create_course(pref_id: str = Form(...),
+async def create_course(request: Request, pref_id: str = Form(...),
                         name: str = Form(...), icon_image=File(...),
                         web_icon: UploadFile = File(default=None),
                         s3: BaseClient = Depends(s3_auth), user=Depends(get_current_user)):
     try:
-        if user is None:
-            return RedirectResponse(url="/administrator/login/", status_code=status.HTTP_302_FOUND)
-        preference = await Preference.get(id=pref_id)
-        image_url = await upload_images(s3, folder='course_icons/mobile_icons', image=icon_image)
-        web_image_url = await upload_images(s3, folder='course_icons/web_icons', image=web_icon)
-        await Course.create(preference=preference, name=name, slug=slugify(name),
-                            icon_image=image_url, web_icon=web_image_url, updated_at=updated_at,
-                            created_at=updated_at)
-        return RedirectResponse(url='/admin/create_course/', status_code=status.HTTP_303_SEE_OTHER)
+        if check_login_auth(request):
+            if user is None:
+                return RedirectResponse(url="/administrator/login/", status_code=status.HTTP_302_FOUND)
+            preference = await Preference.get(id=pref_id)
+            image_url = await upload_images(s3, folder='course_icons/mobile_icons', image=icon_image)
+            web_image_url = await upload_images(s3, folder='course_icons/web_icons', image=web_icon)
+            await Course.create(preference=preference, name=name, slug=slugify(name),
+                                icon_image=image_url, web_icon=web_image_url, updated_at=updated_at,
+                                created_at=updated_at)
+            return RedirectResponse(url='/admin/create_course/', status_code=status.HTTP_303_SEE_OTHER)
     except Exception as ex:
         raise HTTPException(status_code=208, detail=str(ex))
 
@@ -1506,7 +1523,7 @@ async def get_orders(request: Request, user=Depends(get_current_user)):
 @router.get('/admin/course_orders/')
 async def get_orders(request: Request, page: int = Query(..., title="Page Number", ge=1),
                      perPage: int = Query(...,
-                                          title="Data limit per page", ge=0, le=10),
+                                          title="Data limit per page", ge=0, le=50),
                      user=Depends(get_current_user)
                      ):
     if user is None:
@@ -1538,7 +1555,7 @@ async def get_orders(request: Request, page: int = Query(..., title="Page Number
 @router.get('/admin/study_material_orders/')
 async def get_orders(request: Request, page: int = Query(..., title="Page Number", ge=1),
                      perPage: int = Query(...,
-                                          title="Data limit per page", ge=0, le=10),
+                                          title="Data limit per page", ge=0, le=50),
                      user=Depends(get_current_user)):
     orders = await StudyMaterialOrderInstance_Pydantic.from_queryset(
         StudyMaterialOrderInstance.all().order_by('-created_at')
@@ -1558,7 +1575,7 @@ async def get_orders(request: Request, page: int = Query(..., title="Page Number
 @router.get('/admin/test_series_orders/')
 async def get_orders(request: Request, page: int = Query(..., title="Page Number", ge=1),
                      perPage: int = Query(...,
-                                          title="Data limit per page", ge=0, le=10),
+                                          title="Data limit per page", ge=0, le=50),
                      user=Depends(get_current_user)):
     orders = await TestSeriesOrders_Pydantic.from_queryset(
         TestSeriesOrders.all().order_by('-created_at')
