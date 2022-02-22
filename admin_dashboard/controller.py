@@ -1,3 +1,4 @@
+import typing
 from starlette_context import context
 from dateutil import parser
 import time
@@ -101,6 +102,21 @@ def get_cookie(request: Request):
         raise HTTPException(status_code=208, detail=str(ex))
 
 
+def flash(request: Request, message: typing.Any, category: str = "primary") -> None:
+    if "_messages" not in request.session:
+        request.session["_messages"] = []
+    request.session["_messages"].append(
+        {"message": message, "category": category})
+
+
+def get_flashed_messages(request: Request):
+
+    return request.session.pop("_messages") if "_messages" in request.session else []
+
+
+templates.env.globals['get_flashed_messages'] = get_flashed_messages
+
+
 async def get_current_user(session: str = Depends(get_cookie)):
     try:
 
@@ -148,6 +164,20 @@ async def admin_register(mobile: str, password: str):
     return JSONResponse({"status": True, "message": "Registered Successfully"}, status_code=200)
 
 '''
+
+
+async def check_login_auth(request):
+    if context.data["X-Forwarded-For"]:
+        ips = context.data["X-Forwarded-For"]
+        # ips = "27.7.244.207,127.0.0.1"
+        forwarded_for = ips.split(',')
+        request_ip = forwarded_for[0]
+        if await AdminLoginTracker.exists(ip=request_ip):
+            return True
+        else:
+            flash(request, "Unauthorized Access", "danger")
+            return RedirectResponse(url="/administrator/login/",
+                                    status_code=status.HTTP_302_FOUND)
 
 
 @router.post('/secure/admin/login/')
