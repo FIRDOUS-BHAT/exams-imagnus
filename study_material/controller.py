@@ -65,15 +65,9 @@ async def add_study_material(request: Request):
     category_course_obj = await StudyMaterialCourse_Pydantic.from_queryset(
         StudyMaterialCourse.all()
     )
-    testseries_obj = await StudyMaterialTestSeries_Pydantic.from_queryset(
-        StudyMaterialTestSeries.all()
-    )
+
     each_category_course_obj = await StudyMaterialCourse_Pydantic.from_queryset(
         StudyMaterialCourse.filter(material__id=first_study_material_name.id)
-    )
-
-    study_material_categories_obj = await StudyMaterialCategories_Pydantic.from_queryset(
-        StudyMaterialCategories.filter(is_active=True)
     )
 
     return backend_templates.TemplateResponse('study_material.html', context={
@@ -82,19 +76,48 @@ async def add_study_material(request: Request):
         'courses': course_obj,
         'category_course': category_course_obj,
         'each_category_courses': each_category_course_obj,
+        'add_study_material_active': 'active',
+
+    })
+
+
+@ router.get('/admin/study_material_notes/')
+async def add_study_material(request: Request):
+
+    study_material_categories_obj = await StudyMaterialCategories_Pydantic.from_queryset(
+        StudyMaterialCategories.filter(is_active=True)
+    )
+
+    return backend_templates.TemplateResponse('study_material_notes.html', context={
+        'request': request,
         'study_material_categories_obj': study_material_categories_obj,
+        'add_study_material_active': 'active',
+
+    })
+
+
+@router.get('/admin/study_material_test_series/')
+async def add_study_material(request: Request):
+
+    testseries_obj = await StudyMaterialTestSeries_Pydantic.from_queryset(
+        StudyMaterialTestSeries.all()
+    )
+
+    return backend_templates.TemplateResponse('study_material_testseries.html', context={
+        'request': request,
+
         'add_study_material_active': 'active',
         'testseries_obj': testseries_obj
     })
 
 
-@router.post("/admin/post_study_material_name/")
+@ router.post("/admin/post_study_material_name/")
 async def post_study_material_name(sname: str = Form(...)):
     await StudyMaterialName.create(name=sname, slug=slugify(sname))
     return RedirectResponse(url='/admin/add_study_material/', status_code=status.HTTP_303_SEE_OTHER)
 
 
-@router.post('/admin/add_study_material_course/', )
+@ router.post('/admin/add_study_material_course/', )
 async def create_course(study_material_id: str = Form(...),
                         course_id: str = Form(...), icon_image=File(...),
                         bundle_price: int = Form(...), discount_price: int = Form(...), s3: BaseClient = Depends(s3_auth)):
