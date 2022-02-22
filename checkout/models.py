@@ -34,7 +34,8 @@ class PaymentRecords(Model):
     coupon = fields.CharField(max_length=100, null=True, blank=True)
     coupon_discount = fields.FloatField(null=True, blank=True)
     # is_partial_payment = fields.BooleanField(default=False)
-    source = fields.CharField(3,default='app')
+    notes = fields.TextField(null=True, blank=True)
+    source = fields.CharField(3, default='app')
     bill_amount = fields.IntField(null=True, blank=True)
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(default=datetime.utcnow)
@@ -67,7 +68,7 @@ class MobileCart(Model):
     subscription_ids = fields.TextField()
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
-    
+
 
 Tortoise.init_models(["checkout.models", "student.models",
                      "admin_dashboard.models"], "models")
