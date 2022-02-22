@@ -120,7 +120,7 @@ templates.env.globals['get_flashed_messages'] = get_flashed_messages
 async def check_login_auth():
 
     ips = context.data["X-Forwarded-For"]
-    ips = "27.7.244.155,127.0.0.1"
+    # ips = "27.7.244.155,127.0.0.1"
     forwarded_for = ips.split(',')
     request_ip = forwarded_for[0]
     if await AdminLoginTracker.exists(ip=request_ip):
@@ -159,7 +159,7 @@ async def logout(user=Depends(get_current_user)):
     if user is None:
         return RedirectResponse(url="/administrator/login/", status_code=status.HTTP_302_FOUND)
     ips = context.data["X-Forwarded-For"]
-    ips = "27.7.244.155,127.0.0.1"
+    # ips = "27.7.244.155,127.0.0.1"
     forwarded_for = ips.split(',')
     request_ip = forwarded_for[0]
     if await AdminLoginTracker.exists(ip=request_ip):
@@ -194,7 +194,7 @@ async def login(request: Request, data: OAuth2PasswordRequestForm = Depends()):
         request_ip = request.client.host
         header = request.headers
         ips = context.data["X-Forwarded-For"]
-        ips = "27.7.244.155,127.0.0.1"
+        # ips = "27.7.244.155,127.0.0.1"
         forwarded_for = ips.split(',')
         request_ip = forwarded_for[0]
 
@@ -329,7 +329,7 @@ class Cat(BaseModel):
 @router.get("/admin/create_course/",)
 async def get_course_page(request: Request, user=Depends(get_current_user)):
     try:
-        if check_login_auth(request):
+        if check_login_auth():
             if user is None:
                 return RedirectResponse(url="/administrator/login/", status_code=status.HTTP_302_FOUND)
             app_url = db_config().app_url
@@ -356,7 +356,7 @@ async def get_course_page(request: Request, user=Depends(get_current_user)):
 
 @router.post("/add_preference")
 async def add_preference(request: Request, pref_name: str = Form(...), user=Depends(get_current_user)):
-    if check_login_auth(request):
+    if check_login_auth():
         if user is None:
             return RedirectResponse(url="/administrator/login/", status_code=status.HTTP_302_FOUND)
         res = await Preference.create(
@@ -421,7 +421,7 @@ async def create_course(request: Request, pref_id: str = Form(...),
                         web_icon: UploadFile = File(default=None),
                         s3: BaseClient = Depends(s3_auth), user=Depends(get_current_user)):
     try:
-        if check_login_auth(request):
+        if check_login_auth():
             if user is None:
                 return RedirectResponse(url="/administrator/login/", status_code=status.HTTP_302_FOUND)
             preference = await Preference.get(id=pref_id)
