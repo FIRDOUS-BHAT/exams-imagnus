@@ -182,72 +182,81 @@ async def check_login_auth(request):
 
 @router.post('/secure/admin/login/')
 async def login(request: Request, data: OAuth2PasswordRequestForm = Depends()):
-    request_ip = request.client.host
-    header = request.headers
-    forwarded_for = context.data["X-Forwarded-For"]
-    forwarded_for = context.data["X-Forwarded-For"].split(',')
-    request_ip = forwarded_for[0]
+    try:
+        request_ip = request.client.host
+        header = request.headers
+        ips = context.data["X-Forwarded-For"]
+        # ips = "27.7.244.207,127.0.0.1"
+        forwarded_for = ips.split(',')
+        request_ip = forwarded_for[0]
 
-    if await AccessToAdminArea.all().count() < 1:
-        await AccessToAdminArea.create(is_enabled=True, allowed_users=1, current_users=1)
-        if await AccessToAdminArea.exists(is_enabled=True):
+        if await AccessToAdminArea.all().count() < 1:
+            await AccessToAdminArea.create(is_enabled=True, allowed_users=1, current_users=1)
+            if await AccessToAdminArea.exists(is_enabled=True):
+                if not await AdminLoginTracker.exists(ip=request_ip):
+                    await AdminLoginTracker.create(ip=request_ip, allowed_users=1, current_users=1)
+                else:
+                    trck_obj = await AdminLoginTracker.get(ip=request_ip)
+                    trck_obj.allowed_users = trck_obj.allowed_users + 1
+                    await trck_obj.save()
+        elif await AccessToAdminArea.exists(is_enabled=True):
             if not await AdminLoginTracker.exists(ip=request_ip):
                 await AdminLoginTracker.create(ip=request_ip, allowed_users=1, current_users=1)
             else:
                 trck_obj = await AdminLoginTracker.get(ip=request_ip)
                 trck_obj.allowed_users = trck_obj.allowed_users + 1
                 await trck_obj.save()
-    elif await AccessToAdminArea.exists(is_enabled=True):
-        if not await AdminLoginTracker.exists(ip=request_ip):
-            await AdminLoginTracker.create(ip=request_ip, allowed_users=1, current_users=1)
+        if await AdminLoginTracker.exists(ip=request_ip):
+            ip_obj = await AdminLoginTracker.get(ip=request_ip)
+            if ip_obj.current_users < ip_obj.allowed_users:
+                ip_obj.current_users = ip_obj.current_users+1
+                await ip_obj.save()
+                mobile = data.username
+                password = data.password
+                mob_obj = await Admin.exists(mobile=mobile)
+
+                if not mob_obj:
+                    request.session.update({"data": "Mobile number not found"})
+                    return RedirectResponse(url="/administrator/login/",
+                                            status_code=status.HTTP_302_FOUND)
+                admin = await Admin.get(mobile=mobile)
+
+                if not admin:
+                    raise InvalidCredentialsException
+                isValid = util.verify_password(password, admin.password)
+
+                if not isValid:
+                    request.session.update({"data": "Incorrect password"})
+                    return RedirectResponse(url="/administrator/login/",
+                                            status_code=status.HTTP_302_FOUND)
+
+                access_token = create_access_token(
+                    data=dict(sub=jsonable_encoder(admin.id)), expires=timedelta(
+                        hours=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+                )
+
+                resp = RedirectResponse(url='/admin/',
+                                        status_code=status.HTTP_302_FOUND)
+
+                resp.set_cookie(
+                    key=settings.admin_login,
+                    value=access_token,
+                    httponly=True
+                )
+
+                return resp
+            else:
+                return RedirectResponse(url='/administrator/login/',
+                                        status_code=status.HTTP_302_FOUND)
+
         else:
-            trck_obj = await AdminLoginTracker.get(ip=request_ip)
-            trck_obj.allowed_users = trck_obj.allowed_users + 1
-            await trck_obj.save()
-    if await AdminLoginTracker.exists(ip=request_ip):
-        ip_obj = await AdminLoginTracker.get(ip=request_ip)
-        if ip_obj.current_users < ip_obj.allowed_users:
-            ip_obj.current_users = ip_obj.current_users+1
-            await ip_obj.save()
-            mobile = data.username
-            password = data.password
-            mob_obj = await Admin.exists(mobile=mobile)
-
-            if not mob_obj:
-                request.session.update({"data": "Mobile number not found"})
-                return RedirectResponse(url="/administrator/login/",
-                                        status_code=status.HTTP_302_FOUND)
-            admin = await Admin.get(mobile=mobile)
-
-            if not admin:
-                raise InvalidCredentialsException
-            isValid = util.verify_password(password, admin.password)
-
-            if not isValid:
-                request.session.update({"data": "Incorrect password"})
-                return RedirectResponse(url="/administrator/login/",
-                                        status_code=status.HTTP_302_FOUND)
-
-            access_token = create_access_token(
-                data=dict(sub=jsonable_encoder(admin.id)), expires=timedelta(
-                    hours=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-            )
-
-            resp = RedirectResponse(url='/admin/',
+            flash(request, "Unauthorized Access", "danger")
+            resp = RedirectResponse(url='/administrator/login/',
                                     status_code=status.HTTP_302_FOUND)
-
-            resp.set_cookie(
-                key=settings.admin_login,
-                value=access_token,
-                httponly=True
-            )
-
+            resp.delete_cookie(key=settings.admin_login)
             return resp
-        else:
-            return RedirectResponse(url='/administrator/login/',
-                                    status_code=status.HTTP_302_FOUND)
-
-    else:
+    except Exception as ex:
+        flash(request, str(ex), "danger")
         resp = RedirectResponse(url='/administrator/login/',
                                 status_code=status.HTTP_302_FOUND)
         resp.delete_cookie(key=settings.admin_login)
