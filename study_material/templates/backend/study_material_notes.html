@@ -27,8 +27,6 @@
                                  <th scope="col">Course Name </th>
                                  <th scope="col">Category Name </th>
                                  <th scope="col">Category Image </th>
-                                 <th scope="col">Course Price </th>
-                                 <th scope="col">Discount Price </th>
                                  <th scope="col">Actions </th>
                               </tr>
                            </thead>
@@ -42,8 +40,7 @@
                                  <td>
                                     <div class="thumb_img float-center"><img src="{{ cat.web_icon }}" alt=""></div>
                                  </td>
-                                 <td><a href="course_category.html">Rs.{{ cat.price }} </a></td>
-                                 <td><a href="course_category.html">Rs.{{ cat.discount_price }} </a></td>
+                                
                                  <td >
                                     <a href="#" title="Edit" class="gray-s"><i class="uil uil-edit-alt"></i></a>
                                     <a title="Delete" data-id="{{cat.id }}" data-url="/admin/delete_studyMaterial/{{ cat.id }}"
