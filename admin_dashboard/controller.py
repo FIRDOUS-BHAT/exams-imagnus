@@ -216,7 +216,9 @@ async def login(request: Request, data: OAuth2PasswordRequestForm = Depends()):
                 mob_obj = await Admin.exists(mobile=mobile)
 
                 if not mob_obj:
-                    request.session.update({"data": "Mobile number not found"})
+                    # request.session.update({"data": "Mobile number not found"})
+                    flash(request, "Mobile number not found", "danger")
+
                     return RedirectResponse(url="/administrator/login/",
                                             status_code=status.HTTP_302_FOUND)
                 admin = await Admin.get(mobile=mobile)
@@ -226,7 +228,9 @@ async def login(request: Request, data: OAuth2PasswordRequestForm = Depends()):
                 isValid = util.verify_password(password, admin.password)
 
                 if not isValid:
-                    request.session.update({"data": "Incorrect password"})
+                    # request.session.update({"data": "Incorrect password"})
+                    flash(request, "Incorrect password", "danger")
+
                     return RedirectResponse(url="/administrator/login/",
                                             status_code=status.HTTP_302_FOUND)
 
@@ -247,7 +251,7 @@ async def login(request: Request, data: OAuth2PasswordRequestForm = Depends()):
                 return resp
             else:
                 flash(request, "You're not allowed access this panel", "danger")
-                
+
                 return RedirectResponse(url='/administrator/login/',
                                         status_code=status.HTTP_302_FOUND)
 
