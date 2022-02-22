@@ -25,6 +25,7 @@ class AdminLoginTracker(Model):
     ip = fields.CharField(max_length=42, unique=True)
     allowed_users = fields.IntField()
     current_users = fields.IntField()
+    identity = fields.TextField(blank=True, null=True)
     created_at = fields.DatetimeField(auto_now_add=True)
 
 
