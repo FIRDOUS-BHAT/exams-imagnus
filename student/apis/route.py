@@ -109,7 +109,7 @@ async def register_student(user: StudentIn_Pydantic, _=Depends(get_current_user)
             # return await Student_Pydantic.from_tortoise_orm(obj)
             # return Status(message="Student has been registered")
     except Exception as ex:
-        # raise HTTPException(status_code=208, detail=str(ex))
+        # return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
         return JSONResponse(
             {"detail": str(ex)}, status_code=208)
 
@@ -483,48 +483,53 @@ async def update_student(s3: BaseClient = Depends(s3_auth), data: UpdateStudent 
 
         return resp
     except Exception as ex:
-        raise HTTPException(status_code=208, detail=str(ex))
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 @router.post('/forgot_password')
 async def forgot_password(mobile: str, new_password: str, _=Depends(get_current_user)):
-    if len(mobile) > 10:
-        return JSONResponse(
-            {"status": False, "message": "Enter a valid mobile number"},
-            status_code=208)
-
-    mob_stat = await Student.exists(mobile=mobile)
-    if mob_stat:
-        if len(new_password) < 6:
+    try:
+        if len(mobile) > 10:
             return JSONResponse(
-                {"status": False, "message": "Password must be atleast 6 characters long"},
+                {"status": False, "message": "Enter a valid mobile number"},
                 status_code=208)
-        student = await Student.get(mobile=mobile)
-        password = util.get_password_hash(new_password)
-        student.password = password
-        if student.save():
 
-            user = await Student_Pydantic.from_queryset_single(Student.get(mobile=mobile))
-            if await PaymentRecords.exists(student=student):
-                payment_records = await PaymentRecords_Pydantic.from_queryset(
-                    PaymentRecords.filter(student=student)
-                )
-                # new_payment_records = jsonable_encoder(payment_records.dict(exclude={'student'}))
-                new_payment_records = jsonable_encoder(payment_records)
+        mob_stat = await Student.exists(mobile=mobile)
+        if mob_stat:
+            if len(new_password) < 6:
+                return JSONResponse(
+                    {"status": False,
+                        "message": "Password must be atleast 6 characters long"},
+                    status_code=208)
+            student = await Student.get(mobile=mobile)
+            password = util.get_password_hash(new_password)
+            student.password = password
+            if student.save():
+
+                user = await Student_Pydantic.from_queryset_single(Student.get(mobile=mobile))
+                if await PaymentRecords.exists(student=student):
+                    payment_records = await PaymentRecords_Pydantic.from_queryset(
+                        PaymentRecords.filter(student=student)
+                    )
+                    # new_payment_records = jsonable_encoder(payment_records.dict(exclude={'student'}))
+                    new_payment_records = jsonable_encoder(payment_records)
+                else:
+                    new_payment_records = []
+                result = jsonable_encoder(user.dict(exclude={'password'}))
+                result.update({"subscription": new_payment_records})
+                resp = JSONResponse(
+                    {'status': True, 'message': result},
+                    status_code=200)
+
+                return resp
             else:
-                new_payment_records = []
-            result = jsonable_encoder(user.dict(exclude={'password'}))
-            result.update({"subscription": new_payment_records})
-            resp = JSONResponse(
-                {'status': True, 'message': result},
-                status_code=200)
-
-            return resp
+                return JSONResponse({"status": False, "message": "Something went wrong"}, status_code=208)
         else:
-            return JSONResponse({"status": False, "message": "Something went wrong"}, status_code=208)
-    else:
-        return JSONResponse({"status": False, "message": "User does not exist"}, status_code=208)
-
+            return JSONResponse({"status": False, "message": "User does not exist"}, status_code=208)
+    except Exception as ex:
+        return JSONResponse(
+            {"status": False, "message": str(ex)}, status_code=208
+        )
 
 """@router.delete('/student_activities/{student_id}/', )
 async def delete_student_activities(student_id: str, _=Depends(get_current_user)):
@@ -537,8 +542,13 @@ async def delete_student_activities(student_id: str, _=Depends(get_current_user)
 
 @router.get('/student_activity_videos/', )
 async def student_video_activities(_=Depends(get_current_user)):
-    obj = await studentVideoActivity.all()
-    return obj
+    try:
+        obj = await studentVideoActivity.all()
+        return obj
+    except Exception as ex:
+        return JSONResponse(
+            {"status": False, "message": str(ex)}, status_code=208
+        )
 
 
 @router.get('/student_activities/{student_id}/{course_slug}/',
@@ -554,7 +564,7 @@ async def student_activities(student_id, course_slug, _=Depends(get_current_user
                 studentActivity.get(student=student, course=course).order_by("-updated_at"))
             return student_obj
     except Exception as ex:
-        raise HTTPException(status_code=208, detail=str(ex))
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 @router.post('/student_video_activity/')
@@ -620,7 +630,7 @@ async def student_video_activity(data: StudentVideoActivityPydanticIn,
             # return await student_activities(student_id=data.student_id, course_id=course_id)
 
     except Exception as ex:
-        raise HTTPException(status_code=208, detail=str(ex))
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 @router.post('/student_notes_activity/')
@@ -671,48 +681,53 @@ async def student_notes_activity(data: StudentNotesActivityPydanticIn, _=Depends
         return {"added"}
         # return await student_activities(student=data.student_id, course=data.course_id)
     except Exception as ex:
-        raise HTTPException(status_code=208, detail=str(ex))
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 @router.post('/student_test_series_activity/')
 async def student_test_series_activity(data: StudentTestSeriesActivityIn, _=Depends(get_current_user)):
-    student_instance = await Student.get(id=data.student_id)
-    testseries_details = await CourseCategoryTestSeries.get(
-        id=data.test_series_id).values(
-        "category_topic__category__course__id", "category_topic__category__category__id")
-    course_id = testseries_details["category_topic__category__course__id"]
-    category_id = testseries_details["category_topic__category__category__id"]
-    course_instance = await Course.get(id=course_id)
-    category_instance = await Category.get(id=category_id)
-    test_series_instance = await CourseCategoryTestSeries.get(id=data.test_series_id)
-    check_std = await studentActivity.exists(student=student_instance,
-                                             course=course_instance,
-                                             )
-    if check_std:
-        student_act_instance = await studentActivity.get(student=student_instance,
-                                                         course=course_instance,
-                                                         )
-        if data.test_series_id:
-            if not await studentTestSeriesActivity.exists(
-                    student_activity=student_act_instance, test_series_id=test_series_instance
-            ):
-                await studentTestSeriesActivity.create(
-                    student_activity=student_act_instance,
-                    category=category_instance,
-                    test_series_id=test_series_instance
-                )
+    try:
+        student_instance = await Student.get(id=data.student_id)
+        testseries_details = await CourseCategoryTestSeries.get(
+            id=data.test_series_id).values(
+            "category_topic__category__course__id", "category_topic__category__category__id")
+        course_id = testseries_details["category_topic__category__course__id"]
+        category_id = testseries_details["category_topic__category__category__id"]
+        course_instance = await Course.get(id=course_id)
+        category_instance = await Category.get(id=category_id)
+        test_series_instance = await CourseCategoryTestSeries.get(id=data.test_series_id)
+        check_std = await studentActivity.exists(student=student_instance,
+                                                 course=course_instance,
+                                                 )
+        if check_std:
+            student_act_instance = await studentActivity.get(student=student_instance,
+                                                             course=course_instance,
+                                                             )
+            if data.test_series_id:
+                if not await studentTestSeriesActivity.exists(
+                        student_activity=student_act_instance, test_series_id=test_series_instance
+                ):
+                    await studentTestSeriesActivity.create(
+                        student_activity=student_act_instance,
+                        category=category_instance,
+                        test_series_id=test_series_instance
+                    )
 
-    else:
-        student_act_instance = await studentActivity.create(student=student_instance,
-                                                            course=course_instance,
-                                                            )
-        await studentTestSeriesActivity.create(
-            student_activity=student_act_instance,
-            category=category_instance,
-            test_series_id=test_series_instance
+        else:
+            student_act_instance = await studentActivity.create(student=student_instance,
+                                                                course=course_instance,
+                                                                )
+            await studentTestSeriesActivity.create(
+                student_activity=student_act_instance,
+                category=category_instance,
+                test_series_id=test_series_instance
+            )
+        return {"added"}
+        # return await student_activities(student=data.student_id, course=course_instance)
+    except Exception as ex:
+        return JSONResponse(
+            {"status": False, "message": str(ex)}, status_code=208
         )
-    return {"added"}
-    # return await student_activities(student=data.student_id, course=course_instance)
 
 
 @router.post('/active_subscription/{student_id}/{c_slug}/{subscription_id}/')
@@ -749,12 +764,17 @@ async def active_subscription(student_id: str, c_slug: str, subscription_id: str
             response_model=List[CourseCategoryTestSeriesOut],
             )
 async def each_test_series(test_series_id: str, _=Depends(get_current_user)):
-    # series_obj = await CourseCategoryTestSeries.get(id=test_series_id)
-    test_series = await CourseCategoryTestSeries_Pydantic.from_queryset(
-        CourseCategoryTestSeries.filter(id=test_series_id))
-    # test_series = await CourseCategoryTestSeriesQuestions_Pydantic.from_queryset(
-    #     CourseCategoryTestSeriesQuestions.filter(test_series=series_obj))
-    return test_series
+    try:
+        # series_obj = await CourseCategoryTestSeries.get(id=test_series_id)
+        test_series = await CourseCategoryTestSeries_Pydantic.from_queryset(
+            CourseCategoryTestSeries.filter(id=test_series_id))
+        # test_series = await CourseCategoryTestSeriesQuestions_Pydantic.from_queryset(
+        #     CourseCategoryTestSeriesQuestions.filter(test_series=series_obj))
+        return test_series
+    except Exception as ex:
+        return JSONResponse(
+            {"status": False, "message": str(ex)}, status_code=208
+        )
 
 
 @router.get('/students_bookmarks/{student_id}/{course_slug}/',
@@ -791,53 +811,62 @@ async def get_bookmarks(student_id: str, course_slug: str, _=Depends(get_current
 
         return result
     except Exception as ex:
-        raise HTTPException(status_code=208, detail=str(ex))
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 @router.post('/bookmark_video/{student_id}/{video_id}/')
 async def bookmark_video(student_id: str, video_id: str, _=Depends(get_current_user)):
-    student_instance = await Student.get(id=student_id)
-    video_instance = await CourseCategoryLectures.get(id=video_id)
-    category_values = await CourseCategoryLectures.get(id=video_id).values("category_topic__category__category__id")
-    category_id = category_values["category_topic__category__category__id"]
-    category_instance = await Category.get(id=category_id)
-    if not await BookMarkedVideos.exists(student=student_instance, video=video_instance):
-        await BookMarkedVideos.create(student=student_instance, category=category_instance, video=video_instance)
-        return JSONResponse({"status": True, "message": "bookmarked"}, status_code=201)
-    else:
-        await BookMarkedVideos.filter(student=student_instance, video=video_instance).delete()
-        return JSONResponse({"status": False, "message": "BookMark Removed"}, status_code=202)
+    try:
+        student_instance = await Student.get(id=student_id)
+        video_instance = await CourseCategoryLectures.get(id=video_id)
+        category_values = await CourseCategoryLectures.get(id=video_id).values("category_topic__category__category__id")
+        category_id = category_values["category_topic__category__category__id"]
+        category_instance = await Category.get(id=category_id)
+        if not await BookMarkedVideos.exists(student=student_instance, video=video_instance):
+            await BookMarkedVideos.create(student=student_instance, category=category_instance, video=video_instance)
+            return JSONResponse({"status": True, "message": "bookmarked"}, status_code=201)
+        else:
+            await BookMarkedVideos.filter(student=student_instance, video=video_instance).delete()
+            return JSONResponse({"status": False, "message": "BookMark Removed"}, status_code=202)
+    except Exception as ex:
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 @router.post('/bookmark_notes/{student_id}/{note_id}/')
 async def bookmark_notes(student_id: str, note_id: str, _=Depends(get_current_user)):
-    student_instance = await Student.get(id=student_id)
-    notes_instance = await CourseCategoryNotes.get(id=note_id)
-    category_values = await CourseCategoryNotes.get(id=note_id).values("category_topic__category__category__id")
-    category_id = category_values["category_topic__category__category__id"]
-    category_instance = await Category.get(id=category_id)
-    if not await BookMarkedNotes.exists(student=student_instance, notes=notes_instance):
-        await BookMarkedNotes.create(student=student_instance, category=category_instance, notes=notes_instance)
-        return JSONResponse({"status": True, "message": "bookmarked"}, status_code=201)
-    else:
-        await BookMarkedNotes.filter(student=student_instance, notes=notes_instance).delete()
-        return JSONResponse({"status": False, "message": "BookMark Removed"}, status_code=202)
+    try:
+        student_instance = await Student.get(id=student_id)
+        notes_instance = await CourseCategoryNotes.get(id=note_id)
+        category_values = await CourseCategoryNotes.get(id=note_id).values("category_topic__category__category__id")
+        category_id = category_values["category_topic__category__category__id"]
+        category_instance = await Category.get(id=category_id)
+        if not await BookMarkedNotes.exists(student=student_instance, notes=notes_instance):
+            await BookMarkedNotes.create(student=student_instance, category=category_instance, notes=notes_instance)
+            return JSONResponse({"status": True, "message": "bookmarked"}, status_code=201)
+        else:
+            await BookMarkedNotes.filter(student=student_instance, notes=notes_instance).delete()
+            return JSONResponse({"status": False, "message": "BookMark Removed"}, status_code=202)
+    except Exception as ex:
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 @router.post('/bookmark_testseries/{student_id}/{test_id}/')
 async def bookmark_testseries(student_id: str, test_id: str, _=Depends(get_current_user)):
-    student_instance = await Student.get(id=student_id)
-    test_series_instance = await CourseCategoryTestSeries.get(id=test_id)
-    category_values = await CourseCategoryTestSeries.get(id=test_id).values("category_topic__category__category__id")
-    category_id = category_values["category_topic__category__category__id"]
-    category_instance = await Category.get(id=category_id)
-    if not await BookMarkedTestseries.exists(student=student_instance, test_series=test_series_instance):
-        await BookMarkedTestseries.create(student=student_instance, category=category_instance,
-                                          test_series=test_series_instance)
-        return JSONResponse({"status": True, "message": "bookmarked"}, status_code=201)
-    else:
-        await BookMarkedTestseries.filter(student=student_instance, test_series=test_series_instance).delete()
-        return JSONResponse({"status": False, "message": "BookMark Removed"}, status_code=202)
+    try:
+        student_instance = await Student.get(id=student_id)
+        test_series_instance = await CourseCategoryTestSeries.get(id=test_id)
+        category_values = await CourseCategoryTestSeries.get(id=test_id).values("category_topic__category__category__id")
+        category_id = category_values["category_topic__category__category__id"]
+        category_instance = await Category.get(id=category_id)
+        if not await BookMarkedTestseries.exists(student=student_instance, test_series=test_series_instance):
+            await BookMarkedTestseries.create(student=student_instance, category=category_instance,
+                                              test_series=test_series_instance)
+            return JSONResponse({"status": True, "message": "bookmarked"}, status_code=201)
+        else:
+            await BookMarkedTestseries.filter(student=student_instance, test_series=test_series_instance).delete()
+            return JSONResponse({"status": False, "message": "BookMark Removed"}, status_code=202)
+    except Exception as ex:
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 class AskPydantic(BaseModel):
@@ -868,7 +897,7 @@ async def ask_me(student_id: str = Form(...), category_id: str = Form(...), enqu
         #                          "message": "Can't submit the query as your last query is still pending"},
         #                         status_code=201)
     except Exception as ex:
-        raise HTTPException(status_code=208, detail=str(ex))
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 class ConnectionManager:
@@ -897,14 +926,20 @@ async def websocket_endpoint(websocket: WebSocket, client_id: int):
 
 @router.get('/ask/')
 async def get_queries(_=Depends(get_current_user)):
-    obj = await ask_Pydantic.from_queryset(Ask.all().order_by("-created_at"))
-    return obj
+    try:
+        obj = await ask_Pydantic.from_queryset(Ask.all().order_by("-created_at"))
+        return obj
+    except Exception as ex:
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 @router.get('/ask/{student_id}/', response_model=List[queryPydantic])
 async def get_queries_by_student(student_id: str, _=Depends(get_current_user)):
-    obj = await ask_Pydantic.from_queryset(Ask.filter(student__id=student_id).order_by('-created_at'))
-    return obj
+    try:
+        obj = await ask_Pydantic.from_queryset(Ask.filter(student__id=student_id).order_by('-created_at'))
+        return obj
+    except Exception as ex:
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 @router.get('/recommended_lectures/{course_slug}/{student_id}/',
@@ -929,7 +964,7 @@ async def recommended_lectures(course_slug: str, student_id: str, _=Depends(get_
         return new_cat_list
         # return list_array
     except Exception as ex:
-        raise HTTPException(status_code=208, detail=str(ex))
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 class testRecordIn_Pydantic(BaseModel):
@@ -942,32 +977,34 @@ class testRecordIn_Pydantic(BaseModel):
 
 @router.post('/test_record/')
 async def add_test_records(data: testRecordIn_Pydantic, _=Depends(get_current_user)):
-    student_id = data.student_id
-    test_series_id = data.test_series_id
-    correct_ans = data.correct_ans
-    wrong_ans = data.wrong_ans
-    skipped_qns = data.skipped_qns
-    if await Student.exists(id=student_id):
-        student = await Student.get(id=student_id)
-        if await CourseCategoryTestSeries.exists(id=test_series_id):
-            test_series = await CourseCategoryTestSeries.get(id=test_series_id)
-            marks = ((test_series.marks) /
-                     (test_series.no_of_qstns)) * correct_ans
-            if not await StudentTestSeriesRecord.exists(test_series=test_series):
-                await StudentTestSeriesRecord.create(
-                    student=student,
-                    test_series=test_series,
-                    correct_ans=correct_ans,
-                    wrong_ans=wrong_ans,
-                    skipped_qns=skipped_qns,
-                    marks=marks
-                )
-                return JSONResponse(
-                    {"status": True, "message": "Submitted"}, status_code=201)
-            else:
-                return JSONResponse(
-                    {"status": False, "message": "You're not allowed to re-submit this test series"}, status_code=208)
-
+    try:
+        student_id = data.student_id
+        test_series_id = data.test_series_id
+        correct_ans = data.correct_ans
+        wrong_ans = data.wrong_ans
+        skipped_qns = data.skipped_qns
+        if await Student.exists(id=student_id):
+            student = await Student.get(id=student_id)
+            if await CourseCategoryTestSeries.exists(id=test_series_id):
+                test_series = await CourseCategoryTestSeries.get(id=test_series_id)
+                marks = ((test_series.marks) /
+                         (test_series.no_of_qstns)) * correct_ans
+                if not await StudentTestSeriesRecord.exists(test_series=test_series):
+                    await StudentTestSeriesRecord.create(
+                        student=student,
+                        test_series=test_series,
+                        correct_ans=correct_ans,
+                        wrong_ans=wrong_ans,
+                        skipped_qns=skipped_qns,
+                        marks=marks
+                    )
+                    return JSONResponse(
+                        {"status": True, "message": "Submitted"}, status_code=201)
+                else:
+                    return JSONResponse(
+                        {"status": False, "message": "You're not allowed to re-submit this test series"}, status_code=208)
+    except Exception as ex:
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 '''Apply Coupon'''
 
@@ -987,31 +1024,34 @@ async def get_coupons(_=Depends(get_current_user)):
 
 @router.post('/apply_coupon/')
 async def apply_coupon(data: applyCouponPydantic, _=Depends(get_current_user)):
-    course = await Course.get(id=data.course_id)
-    subscription = await CourseSubscriptionPlans.get(id=data.subscription_id)
-    coupon_name = (data.coupon).upper()
-    if await Coupons.exists(name=coupon_name, subscription__id=data.subscription_id, is_active=True):
-        coupon = await Coupons.get(name=coupon_name, subscription=subscription)
-        if not await UsedCoupons.exists(coupon=coupon):
-            student = await Student.get(id=data.student_id)
-            subscription = await CourseSubscriptionPlans.get(id=data.subscription_id)
-            plan_price = subscription.plan_price
-            discount = coupon.discount
-            coupon_type = coupon.coupon_type
-            if coupon_type == 1:
-                coupon_discount = plan_price * (discount / 100)
-                discounted_price = plan_price * (1 - (discount / 100))
-            elif(coupon_type == 2):
-                coupon_discount = discount
-            return JSONResponse({'status': True,
-                                 'message': 'Coupon applied successfully',
-                                 'coupon_discount': coupon_discount}, status_code=200)
+    try:
+        course = await Course.get(id=data.course_id)
+        subscription = await CourseSubscriptionPlans.get(id=data.subscription_id)
+        coupon_name = (data.coupon).upper()
+        if await Coupons.exists(name=coupon_name, subscription__id=data.subscription_id, is_active=True):
+            coupon = await Coupons.get(name=coupon_name, subscription=subscription)
+            if not await UsedCoupons.exists(coupon=coupon):
+                student = await Student.get(id=data.student_id)
+                subscription = await CourseSubscriptionPlans.get(id=data.subscription_id)
+                plan_price = subscription.plan_price
+                discount = coupon.discount
+                coupon_type = coupon.coupon_type
+                if coupon_type == 1:
+                    coupon_discount = plan_price * (discount / 100)
+                    discounted_price = plan_price * (1 - (discount / 100))
+                elif(coupon_type == 2):
+                    coupon_discount = discount
+                return JSONResponse({'status': True,
+                                     'message': 'Coupon applied successfully',
+                                     'coupon_discount': coupon_discount}, status_code=200)
+
+            else:
+                return JSONResponse({'status': False, 'message': 'Invalid Coupon'})
 
         else:
             return JSONResponse({'status': False, 'message': 'Invalid Coupon'})
-
-    else:
-        return JSONResponse({'status': False, 'message': 'Invalid Coupon'})
+    except Exception as ex:
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 class StudentCouponListing(BaseModel):
@@ -1021,7 +1061,10 @@ class StudentCouponListing(BaseModel):
 
 @router.post('/get_coupons_by_student/')
 async def student_coupons(data: StudentCouponListing, _=Depends(get_current_user)):
-    student_id = data.student_id
-    course_id = data.course_id
-    obj = await Coupons.all()
-    return obj
+    try:
+        student_id = data.student_id
+        course_id = data.course_id
+        obj = await Coupons.all()
+        return obj
+    except Exception as ex:
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)

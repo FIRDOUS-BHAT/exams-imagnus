@@ -99,7 +99,7 @@ def get_cookie(request: Request):
         token = request.cookies.get(settings.admin_login)
         return token
     except Exception as ex:
-        raise HTTPException(status_code=208, detail=str(ex))
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 def flash(request: Request, message: typing.Any, category: str = "primary") -> None:
@@ -350,7 +350,7 @@ async def get_course_page(request: Request, user=Depends(get_current_user)):
                 'create_order_active': 'active',
             })
     except Exception as ex:
-        # raise HTTPException(status_code=208, detail=str(ex))
+        # return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
         return RedirectResponse(url="/administrator/login/", status_code=status.HTTP_302_FOUND)
 
 
@@ -432,7 +432,7 @@ async def create_course(request: Request, pref_id: str = Form(...),
                                 created_at=updated_at)
             return RedirectResponse(url='/admin/create_course/', status_code=status.HTTP_303_SEE_OTHER)
     except Exception as ex:
-        raise HTTPException(status_code=208, detail=str(ex))
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 # add category
@@ -706,7 +706,7 @@ async def add_category_lecture(course_id: str = Form(...),
         with open('exams_imagnus_error_log.txt', 'a') as the_file:
             the_file.write(str(updated_at) + ' | ' + str(ex) + '\n')
 
-        raise HTTPException(status_code=208, detail=str(ex))
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
         # return ex
         # return RedirectResponse(
@@ -907,7 +907,7 @@ async def edit_lectures(request: Request, course_id: str = Form(...), category_i
                     '/' + category_obj.slug + '/' + topic_obj.slug + '/',
                 status_code=status.HTTP_303_SEE_OTHER)
     except Exception as ex:
-        raise HTTPException(status_code=208, detail=str(ex))
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 async def call_api(id):
@@ -934,7 +934,7 @@ async def get_uploaded_video_content(content_id: str):
         return list_array
         # return list_array
     except Exception as ex:
-        raise HTTPException(status_code=208, detail=str(ex))
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 @router.get('/get_uploaded_content/notes/{content_id}/',
@@ -949,7 +949,7 @@ async def get_uploaded_notes_content(content_id: str):
         return list_array
         # return list_array
     except Exception as ex:
-        raise HTTPException(status_code=208, detail=str(ex))
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 @router.get('/get_uploaded_content/testseries/{content_id}/',
@@ -965,7 +965,7 @@ async def get_uploaded_testseries_content(content_id: str):
         return list_array
         # return list_array
     except Exception as ex:
-        raise HTTPException(status_code=208, detail=str(ex))
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 @router.get('/get_uploaded_content/live/{content_id}/',
@@ -981,7 +981,7 @@ async def get_uploaded_live_content(content_id: str):
         return list_array
         # return list_array
     except Exception as ex:
-        raise HTTPException(status_code=208, detail=str(ex))
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 async def fire_push_notification(course_obj, category_obj, topic_obj, saved_obj, title, message):
@@ -1642,7 +1642,7 @@ async def add_live_class(course_id: List[str] = Form(...), instructor_id: str = 
 
 
 #    except Exception as ex:
-#        raise HTTPException(status_code=208, detail=str(ex))
+#        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 @router.post('/admin/delete_live_classs/')

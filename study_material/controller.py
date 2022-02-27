@@ -59,78 +59,102 @@ frontend_templates = Jinja2Templates(
 
 @router.get('/admin/add_study_material/')
 async def add_study_material(request: Request):
-    material_obj = await StudyMaterialName_Pydantic.from_queryset(StudyMaterialName.all())
-    course_obj = await Course_Pydantic.from_queryset(Course.all())
-    first_study_material_name = await StudyMaterialName.first()
-    category_course_obj = await StudyMaterialCourse_Pydantic.from_queryset(
-        StudyMaterialCourse.all()
-    )
+    try:
+        material_obj = await StudyMaterialName_Pydantic.from_queryset(StudyMaterialName.all())
+        course_obj = await Course_Pydantic.from_queryset(Course.all())
+        first_study_material_name = await StudyMaterialName.first()
+        category_course_obj = await StudyMaterialCourse_Pydantic.from_queryset(
+            StudyMaterialCourse.all()
+        )
 
-    each_category_course_obj = await StudyMaterialCourse_Pydantic.from_queryset(
-        StudyMaterialCourse.filter(material__id=first_study_material_name.id)
-    )
+        each_category_course_obj = await StudyMaterialCourse_Pydantic.from_queryset(
+            StudyMaterialCourse.filter(
+                material__id=first_study_material_name.id)
+        )
 
-    return backend_templates.TemplateResponse('study_material.html', context={
-        'request': request,
-        'study_material_names': material_obj,
-        'courses': course_obj,
-        'category_course': category_course_obj,
-        'each_category_courses': each_category_course_obj,
-        'add_study_material_active': 'active',
+        return backend_templates.TemplateResponse('study_material.html', context={
+            'request': request,
+            'study_material_names': material_obj,
+            'courses': course_obj,
+            'category_course': category_course_obj,
+            'each_category_courses': each_category_course_obj,
+            'add_study_material_active': 'active',
 
-    })
+        })
+    except Exception as ex:
+        return JSONResponse(
+            {"status": False, "message": str(ex)}, status_code=208
+        )
 
 
 @ router.get('/admin/study_material_notes/')
 async def add_study_material(request: Request):
+    try:
+        study_material_categories_obj = await StudyMaterialCategories_Pydantic.from_queryset(
+            StudyMaterialCategories.filter(is_active=True)
+        )
 
-    study_material_categories_obj = await StudyMaterialCategories_Pydantic.from_queryset(
-        StudyMaterialCategories.filter(is_active=True)
-    )
+        return backend_templates.TemplateResponse('study_material_notes.html', context={
+            'request': request,
+            'study_material_categories_obj': study_material_categories_obj,
+            'add_study_material_active': 'active',
 
-    return backend_templates.TemplateResponse('study_material_notes.html', context={
-        'request': request,
-        'study_material_categories_obj': study_material_categories_obj,
-        'add_study_material_active': 'active',
-
-    })
+        })
+    except Exception as ex:
+        return JSONResponse(
+            {"status": False, "message": str(ex)}, status_code=208
+        )
 
 
 @router.get('/admin/study_material_test_series/')
 async def add_study_material(request: Request):
+    try:
+        testseries_obj = await StudyMaterialTestSeries_Pydantic.from_queryset(
+            StudyMaterialTestSeries.all()
+        )
 
-    testseries_obj = await StudyMaterialTestSeries_Pydantic.from_queryset(
-        StudyMaterialTestSeries.all()
-    )
+        return backend_templates.TemplateResponse('study_material_testseries.html', context={
+            'request': request,
 
-    return backend_templates.TemplateResponse('study_material_testseries.html', context={
-        'request': request,
-
-        'add_study_material_active': 'active',
-        'testseries_obj': testseries_obj
-    })
+            'add_study_material_active': 'active',
+            'testseries_obj': testseries_obj
+        })
+    except Exception as ex:
+        return JSONResponse(
+            {"status": False, "message": str(ex)}, status_code=208
+        )
 
 
 @ router.post("/admin/post_study_material_name/")
 async def post_study_material_name(sname: str = Form(...)):
-    await StudyMaterialName.create(name=sname, slug=slugify(sname))
-    return RedirectResponse(url='/admin/add_study_material/', status_code=status.HTTP_303_SEE_OTHER)
+    try:
+        await StudyMaterialName.create(name=sname, slug=slugify(sname))
+        return RedirectResponse(url='/admin/add_study_material/', status_code=status.HTTP_303_SEE_OTHER)
+    except Exception as ex:
+        return JSONResponse(
+            {"status": False, "message": str(ex)}, status_code=208
+        )
 
 
 @ router.post('/admin/add_study_material_course/', )
 async def create_course(study_material_id: str = Form(...),
                         course_id: str = Form(...), icon_image=File(...),
                         bundle_price: int = Form(...), discount_price: int = Form(...), s3: BaseClient = Depends(s3_auth)):
-    course_instance = await Course.get(id=course_id)
-    preference = await StudyMaterialName.get(id=study_material_id)
-    image_url = await upload_images(s3, folder='study_material/course_icons', image=icon_image)
-    # web_image_url = await upload_images(s3, folder='course_icons/web_icons', image=web_icon)
-    if not await StudyMaterialCourse.exists(material=preference, course=course_instance):
-        await StudyMaterialCourse.create(
-            material=preference, course=course_instance,
-            bundle_price=bundle_price, bundle_dsc_price=discount_price, web_icon=image_url,
+    try:
+        course_instance = await Course.get(id=course_id)
+        preference = await StudyMaterialName.get(id=study_material_id)
+        image_url = await upload_images(s3, folder='study_material/course_icons', image=icon_image)
+        # web_image_url = await upload_images(s3, folder='course_icons/web_icons', image=web_icon)
+        if not await StudyMaterialCourse.exists(material=preference, course=course_instance):
+            await StudyMaterialCourse.create(
+                material=preference, course=course_instance,
+                bundle_price=bundle_price, bundle_dsc_price=discount_price, web_icon=image_url,
+            )
+        return RedirectResponse(url='/admin/add_study_material/', status_code=status.HTTP_303_SEE_OTHER)
+    except Exception as ex:
+        return JSONResponse(
+            {"status": False, "message": str(ex)}, status_code=208
         )
-    return RedirectResponse(url='/admin/add_study_material/', status_code=status.HTTP_303_SEE_OTHER)
 
 
 @router.post('/admin/add_study_material_category/', )
@@ -139,22 +163,27 @@ async def add_study_material_category(study_material_id: str = Form(...), catego
                                       org_price: int = Form(...), d_price: int = Form(...),
                                       icon_image: UploadFile = File(...), material_file: UploadFile = File(...),
                                       s3: BaseClient = Depends(s3_auth)):
-    preference = await StudyMaterialName.get(id=study_material_id)
-    course = await Course.get(id=course_id)
-    categoryCourse = await StudyMaterialCourse.get(course=course, material=preference)
-    image_url = await upload_images(s3, folder='study_material/category_icons', image=icon_image)
+    try:
+        preference = await StudyMaterialName.get(id=study_material_id)
+        course = await Course.get(id=course_id)
+        categoryCourse = await StudyMaterialCourse.get(course=course, material=preference)
+        image_url = await upload_images(s3, folder='study_material/category_icons', image=icon_image)
 
-    material_url = await upload_images(s3, folder='study_material/notes', image=material_file)
-    material_url_key = 'study_material/notes/'+material_file.filename
+        material_url = await upload_images(s3, folder='study_material/notes', image=material_file)
+        material_url_key = 'study_material/notes/'+material_file.filename
 
-    # web_image_url = await upload_images(s3, folder='course_icons/web_icons', image=web_icon)
-    await StudyMaterialCategories.create(course=categoryCourse, name=category_name, slug=slugify(category_name),
-                                         topic_name=chapter_name, topic_slug=slugify(
-        chapter_name),
-        price=org_price, discount_price=d_price, web_icon=image_url,
-        material_url_key=material_url_key
-    )
-    return RedirectResponse(url='/admin/add_study_material/', status_code=status.HTTP_303_SEE_OTHER)
+        # web_image_url = await upload_images(s3, folder='course_icons/web_icons', image=web_icon)
+        await StudyMaterialCategories.create(course=categoryCourse, name=category_name, slug=slugify(category_name),
+                                             topic_name=chapter_name, topic_slug=slugify(
+            chapter_name),
+            price=org_price, discount_price=d_price, web_icon=image_url,
+            material_url_key=material_url_key
+        )
+        return RedirectResponse(url='/admin/add_study_material/', status_code=status.HTTP_303_SEE_OTHER)
+    except Exception as ex:
+        return JSONResponse(
+            {"status": False, "message": str(ex)}, status_code=208
+        )
 
 
 @router.post('/admin/add_study_material_test_series/', )
@@ -162,57 +191,78 @@ async def add_study_material_test_series(study_material_id: str = Form(...), cat
                                          course_id: str = Form(...), chapter_name: str = Form(...), time_duration: str = Form(...),
                                          no_of_qstns: int = Form(...), marks: int = Form(...), test_series_thumbnail: UploadFile = File(...),
                                          lecture_test_series: UploadFile = File(...), s3: BaseClient = Depends(s3_auth)):
-    preference = await StudyMaterialName.get(id=study_material_id)
-    course = await Course.get(id=course_id)
-    categoryCourse = await StudyMaterialCourse.get(course=course, material=preference)
-    image_url = await upload_images(s3, folder='study_material/test_series_thumbnail', image=test_series_thumbnail)
+    try:
+        preference = await StudyMaterialName.get(id=study_material_id)
+        course = await Course.get(id=course_id)
+        categoryCourse = await StudyMaterialCourse.get(course=course, material=preference)
+        image_url = await upload_images(s3, folder='study_material/test_series_thumbnail', image=test_series_thumbnail)
 
-    lecture_filename = (lecture_test_series.filename).split(".")[-1]
+        lecture_filename = (lecture_test_series.filename).split(".")[-1]
 
-    if lecture_filename == 'xlsx':
+        if lecture_filename == 'xlsx':
 
-        data = pd.read_excel(
-            lecture_test_series.file.read())
+            data = pd.read_excel(
+                lecture_test_series.file.read())
 
-        test_series_instance = await StudyMaterialTestSeries.create(course=categoryCourse, cat_name=category_name, cat_slug=slugify(category_name),
-                                                                    topic_name=chapter_name, topic_slug=slugify(
-                                                                        chapter_name),
-                                                                    time_duration=time_duration, marks=marks, no_of_qstns=no_of_qstns, thumbnail=image_url)
+            test_series_instance = await StudyMaterialTestSeries.create(course=categoryCourse, cat_name=category_name, cat_slug=slugify(category_name),
+                                                                        topic_name=chapter_name, topic_slug=slugify(
+                                                                            chapter_name),
+                                                                        time_duration=time_duration, marks=marks, no_of_qstns=no_of_qstns, thumbnail=image_url)
 
-        for i, k in data.iterrows():
-            await StudyMaterialTestSeriesQuestions.create(
-                question=k['questions'],
-                opt_1=k['opt_1'],
-                opt_2=k['opt_2'],
-                opt_3=k['opt_3'],
-                opt_4=k['opt_4'],
-                answer=k['answer'],
-                solution=k['solution'],
-                test_series=test_series_instance
-            )
+            for i, k in data.iterrows():
+                await StudyMaterialTestSeriesQuestions.create(
+                    question=k['questions'],
+                    opt_1=k['opt_1'],
+                    opt_2=k['opt_2'],
+                    opt_3=k['opt_3'],
+                    opt_4=k['opt_4'],
+                    answer=k['answer'],
+                    solution=k['solution'],
+                    test_series=test_series_instance
+                )
 
-        return RedirectResponse(url='/admin/add_study_material/', status_code=status.HTTP_303_SEE_OTHER)
+            return RedirectResponse(url='/admin/add_study_material/', status_code=status.HTTP_303_SEE_OTHER)
+    except Exception as ex:
+        return JSONResponse(
+            {"status": False, "message": str(ex)}, status_code=208
+        )
 
 
 @router.delete('/admin/delete_studyMaterial/{mid}')
 async def delete_studymaterial(mid: str):
-    await StudyMaterialCategories.filter(id=mid).delete()
-    return {"status": True}
+    try:
+        await StudyMaterialCategories.filter(id=mid).delete()
+        return {"status": True}
+    except Exception as ex:
+        return JSONResponse(
+            {"status": False, "message": str(ex)}, status_code=208
+        )
+
 
 @router.delete('/admin/delete_testseries/{mid}')
 async def delete_studymaterial(mid: str):
-    await StudyMaterialTestSeries.filter(id=mid).delete()
-    return {"status": True}
+    try:
+        await StudyMaterialTestSeries.filter(id=mid).delete()
+        return {"status": True}
+    except Exception as ex:
+        return JSONResponse(
+            {"status": False, "message": str(ex)}, status_code=208
+        )
+
 
 @router.post('/admin/get_study_material_course/')
 async def get_study_material_course(request: Request):
-    data = await request.json()
-    mid = data['mid']
-    obj = await StudyMaterialCourse_Pydantic.from_queryset(
-        StudyMaterialCourse.filter(material__id=mid)
-    )
-    return obj
-
+    try:
+        data = await request.json()
+        mid = data['mid']
+        obj = await StudyMaterialCourse_Pydantic.from_queryset(
+            StudyMaterialCourse.filter(material__id=mid)
+        )
+        return obj
+    except Exception as ex:
+        return JSONResponse(
+            {"status": False, "message": str(ex)}, status_code=208
+        )
 
 # '''
 # Frontend controller
@@ -221,74 +271,89 @@ async def get_study_material_course(request: Request):
 
 @router.get('/exam_study_material/{flag}/')
 async def exam_study_material(request: Request, flag: str, user=Depends(get_current_user)):
-    if user is None:
-        return RedirectResponse(url="/student/login/?returnURL=/exam_study_material/",
-                                status_code=status.HTTP_302_FOUND)
-    if await StudyMaterialName.exists(slug=flag):
-        std_obj = await StudyMaterialName.get(slug=flag)
-        std_material_id = std_obj.id
+    try:
+        if user is None:
+            return RedirectResponse(url="/student/login/?returnURL=/exam_study_material/",
+                                    status_code=status.HTTP_302_FOUND)
+        if await StudyMaterialName.exists(slug=flag):
+            std_obj = await StudyMaterialName.get(slug=flag)
+            std_material_id = std_obj.id
 
-    else:
-        raise HTTPException(detail="Bad Request", status_code=208)
-    category_course_obj = await StudyMaterialCourse_Pydantic.from_queryset(
-        StudyMaterialCourse.filter(material__id=std_material_id)
-    )
+        else:
+            raise HTTPException(detail="Bad Request", status_code=208)
+        category_course_obj = await StudyMaterialCourse_Pydantic.from_queryset(
+            StudyMaterialCourse.filter(material__id=std_material_id)
+        )
 
-    return frontend_templates.TemplateResponse('exam_study_material.html', context={
-        'request': request,
-        'category_course': category_course_obj,
-        'flag': flag,
-    })
+        return frontend_templates.TemplateResponse('exam_study_material.html', context={
+            'request': request,
+            'category_course': category_course_obj,
+            'flag': flag,
+        })
+    except Exception as ex:
+        return JSONResponse(
+            {"status": False, "message": str(ex)}, status_code=208
+        )
 
 
 @router.get('/exam_study_notes/{id}/')
 async def exam_study_material(request: Request, id: str, user=Depends(get_current_user)):
-    if user is None:
-        return RedirectResponse(url="/student/login/?returnURL=/exam_study_notes/" + id + "/",
-                                status_code=status.HTTP_302_FOUND)
-    # cat_instance = await StudyMaterialCategories.get(id=id)
-    course_instance = await StudyMaterialCourse.get(id=id).values('course__name')
-    c_name = course_instance['course__name']
+    try:
+        if user is None:
+            return RedirectResponse(url="/student/login/?returnURL=/exam_study_notes/" + id + "/",
+                                    status_code=status.HTTP_302_FOUND)
+        # cat_instance = await StudyMaterialCategories.get(id=id)
+        course_instance = await StudyMaterialCourse.get(id=id).values('course__name')
+        c_name = course_instance['course__name']
 
-    course_categories = await StudyMaterialCategories_Pydantic.from_queryset(
-        StudyMaterialCategories.filter(course__id=id)
-    )
-    return frontend_templates.TemplateResponse('view_notes.html', context={
-        'request': request,
-        'course_categories': course_categories,
-        'c_name': c_name,
-        'cid': id,
+        course_categories = await StudyMaterialCategories_Pydantic.from_queryset(
+            StudyMaterialCategories.filter(course__id=id)
+        )
+        return frontend_templates.TemplateResponse('view_notes.html', context={
+            'request': request,
+            'course_categories': course_categories,
+            'c_name': c_name,
+            'cid': id,
 
-    })
+        })
+    except Exception as ex:
+        return JSONResponse(
+            {"status": False, "message": str(ex)}, status_code=208
+        )
 
 
 @router.get('/testseries/{id}/')
 async def view_test_series(request: Request, id: str,  user=Depends(get_current_user)):
-    course_instance = await StudyMaterialCourse.get(id=id).values('course__name')
-    c_name = course_instance['course__name']
-    test_series_obj = await StudyMaterialTestSeries_Pydantic.from_queryset(
-        StudyMaterialTestSeries.filter(course__id=id)
-    )
+    try:
+        course_instance = await StudyMaterialCourse.get(id=id).values('course__name')
+        c_name = course_instance['course__name']
+        test_series_obj = await StudyMaterialTestSeries_Pydantic.from_queryset(
+            StudyMaterialTestSeries.filter(course__id=id)
+        )
 
-    category_course_obj = await StudyMaterialCourse_Pydantic.from_queryset_single(
-        StudyMaterialCourse.get(id=id)
-    )
-    student = await Student.get(id=user)
-    # return test_series_obj
-    return frontend_templates.TemplateResponse('view_testseries.html', context={
-        'request': request,
-        'app_url': app_url,
-        'c_name': c_name,
-        'test_series_obj': test_series_obj,
-        'category_course': category_course_obj,
-        'student_name': student.fullname,
-        'email': student.email,
-        'mobile': student.mobile,
-        'student_id': student.id,
-        'subscription_id': id,
-        'razorpay_key': razorpay_key
+        category_course_obj = await StudyMaterialCourse_Pydantic.from_queryset_single(
+            StudyMaterialCourse.get(id=id)
+        )
+        student = await Student.get(id=user)
+        # return test_series_obj
+        return frontend_templates.TemplateResponse('view_testseries.html', context={
+            'request': request,
+            'app_url': app_url,
+            'c_name': c_name,
+            'test_series_obj': test_series_obj,
+            'category_course': category_course_obj,
+            'student_name': student.fullname,
+            'email': student.email,
+            'mobile': student.mobile,
+            'student_id': student.id,
+            'subscription_id': id,
+            'razorpay_key': razorpay_key
 
-    })
+        })
+    except Exception as ex:
+        return JSONResponse(
+            {"status": False, "message": str(ex)}, status_code=208
+        )
 
 
 @router.get('/exam_study_material/checkout/{cat_id}/')
@@ -336,20 +401,25 @@ async def exam_study_material(request: Request, cat_id: str, user=Depends(get_cu
 
 @router.post('/create_test_series_order_id/')
 async def create_order_id(request: Request, user=Depends(get_current_user)):
-    data = await request.json()
-    amount = int(data['amount'])
-    subscription_id = data['subscription_id']
-    if not await TestSeriesOrders.exists(student__id=user, test_series_id=subscription_id):
+    try:
+        data = await request.json()
+        amount = int(data['amount'])
+        subscription_id = data['subscription_id']
+        if not await TestSeriesOrders.exists(student__id=user, test_series_id=subscription_id):
 
-        order = client.order.create({
-            "amount": amount * 100,
-            "currency": "INR",
-            "receipt": 'order_rcptid_11'
-        })
+            order = client.order.create({
+                "amount": amount * 100,
+                "currency": "INR",
+                "receipt": 'order_rcptid_11'
+            })
 
-        return JSONResponse({"status": True, "order_id": order['id']}, status_code=200)
-    else:
-        return JSONResponse({"status": False, "message": "You've already purchased this test series"})
+            return JSONResponse({"status": True, "order_id": order['id']}, status_code=200)
+        else:
+            return JSONResponse({"status": False, "message": "You've already purchased this test series"})
+    except Exception as ex:
+        return JSONResponse(
+            {"status": False, "message": str(ex)}, status_code=208
+        )
 
 
 @router.post('/test_series_place_order/')
@@ -438,7 +508,9 @@ async def create_razorpay_order(request: Request,
             return JSONResponse({"status": False, "details": "Student Id does not exist"}, status_code=208)
 
     except Exception as ex:
-        return JSONResponse({"status": False, "details": str(ex)})
+        return JSONResponse(
+            {"status": False, "message": str(ex)}, status_code=208
+        )
 
 
 class OrderParams(BaseModel):

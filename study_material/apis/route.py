@@ -47,12 +47,15 @@ class OrderIdPydantic(BaseModel):
 
 @router.post('/create_razorpay_order_id/')
 async def create_order_id(data: OrderIdPydantic, _=Depends(get_current_user)):
-    order = client.order.create({
-        "amount": data.amount * 100,
-        "currency": "INR",
-        "receipt": 'order_rcptid_11'
-    })
-    return JSONResponse({"status": True, "order_id": order['id']}, status_code=200)
+    try:
+        order = client.order.create({
+            "amount": data.amount * 100,
+            "currency": "INR",
+            "receipt": 'order_rcptid_11'
+        })
+        return JSONResponse({"status": True, "order_id": order['id']}, status_code=200)
+    except Exception as ex:
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 @router.get('/study_material_labels/{course_id}/{student_id}/',
@@ -107,7 +110,7 @@ async def study_material_labels(course_id: str, student_id: str, user=Depends(ge
 
         return main_array
     except Exception as ex:
-        raise HTTPException(status_code=208, detail=str(ex))
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 @router.get('/study_material_labels/v1/{course_id}/{student_id}/',
@@ -180,35 +183,38 @@ async def study_material_labels(course_id: str, student_id: str, user=Depends(ge
 
         return main_array
     except Exception as ex:
-        raise HTTPException(status_code=208, detail=str(ex))
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 @router.get('/exam_study_material/pdf/{course_id}/{student_id}/', response_model=List[StudyMaterialNotes])
 async def exam_study_material(request: Request, course_id: str, student_id: str, user=Depends(get_current_user)):
-    course_categories = await StudyMaterialCategories_Pydantic.from_queryset(
-        StudyMaterialCategories.filter(course__course__id=course_id)
-    )
-    new_array = []
-    '''new code starts with '''
+    try:
+        course_categories = await StudyMaterialCategories_Pydantic.from_queryset(
+            StudyMaterialCategories.filter(course__course__id=course_id)
+        )
+        new_array = []
+        '''new code starts with '''
 
-    '''new code ends'''
+        '''new code ends'''
 
-    for content in course_categories:
-        new_dict = content.dict()
-        item_id = content.id
+        for content in course_categories:
+            new_dict = content.dict()
+            item_id = content.id
 
-        if await StudyMaterialOrderItems.exists(order__student__id=student_id, order__package_mode=2):
-            new_dict.update({'is_purchased': True})
-
-        elif await StudyMaterialOrderItems.exists(order__student__id=student_id, order__package_mode=1):
-            if await StudyMaterialOrderItems.exists(item_id=item_id, order__student__id=student_id):
+            if await StudyMaterialOrderItems.exists(order__student__id=student_id, order__package_mode=2):
                 new_dict.update({'is_purchased': True})
+
+            elif await StudyMaterialOrderItems.exists(order__student__id=student_id, order__package_mode=1):
+                if await StudyMaterialOrderItems.exists(item_id=item_id, order__student__id=student_id):
+                    new_dict.update({'is_purchased': True})
+                else:
+                    new_dict.update({'is_purchased': False})
             else:
                 new_dict.update({'is_purchased': False})
-        else:
-            new_dict.update({'is_purchased': False})
-        new_array.append(new_dict)
-    return new_array
+            new_array.append(new_dict)
+        return new_array
+    except Exception as ex:
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 class MaterialPackage(BaseModel):
@@ -223,32 +229,36 @@ class MaterialPackage(BaseModel):
             response_model=List[MaterialPackage]
             )
 async def material_package(course_id: str, student_id: str, user=Depends(get_current_user)):
-    obj = await StudyMaterialCourse_Pydantic.from_queryset(
-        StudyMaterialCourse.filter(course__id=course_id)
-    )
-    new_list = []
-    new_array = []
-    for each in obj:
-        updated_dict = each.dict()
-        for mat in each.StudyMaterialCourse:
-            new_dict = mat.dict()
-            item_id = mat.id
-            if await StudyMaterialOrderItems.exists(order__student__id=student_id, order__package_mode=2):
-                new_dict.update({'is_purchased': True})
+    try:
+        obj = await StudyMaterialCourse_Pydantic.from_queryset(
+            StudyMaterialCourse.filter(course__id=course_id)
+        )
 
-            elif await StudyMaterialOrderItems.exists(order__student__id=student_id, order__package_mode=1):
-                if await StudyMaterialOrderItems.exists(item_id=item_id, order__student__id=student_id):
+        new_list = []
+        new_array = []
+        for each in obj:
+            updated_dict = each.dict()
+            for mat in each.StudyMaterialCourse:
+                new_dict = mat.dict()
+                item_id = mat.id
+                if await StudyMaterialOrderItems.exists(order__student__id=student_id, order__package_mode=2):
                     new_dict.update({'is_purchased': True})
+
+                elif await StudyMaterialOrderItems.exists(order__student__id=student_id, order__package_mode=1):
+                    if await StudyMaterialOrderItems.exists(item_id=item_id, order__student__id=student_id):
+                        new_dict.update({'is_purchased': True})
+                    else:
+                        new_dict.update({'is_purchased': False})
                 else:
                     new_dict.update({'is_purchased': False})
-            else:
-                new_dict.update({'is_purchased': False})
 
-            new_array.append(new_dict)
-        updated_dict.update({'StudyMaterialCourse': new_array})
-        new_list.append(updated_dict)
-    return new_list
+                new_array.append(new_dict)
+            updated_dict.update({'StudyMaterialCourse': new_array})
+            new_list.append(updated_dict)
+        return new_list
 
+    except Exception as ex:
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 '''
 @router.get('/exam_study_notes/{id}/', response_model=List[StudyMaterialNotes])
@@ -357,19 +367,21 @@ async def get_signed_url(data: studyMaterialUrl, user: str = Depends(get_current
         else:
             return JSONResponse({'status': False, 'message': 'Wrong Input'})
     except Exception as ex:
-        return JSONResponse({'status': False, 'message': str(ex)})
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 @router.post('/study_material_order_history/',
              response_model=List[orderHistoryPydactic]
              )
 async def order_history(data: DashboardPydantic, user=Depends(get_current_user)):
-    student_id = data.student_id
-    obj = await StudyMaterialOrderInstance_Pydantic.from_queryset(
-        StudyMaterialOrderInstance.filter(student__id=student_id)
-    )
-    return obj
-
+    try:
+        student_id = data.student_id
+        obj = await StudyMaterialOrderInstance_Pydantic.from_queryset(
+            StudyMaterialOrderInstance.filter(student__id=student_id)
+        )
+        return obj
+    except Exception as ex:
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 """@router.get('/get_all_study_material_courses/') 
 async def get_all():
@@ -378,41 +390,50 @@ async def get_all():
 
 @router.put('/update_study_material_course_price/{mid}/{original_price}/{discount_price}/')
 async def update_prices(mid: str, original_price: int, discount_price: int):
-    await StudyMaterialCourse.filter(id=mid).update(
-        bundle_price=original_price, bundle_dsc_price=discount_price)
-    return {"update done"}
+    try:
+        await StudyMaterialCourse.filter(id=mid).update(
+            bundle_price=original_price, bundle_dsc_price=discount_price)
+        return {"update done"}
+    except Exception as ex:
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 @router.post('/exam_study_material/test_series/package/',
              response_model=List[StudyMaterialTesSeriesBundlePydantic]
              )
 async def exam_test_series_bundle(data: TestSeriesBundleInputParams, user=Depends(get_current_user)):
-    course_categories = await StudyMaterialCourse_Pydantic.from_queryset(
-        StudyMaterialCourse.filter(
-            course__id=data.course_id, material__id=data.label_id)
-    )
-    new_array = []
-    for content in course_categories:
-        new_dict = content.dict()
-        item_id = content.id
-        if await TestSeriesOrders.exists(test_series=item_id, student__id=data.student_id):
-            new_dict.update({'is_purchased': True})
-        else:
-            new_dict.update({'is_purchased': False})
+    try:
+        course_categories = await StudyMaterialCourse_Pydantic.from_queryset(
+            StudyMaterialCourse.filter(
+                course__id=data.course_id, material__id=data.label_id)
+        )
+        new_array = []
+        for content in course_categories:
+            new_dict = content.dict()
+            item_id = content.id
+            if await TestSeriesOrders.exists(test_series=item_id, student__id=data.student_id):
+                new_dict.update({'is_purchased': True})
+            else:
+                new_dict.update({'is_purchased': False})
 
-        new_array.append(new_dict)
-    return new_array
+            new_array.append(new_dict)
+        return new_array
+    except Exception as ex:
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 @router.post('/exam_study_material/test_series/',
              response_model=List[StudyMaterialTestSeriesPydantic]
              )
 async def exams_test_series(data: TestSeriesInputParams, user=Depends(get_current_user)):
-    obj = await StudyMaterialTestSeries_Pydantic.from_queryset(
-        StudyMaterialTestSeries.filter(course__id=data.bundle_id)
-    )
+    try:
+        obj = await StudyMaterialTestSeries_Pydantic.from_queryset(
+            StudyMaterialTestSeries.filter(course__id=data.bundle_id)
+        )
 
-    return obj
+        return obj
+    except Exception as ex:
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 @router.post('/test_series_place_order/')
@@ -447,16 +468,22 @@ class EachTestSeriesPydanctic(BaseModel):
              response_model=List[TestSeriesQuestions]
              )
 async def each_test_series(data: EachTestSeriesPydanctic, user=Depends(get_current_user)):
-    obj = await StudyMaterialTestSeriesQuestions.filter(test_series=data.series_id)
-    return obj
+    try:
+        obj = await StudyMaterialTestSeriesQuestions.filter(test_series=data.series_id)
+        return obj
+    except Exception as ex:
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 @router.post('/get_test_series_order_history/',
              response_model=List[TestSeriesOrderHistory]
              )
 async def test_series_order_history(data: DashboardPydantic, user=Depends(get_current_user)):
-    obj = await TestSeriesOrders_Pydantic.from_queryset(
-        TestSeriesOrders.filter(student__id=data.student_id)
-    )
+    try:
+        obj = await TestSeriesOrders_Pydantic.from_queryset(
+            TestSeriesOrders.filter(student__id=data.student_id)
+        )
 
-    return obj
+        return obj
+    except Exception as ex:
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
