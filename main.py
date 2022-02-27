@@ -70,7 +70,7 @@ app.add_middleware(
         plugins.ForwardedForPlugin(),
     ),
 )
-app.add_middleware(GZipMiddleware, minimum_size=500)
+app.add_middleware(GZipMiddleware)
 
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
