@@ -869,6 +869,8 @@ $(document).on('click','.edit_video_lecture', function(e){
   thumbnail = e.target.getAttribute('data-thumbnail')
   order_display = e.target.getAttribute('data-order_display')
   web_url = e.target.getAttribute('data-web_url')
+  mobile_url = e.target.getAttribute('data-mobile_url')
+
 
   $('#edit_lid').val(lid)
   $('#edit_lecture_title').val(title)
@@ -876,8 +878,9 @@ $(document).on('click','.edit_video_lecture', function(e){
   $('#video_thumbnail_url').val(thumbnail)
   $('#lecture_order_display').val(order_display)
   $('#edit_lecture_web_url').val(web_url)
+   $('#edit_mobile_video_url').val(mobile_url)
 
-
+   
 })
 
 $(document).on('click', '.repeat_notification', function(e){

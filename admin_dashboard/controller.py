@@ -120,7 +120,7 @@ templates.env.globals['get_flashed_messages'] = get_flashed_messages
 async def check_login_auth():
 
     ips = context.data["X-Forwarded-For"]
-    # ips = "27.7.244.155,127.0.0.1"
+    ips = "27.7.244.155,127.0.0.1"
     forwarded_for = ips.split(',')
     request_ip = forwarded_for[0]
     if await AdminLoginTracker.exists(ip=request_ip):
@@ -194,7 +194,7 @@ async def login(request: Request, data: OAuth2PasswordRequestForm = Depends()):
         request_ip = request.client.host
         header = request.headers
         ips = context.data["X-Forwarded-For"]
-        # ips = "27.7.244.155,127.0.0.1"
+        ips = "27.7.244.155,127.0.0.1"
         forwarded_for = ips.split(',')
         request_ip = forwarded_for[0]
 
@@ -870,12 +870,13 @@ async def add_from_existing_video(request: Request, course_id: str = Form(...),
 
 
 @router.post('/admin/edit_category_lecture/')
-async def edit_lectures(request: Request, course_id: str = Form(...), category_id: str = Form(...),
+async def edit_lectures(request: Request, edit_lid: str = Form(...), course_id: str = Form(...), category_id: str = Form(...),
                         order_display: int = Form(...),
                         topic_id: str = Form(...), lecture_title: str = Form(...), video_description: str = Form(...),
-                        edit_lecture_web_url: str = Form(...), edit_lid: str = Form(...),
+                        edit_lecture_web_url: str = Form(...), 
                         video_thumbnail: Optional[UploadFile] = File(
                             default=None, media_type='image/*'),
+                        edit_mobile_video_url: str = Form(...),
                         video_thumbnail_url: str = Form(...), s3: BaseClient = Depends(s3_auth),
                         ):
     try:
@@ -891,6 +892,7 @@ async def edit_lectures(request: Request, course_id: str = Form(...), category_i
             instance.discription = video_description
             instance.order_display = order_display
             instance.web_video_url = edit_lecture_web_url
+            instance.mobile_video_url = edit_mobile_video_url
             if video_thumbnail.filename:
                 app_thumbnail = await upload_images(s3,
                                                     folder='videothumbnails/' + category_obj.slug + '/' + topic_obj.slug,
@@ -1845,22 +1847,21 @@ async def get_students(request: Request, user=Depends(get_current_user)):
 @router.get('/update_expiry_date/')
 async def add_new_date():
     stud_obj = await StudentChoices.filter(
-        subscription__id__in=['23438cf5-c964-425a-bf9d-82ee3a280e3e', '50f06382-e7ac-40a2-a06f-b0bca2d9bf5f', '02177d58-6053-401b-bf9d-69b81f2ca510',
-                              '9854bb34-81e2-458f-b78a-ab4be7cd44b6', 'ee534595-7221-47eb-80a2-73f0fcacba77', 'a3609bc6-30e0-42e5-8403-3dbf325d68f3']
+        subscription__id__in=['baa368fb-388a-4e55-b52b-ae4fa70817c1']
     )
 
     i = 0
-    # for each_obj in stud_obj:
-    #     created = each_obj.created_at
+    for each_obj in stud_obj:
+        created = each_obj.expiry_date
     #     new_expiry_date = created + relativedelta(years=1)
     #     updated_at = datetime.now(tz)
     #     await StudentChoices.filter(id=each_obj.id).update(expiry_date=new_expiry_date, updated_at=updated_at)
     #     i = i + 1
     #     print(i)
-    # if (created.month == 8) or (created.month == 9) or (created.month == 10) or (created.month == 11):  # and exp_date.day <= 15
-    #     i = i + 1
-    #     # new_expiry_date = exp_date + relativedelta(months=2)
-    #     new_expiry_date = parser.parse('2022-02-28T23:59:59.410158+05:30')
-    #     await StudentChoices.filter(id=each_obj.id).update(expiry_date=new_expiry_date)
-    #     print(i)
+        #  if (created.month == 1) or (created.month == 2) or (created.month == 3) or (created.month == 4) or (created.month == 5) or (created.month == 6):  # and exp_date.day <= 15
+        #    i = i + 1
+        # #    new_expiry_date = exp_date + relativedelta(months=2)
+        #    new_expiry_date = parser.parse('2022-06-30T23:59:59.410158+05:30')
+        #    await StudentChoices.filter(id=each_obj.id).update(expiry_date=new_expiry_date)
+        #    print(i)
     return {"done"}

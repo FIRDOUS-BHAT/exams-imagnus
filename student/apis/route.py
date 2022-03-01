@@ -1,3 +1,5 @@
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
 import uuid
 from datetime import datetime
 from typing import List, Optional
@@ -258,9 +260,16 @@ class mobileIn(BaseModel):
     mobile: str
 
 
+limiter = Limiter(key_func=get_remote_address)
+
+# router.state.limiter = limiter
+# router.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+
 @router.post("/mobile/check",
              response_model=loginResponsePydantic
              )
+# @limiter.limit("5/second")
 async def mobile_check(data: mobileIn, _=Depends(get_current_user)):
     try:
         new_payment_records = []
