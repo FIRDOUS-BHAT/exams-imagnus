@@ -70,7 +70,7 @@
                                           <td class="text-center">{{ lec.order_display }} </td>
                                           <td class="text-center"><a href="/admin/video_lecture/?link={{ lec.web_video_url }}" target="_blank">Watch it </a></td>
                                           <td class="text-center">
-                                             <a href="#" data-title="{{ lec.title }}" data-thumbnail="{{ lec.app_thumbnail }}" data-order_display="{{ lec.order_display }}" data-lid="{{ lec.id}}" data-web_url="{{ lec.web_video_url }}" data-description="{{ lec.discription }}" title="Edit" class="gray-s edit_video_lecture"><i data-title="{{ lec.title }}" data-web_url="{{ lec.web_video_url }}" data-thumbnail="{{ lec.app_thumbnail }}" data-order_display="{{ lec.order_display }}" data-lid="{{ lec.id}}" data-description="{{ lec.discription }}" class="uil uil-edit-alt"></i></a>
+                                             <a href="#" data-title="{{ lec.title }}" data-thumbnail="{{ lec.app_thumbnail }}" data-order_display="{{ lec.order_display }}" data-lid="{{ lec.id}}" data-web_url="{{ lec.web_video_url }}" data-mobile_url="{{ lec.mobile_video_url }}" data-description="{{ lec.discription }}" title="Edit" class="gray-s edit_video_lecture"><i data-title="{{ lec.title }}" data-web_url="{{ lec.web_video_url }}" data-mobile_url="{{ lec.mobile_video_url }}" data-thumbnail="{{ lec.app_thumbnail }}" data-order_display="{{ lec.order_display }}" data-lid="{{ lec.id}}" data-description="{{ lec.discription }}" class="uil uil-edit-alt"></i></a>
                                              <a title="Delete" data-id="{{ lec.id}}" data-url="/admin/delete_video_lecture/{{ lec.id }}" class="gray-s delete_content"><i class="uil uil-trash-alt" data-lid="{{ lec.id}}" data-url="/admin/delete_video_lecture/{{ lec.id }}"></i></a>
                                              <button title="This will repeat the push notification" type="button" class="btn btn-outline-warning waves-effect px-3 repeat_notification" data-source="video" data-lec_id="{{ lec.id }}" data-title="{{ lec.title }}" data-course="{{ course.id}}" data-category="{{ category.id }}" data-topic="{{ topic.id }}"><i class="fas fa-rocket"
                                                    aria-hidden="true" data-lec_id="{{ lec.id }}" data-title="{{ lec.title }}" data-course="{{ course.id}}" data-category="{{ category.id }}" data-source="video" data-topic="{{ topic.id }}"></i></button>
@@ -319,7 +319,7 @@
                   <button type="button" class="close" data-dismiss="modal" style="text-align: right;
                      margin-right: 5px;">&times;</button>
                   <div class="modal-header">
-                     <h4 class="modal-title">Add Lectures</h4>
+                     <h4 class="modal-title">Edit Lectures</h4>
                   </div>
                   <form  action="/admin/edit_category_lecture/" method="post" enctype="multipart/form-data">
                   <div class="modal-body">
@@ -398,11 +398,24 @@
 
                       
                          </div>
-
                            <div class="row">
                               <div class="col-lg-12 col-md-6 mt-10">
                                  <div class="ui search focus lbel25">
                                     <input type="hidden" id="edit_lid" name="edit_lid">
+                                    <label>Mobile Url* </label>
+                                    <div class="ui left icon input swdh19">
+                                     
+                                       <input class="prompt srch_explore" type="text" placeholder="Mobile video URL" name="edit_mobile_video_url"
+                                                                     data-purpose="edit-course-title" id="edit_mobile_video_url" value="">
+
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+
+                           <div class="row">
+                              <div class="col-lg-12 col-md-6 mt-10">
+                                 <div class="ui search focus lbel25">
                                     <label>Web Url* </label>
                                     <div class="ui left icon input swdh19">
                                     <textarea class="prompt srch_explore form-control"  id="edit_lecture_web_url"

@@ -57,6 +57,7 @@ iso8601==0.1.16
 itsdangerous==1.1.0
 Jinja2==3.0.3
 jmespath==0.10.0
+limits==1.6
 MarkupSafe==2.0.1
 motor==2.5.1
 multidict==6.0.2
@@ -88,12 +89,13 @@ pytz==2021.3
 PyVimeo==1.1.0
 PyYAML==6.0
 razorpay==1.2.0
-redis==4.0.2
+redis==3.5.3
 requests==2.27.1
 rfc3986==1.5.0
 rsa==4.8
 s3transfer==0.5.1
 six==1.16.0
+slowapi==0.1.5
 sniffio==1.2.0
 sortedcontainers==2.4.0
 soupsieve==2.3.1
