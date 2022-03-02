@@ -873,7 +873,7 @@ async def add_from_existing_video(request: Request, course_id: str = Form(...),
 async def edit_lectures(request: Request, edit_lid: str = Form(...), course_id: str = Form(...), category_id: str = Form(...),
                         order_display: int = Form(...),
                         topic_id: str = Form(...), lecture_title: str = Form(...), video_description: str = Form(...),
-                        edit_lecture_web_url: str = Form(...), 
+                        edit_lecture_web_url: str = Form(...),
                         video_thumbnail: Optional[UploadFile] = File(
                             default=None, media_type='image/*'),
                         edit_mobile_video_url: str = Form(...),
@@ -1846,22 +1846,23 @@ async def get_students(request: Request, user=Depends(get_current_user)):
 
 @router.get('/update_expiry_date/')
 async def add_new_date():
-    stud_obj = await StudentChoices.filter(
-        subscription__id__in=['baa368fb-388a-4e55-b52b-ae4fa70817c1']
-    )
+    # stud_obj = await StudentChoices.filter(
+    #     subscription__id__in=[
+    #         '9cac811a-b706-4245-b151-609194bced32', 'f60f4790-b77a-41dc-bc22-6ce51a317f6c', '388e893b-2e99-49e1-8bf2-9a2101fb545c', 'f2b3e0fb-9b66-4b97-ada2-d5240e6236b3']
+    # )
 
-    i = 0
-    for each_obj in stud_obj:
-        created = each_obj.expiry_date
-    #     new_expiry_date = created + relativedelta(years=1)
-    #     updated_at = datetime.now(tz)
-    #     await StudentChoices.filter(id=each_obj.id).update(expiry_date=new_expiry_date, updated_at=updated_at)
-    #     i = i + 1
-    #     print(i)
-        #  if (created.month == 1) or (created.month == 2) or (created.month == 3) or (created.month == 4) or (created.month == 5) or (created.month == 6):  # and exp_date.day <= 15
-        #    i = i + 1
-        # #    new_expiry_date = exp_date + relativedelta(months=2)
-        #    new_expiry_date = parser.parse('2022-06-30T23:59:59.410158+05:30')
-        #    await StudentChoices.filter(id=each_obj.id).update(expiry_date=new_expiry_date)
-        #    print(i)
+    # i = 0
+    # for each_obj in stud_obj:
+    #      created = each_obj.expiry_date
+    # #     new_expiry_date = created + relativedelta(years=1)
+    # #     updated_at = datetime.now(tz)
+    # #     await StudentChoices.filter(id=each_obj.id).update(expiry_date=new_expiry_date, updated_at=updated_at)
+    # #     i = i + 1
+    # #     print(i)
+    #      if (created.month == 2) or (created.month == 3):  # and exp_date.day <= 15
+    #        i = i + 1
+    #     # #    new_expiry_date = exp_date + relativedelta(months=2)
+    #        new_expiry_date = parser.parse('2022-03-31T23:59:59.410158+05:30')
+    #        await StudentChoices.filter(id=each_obj.id).update(expiry_date=new_expiry_date)
+    #        print(i)
     return {"done"}
