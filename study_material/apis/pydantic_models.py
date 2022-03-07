@@ -138,6 +138,7 @@ class TestSeriesQuestions(BaseModel):
     opt_3: str
     opt_4: str
     answer: str
+    solution: Optional[str] = None
 
 
 class OrderParams(BaseModel):
