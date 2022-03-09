@@ -81,7 +81,7 @@ class CategoryNotesPydantic(BaseModel):
     title: Optional[str] = None
     notes_url: Optional[str] = None
     isBookmarked: Optional[bool] = False
-    last_seen: Optional[bool] = False
+    last_seen: Optional[str] = None
 
 
 class CategoryTestSeriesPydantic(BaseModel):
