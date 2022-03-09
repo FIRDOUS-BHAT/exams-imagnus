@@ -69,17 +69,19 @@ class CategoryLecturesPydantic(BaseModel):
     slug: Optional[str] = None
     mobile_video_url: Optional[str] = None
     app_thumbnail: Optional[str] = None
-    description: Optional[str] = None
     video_duration: Optional[float] = None
+    discription: Optional[str] = None
     isBookmarked: Optional[bool] = False
     isLiked: Optional[bool] = False
-    watch_time: Optional[int] = None
+    watch_time: Optional[str] = None
 
 
 class CategoryNotesPydantic(BaseModel):
     id: uuid.UUID
     title: Optional[str] = None
+    slug: Optional[str] = None
     notes_url: Optional[str] = None
+    thumbnail: Optional[str] = None
     isBookmarked: Optional[bool] = False
     last_seen: Optional[str] = None
 
@@ -87,8 +89,8 @@ class CategoryNotesPydantic(BaseModel):
 class CategoryTestSeriesPydantic(BaseModel):
     id: uuid.UUID
     series_no: Optional[str] = None
-    marks: int
-    no_of_qstns: int
+    marks: Optional[int] = None
+    no_of_qstns: Optional[int] = None
     title: Optional[str] = None
     time_duration: Optional[str] = None
     description: Optional[str] = None
