@@ -65,16 +65,23 @@ class CourseOverview(BaseModel):
 
 class CategoryLecturesPydantic(BaseModel):
     id: uuid.UUID
-    title: str
-    slug: str
-    mobile_video_url: str
-    app_thumbnail: str
+    title: Optional[str] = None
+    slug: Optional[str] = None
+    mobile_video_url: Optional[str] = None
+    app_thumbnail: Optional[str] = None
+    description: Optional[str] = None
+    video_duration: Optional[float] = None
+    isBookmarked: Optional[bool] = False
+    isLiked: Optional[bool] = False
+    watch_time: Optional[int] = None
 
 
 class CategoryNotesPydantic(BaseModel):
     id: uuid.UUID
     title: Optional[str] = None
-    notes_url: str
+    notes_url: Optional[str] = None
+    isBookmarked: Optional[bool] = False
+    last_seen: Optional[bool] = False
 
 
 class CategoryTestSeriesPydantic(BaseModel):
@@ -86,6 +93,8 @@ class CategoryTestSeriesPydantic(BaseModel):
     time_duration: Optional[str] = None
     description: Optional[str] = None
     thumbnail: Optional[str] = None
+    isBookmarked: Optional[bool] = False
+    attempted: Optional[bool] = False
 
 
 class categories_topicsPydantic(BaseModel):
@@ -167,3 +176,34 @@ class EachCategoryPydantic(BaseModel):
         orm_mode = True
 
 
+class LecturesPydantic(BaseModel):
+    topic: topicPydantic
+    CategoryLectures: List[CategoryLecturesPydantic]
+
+    class Config:
+        orm_mode = True
+
+
+class NotesPydantic(BaseModel):
+    topic: topicPydantic
+    CategoryNotes: List[CategoryNotesPydantic]
+
+    class Config:
+        orm_mode = True
+
+
+class TestSeriesPydantic(BaseModel):
+    topic: topicPydantic
+    CategoryTestSeries: List[CategoryTestSeriesPydantic]
+
+    class Config:
+        orm_mode = True
+
+
+class CourseCategoryPydantic(BaseModel):
+    Lectures: List[LecturesPydantic]
+    Notes: List[NotesPydantic]
+    TestSeries: List[TestSeriesPydantic]
+
+    class Config:
+        orm_mode = True
