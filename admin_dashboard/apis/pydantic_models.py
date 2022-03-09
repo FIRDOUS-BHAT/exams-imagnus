@@ -69,7 +69,7 @@ class CategoryLecturesPydantic(BaseModel):
     slug: Optional[str] = None
     mobile_video_url: Optional[str] = None
     app_thumbnail: Optional[str] = None
-    web_video_url: Optional[str] = None
+    # web_video_url: Optional[str] = None
     video_duration: Optional[float] = None
     discription: Optional[str] = None
     isBookmarked: Optional[bool] = False
