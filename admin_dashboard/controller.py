@@ -681,9 +681,13 @@ async def add_category_lecture(course_id: str = Form(...),
             app_thumbnail = await upload_images(s3,
                                                 folder='videothumbnails/' + category_obj.slug + '/' + topic_obj.slug,
                                                 image=video_thumbnail)
+            n_url = app_thumbnail
+            new_url = "https://ik.imagekit.io/imagnus/videothumbnails/" + \
+                n_url.split('/')[-3]+"/"+n_url.split('/')[-2] + \
+                "/tr:w-480,h-270,fo-auto/"+n_url.split('/')[-1]
 
             await CourseCategoryLectures.create(title=lecture_title, slug=slug,
-                                                app_thumbnail=app_thumbnail,
+                                                app_thumbnail=new_url,
                                                 mobile_video_url=mobile_video_url,
                                                 web_video_url=web_video_url,
                                                 library_id=bunny_library_id,
@@ -1771,18 +1775,23 @@ async def update_query_reply(request: Request):
 
 @router.post('/update_notes_url/')
 async def update_notes_url():
-    all_notes = await CourseCategoryNotes.all()
+    all_notes = await CourseCategoryLectures.all()
     for idx, notes in enumerate(all_notes):
         uid = notes.id
-        n_url = notes.notes_url
-        # url_split = n_url.split('/')
+        n_url = notes.app_thumbnail
+        # if len(n_url)>4:
+        # # url_split = n_url.split('/')
 
-        new_url = n_url.replace(
-            "d11qyj7iojumc4.cloudfront.net", "ik.imagekit.io/imagnus")
+        #     new_url = "https://ik.imagekit.io/imagnus/videothumbnails/" + \
+        #         n_url.split('/')[-3]+"/"+n_url.split('/')[-2] + \
+        #         "/tr:w-480,h-270,fo-auto/"+n_url.split('/')[-1]
+        #     print(new_url)
+        #     # new_url = n_url.replace(
+        #     #     "d11qyj7iojumc4.cloudfront.net", "ik.imagekit.io/imagnus")
 
-        await CourseCategoryNotes.get(id=uid).update(notes_url=new_url)
-        print(idx)
-        print("done")
+        #     await CourseCategoryLectures.get(id=uid).update(app_thumbnail=new_url)
+        #     print(idx)
+        #     print("done")
 
     return {}
 
