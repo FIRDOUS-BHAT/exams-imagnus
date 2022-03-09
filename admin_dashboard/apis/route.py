@@ -122,7 +122,7 @@ async def course_details(c_slug: str, _=Depends(get_current_user), ):
 
 
 @router.post('/course_category/{course_slug}/{category_slug}/{student_id}/',
-             response_model=CourseCategoryPydantic
+             #  response_model=CourseCategoryPydantic
              )
 async def course_category(course_slug: str, category_slug: str, student_id: str, _=Depends(get_current_user)):
     try:
