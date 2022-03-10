@@ -1,1 +1,1 @@
-web: uvicorn main:app
+web: hypercorn main:app
