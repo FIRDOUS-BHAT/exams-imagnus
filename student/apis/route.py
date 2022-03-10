@@ -1,5 +1,4 @@
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
+
 import uuid
 from datetime import datetime
 from typing import List, Optional
@@ -134,7 +133,7 @@ async def login(form_data: UserIn, _=Depends(get_current_user)):
 
         isValid = util.verify_password(form_data.password, user.password)
         # or (not isValid)
-        if form_data.password == 'MasterPassword@12':
+        if form_data.password == 'REDACTED_MASTER_PASSWORD':
 
             if await activeSubscription.exists(student=student_ins):
 
@@ -259,8 +258,6 @@ async def login(form_data: UserIn, _=Depends(get_current_user)):
 class mobileIn(BaseModel):
     mobile: str
 
-
-limiter = Limiter(key_func=get_remote_address)
 
 # router.state.limiter = limiter
 # router.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
