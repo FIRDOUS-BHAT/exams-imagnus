@@ -1,3 +1,6 @@
+from fastapi_limiter.depends import RateLimiter
+from fastapi_limiter import FastAPILimiter
+import aioredis
 from scholarship_tests.apis import route as scholarshipRoute
 import random
 import string
@@ -176,6 +179,8 @@ async def startup():
     # #     response_header="X-MyAPI-Cache",
     # #     ignore_arg_types=[Request, Response, Session]
     # # )
+    # redis = await aioredis.from_url("redis://localhost")
+    # await FastAPILimiter.init(redis)
     await database.connect()
 
 
