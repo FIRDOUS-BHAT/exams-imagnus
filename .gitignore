@@ -200,3 +200,7 @@ dmypy.json
 cython_debug/
 .env_11
 *.env
+VishwasAcademyUserData.json
+vishwas_academy_all_student_data.xlsx
+vishwas_academy_all_student_data.csv
+JsonToExcel.py

@@ -23,8 +23,7 @@ class Setting(BaseSettings):
     bunny_access_key: str
     admin_login: str
     ws_url: str
+    cache_time: int
+
     class Config:
         env_file = ".env"
-
-
-

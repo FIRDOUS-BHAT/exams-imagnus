@@ -1,3 +1,6 @@
+from fastapi_cache.backends.redis import RedisBackend
+from fastapi_cache import FastAPICache
+from fastapi_cache.decorator import cache
 from fastapi_limiter.depends import RateLimiter
 from fastapi_limiter import FastAPILimiter
 import aioredis
@@ -165,6 +168,11 @@ async def add_process_time_header(request: Request, call_next):
     return response
 
 
+@cache()
+async def get_cache():
+    return 1
+
+
 LOCAL_REDIS_URL = "redis://127.0.0.1:6379"
 
 
@@ -179,8 +187,10 @@ async def startup():
     # #     response_header="X-MyAPI-Cache",
     # #     ignore_arg_types=[Request, Response, Session]
     # # )
-    # redis = await aioredis.from_url("redis://localhost")
     # await FastAPILimiter.init(redis)
+    redis = aioredis.from_url(
+        "redis://localhost", encoding="utf8", decode_responses=True)
+    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
     await database.connect()
 
 
