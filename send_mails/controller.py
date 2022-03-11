@@ -17,7 +17,6 @@ from send_mails.models import StudentEnquriryIn_Pydantic, StudentEnquriry
 load_dotenv('.env')
 
 
-
 class Envs:
     MAIL_USERNAME = os.getenv('MAIL_USERNAME')
     MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
@@ -64,13 +63,14 @@ async def send_mail(email: EmailSchema):
 
     message = MessageSchema(
         subject="Fastapi-Mail module",
-        recipients=email.dict().get("email"),  # List of recipients, as many as you can pass
+        # List of recipients, as many as you can pass
+        recipients=email.dict().get("email"),
         body=template,
         subtype="html"
     )
 
     fm = FastMail(conf)
-    await fm.send_message(message)
+    await fm.send_message(message, template_name='email.html')
     print(message)
 
     return JSONResponse(status_code=200, content={"message": "email has been sent"})
@@ -97,7 +97,7 @@ def send_email_background(background_tasks: BackgroundTasks, subject: str, email
     )
     fm = FastMail(conf)
     background_tasks.add_task(
-        fm.send_message, message, template_name='email.html')
+        fm.send_message, message, template_name='order_receipt.html')
 
 
 @router.get('/send-email/asynchronous')
@@ -109,18 +109,17 @@ async def send_email_asynchronous():
 
 @router.post('/send-email/backgroundtasks')
 async def send_email_backgroundtasks(background_tasks: BackgroundTasks, body: StudentEnquriryIn_Pydantic):
-   try: 
-    await StudentEnquriry.create(**body.dict(exclude_unset=True))
-    send_email_background(background_tasks, 'IMAGNUS ENQUIRY',
-                          'imagnusacademy@gmail.com', body.dict())
-    return {"status": "success"}
-   except Exception as ex:
-       return {"status": False, "message": "You've already submitted the request"}  
+    try:
+        await StudentEnquriry.create(**body.dict(exclude_unset=True))
+        send_email_background(background_tasks, 'IMAGNUS ENQUIRY',
+                              'imagnusacademy@gmail.com', body.dict())
+        return {"status": "success"}
+    except Exception as ex:
+        return {"status": False, "message": "You've already submitted the request"}
 
 
 @router.get('/send_ses_mails/')
 async def send_ses_mails():
-   
 
     # Replace sender@example.com with your "From" address.
     # This address must be verified.
@@ -153,9 +152,9 @@ async def send_ses_mails():
 
     # The email body for recipients with non-HTML email clients.
     BODY_TEXT = ("Amazon SES Test\r\n"
-                "This email was sent through the Amazon SES SMTP "
-                "Interface using the Python smtplib package."
-                )
+                 "This email was sent through the Amazon SES SMTP "
+                 "Interface using the Python smtplib package."
+                 )
 
     # The HTML body of the email.
     BODY_HTML = """<html>
@@ -183,7 +182,7 @@ async def send_ses_mails():
     part2 = MIMEText(BODY_HTML, 'html')
     part3 = MIMEApplication(
         open('/home/firdous/Documents/Rafiya Showkat.pdf', 'rb').read())
-    
+
     part3.add_header("Content-Disposition", 'attachment', filename='Resume')
     msg.attach(part3)
     # part3 = MIMEMultipart(
@@ -200,32 +199,29 @@ async def send_ses_mails():
     from functools import lru_cache
     from botocore.client import Config
     from configs import appinfo
-    
+
     @lru_cache()
     def app_setting():
         return appinfo.Setting()
 
-
     settings = app_setting()
-    
+
     aws_access_key_id = settings.AWS_SERVER_PUBLIC_KEY
     aws_secret_access_key = settings.AWS_SERVER_SECRET_KEY
     aws_region = settings.AWS_SERVER_REGION
-    
-    
+
     s3Client = boto3.client(
-            's3',
-            aws_access_key_id=aws_access_key_id,
-            aws_secret_access_key=aws_secret_access_key,
-            config=Config(signature_version='s3v4'),
-            region_name=aws_region,
-        )
-    
+        's3',
+        aws_access_key_id=aws_access_key_id,
+        aws_secret_access_key=aws_secret_access_key,
+        config=Config(signature_version='s3v4'),
+        region_name=aws_region,
+    )
+
     # Attach files from S3
-    
+
     myurl = "https://ik.imagekit.io/imagnus/Notes/eaa1467e-3e01-423b-9bcd-36d7b2cdbe5e/21ce3837-f78b-4bc0-9266-c4098fd23e4a/5badc3df-24cc-4a67-af78-c5cb5157e301/Ease of Doing Business (व्यवसायगत सरलता)/Ease of doing business.pdf"
-    
-    
+
     s3_object = s3Client.get_object(ClientMethod='get_object',
                                     Params={
                                         'Bucket': 'testing-bucket-s3-uploader',
@@ -237,19 +233,12 @@ async def send_ses_mails():
     part.add_header("Content-Disposition", 'attachment', filename='filename')
     msg.attach(part)
 
-   
-    
-    
-    
-    
-    
-    
     # Try to send the message.
     try:
         server = smtplib.SMTP(HOST, PORT)
         server.ehlo()
         server.starttls()
-        #stmplib docs recommend calling ehlo() before & after starttls()
+        # stmplib docs recommend calling ehlo() before & after starttls()
         server.ehlo()
         server.login(USERNAME_SMTP, PASSWORD_SMTP)
         server.sendmail(SENDER, RECIPIENT, msg.as_bytes())
@@ -258,7 +247,5 @@ async def send_ses_mails():
     # Display an error message if something goes wrong.
     except Exception as e:
         print("Error: ", e)
-    
-        
-    return {"email sent"}    
-   
+
+    return {"email sent"}
