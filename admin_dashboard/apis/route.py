@@ -136,7 +136,7 @@ async def course_details(c_slug: str, _=Depends(get_current_user), ):
 @router.post('/course_category/{course_slug}/{category_slug}/{student_id}/',
              response_model=CourseCategoryPydantic
              )
-# @cache(expire=cache_time)
+@cache(expire=cache_time)
 async def course_category(course_slug: str, category_slug: str, student_id: str, _=Depends(get_current_user)):
     try:
         global updated_access_lect_array, updated_access_notes_array, updated_access_test_series_array, result
