@@ -22,6 +22,7 @@ from admin_dashboard.models import Coupons, Course, Category, CourseCategoryLect
     CourseCategoryLectures_Pydantic, CourseCategories, SubscriptionPlans
 from aws_services.deps import s3_auth
 from checkout.models import PaymentRecords, PaymentRecords_Pydantic
+from configs import appinfo
 from student.apis.pydantic_models import StudentVideoActivityPydanticIn, ActivityPydantic, \
     StudentNotesActivityPydanticIn, StudentTestSeriesActivityIn, GetBookmarksPydantic, RecommendedLecturesPydantic, \
     loginResponsePydantic, queryPydantic, studentPydantic
