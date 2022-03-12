@@ -33,6 +33,7 @@ from student_choices.models import StudentChoices, studentVideoActivity, \
     BookMarkedNotes_Pydantic, BookMarkedTestseries_Pydantic
 from utils import util
 from utils.util import get_current_user
+from functools import lru_cache
 
 tz = pytz.timezone('Asia/Kolkata')
 
@@ -40,6 +41,16 @@ updated_at = datetime.now(tz)
 
 config = Config(".env")
 router = APIRouter()
+
+
+@lru_cache()
+def app_setting():
+    return appinfo.Setting()
+
+
+settings = app_setting()
+
+cache_time = settings.cache_time
 
 
 class Status(BaseModel):
@@ -267,7 +278,7 @@ class mobileIn(BaseModel):
 @router.post("/mobile/check",
              response_model=loginResponsePydantic
              )
-@cache(expire=360, )
+@cache(expire=cache_time, )
 # @limiter.limit("5/second")
 async def mobile_check(data: mobileIn, _=Depends(get_current_user)):
     try:
