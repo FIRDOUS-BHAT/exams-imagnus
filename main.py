@@ -189,7 +189,7 @@ async def startup():
     # # )
     # await FastAPILimiter.init(redis)
     redis = aioredis.from_url(
-        "redis://localhost", encoding="utf8", decode_responses=True)
+        "redis://imagnuscache-001.8vqeqj.0001.aps1.cache.amazonaws.com", encoding="utf8", decode_responses=True)
     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
     await database.connect()
 
