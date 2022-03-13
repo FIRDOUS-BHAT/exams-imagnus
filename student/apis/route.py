@@ -279,7 +279,7 @@ class mobileIn(BaseModel):
 @router.post("/mobile/check",
              response_model=loginResponsePydantic
              )
-@cache(expire=cache_time, )
+# @cache(expire=cache_time, )
 # @limiter.limit("5/second")
 async def mobile_check(data: mobileIn, _=Depends(get_current_user)):
     try:
