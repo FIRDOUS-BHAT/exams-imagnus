@@ -9,6 +9,7 @@ import random
 import string
 import time
 from functools import lru_cache
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -26,7 +27,7 @@ from configs import appinfo
 from configs.connection import DATABASE_URL, database
 from courses import controller as courseController
 from scholarship_tests import controller as scholarshipController
-from send_mails import controller as mailController
+# from send_mails import controller as mailController
 from student import controller as studentController
 from study_material import controller as studyMaterialController
 from starlette_context import middleware, plugins
@@ -67,9 +68,7 @@ else:
 #      print("infinite loop")
 config = Config(".env")
 
-# app.add_middleware(
-#     TrustedHostMiddleware, allowed_hosts=[allowed_host, "*."+allowed_host]
-# )
+
 app.add_middleware(
     middleware.ContextMiddleware,
     plugins=(
@@ -128,9 +127,10 @@ origins = [
     "http://localhost:8080",
 ]
 
-# app.add_middleware(
-#     TrustedHostMiddleware, allowed_hosts=hosts
-# )
+app.add_middleware(
+    TrustedHostMiddleware, allowed_hosts=[
+        "127.0.0.1", "*.imagnus.com"]
+)
 
 
 app.add_middleware(
@@ -189,7 +189,7 @@ async def startup():
     # # )
     # await FastAPILimiter.init(redis)
     redis = aioredis.from_url(
-        "redis://imagnuscache-001.8vqeqj.0001.aps1.cache.amazonaws.com", encoding="utf8", decode_responses=True)
+        "redis://localhost", encoding="utf8", decode_responses=True)
     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
     await database.connect()
 
@@ -214,7 +214,7 @@ app.include_router(checkoutController.router, tags=["checkout"])
 app.include_router(adminController.router, tags=["Admin"])
 app.include_router(studentController.router, tags=["Students"])
 app.include_router(courseController.router, tags=["Courses"])
-app.include_router(mailController.router, tags=["Mailer"])
+# app.include_router(mailController.router, tags=["Mailer"])
 app.include_router(studyMaterialController.router)
 app.include_router(scholarshipController.router)
 
