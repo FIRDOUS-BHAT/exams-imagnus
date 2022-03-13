@@ -131,10 +131,10 @@ origins = [
     "http://localhost:8080",
 ]
 
-app.add_middleware(
-    TrustedHostMiddleware, allowed_hosts=[
-        "127.0.0.1", "*.imagnus.in"]
-)
+# app.add_middleware(
+#     TrustedHostMiddleware, allowed_hosts=[
+#         "127.0.0.1", "*.imagnus.in"]
+# )
 
 
 app.add_middleware(
