@@ -683,8 +683,8 @@ async def add_category_lecture(course_id: str = Form(...),
                                                 image=video_thumbnail)
             n_url = app_thumbnail
             new_url = "https://ik.imagekit.io/imagnus/videothumbnails/" + \
-                n_url.split('/')[-3]+"/"+n_url.split('/')[-2] + \
-                "/tr:w-480,h-270,fo-auto/"+n_url.split('/')[-1]
+                category_obj.slug+"/"+topic_obj.slug+ \
+                "/tr:w-300,h-160,fo-auto/"+n_url.split('/')[-1]
 
             await CourseCategoryLectures.create(title=lecture_title, slug=slug,
                                                 app_thumbnail=new_url,
@@ -901,7 +901,11 @@ async def edit_lectures(request: Request, edit_lid: str = Form(...), course_id: 
                 app_thumbnail = await upload_images(s3,
                                                     folder='videothumbnails/' + category_obj.slug + '/' + topic_obj.slug,
                                                     image=video_thumbnail)
-                instance.app_thumbnail = app_thumbnail
+                n_url = app_thumbnail
+                new_url = "https://ik.imagekit.io/imagnus/videothumbnails/" + \
+                category_obj.slug+"/"+topic_obj.slug+ \
+                "/tr:w-300,h-160,fo-auto/"+n_url.split('/')[-1]
+                instance.app_thumbnail = new_url
             else:
                 instance.app_thumbnail = video_thumbnail_url
             instance.updated_at = updated_at
@@ -1779,19 +1783,24 @@ async def update_notes_url():
     for idx, notes in enumerate(all_notes):
         uid = notes.id
         n_url = notes.app_thumbnail
-        # if len(n_url)>4:
-        # # url_split = n_url.split('/')
+        category_topic_id = notes.category_topic_id
+        if len(n_url) > 4:
+            category_slug_obj = await CategoryTopics.get(id=category_topic_id).values("category__category__slug", "topic__slug")
+            category_slug = category_slug_obj["category__category__slug"]
+            topic_slug = category_slug_obj["topic__slug"]
 
-        #     new_url = "https://ik.imagekit.io/imagnus/videothumbnails/" + \
-        #         n_url.split('/')[-3]+"/"+n_url.split('/')[-2] + \
-        #         "/tr:w-480,h-270,fo-auto/"+n_url.split('/')[-1]
-        #     print(new_url)
+        # url_split = n_url.split('/')
+
+            new_url = "https://ik.imagekit.io/imagnus/videothumbnails/" + \
+                category_slug+"/"+topic_slug + \
+                "/tr:w-300,h-160,fo-auto/"+n_url.split('/')[-1]
+            print(new_url)
         #     # new_url = n_url.replace(
         #     #     "d11qyj7iojumc4.cloudfront.net", "ik.imagekit.io/imagnus")
 
-        #     await CourseCategoryLectures.get(id=uid).update(app_thumbnail=new_url)
-        #     print(idx)
-        #     print("done")
+            await CourseCategoryLectures.get(id=uid).update(app_thumbnail=new_url)
+            print(idx)
+            print("done")
 
     return {}
 
