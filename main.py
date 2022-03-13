@@ -60,9 +60,13 @@ allowed_host = settings.allowed_host
 
 if fastapi_params == 'True':
     app = FastAPI(debug=True)
+    LOCAL_REDIS_URL = "redis://localhost"
+
 
 else:
     app = FastAPI(debug=False, docs_url=None, redoc_url=None, openapi_url=None)
+    LOCAL_REDIS_URL = "redis://imagnuscache-001.8vqeqj.0001.aps1.cache.amazonaws.com"
+
 #    app.add_middleware(HTTPSRedirectMiddleware)
 #    while(True):
 #      print("infinite loop")
@@ -129,7 +133,7 @@ origins = [
 
 app.add_middleware(
     TrustedHostMiddleware, allowed_hosts=[
-        "127.0.0.1", "*.imagnus.com"]
+        "127.0.0.1", "*.imagnus.in"]
 )
 
 
@@ -173,9 +177,6 @@ async def get_cache():
     return 1
 
 
-LOCAL_REDIS_URL = "redis://127.0.0.1:6379"
-
-
 @app.on_event("startup")
 async def startup():
     global session
@@ -189,7 +190,7 @@ async def startup():
     # # )
     # await FastAPILimiter.init(redis)
     redis = aioredis.from_url(
-        "redis://imagnuscache-001.8vqeqj.0001.aps1.cache.amazonaws.com", encoding="utf8", decode_responses=True)
+        LOCAL_REDIS_URL, encoding="utf8", decode_responses=True)
     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
     await database.connect()
 
