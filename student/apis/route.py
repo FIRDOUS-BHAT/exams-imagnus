@@ -1,4 +1,5 @@
 
+from email_validator import validate_email, EmailNotValidError
 from fastapi_cache.decorator import cache
 import uuid
 from datetime import datetime
@@ -84,6 +85,18 @@ def generate_token(form_data: OAuth2PasswordRequestForm = Depends()):
 async def register_student(user: StudentIn_Pydantic, _=Depends(get_current_user)):
     try:
         updated_at = datetime.now(tz)
+        try:
+            # Validate.
+            print(user.email)
+            valid = validate_email(user.email)
+
+            # Update with the normalized form.
+            email = valid.email
+            print(email)
+        except EmailNotValidError as e:
+            # email is not valid, exception message is human-readable
+            return JSONResponse(
+                {"detail": "Invalid email id."}, status_code=208)
 
         mob_obj = await Student.exists(mobile=user.mobile)
         email_obj = await Student.exists(email=user.email)
@@ -93,6 +106,7 @@ async def register_student(user: StudentIn_Pydantic, _=Depends(get_current_user)
             return JSONResponse(
                 {"detail": "Student with this Mobile Number already exists."}, status_code=208)
         elif email_obj:
+
             # raise HTTPException(status_code=208, detail="Student with this Email id already exists.")
             return JSONResponse(
                 {"detail": "Student with this Mobile Number already exists."}, status_code=208)
