@@ -130,7 +130,7 @@ tuspy==0.2.5
 typesystem==0.3.1
 typing_extensions==4.1.0
 urllib3==1.26.8
-uvicorn==0.17.4
+uvicorn==0.17.6
 uvloop==0.16.0
 watchgod==0.7
 websocket-client==1.2.3
