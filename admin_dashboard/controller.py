@@ -873,53 +873,6 @@ async def add_from_existing_video(request: Request, course_id: str = Form(...),
 '''edit lectures'''
 
 
-@router.post('/admin/edit_category_lecture/')
-async def edit_lectures(request: Request, edit_lid: str = Form(...), course_id: str = Form(...), category_id: str = Form(...),
-                        order_display: int = Form(...),
-                        topic_id: str = Form(...), lecture_title: str = Form(...), video_description: str = Form(...),
-                        edit_lecture_web_url: str = Form(...),
-                        video_thumbnail: Optional[UploadFile] = File(
-                            default=None, media_type='image/*'),
-                        edit_mobile_video_url: str = Form(...),
-                        video_thumbnail_url: str = Form(...), s3: BaseClient = Depends(s3_auth),
-                        ):
-    try:
-
-        course_obj = await Course.get(id=course_id)
-        category_obj = await Category.get(id=category_id)
-        topic_obj = await Topics.get(id=topic_id)
-        if await CourseCategoryLectures.exists(id=edit_lid):
-
-            instance = await CourseCategoryLectures.get(id=edit_lid)
-
-            instance.title = lecture_title
-            instance.discription = video_description
-            instance.order_display = order_display
-            instance.web_video_url = edit_lecture_web_url
-            instance.mobile_video_url = edit_mobile_video_url
-            if video_thumbnail.filename:
-                app_thumbnail = await upload_images(s3,
-                                                    folder='videothumbnails/' + category_obj.slug + '/' + topic_obj.slug,
-                                                    image=video_thumbnail)
-                n_url = app_thumbnail
-                new_url = "https://ik.imagekit.io/imagnus/videothumbnails/" + \
-                category_obj.slug+"/"+topic_obj.slug+ \
-                "/tr:w-300,h-160,fo-auto/"+n_url.split('/')[-1]
-                instance.app_thumbnail = new_url
-            else:
-                instance.app_thumbnail = video_thumbnail_url
-            instance.updated_at = updated_at
-
-            await instance.save()
-
-            return RedirectResponse(
-                url='/admin/category_lectures/' + course_obj.slug +
-                    '/' + category_obj.slug + '/' + topic_obj.slug + '/',
-                status_code=status.HTTP_303_SEE_OTHER)
-    except Exception as ex:
-        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
-
-
 async def call_api(id):
     '''' get the content of current upload'''
     requested_url = "{app_url}/get_uploaded_content/{id}/"
@@ -1107,31 +1060,36 @@ async def add_category_lecture(request: Request, course_id: str = Form(...),
     category_topic_obj = await CategoryTopics.get(id=course_topic_id)
     try:
 
-        video_id = mobile_video_url.split('/')[-2]
+        # video_id = mobile_video_url.split('/')[-2]
 
-        """Fetch a video details"""
-        requested_url = "http://video.bunnycdn.com/library/" + \
-                        bunny_library_id + "/videos/" + video_id
+        # """Fetch a video details"""
+        # requested_url = "http://video.bunnycdn.com/library/" + \
+        #                 bunny_library_id + "/videos/" + video_id
 
-        headers = {"AccessKey": bunny_access_key}
+        # headers = {"AccessKey": bunny_access_key}
 
-        async with httpx.AsyncClient(headers=headers) as client:
-            video_content_obj = await client.get(requested_url)
-            # video_obj = video_content_obj.json()
-            resp = json.loads(video_content_obj.text)
+        # async with httpx.AsyncClient(headers=headers) as client:
+        #     video_content_obj = await client.get(requested_url)
+        #     # video_obj = video_content_obj.json()
+        #     resp = json.loads(video_content_obj.text)
 
-            video_duration = resp['length']
+        #     video_duration = resp['length']
         app_thumbnail = await upload_images(s3, folder='videothumbnails/' + category_obj.slug + '/' + topic_obj.slug,
                                             image=video_thumbnail)
+        
+        n_url = app_thumbnail
+        new_url = "https://ik.imagekit.io/imagnus/videothumbnails/" + \
+                category_obj.slug+"/"+topic_obj.slug+ \
+                "/tr:w-300,h-160,fo-auto/"+n_url.split('/')[-1]
 
         saved_obj = await CourseCategoryLectures.create(
             title=lecture_title, slug=slugify(lecture_title),
-            app_thumbnail=app_thumbnail,
+            app_thumbnail=new_url,
             mobile_video_url=mobile_video_url,
             web_video_url=web_video_url,
             library_id=bunny_library_id,
-            video_id=video_id,
-            video_duration=video_duration,
+            video_id=None,
+            video_duration=2507,
             discription=video_description,
             category_topic=category_topic_obj,
             updated_at=updated_at,
@@ -1157,6 +1115,58 @@ async def add_category_lecture(request: Request, course_id: str = Form(...),
         #     url='/admin/category_lectures/' + course_obj.slug +
         #         '/' + category_obj.slug + '/' + topic_obj.slug + '/',
         #     status_code=status.HTTP_303_SEE_OTHER)
+
+
+
+
+
+@router.post('/admin/edit_category_lecture/')
+async def edit_lectures(request: Request, edit_lid: str = Form(...), course_id: str = Form(...), category_id: str = Form(...),
+                        order_display: int = Form(...),
+                        topic_id: str = Form(...), lecture_title: str = Form(...), video_description: str = Form(...),
+                        edit_lecture_web_url: str = Form(...),
+                        video_thumbnail: Optional[UploadFile] = File(
+                            default=None, media_type='image/*'),
+                        edit_mobile_video_url: str = Form(...),
+                        video_thumbnail_url: str = Form(...), s3: BaseClient = Depends(s3_auth),
+                        ):
+    try:
+
+        course_obj = await Course.get(id=course_id)
+        category_obj = await Category.get(id=category_id)
+        topic_obj = await Topics.get(id=topic_id)
+        if await CourseCategoryLectures.exists(id=edit_lid):
+
+            instance = await CourseCategoryLectures.get(id=edit_lid)
+
+            instance.title = lecture_title
+            instance.discription = video_description
+            instance.order_display = order_display
+            instance.web_video_url = edit_lecture_web_url
+            instance.mobile_video_url = edit_mobile_video_url
+            if video_thumbnail.filename:
+                app_thumbnail = await upload_images(s3,
+                                                    folder='videothumbnails/' + category_obj.slug + '/' + topic_obj.slug,
+                                                    image=video_thumbnail)
+                n_url = app_thumbnail
+                new_url = "https://ik.imagekit.io/imagnus/videothumbnails/" + \
+                category_obj.slug+"/"+topic_obj.slug+ \
+                "/tr:w-300,h-160,fo-auto/"+n_url.split('/')[-1]
+                instance.app_thumbnail = new_url
+            else:
+                instance.app_thumbnail = video_thumbnail_url
+            instance.updated_at = updated_at
+
+            await instance.save()
+
+            return RedirectResponse(
+                url='/admin/category_lectures/' + course_obj.slug +
+                    '/' + category_obj.slug + '/' + topic_obj.slug + '/',
+                status_code=status.HTTP_303_SEE_OTHER)
+    except Exception as ex:
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
+
+
 
 
 '''Add notes here'''
