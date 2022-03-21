@@ -87,16 +87,16 @@ async def register_student(user: StudentIn_Pydantic, _=Depends(get_current_user)
         updated_at = datetime.now(tz)
         try:
             # Validate.
-            print(user.email)
+
             valid = validate_email(user.email)
 
             # Update with the normalized form.
             email = valid.email
-            print(email)
+
         except EmailNotValidError as e:
             # email is not valid, exception message is human-readable
             return JSONResponse(
-                {"detail": "Invalid email id."}, status_code=208)
+                {"detail": "Invalid email id"}, status_code=208)
 
         mob_obj = await Student.exists(mobile=user.mobile)
         email_obj = await Student.exists(email=user.email)
@@ -104,12 +104,12 @@ async def register_student(user: StudentIn_Pydantic, _=Depends(get_current_user)
         if mob_obj:
             # raise HTTPException(status_code=208, detail="Student with this Mobile Number already exists.")
             return JSONResponse(
-                {"detail": "Student with this Mobile Number already exists."}, status_code=208)
+                {"detail": "Mobile Number already exists"}, status_code=208)
         elif email_obj:
 
             # raise HTTPException(status_code=208, detail="Student with this Email id already exists.")
             return JSONResponse(
-                {"detail": "Student with this Mobile Number already exists."}, status_code=208)
+                {"detail": "Email Id already exists"}, status_code=208)
         else:
 
             # obj = await Student.create(**user.dict(exclude_unset=True))
