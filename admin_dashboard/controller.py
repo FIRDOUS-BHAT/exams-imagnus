@@ -1063,7 +1063,7 @@ async def add_category_lecture(request: Request, course_id: str = Form(...),
         video_id = None
         if 'vimeo' in mobile_video_url:
 
-            video_id_query = edit_mobile_video_url.split('/')[-1]
+            video_id_query = mobile_video_url.split('/')[-1]
             video_id = video_id_query.split('.')[0]
 
             # """Fetch a video details"""
