@@ -683,7 +683,7 @@ async def add_category_lecture(course_id: str = Form(...),
                                                 image=video_thumbnail)
             n_url = app_thumbnail
             new_url = "https://ik.imagekit.io/imagnus/videothumbnails/" + \
-                category_obj.slug+"/"+topic_obj.slug+ \
+                category_obj.slug+"/"+topic_obj.slug + \
                 "/tr:w-300,h-160,fo-auto/"+n_url.split('/')[-1]
 
             await CourseCategoryLectures.create(title=lecture_title, slug=slug,
@@ -1059,28 +1059,33 @@ async def add_category_lecture(request: Request, course_id: str = Form(...),
     topic_obj = await Topics.get(id=topic_id)
     category_topic_obj = await CategoryTopics.get(id=course_topic_id)
     try:
+        video_duration = 0
+        video_id = None
+        if 'vimeo' in mobile_video_url:
 
-        # video_id = mobile_video_url.split('/')[-2]
+            video_id_query = edit_mobile_video_url.split('/')[-1]
+            video_id = video_id_query.split('.')[0]
 
-        # """Fetch a video details"""
-        # requested_url = "http://video.bunnycdn.com/library/" + \
-        #                 bunny_library_id + "/videos/" + video_id
+            # """Fetch a video details"""
+            requested_url = "https://api.vimeo.com/videos/" + video_id
 
-        # headers = {"AccessKey": bunny_access_key}
+            headers = {'Authorization': 'bearer 07d29a422ae59fd14a17cbdd840b194b',
+                       'Content-Type': 'application/json',
+                       'Accept': 'application/vnd.vimeo.*+json;version=3.4'}
 
-        # async with httpx.AsyncClient(headers=headers) as client:
-        #     video_content_obj = await client.get(requested_url)
-        #     # video_obj = video_content_obj.json()
-        #     resp = json.loads(video_content_obj.text)
+            async with httpx.AsyncClient(headers=headers) as client:
+                video_content_obj = await client.get(requested_url)
+                # video_obj = video_content_obj.json()
+                resp = json.loads(video_content_obj.text)
 
-        #     video_duration = resp['length']
+                video_duration = resp['duration']
         app_thumbnail = await upload_images(s3, folder='videothumbnails/' + category_obj.slug + '/' + topic_obj.slug,
                                             image=video_thumbnail)
-        
+
         n_url = app_thumbnail
         new_url = "https://ik.imagekit.io/imagnus/videothumbnails/" + \
-                category_obj.slug+"/"+topic_obj.slug+ \
-                "/tr:w-300,h-160,fo-auto/"+n_url.split('/')[-1]
+            category_obj.slug+"/"+topic_obj.slug + \
+            "/tr:w-300,h-160,fo-auto/"+n_url.split('/')[-1]
 
         saved_obj = await CourseCategoryLectures.create(
             title=lecture_title, slug=slugify(lecture_title),
@@ -1088,8 +1093,8 @@ async def add_category_lecture(request: Request, course_id: str = Form(...),
             mobile_video_url=mobile_video_url,
             web_video_url=web_video_url,
             library_id=bunny_library_id,
-            video_id=None,
-            video_duration=2507,
+            video_id=video_id,
+            video_duration=video_duration,
             discription=video_description,
             category_topic=category_topic_obj,
             updated_at=updated_at,
@@ -1117,9 +1122,6 @@ async def add_category_lecture(request: Request, course_id: str = Form(...),
         #     status_code=status.HTTP_303_SEE_OTHER)
 
 
-
-
-
 @router.post('/admin/edit_category_lecture/')
 async def edit_lectures(request: Request, edit_lid: str = Form(...), course_id: str = Form(...), category_id: str = Form(...),
                         order_display: int = Form(...),
@@ -1131,6 +1133,26 @@ async def edit_lectures(request: Request, edit_lid: str = Form(...), course_id: 
                         video_thumbnail_url: str = Form(...), s3: BaseClient = Depends(s3_auth),
                         ):
     try:
+        video_duration = 0
+        video_id = None
+        if 'vimeo' in edit_mobile_video_url:
+
+            video_id_query = edit_mobile_video_url.split('/')[-1]
+            video_id = video_id_query.split('.')[0]
+
+            # """Fetch a video details"""
+            requested_url = "https://api.vimeo.com/videos/" + video_id
+
+            headers = {'Authorization': 'bearer 07d29a422ae59fd14a17cbdd840b194b',
+                       'Content-Type': 'application/json',
+                       'Accept': 'application/vnd.vimeo.*+json;version=3.4'}
+
+            async with httpx.AsyncClient(headers=headers) as client:
+                video_content_obj = await client.get(requested_url)
+                # video_obj = video_content_obj.json()
+                resp = json.loads(video_content_obj.text)
+
+                video_duration = resp['duration']
 
         course_obj = await Course.get(id=course_id)
         category_obj = await Category.get(id=category_id)
@@ -1144,14 +1166,16 @@ async def edit_lectures(request: Request, edit_lid: str = Form(...), course_id: 
             instance.order_display = order_display
             instance.web_video_url = edit_lecture_web_url
             instance.mobile_video_url = edit_mobile_video_url
+            instance.video_id = video_id
+            instance.video_duration = video_duration
             if video_thumbnail.filename:
                 app_thumbnail = await upload_images(s3,
                                                     folder='videothumbnails/' + category_obj.slug + '/' + topic_obj.slug,
                                                     image=video_thumbnail)
                 n_url = app_thumbnail
                 new_url = "https://ik.imagekit.io/imagnus/videothumbnails/" + \
-                category_obj.slug+"/"+topic_obj.slug+ \
-                "/tr:w-300,h-160,fo-auto/"+n_url.split('/')[-1]
+                    category_obj.slug+"/"+topic_obj.slug + \
+                    "/tr:w-300,h-160,fo-auto/"+n_url.split('/')[-1]
                 instance.app_thumbnail = new_url
             else:
                 instance.app_thumbnail = video_thumbnail_url
@@ -1165,8 +1189,6 @@ async def edit_lectures(request: Request, edit_lid: str = Form(...), course_id: 
                 status_code=status.HTTP_303_SEE_OTHER)
     except Exception as ex:
         return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
-
-
 
 
 '''Add notes here'''
