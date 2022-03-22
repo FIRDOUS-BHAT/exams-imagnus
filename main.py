@@ -1,3 +1,6 @@
+from fastapi import Body, FastAPI, Request, Response
+from typing import Callable, List
+from fastapi.routing import APIRoute
 from fastapi_cache.backends.redis import RedisBackend
 from fastapi_cache import FastAPICache
 from fastapi_cache.decorator import cache
@@ -10,7 +13,8 @@ import string
 import time
 from functools import lru_cache
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
-
+from tortoise import Tortoise, fields, run_async
+import gzip
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
@@ -71,6 +75,30 @@ else:
 #    while(True):
 #      print("infinite loop")
 config = Config(".env")
+
+
+class GzipRequest(Request):
+    async def body(self) -> bytes:
+        if not hasattr(self, "_body"):
+            body = await super().body()
+            if "gzip" in self.headers.getlist("Content-Encoding"):
+                body = gzip.decompress(body)
+            self._body = body
+        return self._body
+
+
+class GzipRoute(APIRoute):
+    def get_route_handler(self) -> Callable:
+        original_route_handler = super().get_route_handler()
+
+        async def custom_route_handler(request: Request) -> Response:
+            request = GzipRequest(request.scope, request.receive)
+            return await original_route_handler(request)
+
+        return custom_route_handler
+
+
+app.router.route_class = GzipRoute
 
 
 app.add_middleware(
@@ -136,6 +164,9 @@ origins = [
 #         "127.0.0.1", "*.imagnus.in"]
 # )
 
+
+app.add_middleware(SessionMiddleware, secret_key="secret",
+                   cookie_name="cookie22")
 
 app.add_middleware(
     CORSMiddleware,
@@ -222,6 +253,45 @@ app.include_router(scholarshipController.router)
 
 db_url = DATABASE_URL()
 
+
+# async def run():
+#     await Tortoise.init(
+#         {
+
+#             "app": app,
+#             "connections": {
+#                 "default": {
+#                     "engine": "tortoise.backends.asyncpg",
+#                     "credentials": {
+#                         "host": settings.db_host,
+#                         "port": "5432",
+#                         "user": settings.db_username,
+#                         "password": settings.db_password,
+#                         "database": settings.db_database,
+#                     },
+#                 }
+#             },
+#             "apps": {"models": {"models": [
+#                 'admin_dashboard.models',
+#                 'student.models',
+#                 "student_choices.models",
+#                 "screen_banners.models",
+#                 "checkout.models",
+#                 "send_mails.models",
+#                 "study_material.models",
+#                 "scholarship_tests.models",
+#             ],
+
+
+#                 "default_connection": "default"}},
+#             'use_tz': True,
+#             'timezone': 'Asia/Kolkata'
+#         },
+#         _create_db=True,
+#     )
+#     await Tortoise.generate_schemas()
+
+
 register_tortoise(
     app=app,
     config={
@@ -252,5 +322,5 @@ register_tortoise(
 )
 
 
-app.add_middleware(SessionMiddleware, secret_key="secret",
-                   cookie_name="cookie22")
+# if __name__ == "__main__":
+#     run_async(run())
