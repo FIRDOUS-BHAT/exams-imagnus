@@ -110,15 +110,15 @@ class studentTestSeriesActivity(Model):
 
 
 class BookMarkedVideos(Model):
-    id = fields.UUIDField(pk=True)
+    id = fields.UUIDField(pk=True, index=True)
     student = fields.ForeignKeyField(
-        "models.Student", related_name="students_bookmarked", on_delete='CASCADE',
+        "models.Student", related_name="students_bookmarked", on_delete='CASCADE', index=True
     )
     video = fields.ForeignKeyField(
-        "models.CourseCategoryLectures", related_name="students_bookmarked_video", on_delete='CASCADE',
+        "models.CourseCategoryLectures", related_name="students_bookmarked_video", on_delete='CASCADE', index=True
     )
     category = fields.ForeignKeyField(
-        "models.Category", related_name="category_BookMarkedVideos", on_delete='CASCADE',
+        "models.Category", related_name="category_BookMarkedVideos", on_delete='CASCADE', index=True
     )
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
@@ -127,13 +127,13 @@ class BookMarkedVideos(Model):
 class BookMarkedNotes(Model):
     id = fields.UUIDField(pk=True)
     student = fields.ForeignKeyField(
-        "models.Student", related_name="students_notes_bookmarked", on_delete='CASCADE',
+        "models.Student", related_name="students_notes_bookmarked", on_delete='CASCADE', index=True
     )
     notes = fields.ForeignKeyField(
-        "models.CourseCategoryNotes", related_name="students_bookmarked_notes", on_delete='CASCADE',
+        "models.CourseCategoryNotes", related_name="students_bookmarked_notes", on_delete='CASCADE', index=True
     )
     category = fields.ForeignKeyField(
-        "models.Category", related_name="category_BookMarkedNotes", on_delete='CASCADE',
+        "models.Category", related_name="category_BookMarkedNotes", on_delete='CASCADE', index=True
     )
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
@@ -142,13 +142,13 @@ class BookMarkedNotes(Model):
 class BookMarkedTestseries(Model):
     id = fields.UUIDField(pk=True)
     student = fields.ForeignKeyField(
-        "models.Student", related_name="students_testseries_bookmarked", on_delete='CASCADE',
+        "models.Student", related_name="students_testseries_bookmarked", on_delete='CASCADE', index=True
     )
     test_series = fields.ForeignKeyField(
-        "models.CourseCategoryTestSeries", related_name="students_bookmarked_testseries", on_delete='CASCADE',
+        "models.CourseCategoryTestSeries", related_name="students_bookmarked_testseries", on_delete='CASCADE', index=True
     )
     category = fields.ForeignKeyField(
-        "models.Category", related_name="category_BookMarkedTestseries", on_delete='CASCADE',
+        "models.Category", related_name="category_BookMarkedTestseries", on_delete='CASCADE', index=True
     )
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
@@ -157,10 +157,10 @@ class BookMarkedTestseries(Model):
 class Ask(Model):
     id = fields.UUIDField(pk=True)
     student = fields.ForeignKeyField(
-        "models.Student", related_name="ask_student", on_delete='CASCADE',
+        "models.Student", related_name="ask_student", on_delete='CASCADE', index=True
     )
     category = fields.ForeignKeyField(
-        "models.Category", related_name="category_ask", on_delete='CASCADE',
+        "models.Category", related_name="category_ask", on_delete='CASCADE',  index=True
     )
     enquiry = fields.TextField()
     image = fields.TextField(blank=True, null=True)
