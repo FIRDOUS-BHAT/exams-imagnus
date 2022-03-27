@@ -3,7 +3,7 @@ import logging
 from botocore.exceptions import ClientError
 
 
-def upload_file_to_bucket(s3_client, file_obj, bucket, folder, object_name=None):
+def upload_file_to_bucket(s3_client, file_obj, bucket, folder, mimetype,object_name=None, ):
     """Upload a file to an S3 bucket
 
     :param s3_client:
@@ -19,7 +19,8 @@ def upload_file_to_bucket(s3_client, file_obj, bucket, folder, object_name=None)
 
     # Upload the file
     try:
-        mimetype = 'image/jpeg'
+        if mimetype is None:
+            mimetype = 'image/jpeg'
         response = s3_client.upload_fileobj(file_obj, bucket, f"{folder}/{object_name}",  ExtraArgs={
         "ContentType": mimetype
     })

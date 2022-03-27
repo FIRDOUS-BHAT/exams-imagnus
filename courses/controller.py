@@ -256,14 +256,18 @@ async def student_dashboard(request: Request, user=Depends(get_current_user)):
             )
         else:
             subscriptions = None
-        std_m_exist = await StudyMaterialOrderInstance.exists(student__id=user)
-        if std_m_exist:
+        std_m_exist = await StudyMaterialOrderInstance.exists(student__id=user, package_mode=1)
+        if await StudyMaterialOrderInstance.exists(student__id=user, package_mode=1):
             std_m_count = await StudyMaterialOrderInstance.filter(student__id=user).count()
             std_m = await StudyMaterialOrderInstance_Pydantic.from_queryset(
                 StudyMaterialOrderInstance.filter(student__id=user)
             )
-            # std_m = await StudyMaterialOrderItems_Pydantic.from_queryset(
-            #     StudyMaterialOrderItems.filter(item_id__student__id=user))
+
+        elif await StudyMaterialOrderInstance.exists(student__id=user, package_mode=2):
+            std_m_count = await StudyMaterialOrderInstance.filter(student__id=user).count()
+            std_m = await StudyMaterialOrderInstance_Pydantic.from_queryset(
+                StudyMaterialOrderInstance.filter(student__id=user)
+            )
         else:
             std_m = None
         test_series = await TestSeriesOrders.exists(student__id=user)
