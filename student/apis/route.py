@@ -495,7 +495,7 @@ async def update_student(s3: BaseClient = Depends(s3_auth), data: UpdateStudent 
                 if image is not None:
                     if image.file:
                         folder = 'student-avatars'
-                        image_url = await upload_images(s3, folder=folder, image=image)
+                        image_url = await upload_images(s3, folder=folder, image=image,mimetype=None)
                         student.dp = image_url
 
                 await student.save()
@@ -919,7 +919,7 @@ async def ask_me(student_id: str = Form(...), category_id: str = Form(...), enqu
         # if not await Ask.exists(student=student_instance, is_replied=False):
         if image:
             folder = 'student-enquiry/' + student_id + '/'
-            image_url = await upload_images(s3, folder=folder, image=image)
+            image_url = await upload_images(s3, folder=folder, image=image,mimetype=None)
         else:
             image_url = None
         await Ask.create(student=student_instance,

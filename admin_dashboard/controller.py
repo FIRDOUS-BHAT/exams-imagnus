@@ -369,7 +369,7 @@ async def add_preference(request: Request, pref_name: str = Form(...), user=Depe
 # """ Upload Image to S3"""
 
 
-async def upload_images(s3, folder, image: UploadFile, user=Depends(get_current_user)):
+async def upload_images(s3, folder, image: UploadFile, mimetype, user=Depends(get_current_user)):
     dt = datetime.now()
     image_name = (image.filename).split('.')
     ts = datetime.timestamp(dt)
@@ -377,6 +377,7 @@ async def upload_images(s3, folder, image: UploadFile, user=Depends(get_current_
     upload_obj = upload_file_to_bucket(s3_client=s3, file_obj=image.file,
                                        bucket='testing-bucket-s3-uploader',
                                        folder=folder,
+                                       mimetype=mimetype,
                                        object_name=new_image_name
                                        )
     if upload_obj:
@@ -425,8 +426,8 @@ async def create_course(request: Request, pref_id: str = Form(...),
             if user is None:
                 return RedirectResponse(url="/administrator/login/", status_code=status.HTTP_302_FOUND)
             preference = await Preference.get(id=pref_id)
-            image_url = await upload_images(s3, folder='course_icons/mobile_icons', image=icon_image)
-            web_image_url = await upload_images(s3, folder='course_icons/web_icons', image=web_icon)
+            image_url = await upload_images(s3, folder='course_icons/mobile_icons', image=icon_image, mimetype=None)
+            web_image_url = await upload_images(s3, folder='course_icons/web_icons', image=web_icon, mimetype=None)
             await Course.create(preference=preference, name=name, slug=slugify(name),
                                 icon_image=image_url, web_icon=web_image_url, updated_at=updated_at,
                                 created_at=updated_at)
@@ -443,7 +444,7 @@ async def add_category(s3: BaseClient = Depends(s3_auth), cat_name: str = Form(.
                        icon_image: UploadFile = File(...), user=Depends(get_current_user)):
     if user is None:
         return RedirectResponse(url="/administrator/login/", status_code=status.HTTP_302_FOUND)
-    image_url = await upload_images(s3, folder='category_icons', image=icon_image)
+    image_url = await upload_images(s3, folder='category_icons', image=icon_image, mimetype=None)
     await Category.create(name=cat_name, slug=slugify(cat_name), icon_image=image_url, updated_at=updated_at,
                           created_at=updated_at)
     return RedirectResponse(url='/admin/create_course/', status_code=status.HTTP_303_SEE_OTHER)
@@ -465,11 +466,11 @@ async def edit_course(s3: BaseClient = Depends(s3_auth), edit_name: str = Form(d
             c_instance.slug = slugify(edit_name)
 
         if edit_icon_image.filename:
-            image_url = await upload_images(s3, folder='course_icons/mobile_icons', image=edit_icon_image)
+            image_url = await upload_images(s3, folder='course_icons/mobile_icons', image=edit_icon_image, mimetype=None)
             c_instance.icon_image = image_url
 
         if edit_web_icon.filename:
-            web_image_url = await upload_images(s3, folder='course_icons/web_icons', image=edit_web_icon)
+            web_image_url = await upload_images(s3, folder='course_icons/web_icons', image=edit_web_icon, mimetype=None)
             c_instance.web_icon = web_image_url
     c_instance.updated_at = updated_at
     await c_instance.save()
@@ -490,7 +491,7 @@ async def edit_category(s3: BaseClient = Depends(s3_auth), cat_name: str = Form(
         if edit_cat_id:
 
             if icon_image.filename:
-                image_url = await upload_images(s3, folder='category_icons', image=icon_image)
+                image_url = await upload_images(s3, folder='category_icons', image=icon_image, mimetype=None)
                 cat_instance.icon_image = image_url
 
             if cat_name:
@@ -680,7 +681,7 @@ async def add_category_lecture(course_id: str = Form(...),
                             bunny_library_id + "/" + guid + "?autoplay=false"
             app_thumbnail = await upload_images(s3,
                                                 folder='videothumbnails/' + category_obj.slug + '/' + topic_obj.slug,
-                                                image=video_thumbnail)
+                                                image=video_thumbnail, mimetype=None)
             n_url = app_thumbnail
             new_url = "https://ik.imagekit.io/imagnus/videothumbnails/" + \
                 category_obj.slug+"/"+topic_obj.slug + \
@@ -842,7 +843,7 @@ async def add_from_existing_video(request: Request, course_id: str = Form(...),
         video_duration = lecture_instance.video_duration
 
         app_thumbnail = await upload_images(s3, folder='videothumbnails/' + category_obj.slug + '/' + topic_obj.slug,
-                                            image=video_thumbnail)
+                                            image=video_thumbnail, mimetype=None)
 
         await CourseCategoryLectures.create(title=lecture_title, slug=slugify(lecture_title),
                                             app_thumbnail=app_thumbnail,
@@ -1080,7 +1081,7 @@ async def add_category_lecture(request: Request, course_id: str = Form(...),
 
                 video_duration = resp['duration']
         app_thumbnail = await upload_images(s3, folder='videothumbnails/' + category_obj.slug + '/' + topic_obj.slug,
-                                            image=video_thumbnail)
+                                            image=video_thumbnail, mimetype=None)
 
         n_url = app_thumbnail
         new_url = "https://ik.imagekit.io/imagnus/videothumbnails/" + \
@@ -1171,7 +1172,7 @@ async def edit_lectures(request: Request, edit_lid: str = Form(...), course_id: 
             if video_thumbnail.filename:
                 app_thumbnail = await upload_images(s3,
                                                     folder='videothumbnails/' + category_obj.slug + '/' + topic_obj.slug,
-                                                    image=video_thumbnail)
+                                                    image=video_thumbnail, mimetype=None)
                 n_url = app_thumbnail
                 new_url = "https://ik.imagekit.io/imagnus/videothumbnails/" + \
                     category_obj.slug+"/"+topic_obj.slug + \
@@ -1210,7 +1211,7 @@ async def add_category_notes(course_id: str = Form(...), category_id: str = Form
 
         folder = 'NotesThumbnail' + '/' + course_id + '/' + \
                  category_id + '/' + topic_id + '/' + slugify(notes_title)
-        thumbnail_url = await upload_images(s3, folder=folder, image=notes_thumbnail)
+        thumbnail_url = await upload_images(s3, folder=folder, image=notes_thumbnail, mimetype=None)
     else:
         image_url = None
         thumbnail_url = None
@@ -1276,7 +1277,7 @@ async def add_category_test_series(course_id: str = Form(...),
         # such as '\'. Don't forget to put the file name at the end of the path + '.xlsx'
 
         image_url = await upload_images(s3, folder='testSeriesthumbnails/' + category_obj.slug + '/' + topic_obj.slug,
-                                        image=test_series_thumbnail)
+                                        image=test_series_thumbnail, mimetype=None)
         test_series_instance = await CourseCategoryTestSeries.create(
             category_topic=category_topic_obj, time_duration=time_duration,
             marks=marks, no_of_qstns=len(data), title=test_series_title, thumbnail=image_url,
@@ -1658,7 +1659,7 @@ async def add_live_class(course_id: List[str] = Form(...), instructor_id: str = 
     for cid in course_id:
         course = await Course.get(id=cid)
         instructor = await Instructor.get(id=instructor_id)
-        image_url = await upload_images(s3, folder='live_classes/thumbnails', image=thumbnail)
+        image_url = await upload_images(s3, folder='live_classes/thumbnails', image=thumbnail, mimetype=None)
         if mode == '1':
             is_paid = True
         else:
