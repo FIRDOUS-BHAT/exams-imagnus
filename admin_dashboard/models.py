@@ -146,21 +146,21 @@ class CategoryTopics(Model):
     This references a category chapters
     """
 
-    id = fields.UUIDField(pk=True)
+    id = fields.UUIDField(pk=True, index=True)
     is_active = fields.BooleanField(default=True)
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
-    order_seq = fields.IntField(default=0)
+    order_seq = fields.IntField(default=0, index=True)
     category = fields.ForeignKeyField(
-        "models.CourseCategories", related_name="categories_topics", on_delete='CASCADE',
+        "models.CourseCategories", related_name="categories_topics", on_delete='CASCADE', index=True
     )
     topic = fields.ForeignKeyField(
-        "models.Topics", related_name="categories_topics_title", on_delete='CASCADE',
+        "models.Topics", related_name="categories_topics_title", on_delete='CASCADE', index=True
     )
 
 
 class CourseCategoryLectures(Model):
-    id = fields.UUIDField(pk=True)
+    id = fields.UUIDField(pk=True, index=True)
     title = fields.CharField(max_length=250, )
     slug = fields.CharField(max_length=550, )
     mobile_video_url = fields.TextField(null=True, blank=True)
@@ -170,7 +170,7 @@ class CourseCategoryLectures(Model):
     video_id = fields.TextField(null=True, blank=True)
     video_duration = fields.FloatField(blank=True, null=True)
     category_topic = fields.ForeignKeyField(
-        "models.CategoryTopics", related_name="CategoryLectures", on_delete='CASCADE',
+        "models.CategoryTopics", related_name="CategoryLectures", on_delete='CASCADE', index=True
     )
     discription = fields.TextField(blank=True, null=True)
     order_display = fields.IntField(default=0)
@@ -179,22 +179,22 @@ class CourseCategoryLectures(Model):
 
 
 class CourseCategoryNotes(Model):
-    id = fields.UUIDField(pk=True)
+    id = fields.UUIDField(pk=True,index=True)
     title = fields.CharField(max_length=250, null=True, blank=True)
     slug = fields.CharField(max_length=550, null=True, blank=True)
     notes_url = fields.TextField()
     thumbnail = fields.TextField(null=True, blank=True)
     category_topic = fields.ForeignKeyField(
-        "models.CategoryTopics", related_name="CategoryNotes", on_delete='CASCADE',
+        "models.CategoryTopics", related_name="CategoryNotes", on_delete='CASCADE', index=True
     )
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
 
 
 class CourseCategoryTestSeries(Model):
-    id = fields.UUIDField(pk=True)
+    id = fields.UUIDField(pk=True,index=True)
     category_topic = fields.ForeignKeyField(
-        "models.CategoryTopics", related_name="CategoryTestSeries", on_delete='CASCADE',
+        "models.CategoryTopics", related_name="CategoryTestSeries", on_delete='CASCADE',index=True
     )
     series_no = fields.IntField(blank=True, null=True)
     time_duration = fields.IntField()
@@ -209,7 +209,7 @@ class CourseCategoryTestSeries(Model):
 
 
 class CourseCategoryTestSeriesQuestions(Model):
-    id = fields.UUIDField(pk=True)
+    id = fields.UUIDField(pk=True,index=True)
     question = fields.TextField()
     opt_1 = fields.TextField()
     opt_2 = fields.TextField()
@@ -218,7 +218,7 @@ class CourseCategoryTestSeriesQuestions(Model):
     answer = fields.CharField(max_length=10)
     solution = fields.TextField()
     test_series = fields.ForeignKeyField(
-        "models.CourseCategoryTestSeries", related_name="CategoryTestSeriesQuestions", on_delete='CASCADE',
+        "models.CourseCategoryTestSeries", related_name="CategoryTestSeriesQuestions", on_delete='CASCADE', index=True
     )
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
@@ -253,7 +253,7 @@ class Instructor(Model):
 
 
 class SubscriptionPlans(Model):
-    id = fields.UUIDField(pk=True)
+    id = fields.UUIDField(pk=True, index=True)
     name = fields.CharField(max_length=50)
     slug = fields.CharField(max_length=60)
     sub_title = fields.CharField(max_length=50)
@@ -266,11 +266,11 @@ class SubscriptionPlans(Model):
 class CourseSubscriptionPlans(Model):
     id = fields.UUIDField(pk=True)
     course = fields.ForeignKeyField(
-        "models.Course", related_name="CourseSubscriptionPlans_course", on_delete='CASCADE',
+        "models.Course", related_name="CourseSubscriptionPlans_course", on_delete='CASCADE',index=True
     )
 
     SubscriptionPlan = fields.ForeignKeyField(
-        "models.SubscriptionPlans", related_name="SubscriptionPlans", on_delete='CASCADE',
+        "models.SubscriptionPlans", related_name="SubscriptionPlans", on_delete='CASCADE',index=True
     )
     validity = fields.IntField(blank=True, null=True)
     plan_price = fields.IntField(default=0)
@@ -289,13 +289,13 @@ class LiveClasses(Model):
     id = fields.UUIDField(pk=True)
     title = fields.CharField(max_length=250)
     course = fields.ForeignKeyField(
-        "models.Course", related_name="liveClasses_course", on_delete='CASCADE',
+        "models.Course", related_name="liveClasses_course", on_delete='CASCADE',index=True
     )
     lecture = fields.ForeignKeyField(
-        "models.CourseCategoryLectures", related_name="live_lectures", on_delete='CASCADE',
+        "models.CourseCategoryLectures", related_name="live_lectures", on_delete='CASCADE',index=True
     )
     instructor = fields.ForeignKeyField(
-        "models.Instructor", related_name="live_lecture_Instructor", on_delete='CASCADE',
+        "models.Instructor", related_name="live_lecture_Instructor", on_delete='CASCADE', index=True
     )
     url = fields.TextField(blank=True, null=True)
     is_paid = fields.BooleanField(default=False)
@@ -336,7 +336,7 @@ class Coupons(Model):
     name = fields.CharField(80)
     discount = fields.IntField()
     subscription = fields.ForeignKeyField(
-        "models.CourseSubscriptionPlans", related_name="student_coupon_subscription", on_delete='CASCADE',
+        "models.CourseSubscriptionPlans", related_name="student_coupon_subscription", on_delete='CASCADE', index=True
     )
     coupon_type = fields.IntEnumField(
         CouponType, default=CouponType.percentage)
@@ -351,10 +351,10 @@ class Coupons(Model):
 class CourseCart(Model):
     id = fields.UUIDField(pk=True)
     student = fields.ForeignKeyField(
-        "models.Student", related_name="student_cart", on_delete='CASCADE',
+        "models.Student", related_name="student_cart", on_delete='CASCADE',index=True
     )
     subscription = fields.ForeignKeyField(
-        "models.CourseSubscriptionPlans", related_name="student_cart_subscription", on_delete='CASCADE',
+        "models.CourseSubscriptionPlans", related_name="student_cart_subscription", on_delete='CASCADE',index=True
     )
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now=True)

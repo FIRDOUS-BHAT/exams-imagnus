@@ -1205,11 +1205,11 @@ async def add_category_notes(course_id: str = Form(...), category_id: str = Form
     category_topic_obj = await CategoryTopics.get(id=course_topic_id)
     if lecture_note.filename:
         folder = 'Notes' + '/' + course_id + '/' + \
-                 category_id + '/' + topic_id + '/' + notes_title
+                 category_id + '/' + topic_id + '/' + slugify(notes_title)
         image_url = await upload_pdf_notes(s3, folder=folder, image=lecture_note)
 
         folder = 'NotesThumbnail' + '/' + course_id + '/' + \
-                 category_id + '/' + topic_id + '/' + notes_title
+                 category_id + '/' + topic_id + '/' + slugify(notes_title)
         thumbnail_url = await upload_images(s3, folder=folder, image=notes_thumbnail)
     else:
         image_url = None

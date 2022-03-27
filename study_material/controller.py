@@ -125,7 +125,7 @@ async def add_study_material(request: Request):
         )
 
 
-@ router.post("/admin/post_study_material_name/")
+@router.post("/admin/post_study_material_name/")
 async def post_study_material_name(sname: str = Form(...)):
     try:
         await StudyMaterialName.create(name=sname, slug=slugify(sname))
@@ -136,7 +136,7 @@ async def post_study_material_name(sname: str = Form(...)):
         )
 
 
-@ router.post('/admin/add_study_material_course/', )
+@router.post('/admin/add_study_material_course/', )
 async def create_course(study_material_id: str = Form(...),
                         course_id: str = Form(...), icon_image=File(...),
                         bundle_price: int = Form(...), discount_price: int = Form(...), s3: BaseClient = Depends(s3_auth)):
@@ -169,8 +169,8 @@ async def add_study_material_category(study_material_id: str = Form(...), catego
         categoryCourse = await StudyMaterialCourse.get(course=course, material=preference)
         image_url = await upload_images(s3, folder='study_material/category_icons', image=icon_image)
 
-        material_url = await upload_images(s3, folder='study_material/notes', image=material_file)
-        material_url_key = 'study_material/notes/'+material_file.filename
+        material_url = await upload_images(s3, folder='study_material/notes/'+slugify(category_name), image=material_file)
+        material_url_key = 'study_material/notes/'+slugify(category_name)+material_file.filename
 
         # web_image_url = await upload_images(s3, folder='course_icons/web_icons', image=web_icon)
         await StudyMaterialCategories.create(course=categoryCourse, name=category_name, slug=slugify(category_name),
