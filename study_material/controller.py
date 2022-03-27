@@ -170,7 +170,8 @@ async def add_study_material_category(study_material_id: str = Form(...), catego
         image_url = await upload_images(s3, folder='study_material/category_icons', image=icon_image)
 
         material_url = await upload_images(s3, folder='study_material/notes/'+slugify(category_name), image=material_file)
-        material_url_key = 'study_material/notes/'+slugify(category_name)+material_file.filename
+        material_url_key = 'study_material/notes/' + \
+            slugify(category_name)+"/"+material_file.filename
 
         # web_image_url = await upload_images(s3, folder='course_icons/web_icons', image=web_icon)
         await StudyMaterialCategories.create(course=categoryCourse, name=category_name, slug=slugify(category_name),
