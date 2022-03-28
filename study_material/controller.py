@@ -143,7 +143,7 @@ async def create_course(study_material_id: str = Form(...),
     try:
         course_instance = await Course.get(id=course_id)
         preference = await StudyMaterialName.get(id=study_material_id)
-        image_url = await upload_images(s3, folder='study_material/course_icons', image=icon_image,mimetype=None)
+        image_url = await upload_images(s3, folder='study_material/course_icons', image=icon_image, mimetype=None)
         if not await StudyMaterialCourse.exists(material=preference, course=course_instance):
             await StudyMaterialCourse.create(
                 material=preference, course=course_instance,
@@ -168,9 +168,10 @@ async def add_study_material_category(study_material_id: str = Form(...), catego
         categoryCourse = await StudyMaterialCourse.get(course=course, material=preference)
         image_url = await upload_images(s3, folder='study_material/category_icons', image=icon_image, mimetype=None)
 
-        material_url = await upload_images(s3, folder='study_material/notes/'+slugify(category_name), image=material_file,mimetype='application/pdf')
+        material_url = await upload_images(s3, folder='study_material/notes/'+slugify(category_name), image=material_file, mimetype='application/pdf')
+        image_split = material_url.split('/')[-1]
         material_url_key = 'study_material/notes/' + \
-            slugify(category_name)+"/"+material_file.filename
+            slugify(category_name)+"/"+image_split
 
         await StudyMaterialCategories.create(course=categoryCourse, name=category_name, slug=slugify(category_name),
                                              topic_name=chapter_name, topic_slug=slugify(
