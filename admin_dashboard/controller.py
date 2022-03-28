@@ -395,10 +395,11 @@ async def upload_images(s3, folder, image: UploadFile, mimetype, user=Depends(ge
     return new_url
 
 
-async def upload_pdf_notes(s3, folder, image: UploadFile, user=Depends(get_current_user)):
+async def upload_pdf_notes(s3, folder, image: UploadFile, mimetype, user=Depends(get_current_user)):
     upload_obj = upload_file_to_bucket(s3_client=s3, file_obj=image.file,
                                        bucket='testing-bucket-s3-uploader',
                                        folder=folder,
+                                       mimetype=mimetype,
                                        object_name=image.filename
                                        )
     if upload_obj:
@@ -1207,7 +1208,7 @@ async def add_category_notes(course_id: str = Form(...), category_id: str = Form
     if lecture_note.filename:
         folder = 'Notes' + '/' + course_id + '/' + \
                  category_id + '/' + topic_id + '/' + slugify(notes_title)
-        image_url = await upload_pdf_notes(s3, folder=folder, image=lecture_note)
+        image_url = await upload_pdf_notes(s3, folder=folder, image=lecture_note, mimetype='application/pdf')
 
         folder = 'NotesThumbnail' + '/' + course_id + '/' + \
                  category_id + '/' + topic_id + '/' + slugify(notes_title)
@@ -1519,7 +1520,7 @@ async def add_scholarship_testseries(request: Request, on_date: datetime = Form(
 
     await ScholarshipTestSeries.filter(lang=lang).delete()
     folder = 'scholarship/2022/banner_images/'
-    image_url = await upload_pdf_notes(s3, folder=folder, image=image)
+    image_url = await upload_pdf_notes(s3, folder=folder, image=image, mimetype=None)
     test_series_instance = await ScholarshipTestSeries.create(
         on_date=on_date,
         end_date=end_date,
