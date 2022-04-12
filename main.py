@@ -31,7 +31,7 @@ from configs import appinfo
 from configs.connection import DATABASE_URL, database
 from courses import controller as courseController
 from scholarship_tests import controller as scholarshipController
-# from send_mails import controller as mailController
+from send_mails import controller as mailController
 from student import controller as studentController
 from study_material import controller as studyMaterialController
 from starlette_context import middleware, plugins
@@ -246,7 +246,7 @@ app.include_router(checkoutController.router, tags=["checkout"])
 app.include_router(adminController.router, tags=["Admin"])
 app.include_router(studentController.router, tags=["Students"])
 app.include_router(courseController.router, tags=["Courses"])
-# app.include_router(mailController.router, tags=["Mailer"])
+app.include_router(mailController.router, tags=["Mailer"])
 app.include_router(studyMaterialController.router)
 app.include_router(scholarshipController.router)
 

@@ -66,7 +66,8 @@ def generate_token(form_data: OAuth2PasswordRequestForm = Depends()):
 
     # subject identifier for who this token is for example id or username from database
     access_token_expires = util.timedelta(
-        minutes=int(config('ACCESS_TOKEN_EXPIRE_MINUTES')))
+        minutes=int(config('ACCESS_TOKEN_EXPIRE_MINUTES'))
+        )
     access_token = util.create_access_token(
         data={"sub": form_data.username},
         expires_delta=access_token_expires,

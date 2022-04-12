@@ -204,3 +204,4 @@ VishwasAcademyUserData.json
 vishwas_academy_all_student_data.xlsx
 vishwas_academy_all_student_data.csv
 JsonToExcel.py
+auth/__pycache__

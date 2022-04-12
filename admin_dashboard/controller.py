@@ -1900,21 +1900,21 @@ async def get_students(request: Request, user=Depends(get_current_user)):
 async def add_new_date():
     # stud_obj = await StudentChoices.filter(
     #     subscription__id__in=[
-    #         '9cac811a-b706-4245-b151-609194bced32', 'f60f4790-b77a-41dc-bc22-6ce51a317f6c', '388e893b-2e99-49e1-8bf2-9a2101fb545c', 'f2b3e0fb-9b66-4b97-ada2-d5240e6236b3']
+    #         'b7406458-8b67-4da3-a199-46b87003d1a2']
     # )
 
     # i = 0
     # for each_obj in stud_obj:
-    #      created = each_obj.expiry_date
+    #     expiry = each_obj.expiry_date
     # #     new_expiry_date = created + relativedelta(years=1)
     # #     updated_at = datetime.now(tz)
     # #     await StudentChoices.filter(id=each_obj.id).update(expiry_date=new_expiry_date, updated_at=updated_at)
     # #     i = i + 1
     # #     print(i)
-    #      if (created.month == 2) or (created.month == 3):  # and exp_date.day <= 15
-    #        i = i + 1
+    #     if (expiry.month == 3):  # and exp_date.day <= 15
+    #         i = i + 1
     #     # #    new_expiry_date = exp_date + relativedelta(months=2)
-    #        new_expiry_date = parser.parse('2022-03-31T23:59:59.410158+05:30')
-    #        await StudentChoices.filter(id=each_obj.id).update(expiry_date=new_expiry_date)
-    #        print(i)
+    #         new_expiry_date = parser.parse('2022-04-30T23:59:59.410158+05:30')
+    #         await StudentChoices.filter(id=each_obj.id).update(expiry_date=new_expiry_date)
+    #         print(i)
     return {"done"}
