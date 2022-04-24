@@ -10,7 +10,7 @@ from datetime import datetime
 from typing import List, Optional
 import pytz
 from dateutil.relativedelta import relativedelta
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, BackgroundTasks
 from pydantic import BaseModel, validator
 from starlette.responses import JSONResponse
 from FCM.route import push_service
@@ -35,11 +35,9 @@ def app_setting():
 
 
 settings = app_setting()
-
-
 razorpay_key = settings.razorpay_key
 razorpay_secret = settings.razorpay_secret
-
+app_url = settings.app_url
 client = razorpay.Client(auth=(razorpay_key, razorpay_secret))
 
 
@@ -283,6 +281,24 @@ async def place_order(data: PaymentRecordsIn_Pydantic, _=Depends(get_current_use
                                                                            message_title=message_title,
                                                                            message_body=message_body,
                                                                            data_message=data_message)
+                            from send_mails.controller import send_email_backgroundtasks
+                            email_body = {
+                                "name": user_obj.fullname,
+                                "course": c_ins.name,
+                                "payment_id": payment_id,
+                                "order_id": data.order_id,
+                                "total_amount": data.bill_amount
+                            }
+
+                            # await send_email_backgroundtasks(BackgroundTasks, email_to=user_obj.email, body=email_body)
+
+                           
+                            async with httpx.AsyncClient() as client:
+                                    await client.post(app_url+'/send-email/backgroundtasks?email_to='+user_obj.email,
+                                                                    json=jsonable_encoder(email_body))
+
+                           
+
                             return JSONResponse(
                                 {"status": True, "message": "order placed successfully"}, status_code=200)
                         else:
@@ -801,7 +817,7 @@ async def webhook(request: Request):
                             100, source, coupon, coupon_discount, status
                         )
                 elif order_type == 'testseries':
-                  
+
                     if await Student.exists(id=student_id):
                         student = await Student.get(id=student_id)
                         ts_instance = await StudyMaterialCourse.get(id=subscription_id)

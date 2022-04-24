@@ -4,7 +4,7 @@ from tortoise.contrib.pydantic import pydantic_model_creator
 from tortoise import Tortoise
 
 
-class StudentEnquriry(Model):
+class StudentEnquiry(Model):
     id = fields.UUIDField(pk=True)
     name = fields.CharField(70)
     email = fields.CharField(100, unique=True)
@@ -17,6 +17,6 @@ class StudentEnquriry(Model):
 
 
 Tortoise.init_models(["send_mails.models", ], "models")
-StudentEnquriry_Pydantic = pydantic_model_creator(StudentEnquriry)
-StudentEnquriryIn_Pydantic = pydantic_model_creator(
-    StudentEnquriry, name="StudentEnquriry", exclude_readonly=True)
+StudentEnquiry_Pydantic = pydantic_model_creator(StudentEnquiry)
+StudentEnquiryIn_Pydantic = pydantic_model_creator(
+    StudentEnquiry, name="StudentEnquiry", exclude_readonly=True)
