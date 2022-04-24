@@ -27,18 +27,7 @@ from slugify import slugify
 from starlette.responses import RedirectResponse
 from tortoise.contrib.fastapi import HTTPNotFoundError
 from FCM.route import push_service
-from admin_dashboard.models import (AccessToAdminArea, Admin, AdminLoginTracker, Instructor, LiveClasses, LiveClasses_Pydantic, Preference, Course,
-                                    Preference_Pydantic,
-                                    CourseCategories, Course_Pydantic, Category_Pydantic, Category,
-                                    CourseCategories_Pydantic, CourseCategoryLectures_Pydantic, CourseCategoryLectures,
-                                    CategoryTopics, Scholarship2021, Topics, Topics_Pydantic, CategoryTopics_Pydantic,
-                                    CourseCategoryNotes, CourseCategoryNotes_Pydantic,
-                                    SubscriptionPlans, SubscriptionPlans_Pydantic, CourseSubscriptionPlans,
-                                    CourseSubscriptionPlans_Pydantic, CourseCategoryOverview,
-                                    CourseCategoryOverview_Pydantic,
-                                    CourseCategoryTestSeries, CourseCategoryTestSeriesQuestions,
-                                    CourseCategoryTestSeries_Pydantic, subjects, InterViewProgram
-                                    )
+from admin_dashboard.models import *
 from aws_services.deps import s3_auth
 from aws_services.s3.upload import upload_file_to_bucket
 from aws_services.settings import settings
@@ -47,7 +36,7 @@ from configs import appinfo
 from configs.connection import db_config
 from scholarship_tests.models import ScholarshipTestSeries, ScholarshipTestSeriesQuestions, \
     ScholarshipTestSeries_Pydantic
-from send_mails.models import StudentEnquriry_Pydantic, StudentEnquriry
+from send_mails.models import StudentEnquiry_Pydantic, StudentEnquiry
 from student.apis.pydantic_models import PNeachNewtestSeriesPydantic, PNeachNotePydantic, \
     PushNotificationsLecturesPydantic, eachNewtestSeriesPydantic
 from student.controller import create_access_token
@@ -299,7 +288,7 @@ async def index(request: Request, user=Depends(get_current_user)):
 
             course_count = await Course.all().count()
             student_count = await Student.all().count()
-            enquiries_count = await StudentEnquriry.all().count()
+            enquiries_count = await StudentEnquiry.all().count()
             course_order = await PaymentRecords.all().count()
             return templates.TemplateResponse('dashboard.html', context={
                 'request': request,
@@ -384,7 +373,7 @@ async def upload_images(s3, folder, image: UploadFile, mimetype, user=Depends(ge
         imagekit_url = imagekit.url({
             "path": "/" + folder + "/" + new_image_name,
             "url_endpoint": "https://ik.imagekit.io/imagnus/",
-            # "transformation": [{"height": "300", "width": "400"}],
+            "transformation": [{"height": "300", "width": "400"}],
         })
         imagekit_url = imagekit_url.split("?")
         new_url = imagekit_url[0]
@@ -990,7 +979,7 @@ async def fire_push_notification(course_obj, category_obj, topic_obj, saved_obj,
     async with httpx.AsyncClient() as client:
         content_obj = await client.get(requested_url)
         new_dict = content_obj.json()
-        print(new_dict)
+       
         extra_notification_kwargs = {
             "open": message,
             "data_payload": new_dict[0]
@@ -1206,8 +1195,8 @@ async def add_category_notes(course_id: str = Form(...), category_id: str = Form
     topic_obj = await Topics.get(id=topic_id)
     category_topic_obj = await CategoryTopics.get(id=course_topic_id)
     if lecture_note.filename:
-        folder = 'Notes' + '/' + course_id + '/' + \
-                 category_id + '/' + topic_id + '/' + slugify(notes_title)
+        folder = 'Notes' + '/' + course_obj.slug + '/' + \
+                 category_obj.slug + '/' + topic_obj.slug + '/' + slugify(notes_title)
         image_url = await upload_pdf_notes(s3, folder=folder, image=lecture_note, mimetype='application/pdf')
 
         folder = 'NotesThumbnail' + '/' + course_id + '/' + \
@@ -1476,7 +1465,7 @@ async def course_overview(request: Request, user=Depends(get_current_user)):
 
 @router.get('/admin/student_enquiries/')
 async def add_student_enquiries(request: Request):
-    enquiry_obj = await StudentEnquriry_Pydantic.from_queryset(StudentEnquriry.all().order_by("-created_at"))
+    enquiry_obj = await StudentEnquiry_Pydantic.from_queryset(StudentEnquiry.all().order_by("-created_at"))
     return templates.TemplateResponse('student_enquiries.html',
                                       context={'request': request,
                                                'enquiries': enquiry_obj,
@@ -1702,7 +1691,7 @@ async def websocket_endpoint(websocket: WebSocket):
         data = await websocket.receive_text()
         course_count = await Course.all().count()
         student_count = await Student.all().count()
-        enquiries_count = await StudentEnquriry.all().count()
+        enquiries_count = await StudentEnquiry.all().count()
         course_order = await PaymentRecords.all().count()
         array = {
             "course_count": course_count,
@@ -1900,7 +1889,7 @@ async def get_students(request: Request, user=Depends(get_current_user)):
 async def add_new_date():
     # stud_obj = await StudentChoices.filter(
     #     subscription__id__in=[
-    #         'b7406458-8b67-4da3-a199-46b87003d1a2']
+    #         '4c0ae595-62e1-4a27-9c59-39430e8f20cb']
     # )
 
     # i = 0
@@ -1911,7 +1900,7 @@ async def add_new_date():
     # #     await StudentChoices.filter(id=each_obj.id).update(expiry_date=new_expiry_date, updated_at=updated_at)
     # #     i = i + 1
     # #     print(i)
-    #     if (expiry.month == 3):  # and exp_date.day <= 15
+    #     if (expiry.month == 4):  # and exp_date.day <= 15
     #         i = i + 1
     #     # #    new_expiry_date = exp_date + relativedelta(months=2)
     #         new_expiry_date = parser.parse('2022-04-30T23:59:59.410158+05:30')
