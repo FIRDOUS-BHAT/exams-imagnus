@@ -1,3 +1,6 @@
+import json
+import pytz
+from datetime import datetime
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
@@ -11,10 +14,11 @@ from starlette.responses import JSONResponse
 from pydantic import EmailStr, BaseModel
 from typing import List
 from dotenv import load_dotenv
-
-from send_mails.models import StudentEnquriryIn_Pydantic, StudentEnquriry
+from fastapi.encoders import jsonable_encoder
+from send_mails.models import StudentEnquiry, StudentEnquiryIn_Pydantic
 
 load_dotenv('.env')
+tz = pytz.timezone('Asia/Kolkata')
 
 
 class Envs:
@@ -49,31 +53,34 @@ conf = ConnectionConfig(
 
 
 @router.post("/send_mail")
-async def send_mail(email: EmailSchema):
-    template = """
+async def send_mail(email: EmailSchema) -> JSONResponse:
+    try:
+        template = """
 		<html>
 		<body>
 
-<p>Hi !!!
-		<br>Thanks for using fastapi mail, keep using it..!!!</p>
+        <p>Hi !!!
+                <br>Thanks for using fastapi mail, keep using it..!!!</p>
 
-		</body>
-		</html>
-		"""
+                </body>
+                </html>
+                """
 
-    message = MessageSchema(
-        subject="Fastapi-Mail module",
-        # List of recipients, as many as you can pass
-        recipients=email.dict().get("email"),
-        body=template,
-        subtype="html"
-    )
+        message = MessageSchema(
+            subject="Fastapi-Mail module",
+            # List of recipients, as many as you can pass
+            recipients=email.dict().get("email"),
+            template_body=email.dict().get("body"),
+            subtype="html"
+        )
 
-    fm = FastMail(conf)
-    await fm.send_message(message, template_name='email.html')
-    print(message)
+        fm = FastMail(conf)
+        await fm.send_message(message, template_name='email.html')
+        print(message)
 
-    return JSONResponse(status_code=200, content={"message": "email has been sent"})
+        return JSONResponse(status_code=200, content={"message": "email has been sent"})
+    except Exception as ex:
+        return {"detail": str(ex)}
 
 
 async def send_email_async(subject: str, email_to: str, body: dict):
@@ -88,18 +95,6 @@ async def send_email_async(subject: str, email_to: str, body: dict):
     await fm.send_message(message, template_name='email.html')
 
 
-def send_email_background(background_tasks: BackgroundTasks, subject: str, email_to: str, body: dict):
-    message = MessageSchema(
-        subject=subject,
-        recipients=[email_to],
-        body=body,
-        subtype='html',
-    )
-    fm = FastMail(conf)
-    background_tasks.add_task(
-        fm.send_message, message, template_name='order_receipt.html')
-
-
 @router.get('/send-email/asynchronous')
 async def send_email_asynchronous():
     await send_email_async('Hello World', 'firdousbhat.ai@gmail.com',
@@ -107,15 +102,53 @@ async def send_email_asynchronous():
     return 'Success'
 
 
+async def send_email_background(background_tasks: BackgroundTasks, subject: str, email_to: str, body: dict):
+
+    message = MessageSchema(
+        subject=subject,
+        recipients=[
+            email_to,
+            "invoice@imagnus.in"
+        ],
+        template_body=body,
+        subtype='html',
+    )
+    fm = FastMail(conf)
+    background_tasks.add_task(
+        fm.send_message, message, template_name='order.html'
+    )
+
+
+class EmailInputModel(BaseModel):
+    name: str
+    course: str
+    payment_id: str
+    order_id: str
+    total_amount: int
+
+
 @router.post('/send-email/backgroundtasks')
-async def send_email_backgroundtasks(background_tasks: BackgroundTasks, body: StudentEnquriryIn_Pydantic):
+async def send_email_backgroundtasks(background_tasks: BackgroundTasks, email_to: str, body: EmailInputModel):
     try:
-        await StudentEnquriry.create(**body.dict(exclude_unset=True))
-        send_email_background(background_tasks, 'IMAGNUS ENQUIRY',
-                              'imagnusacademy@gmail.com', body.dict())
-        return {"status": "success"}
+        total_amount = body.total_amount
+
+        now = datetime.now(tz)
+        created_at = now.strftime('%d %B, %Y')
+        course_price = round((total_amount)/1.18, 2)
+        gst = round(course_price*0.18, 2)
+        body = jsonable_encoder(body)
+
+        body.update({"course_price": course_price})
+        body.update({"gst": gst})
+        body.update({"total_amount": total_amount})
+        body.update({"created_at": created_at})
+
+        resp = await send_email_background(background_tasks, 'Invoice',
+                                           email_to, body)
+        return {"status": str(resp)}
     except Exception as ex:
-        return {"status": False, "message": "You've already submitted the request"}
+        # return {"status": False, "message": "You've already submitted the request"}
+        return {"detail": str(ex)}
 
 
 @router.get('/send_ses_mails/')
@@ -131,10 +164,10 @@ async def send_ses_mails():
     RECIPIENT = 'frdsbhat9@gmail.com'
 
     # Replace smtp_username with your Amazon SES SMTP user name.
-    USERNAME_SMTP = "REDACTED_AWS_ACCESS_KEY_ID"
+    USERNAME_SMTP = Envs.MAIL_USERNAME
 
     # Replace smtp_password with your Amazon SES SMTP password.
-    PASSWORD_SMTP = "BIE3w5dcV2s3kmUf+24GQ0SBQiQBRgCn35uHeaotviPF"
+    PASSWORD_SMTP = Envs.MAIL_PASSWORD
 
     # (Optional) the name of a configuration set to use for this message.
     # If you comment out this line, you also need to remove or comment out
