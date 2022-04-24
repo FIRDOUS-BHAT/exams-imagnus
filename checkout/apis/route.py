@@ -290,14 +290,9 @@ async def place_order(data: PaymentRecordsIn_Pydantic, _=Depends(get_current_use
                                 "total_amount": data.bill_amount
                             }
 
-                            # await send_email_backgroundtasks(BackgroundTasks, email_to=user_obj.email, body=email_body)
-
-                           
                             async with httpx.AsyncClient() as client:
-                                    await client.post(app_url+'/send-email/backgroundtasks?email_to='+user_obj.email,
-                                                                    json=jsonable_encoder(email_body))
-
-                           
+                                await client.post(app_url+'/send-email/backgroundtasks?email_to='+user_obj.email,
+                                                  json=jsonable_encoder(email_body))
 
                             return JSONResponse(
                                 {"status": True, "message": "order placed successfully"}, status_code=200)
@@ -789,6 +784,7 @@ async def generate_order_from_webhook(student_id, payment_id, order_id, subscrip
 @router.post('/webhooks/')
 async def webhook(request: Request):
     try:
+        c_ins = None
         data = await request.json()
         print(data)
         # print("============================================")
@@ -806,10 +802,13 @@ async def webhook(request: Request):
                 coupon_discount = data['payload']['payment']['entity']['notes']['coupon_discount']
                 student_id = data['payload']['payment']['entity']['notes']['student']
                 package_mode = data['payload']['payment']['entity']['notes']['package_mode']
+                student = await Student.get(id=student_id)
 
                 '''SAVING THE ORDER TO DATABASE GOES HERE'''
                 status = data['payload']['payment']['entity']['status']
                 if order_type == 'course':
+                    subs_ins = await CourseSubscriptionPlans.get(id=subscription_id).values("course__name")
+                    c_ins = subs_ins["course__name"]
                     if not await PaymentRecords.exists(payment_id=payment_id):
 
                         await generate_order_from_webhook(
@@ -819,8 +818,10 @@ async def webhook(request: Request):
                 elif order_type == 'testseries':
 
                     if await Student.exists(id=student_id):
-                        student = await Student.get(id=student_id)
+                       
                         ts_instance = await StudyMaterialCourse.get(id=subscription_id)
+                        subs_ins = await StudyMaterialCourse.get(id=subscription_id).values("course__name")
+                        c_ins = subs_ins["course__name"]
                         if not await TestSeriesOrders.exists(student__id=student_id, test_series_id=subscription_id):
                             updated_at = datetime.now(tz)
 
@@ -831,8 +832,7 @@ async def webhook(request: Request):
                                                           )
 
                 elif order_type == 'material':
-                    student = await Student.get(id=student_id)
-
+                    
                     order = await StudyMaterialOrderInstance.create(
                         student=student,
                         razorpay_payment_id=payment_id,
@@ -858,6 +858,8 @@ async def webhook(request: Request):
                     for item_id in item_list:
 
                         item = await StudyMaterialCategories.get(id=item_id)
+                        subs_ins = await StudyMaterialCategories.get(id=item_id).values("course__course__name")
+                        c_ins = subs_ins["course__course__name"]
                         updated_at = datetime.now(tz)
 
                         await StudyMaterialOrderItems.create(
@@ -867,6 +869,17 @@ async def webhook(request: Request):
                         )
                         await MobileCart.get(order_id=order_id).delete()
 
+                email_body = {
+                    "name": student.fullname,
+                    "course": c_ins,
+                    "payment_id": payment_id,
+                    "order_id": order_id,
+                    "total_amount": payment_amount
+                }
+
+                async with httpx.AsyncClient() as client:
+                    await client.post(app_url+'/send-email/backgroundtasks?email_to='+student.email,
+                                      json=jsonable_encoder(email_body))
                 return JSONResponse(
                     {"status": True, "message": "Order confirmed"}, status_code=200)
 
