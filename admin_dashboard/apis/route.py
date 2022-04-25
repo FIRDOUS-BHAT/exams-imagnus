@@ -149,6 +149,7 @@ async def getBookMarkedVideos(student_id):
     else:
         return None
 
+
 async def getBookMarkedNotes(student_id):
     if await BookMarkedNotes.exists(
             student__id=student_id):
@@ -160,6 +161,7 @@ async def getBookMarkedNotes(student_id):
         return new_list
     else:
         return None
+
 
 @router.post('/v1/course_category/{course_slug}/{category_slug}/{student_id}/',
              #  response_model=CourseCategoryPydantic
@@ -173,7 +175,6 @@ async def course_category(course_slug: str, category_slug: str, student_id: str,
 
             book_marked_videos = await getBookMarkedVideos(student_id)
 
-            
             async def check_isBookmarkedNotes(notes_id):
 
                 if await BookMarkedNotes.exists(
@@ -183,7 +184,6 @@ async def course_category(course_slug: str, category_slug: str, student_id: str,
                 else:
                     return False
 
-           
             async def check_isBookmarkedTestSeries(series_id):
 
                 if await BookMarkedTestseries.exists(
@@ -422,7 +422,6 @@ async def course_category(course_slug: str, category_slug: str, student_id: str,
                             # category_topics_array.append(
                             #     )
 
-                            
                             new_lectures = []
                             if await CourseCategoryLectures.exists(
                                     category_topic__id=category_topics_obj['id']):
@@ -433,10 +432,10 @@ async def course_category(course_slug: str, category_slug: str, student_id: str,
                                     video_id = eachLecture.id
                                     print("waiting....")
                                     if video_id in book_marked_videos:
-                                        
+
                                         is_bookmarked = True
                                     else:
-                                        is_bookmarked = False    
+                                        is_bookmarked = False
                                     new_dict.update(
                                         {"isBookmarked": is_bookmarked})
                                     # is_liked = await check_isLikedVideo(video_id)
@@ -824,7 +823,7 @@ async def course_category(course_slug: str, category_slug: str, student_id: str,
 
 
 @router.post('/course_category/{course_slug}/{category_slug}/{student_id}/',
-            #  response_model=CourseCategoryPydantic
+             #  response_model=CourseCategoryPydantic
              )
 # @cache(expire=cache_time)
 async def course_category(course_slug: str, category_slug: str, student_id: str, _=Depends(get_current_user)):
@@ -1721,7 +1720,7 @@ async def static_urls(_=Depends(get_current_user)):
 async def offer_banners(title: str, banner: UploadFile = File(...),
                         s3: BaseClient = Depends(s3_auth), _=Depends(get_current_user)):
     if not await offerBanners.exists(title=title):
-        image_url = await upload_images(s3, folder='offer_banners', image=banner,mimetype=None)
+        image_url = await upload_images(s3, folder='offer_banners', image=banner, mimetype=None)
         obj = await offerBanners.create(
             title=title,
             url=image_url,
@@ -1745,14 +1744,23 @@ async def offer_banners():
 @router.post('/add_coupon')
 async def add_coupon(name: str, discount: str, coupon_type: int, subscription: str, _=Depends(get_current_user)):
     try:
-        if not await Coupons.exists(name=name, subscription__id=subscription):
-            subscription = await CourseSubscriptionPlans.get(id=subscription)
-            await Coupons.create(
-                name=name, discount=discount, subscription=subscription, coupon_type=coupon_type)
+        if subscription == 'all':
+            subscriptions = await CourseSubscriptionPlans.filter(is_active=True).values("id")
+            for subscription in subscriptions:
+                if not await Coupons.exists(name=name.strip(), subscription__id=subscription["id"]):
+                    subscription = await CourseSubscriptionPlans.get(id=subscription["id"])
+                    await Coupons.create(
+                        name=name.strip(), discount=discount, subscription=subscription, coupon_type=coupon_type)
             return JSONResponse({'status': True, 'message': 'New coupon added'})
-        else:
-            return JSONResponse({
-                'status': False, 'message': 'This coupon already exists'}, status_code=208)
+        else:    
+            if not await Coupons.exists(name=name.strip(), subscription__id=subscription.strip()):
+                subscription = await CourseSubscriptionPlans.get(id=subscription.strip())
+                await Coupons.create(
+                    name=name.strip(), discount=discount, subscription=subscription, coupon_type=coupon_type)
+                return JSONResponse({'status': True, 'message': 'New coupon added'})
+            else:
+                return JSONResponse({
+                    'status': False, 'message': 'This coupon already exists'}, status_code=208)
 
     except Exception as ex:
         raise HTTPException(status_code=208, detail=str(ex))
@@ -1841,7 +1849,7 @@ async def interview_program(s3: BaseClient = Depends(s3_auth), data: getCandidat
             return JSONResponse({"status": False, "message": "Mobile Number is already registered."})
         else:
             folder = 'interview-files/2020'
-            image_url = await upload_images(s3, folder=folder, image=image,mimetype=None)
+            image_url = await upload_images(s3, folder=folder, image=image, mimetype=None)
 
             await InterViewProgram.create(name=data.name, email=data.email,
                                           mobile=data.mobile, roll_no=data.roll_no,
