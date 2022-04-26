@@ -818,7 +818,7 @@ async def webhook(request: Request):
                 elif order_type == 'testseries':
 
                     if await Student.exists(id=student_id):
-                       
+
                         ts_instance = await StudyMaterialCourse.get(id=subscription_id)
                         subs_ins = await StudyMaterialCourse.get(id=subscription_id).values("course__name")
                         c_ins = subs_ins["course__name"]
@@ -832,7 +832,7 @@ async def webhook(request: Request):
                                                           )
 
                 elif order_type == 'material':
-                    
+
                     order = await StudyMaterialOrderInstance.create(
                         student=student,
                         razorpay_payment_id=payment_id,
@@ -874,7 +874,7 @@ async def webhook(request: Request):
                     "course": c_ins,
                     "payment_id": payment_id,
                     "order_id": order_id,
-                    "total_amount": payment_amount
+                    "total_amount": payment_amount/100
                 }
 
                 async with httpx.AsyncClient() as client:
