@@ -131,18 +131,15 @@ class EmailInputModel(BaseModel):
 async def send_email_backgroundtasks(background_tasks: BackgroundTasks, email_to: str, body: EmailInputModel):
     try:
         total_amount = body.total_amount
-
         now = datetime.now(tz)
         created_at = now.strftime('%d %B, %Y')
         course_price = round((total_amount)/1.18, 2)
         gst = round(course_price*0.18, 2)
         body = jsonable_encoder(body)
-
         body.update({"course_price": course_price})
         body.update({"gst": gst})
         body.update({"total_amount": total_amount})
         body.update({"created_at": created_at})
-
         resp = await send_email_background(background_tasks, 'Invoice',
                                            email_to, body)
         return {"status": str(resp)}

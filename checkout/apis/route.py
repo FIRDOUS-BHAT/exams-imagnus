@@ -877,9 +877,9 @@ async def webhook(request: Request):
                     "total_amount": payment_amount/100
                 }
 
-                async with httpx.AsyncClient() as client:
-                    await client.post(app_url+'/send-email/backgroundtasks?email_to='+student.email,
-                                      json=jsonable_encoder(email_body))
+                # async with httpx.AsyncClient() as client:
+                #     await client.post(app_url+'/send-email/backgroundtasks?email_to='+student.email,
+                #                       json=jsonable_encoder(email_body))
                 return JSONResponse(
                     {"status": True, "message": "Order confirmed"}, status_code=200)
 
