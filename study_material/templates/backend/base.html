@@ -724,7 +724,7 @@ $(document).on('change','#study_material_id', function(){
          $('#course_id').html('')
          $('#course_id').html('<option value="">Select Course</option>')
          for(let x in response){
-            $('#course_id').append('<option value="'+ response[x].course.id+'">'+ response[x].course.name +'</option>')
+            $('#course_id').append('<option value="'+ response[x].course__id+'">'+ response[x].course__name +'</option>')
 
          }
       }
@@ -759,7 +759,7 @@ $(document).on('change','#study_material_id', function(){
                   $('#ts_course_id').html('')
                   $('#ts_course_id').html('<option value="">Select Course</option>')
                   for (let x in response) {
-                     $('#ts_course_id').append('<option value="' + response[x].course.id + '">' + response[x].course.name + '</option>')
+                     $('#ts_course_id').append('<option value="' + response[x].course__id + '">' + response[x].course__name + '</option>')
 
                   }
                }
