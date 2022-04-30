@@ -87,8 +87,8 @@
                            {% for course in category_course %}
                               <tr>
                                  <td>IM-00{{loop.index}} </td>
-                                 <td>{{ course.material.name }}</td>
-                                 <td>{{ course.course.name }} </td>
+                                 <td>{{ course.material__name }}</td>
+                                 <td>{{ course.course__name }} </td>
                                  <td>{{ course.bundle_price }}</td>
                                  <td>{{ course.bundle_dsc_price }}</td>
                                 
@@ -182,7 +182,7 @@
             </div>
          </div>
 
-<div class="callout">
+<!-- <div class="callout">
    <div class="callout-header">Callout</div>
    <span class="closebtn" onclick="this.parentElement.style.display='none';">×</span>
    <div class="callout-container">
@@ -190,7 +190,7 @@
          <li>Delete Test series working. </li>
       </ol></p>
    </div>
-</div>
+</div> -->
 
 
 

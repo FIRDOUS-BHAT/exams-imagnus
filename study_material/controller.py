@@ -13,7 +13,7 @@ from starlette.requests import Request
 from starlette.responses import RedirectResponse, JSONResponse
 from starlette.templating import Jinja2Templates
 import razorpay
-from admin_dashboard.controller import upload_images
+from admin_dashboard.controller import upload_images, upload_pdf_notes
 from admin_dashboard.models import Course_Pydantic, Course
 from aws_services.deps import s3_auth
 from configs import appinfo
@@ -60,24 +60,25 @@ frontend_templates = Jinja2Templates(
 @router.get('/admin/add_study_material/')
 async def add_study_material(request: Request):
     try:
-        material_obj = await StudyMaterialName_Pydantic.from_queryset(StudyMaterialName.all())
-        course_obj = await Course_Pydantic.from_queryset(Course.all())
+        material_obj = await StudyMaterialName.all()
+        course_obj = await Course.all()
         first_study_material_name = await StudyMaterialName.first()
-        category_course_obj = await StudyMaterialCourse_Pydantic.from_queryset(
-            StudyMaterialCourse.all()
-        )
-
-        each_category_course_obj = await StudyMaterialCourse_Pydantic.from_queryset(
-            StudyMaterialCourse.filter(
-                material__id=first_study_material_name.id)
-        )
+        category_course_obj = await StudyMaterialCourse.all().values(
+            "id","course__name","web_icon","bundle_price","bundle_dsc_price","material__name"
+            )
+        
+        
+        # each_category_course_obj = await StudyMaterialCourse_Pydantic.from_queryset(
+        #     StudyMaterialCourse.filter(
+        #         material__id=first_study_material_name.id)
+        # )
 
         return backend_templates.TemplateResponse('study_material.html', context={
             'request': request,
             'study_material_names': material_obj,
             'courses': course_obj,
             'category_course': category_course_obj,
-            'each_category_courses': each_category_course_obj,
+            # 'each_category_courses': each_category_course_obj,
             'add_study_material_active': 'active',
 
         })
@@ -87,7 +88,7 @@ async def add_study_material(request: Request):
         )
 
 
-@ router.get('/admin/study_material_notes/')
+@router.get('/admin/study_material_notes/')
 async def add_study_material(request: Request):
     try:
         study_material_categories_obj = await StudyMaterialCategories_Pydantic.from_queryset(
@@ -143,7 +144,7 @@ async def create_course(study_material_id: str = Form(...),
     try:
         course_instance = await Course.get(id=course_id)
         preference = await StudyMaterialName.get(id=study_material_id)
-        image_url = await upload_images(s3, folder='study_material/course_icons', image=icon_image, mimetype=None)
+        image_url = await upload_pdf_notes(s3, folder='study_material/course_icons', image=icon_image, mimetype=None)
         if not await StudyMaterialCourse.exists(material=preference, course=course_instance):
             await StudyMaterialCourse.create(
                 material=preference, course=course_instance,
@@ -255,9 +256,8 @@ async def get_study_material_course(request: Request):
     try:
         data = await request.json()
         mid = data['mid']
-        obj = await StudyMaterialCourse_Pydantic.from_queryset(
-            StudyMaterialCourse.filter(material__id=mid)
-        )
+        obj = await StudyMaterialCourse.filter(material__id=mid).values("course__id","course__name")
+        
         return obj
     except Exception as ex:
         return JSONResponse(
