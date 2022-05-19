@@ -1819,13 +1819,16 @@ async def view_result(request: Request, tid: str, cid: str, user=Depends(get_cur
 
 
 @router.get('/student/test/result/{cid}/{tid}/')
-async def view_result(request: Request,cid: str, tid: str, user=Depends(get_current_user)):
-    
+async def view_result(request: Request, cid: str, tid: str, user=Depends(get_current_user)):
+
     try:
         check = await authenticate_student_subscription(cid=cid, user=user)
         if check:
             if await CourseCategoryTestSeries.exists(id=tid):
                 test_series_instance = await CourseCategoryTestSeries.get(id=tid)
+                test_series_qstns = await CourseCategoryTestSeriesQuestions.filter(
+                    test_series=test_series_instance)
+
                 student_instance = await Student.get(id=user)
                 if await StudentTestSeriesRecord.exists(
                         student=student_instance,
@@ -1839,14 +1842,14 @@ async def view_result(request: Request,cid: str, tid: str, user=Depends(get_curr
                     }
                     return templates.TemplateResponse('testseries_result.html',
                                                       context={'request': request,
-                                                               'summary':summary
+                                                               'summary': summary,
+                                                               "test_series_qstns": test_series_qstns
 
                                                                })
             else:
                 return {"status": False, "message": "Something went wrong."}
         else:
             return {"status": False, "message": "Something went wrong."}
-    
+
     except Exception as ex:
         return JSONResponse({"message": str(ex)}, status_code=208, )
-   

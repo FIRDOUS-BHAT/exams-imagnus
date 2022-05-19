@@ -48,34 +48,33 @@
                         </div>
                      </div>
 					 </div>
-                   
+                   {% for qstns in test_series_qstns%}
 					<div class="card_dash activee">
 					 <div class="row">
                      <div class="col-md-8">
                         <div class="user-status">
                            <div class="ques_item">
                               <div class="ques_title">
-                                 <span>Ques 1 :- </span>
-                                 ‘Mukhyamantri Muft Sewer Connection Yojna’ is implemented by which state/UT?
-                              </div>
+                                 <span>Ques {{loop.index}} :- </span>
+                                    {{qstns.question}}                              </div>
                               <div class="card-tests">
                                  <div class="card-body">
-                                    <p>[A] West Bengal </p>
+                                    <p>[A]{{qstns.opt_1}} </p>
                                  </div>
                               </div>
                               <div class="card-tests">
                                  <div class="card-body">
-                                    <p>[B] New Delhi </p>
+                                    <p>[B] {{qstns.opt_2}} </p>
                                  </div>
                               </div>
                               <div class="card-tests">
                                  <div class="card-body bg-danger">
-                                    <p class=" text-white">[C] Madhya Pradesh </p>
+                                    <p class=" text-white">[C] {{qstns.opt_3}} </p>
                                  </div>
                               </div>
                               <div class="card-tests">
                                  <div class="card-body  bg-success">
-                                    <p  class=" text-white">[D] Uttar Pradesh </p>
+                                    <p  class=" text-white">[D] {{qstns.opt_4}} </p>
                                  </div>
                               </div>
                            </div>
@@ -85,55 +84,14 @@
 				          <h4 class="ques_title"><span>Solution: </span></h4>
 					   <div class="card-tests">
                           <div class="card-body">
-                             <p>Under ‘Mukhyamantri Muft Sewer Connection Yojna’, the New Delhi Government will provide 25,000 households of east Delhi with 100 per cent sewer connectivity for free. The Government has developed out a plan to maximise the potential of the Delhi Jal Board (DJB) through the development of free sewer connections, new sewer lines and reverse osmosis (RO) plants in the state.</p>
+                             <p>{{ qstns.solution}}</p>
                           </div>
                        </div>
 					 </div>
                   </div>
 				  </div>
 				  
-				  <div class="card_dash activee">
-					 <div class="row">
-                     <div class="col-md-8">
-                        <div class="user-status">
-                           <div class="ques_item">
-                              <div class="ques_title">
-                                 <span>Ques 2 :- </span>
-                                 ‘Mukhyamantri Muft Sewer Connection Yojna’ is implemented by which state/UT?
-                              </div>
-                              <div class="card-tests">
-                                 <div class="card-body">
-                                    <p>[A] West Bengal </p>
-                                 </div>
-                              </div>
-                              <div class="card-tests">
-                                 <div class="card-body bg-success">
-                                    <p class=" text-white">[B] New Delhi </p>
-                                 </div>
-                              </div>
-                              <div class="card-tests">
-                                 <div class="card-body bg-danger">
-                                    <p class=" text-white">[C] Madhya Pradesh </p>
-                                 </div>
-                              </div>
-                              <div class="card-tests">
-                                 <div class="card-body">
-                                    <p>[D] Uttar Pradesh </p>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-					 <div class="ques_item col-md-4">
-				          <h4 class="ques_title"><span>Solution: </span></h4>
-					   <div class="card-tests">
-                          <div class="card-body">
-                             <p>Under ‘Mukhyamantri Muft Sewer Connection Yojna’, the New Delhi Government will provide 25,000 households of east Delhi with 100 per cent sewer connectivity for free. The Government has developed out a plan to maximise the potential of the Delhi Jal Board (DJB) through the development of free sewer connections, new sewer lines and reverse osmosis (RO) plants in the state.</p>
-                          </div>
-                       </div>
-					 </div>
-                  </div>
-				  </div>
+				  {% endfor %}
                </div>
             </div>
             
