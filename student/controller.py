@@ -1818,8 +1818,8 @@ async def view_result(request: Request, tid: str, cid: str, user=Depends(get_cur
         return JSONResponse({"message": str(ex)}, status_code=208, )
 
 
-@router.get('/test/result/')
-async def view_result(request: Request):
+@router.get('/student/test/result/{tid}/')
+async def view_result(request: Request, tid: str):
     return templates.TemplateResponse('testseries_result.html',
                                       context={'request': request,
 
