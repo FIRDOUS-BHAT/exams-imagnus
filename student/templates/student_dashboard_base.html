@@ -11,7 +11,8 @@
 
      <!-- Favicon icon -->
      <link rel="shortcut icon" href="/static/student_assets/images/fav.png" type="image/x-icon" />
-
+     
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
      <!-- Google fonts -->
 
      <!-- Custom Stylesheet -->
@@ -43,7 +44,7 @@
       <link href="/static/admin/vendor/OwlCarousel/assets/owl.theme.default.min.css" rel="stylesheet"/>
       <link href="/static/admin/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
       <link rel="stylesheet" type="text/css" href="/static/admin/vendor/semantic/semantic.min.css" />
-
+      <link href="/static/student_assets/css/test.css" rel="stylesheet" />
 </head>
 <body>
 <header class="header clearfix">
@@ -228,7 +229,8 @@
  
  <script src="/static/courses_assets/js/jquery.min.js"></script>
  <script src="/static/courses_assets/js/bootstrap.min.js"></script>
- <script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="js/vertical-responsive-menu.min.js"></script>
+ <!-- <script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script> -->
+ <script src="js/vertical-responsive-menu.min.js"></script>
 <script src="/static/student_assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="/static/student_assets/vendor/OwlCarousel/owl.carousel.js"></script>
 <script src="/static/student_assets/vendor/semantic/semantic.min.js"></script>
@@ -316,6 +318,34 @@ $(document).on('click', '#submit_question', function(e){
 
 
 
+
+
+})
+
+
+$(document).on('click','#view_test',function(e) {
+
+   let callback = e.target.getAttribute('data-callback')
+   
+   fetch(callback,{
+      method: 'POST', // or 'PUT'
+      headers: {
+         'Content-Type': 'application/json',
+      },
+   
+   })
+   .then(response => response.json())
+      .then(data => {
+         console.log('Success:', data);
+         if(data.status){
+            const skipped = data.message.skipped
+            $('#no_of_skipped').text(data.message.skipped)
+            $('#no_of_attempted').text(`{{ qstn_nos }}`-skipped)
+         }
+      })
+      .catch((error) => {
+         console.error('Error:', error);
+      });
 
 
 })

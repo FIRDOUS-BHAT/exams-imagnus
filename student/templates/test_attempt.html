@@ -63,7 +63,7 @@
                                     </div>
                                  </div>
                                  <button class="upload_btn" data-callback="/student/submit/testSeriesQstns/{{cid}}/{{tid}}/{{qstns[counter].id}}/{{qstns[counter+1].id}}/{{counter}}/" id="submit_question" title="submit" style="margin-left: 10px;">Save & Next</button>
-                                 <button class="upload_btn sbmit" title="submit" data-toggle="modal" data-target="#myModal">Submit Testseries</button>
+                                 <button class="upload_btn sbmit" data-callback="/student/test/view_summary/{{cid}}/{{tid}}/" title="submit" data-toggle="modal" id="view_test" data-target="#myModal">Submit Test</button>
 
 
                               </div>
@@ -167,17 +167,17 @@
                            <thead class="thead-s">
                               <tr>
                                  <th class="text-center">No. of questions </th>
-                                 <th class="text-center">Answered </th>
-                                 <th class="text-center">Not Answered </th>
-                                 <th class="text-center">Not Attempted </th>
+                                 <th class="text-center">Attempted </th>
+                                 <th class="text-center">Skipped </th>
+                                 <th class="text-center">Not Visited </th>
                               </tr>
                            </thead>
                            <tbody>
                               <tr>
-                                 <td class="text-center">100 </td>
-                                 <td class="text-center">23</td>
-                                 <td class="text-center">72 </td>
-                                 <td class="text-center">12 </td>
+                                 <td class="text-center" id="no_of_questions">{{ qstn_nos }}</td>
+                                 <td class="text-center" id="no_of_attempted"></td>
+                                 <td class="text-center" id="no_of_skipped"> </td>
+                                 <td class="text-center" id="no_of_not_visited"> </td>
 
                               </tr>
 

@@ -172,7 +172,6 @@ async def place_order(data: PaymentRecordsIn_Pydantic, _=Depends(get_current_use
             razorpay_resp = client.payment.fetch(data.payment_id)
 
             # print(razorpay_resp)
-            print("========Razorpay status here=========================")
 
             if razorpay_resp and (not await PaymentRecords.exists(payment_id=payment_id)):
                 payment_status = 2
@@ -290,9 +289,9 @@ async def place_order(data: PaymentRecordsIn_Pydantic, _=Depends(get_current_use
                                 "total_amount": data.bill_amount
                             }
 
-                            async with httpx.AsyncClient() as client:
-                                await client.post(app_url+'/send-email/backgroundtasks?email_to='+user_obj.email,
-                                                  json=jsonable_encoder(email_body))
+                            # async with httpx.AsyncClient() as client:
+                            #     await client.post(app_url+'/send-email/backgroundtasks?email_to='+user_obj.email,
+                            #                       json=jsonable_encoder(email_body))
 
                             return JSONResponse(
                                 {"status": True, "message": "order placed successfully"}, status_code=200)
