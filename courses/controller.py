@@ -421,8 +421,7 @@ async def create_razorpay_order(request: Request,
             # await StudyMaterialOrderInstance.filter(student=student, item_id=item_instance).delete()
 
             if create_order == 'True':
-
-                '''save the order as pending till payment status is not updated'''
+               
 
                 subs_obj = await CourseSubscriptionPlans.get(id=item_id).values("course__id", "validity")
                 subs_obj1 = await CourseSubscriptionPlans.get(id=item_id)
@@ -580,53 +579,9 @@ async def create_razorpay_order(request: Request,
                         "receipt": 'order_rcptid_11'
                     })
                     order_id = order['id']
-                    # payment_obj = await PaymentRecords.create(
-                    #     student=student,
-                    #     payment_mode=1,
-                    #     subscription=subs_obj1,
-                    #     payment_id='',
-                    #     order_id=order_id,
-                    #     coupon='',
-                    #     coupon_discount=0,
-                    #     bill_amount=amount,
-                    #     gateway_name='Razorpay',
-                    #     payment_status=1,
-                    #     updated_at=updated_at,
-                    #     source='web'
-                    # )
-
-                    # expiry_date = updated_at + \
-                    #     relativedelta(months=validity)
-                    # if payment_obj:
-                    #     student_choices_obj = await StudentChoices.create(
-                    #         student=student,
-                    #         course=c_ins,
-                    #         subscription=subs_obj1,
-                    #         payment=payment_obj,
-                    #         subscription_duration=validity,
-                    #         expiry_date=expiry_date,
-                    #         updated_at=updated_at,
-                    #         created_at=updated_at
-                    #     )
-                    #     if student_choices_obj:
-                    #         if await activeSubscription.exists(student=student, course=c_ins):
-                    #             await activeSubscription.filter(
-                    #                 student=student, course=c_ins).delete()
-                    #             await activeSubscription.create(
-                    #                 student=student, payment=payment_obj, subscription=subs_obj1,
-                    #                 course=c_ins, updated_at=updated_at
-                    #             )
-                    #         else:
-                    #             await activeSubscription.create(
-                    #                 student=student, payment=payment_obj, subscription=subs_obj1,
-                    #                 course=c_ins, updated_at=updated_at
-                    #             )
+                   
                     return JSONResponse({"status": True, "order_id": order_id, "amount": amount}, status_code=200)
-                    # else:
-
-                    #     return JSONResponse(
-                    #         {"status": False, "message": "Something went wrong"}, status_code=208)
-
+                    
                 else:
                     return JSONResponse(
                         {"status": False,
@@ -683,7 +638,7 @@ async def confirm_order(request: Request, user=Depends(get_current_user)):
 
             resp = JSONResponse(
                 {"status": False, "message": "Something went wrong"}, status_code=208)
-
+            
         return resp
 
     except Exception as ex:

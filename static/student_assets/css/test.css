@@ -1,0 +1,106 @@
+.ground-list-single {
+    -webkit-box-align: center;
+    align-items: center;
+}
+.ground {
+    display: -ms-flex-box;
+    display: flex;
+    -ms-flex-align: start;
+    align-items: flex-start;
+}
+.card-test {
+    border: none;
+    box-shadow: 0px 1px 4px 0px rgb(0 0 0 / 9%);
+    border-radius: 0.25rem;
+    overflow: hidden;
+    background: #fff;
+    text-align: center;
+    margin-right: 7px;
+}
+.p-10 {
+    padding: 10px;
+}
+.btn-circle-40 {
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    display: inline-block;
+    border-radius: 50%;
+}
+.btn-success, .btn-success.disabled {
+    background: #2ea033;
+    border: 1px solid #2ea033;
+    color: #ffffff;
+}
+.dashboard_container {
+    background: #ffffff;
+    border-radius: 0.4rem;
+    padding: 0;
+    box-shadow: 0px 1px 4px 0px rgb(0 0 0 / 9%);
+    position: relative;
+    display: block;
+    margin-bottom: 30px;
+    width: 100%;
+}
+.dashboard_stats_wrap-test {
+    display: inline-block;
+    padding: 0;
+    height: 112px;
+    background-color: #ffefc0;
+    color: #fff;
+    border-radius: 10px;
+    width: 100%;
+    position: relative;
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: .3s;
+    cursor: default;
+}
+.dashboard_stats_wrap_content {
+    position: absolute;
+    left: 32px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.widget-4 .dashboard_stats_wrap_content span, .widget-4 .dashboard_stats_wrap-icon {
+    color: #ce024b;
+}
+.card-tests {
+    margin-bottom: 10px;
+    border: none;
+    box-shadow: 0px 1px 4px 0px rgb(0 0 0 / 9%);
+    border-radius: 0.25rem;
+    
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: 0.25rem;
+}
+
+.dashboard_stats_wrap-icon {
+    font-size: 45px;
+}
+.dashboard_stats_wrap_content h4 {
+    font-size: 25px;
+    font-weight: 600;
+    padding: 0;
+    margin: 0;
+    color: #22374e;
+    letter-spacing: 1px;
+}
+.widget-4 .dashboard_stats_wrap_content span, .widget-4 .dashboard_stats_wrap-icon {
+    color: #ce024b;
+}
+.dashboard_stats_wrap-icon {
+    font-size: 45px;
+}
+.dashboard_stats_wrap-icon {
+    position: absolute;
+    right: 32px;
+    top: 50%;
+    transform: translateY(-40%);
+    font-size: 80px;
+}

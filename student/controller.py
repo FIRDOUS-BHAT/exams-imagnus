@@ -1788,3 +1788,39 @@ async def attempting_test(cid: str, tid: str, cur_qstn_id: str, nx_qstn_id: str,
     except Exception as ex:
         return JSONResponse({"message": str(ex)}, status_code=208, )
         # return RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
+
+
+@router.post('/student/test/view_summary/{cid}/{tid}/')
+async def view_result(request: Request, tid: str, cid: str, user=Depends(get_current_user)):
+    try:
+        check = await authenticate_student_subscription(cid=cid, user=user)
+        if check:
+            if await CourseCategoryTestSeries.exists(id=tid):
+                test_series_instance = await CourseCategoryTestSeries.get(id=tid)
+                student_instance = await Student.get(id=user)
+                if await StudentTestSeriesRecord.exists(
+                        student=student_instance,
+                        test_series=test_series_instance):
+                    test_record_summary = await StudentTestSeriesRecord.get(student=student_instance,
+                                                                            test_series=test_series_instance)
+                    summary = {
+                        "correct": test_record_summary.correct_ans,
+                        "wrong": test_record_summary.wrong_ans,
+                        "skipped": test_record_summary.skipped_qns
+                    }
+                    return {"status": True, "message": summary}
+            else:
+                return {"status": False, "message": "Something went wrong."}
+        else:
+            return {"status": False, "message": "Something went wrong."}
+
+    except Exception as ex:
+        return JSONResponse({"message": str(ex)}, status_code=208, )
+
+
+@router.get('/test/result/')
+async def view_result(request: Request):
+    return templates.TemplateResponse('testseries_result.html',
+                                      context={'request': request,
+
+                                               })
