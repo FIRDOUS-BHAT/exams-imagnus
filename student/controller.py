@@ -1253,7 +1253,12 @@ async def test_series_topics(request: Request, cid: str, tid: str, user=Depends(
         if check:
             if await CourseCategoryTestSeries.exists(id=tid):
                 student_instance = await Student.get(id=user)
+                
                 test_series_instance = await CourseCategoryTestSeries.get(id=tid)
+                if await StudentTestSeriesRecord.exists(student=student_instance,
+                                                            test_series=test_series_instance):
+                    await StudentTestSeriesRecord.filter(student=student_instance,
+                                                            test_series=test_series_instance).delete()
                 test_series_qstns_instance = await CourseCategoryTestSeriesQuestions.filter(
                     test_series=test_series_instance)
                 qstn_nos = test_series_instance.no_of_qstns
