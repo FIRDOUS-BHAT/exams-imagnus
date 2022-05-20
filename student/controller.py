@@ -447,10 +447,10 @@ async def student_dashboard(request: Request, cid: str, user=Depends(get_current
         check = await authenticate_student_subscription(cid=cid, user=user)
         if check:
             if await Course.exists(id=cid):
+                student_instance = await Student.get(id=user)
                 c_instance = await Course.get(id=cid)
                 live_class_count = await LiveClasses.filter(course=c_instance).count()
                 today_live_class_count = await LiveClasses.filter(course=c_instance, ).count()
-
                 lectures_count = await CourseCategoryLectures.filter(
                     category_topic__category__course=c_instance
                 ).count()
@@ -469,9 +469,9 @@ async def student_dashboard(request: Request, cid: str, user=Depends(get_current
                 today_notes_count = await CourseCategoryNotes.filter(
                     category_topic__category__course=c_instance,
                 ).count()
-                records = await CourseCategories_Pydantic.from_queryset(
-                    CourseCategories.filter(course=c_instance)
-                )
+                # records = await CourseCategories_Pydantic.from_queryset(
+                #     CourseCategories.filter(course=c_instance)
+                # )
 
                 live_classes = await LiveClasses_Pydantic.from_queryset(
                     LiveClasses.filter(course__id=cid))
@@ -504,6 +504,7 @@ async def student_dashboard(request: Request, cid: str, user=Depends(get_current
                 # return new_arr
                 return templates.TemplateResponse('dashboard.html',
                                                   context={'request': request,
+                                                           'student':student_instance,
                                                            'records': new_arr,
                                                            'cid': cid,
                                                            'cname': c_instance.name,
@@ -837,6 +838,7 @@ async def student_video_lectures(request: Request, cid: str, user: str = Depends
             # return all_videos_data
             return templates.TemplateResponse('video_lectures.html',
                                               context={'request': request,
+                                                       'student': student_instance,
                                                        'course_cat_obj': all_videos_data,
                                                        'cid': cid,
                                                        'video_lectures': 'active',
@@ -855,7 +857,7 @@ async def student_video_lectures(request: Request, cid: str, cat_id: str, user: 
     try:
         check = await authenticate_student_subscription(cid=cid, user=user)
         if check:
-
+            student_instance = await Student.get(id=user)
             access = await activeSubscription.filter(student__id=user, course__id=cid).values("subscription__id")
             subscription_id = access[0]['subscription__id']
             video_access = await CourseSubscriptionPlans.get(id=subscription_id).values("no_of_videos")
@@ -873,7 +875,7 @@ async def student_video_lectures(request: Request, cid: str, cat_id: str, user: 
 
                     async def check_isBookmarkedVideo(video_id):
                         video_instance = await CourseCategoryLectures.get(id=video_id)
-                        student_instance = await Student.get(id=user)
+                       
                         if await BookMarkedVideos.exists(
                                 student=student_instance, video=video_instance):
                             return True
@@ -1037,6 +1039,7 @@ async def student_video_lectures(request: Request, cid: str, cat_id: str, user: 
                 # return all_videos_data
                 return templates.TemplateResponse('video_lectures.html',
                                                   context={'request': request,
+                                                            'student': student_instance,
                                                            'course_cat_obj': all_videos_data,
                                                            'cid': cid,
                                                            })
