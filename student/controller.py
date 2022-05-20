@@ -1088,7 +1088,6 @@ async def live_classes(request: Request, cid: str, user=Depends(get_current_user
     try:
         check = await authenticate_student_subscription(cid=cid, user=user)
         if check:
-            course_obj = await Course.all()
             student_instance = await Student.get(id=user)
             live_classes = await LiveClasses_Pydantic.from_queryset(
                 LiveClasses.filter(course__id=cid))
