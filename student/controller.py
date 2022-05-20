@@ -504,7 +504,7 @@ async def student_dashboard(request: Request, cid: str, user=Depends(get_current
                 # return new_arr
                 return templates.TemplateResponse('dashboard.html',
                                                   context={'request': request,
-                                                           'student':student_instance,
+                                                           'student': student_instance,
                                                            'records': new_arr,
                                                            'cid': cid,
                                                            'cname': c_instance.name,
@@ -666,7 +666,7 @@ async def student_video_lectures(request: Request, cid: str, user: str = Depends
     # try:
     check = await authenticate_student_subscription(cid=cid, user=user)
     if check:
-
+        student_instance = await Student.get(id=user)
         access = await activeSubscription.filter(student__id=user, course__id=cid).values("subscription__id")
         subscription_id = access[0]['subscription__id']
         video_access = await CourseSubscriptionPlans.get(id=subscription_id).values("no_of_videos")
@@ -875,7 +875,7 @@ async def student_video_lectures(request: Request, cid: str, cat_id: str, user: 
 
                     async def check_isBookmarkedVideo(video_id):
                         video_instance = await CourseCategoryLectures.get(id=video_id)
-                       
+
                         if await BookMarkedVideos.exists(
                                 student=student_instance, video=video_instance):
                             return True
@@ -1039,7 +1039,7 @@ async def student_video_lectures(request: Request, cid: str, cat_id: str, user: 
                 # return all_videos_data
                 return templates.TemplateResponse('video_lectures.html',
                                                   context={'request': request,
-                                                            'student': student_instance,
+                                                           'student': student_instance,
                                                            'course_cat_obj': all_videos_data,
                                                            'cid': cid,
                                                            })
@@ -1058,6 +1058,7 @@ async def student_view_lecture(request: Request, cid: str, tid: str, cat_slug: s
     # try:
     check = await authenticate_student_subscription(cid=cid, user=user)
     if check:
+        student_instance = await Student.get(id=user)
         t_instance = await Topics.get(id=tid)
         cc_instance = await CourseCategories.get(course__id=cid, category__slug=cat_slug)
         cc_t_instance = await CategoryTopics.get(topic=t_instance, category=cc_instance)
@@ -1069,6 +1070,7 @@ async def student_view_lecture(request: Request, cid: str, tid: str, cat_slug: s
         # return cc_lectures
         return templates.TemplateResponse('view_lecture.html',
                                           context={'request': request,
+                                                   'student': student_instance,
                                                    'cc_lectures': cc_lectures,
                                                    'c_name': cat_instance.name,
                                                    'icon_image': cat_instance.icon_image,
@@ -1087,11 +1089,12 @@ async def live_classes(request: Request, cid: str, user=Depends(get_current_user
         check = await authenticate_student_subscription(cid=cid, user=user)
         if check:
             course_obj = await Course.all()
-
+            student_instance = await Student.get(id=user)
             live_classes = await LiveClasses_Pydantic.from_queryset(
                 LiveClasses.filter(course__id=cid))
             return templates.TemplateResponse('live_classes.html',
                                               context={'request': request,
+                                                       'student': student_instance,
                                                        'cid': cid,
                                                        'live_classes': live_classes,
                                                        'live_classes_active': 'active',
@@ -1107,6 +1110,7 @@ async def live_classes(request: Request, cid: str, class_id: str, user=Depends(g
     try:
         check = await authenticate_student_subscription(cid=cid, user=user)
         if check:
+            student_instance = await Student.get(id=user)
             course_obj = await Course.all()
 
             live_classes = await LiveClasses_Pydantic.from_queryset_single(
@@ -1117,6 +1121,7 @@ async def live_classes(request: Request, cid: str, class_id: str, user=Depends(g
                                               context={'request': request,
                                                        'web_url': web_url,
                                                        'cid': cid,
+                                                       'student': student_instance,
                                                        })
         else:
             return RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
@@ -1170,6 +1175,7 @@ async def test_series(request: Request, cid: str, user=Depends(get_current_user)
     try:
         check = await authenticate_student_subscription(cid=cid, user=user)
         if check:
+            student_instance = await Student.get(id=user)
             c_instance = await Course.get(id=cid)
             course_cat_obj = await CourseCategories_Pydantic.from_queryset(
                 CourseCategories.filter(course=c_instance)
@@ -1177,6 +1183,7 @@ async def test_series(request: Request, cid: str, user=Depends(get_current_user)
             # return course_cat_obj
             return templates.TemplateResponse('test_series.html',
                                               context={'request': request,
+                                                       'student': student_instance,
                                                        'cid': cid,
                                                        'course_cat_obj': course_cat_obj,
                                                        'test_series_active': 'active'
@@ -1194,6 +1201,7 @@ async def test_series(request: Request, cid: str, cat_id: str, user=Depends(get_
     try:
         check = await authenticate_student_subscription(cid=cid, user=user)
         if check:
+            student_instance = await Student.get(id=user)
             c_instance = await Course.get(id=cid)
             course_cat_obj = await CourseCategories_Pydantic.from_queryset(
                 CourseCategories.filter(course=c_instance, category__id=cat_id)
@@ -1201,6 +1209,7 @@ async def test_series(request: Request, cid: str, cat_id: str, user=Depends(get_
             # return course_cat_obj
             return templates.TemplateResponse('test_series.html',
                                               context={'request': request,
+                                                       'student': student_instance,
                                                        'cid': cid,
                                                        'course_cat_obj': course_cat_obj
                                                        })
@@ -1216,12 +1225,13 @@ async def test_series_topics(request: Request, cid: str, tid: str, user=Depends(
         check = await authenticate_student_subscription(cid=cid, user=user)
         if check:
             if await CategoryTopics.exists(id=tid):
+                student_instance = await Student.get(id=user)
                 cat_topic_instance = await CategoryTopics.get(id=tid)
                 test_series_instance = await CourseCategoryTestSeries.filter(category_topic=cat_topic_instance)
                 # return test_series_instance
                 return templates.TemplateResponse('test_series_topics.html',
                                                   context={'request': request,
-                                                           'cid': cid,
+                                                           'cid': cid,  'student': student_instance,
                                                            'test_series_list': test_series_instance
                                                            })
             else:
