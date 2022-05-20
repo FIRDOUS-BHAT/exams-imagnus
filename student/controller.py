@@ -1226,12 +1226,15 @@ async def test_series_topics(request: Request, cid: str, tid: str, user=Depends(
             if await CategoryTopics.exists(id=tid):
                 student_instance = await Student.get(id=user)
                 cat_topic_instance = await CategoryTopics.get(id=tid)
+                topic_instance = await CategoryTopics.get(id=tid).values("topic__name")
+                topic_name = topic_instance["topic__name"]
                 test_series_instance = await CourseCategoryTestSeries.filter(category_topic=cat_topic_instance)
                 # return test_series_instance
                 return templates.TemplateResponse('test_series_topics.html',
                                                   context={'request': request,
                                                            'cid': cid,  'student': student_instance,
-                                                           'test_series_list': test_series_instance
+                                                           'test_series_list': test_series_instance,
+                                                           'topic':topic_name
                                                            })
             else:
                 return RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
