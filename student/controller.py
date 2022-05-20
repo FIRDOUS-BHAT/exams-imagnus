@@ -1842,6 +1842,8 @@ async def view_result(request: Request, cid: str, tid: str, user=Depends(get_cur
                     }
                     return templates.TemplateResponse('testseries_result.html',
                                                       context={'request': request,
+                                                               'cid': cid,
+                                                               'tid': tid,
                                                                'summary': summary,
                                                                "test_series_qstns": test_series_qstns
 
