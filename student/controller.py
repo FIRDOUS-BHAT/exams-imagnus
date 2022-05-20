@@ -1832,7 +1832,8 @@ async def view_result(request: Request, tid: str, cid: str, user=Depends(get_cur
                     summary = {
                         "correct": test_record_summary.correct_ans,
                         "wrong": test_record_summary.wrong_ans,
-                        "skipped": test_record_summary.skipped_qns
+                        "skipped": test_record_summary.skipped_qns,
+                        "attempted": test_record_summary.correct_ans+test_record_summary.wrong_ans
                     }
                     return {"status": True, "message": summary}
             else:
