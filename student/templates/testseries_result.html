@@ -14,7 +14,7 @@
                         <div class="ground-list ground-hover-list mb-20">
                            <div class="ground ground-list-single">
                               <div class="card-test p-10">
-                                 <div class="btn-circle-40 btn-success"><i class="fa fa-check-square-o"></i></div>
+                                 <div class="btn-circle-40 btn-success"><i class="fa fa-check"></i></div>
                                  <div class="ground-content mt-10">
                                     <h6>Correct Answer</h6>
                                     <small class="text-fade">{{summary.correct}}</small>
@@ -69,12 +69,12 @@
                               </div>
                               <div class="card-tests">
                                  <div class="card-body bg-danger">
-                                    <p class=" text-white">[C] {{qstns.opt_3}} </p>
+                                    <p class="{{'text-white'if qstns.answer == qstns.opt_3 else ' '}}">[C] {{qstns.opt_3}} </p>
                                  </div>
                               </div>
                               <div class="card-tests">
-                                 <div class="card-body  bg-success">
-                                    <p  class=" text-white">[D] {{qstns.opt_4}} </p>
+                                 <div class="card-body  {{'bg-success'if qstns.answer == qstns.opt_4 else ' '}}">
+                                    <p  class="{{'text-white'if qstns.answer == qstns.opt_4 else ' '}}">[D] {{qstns.opt_4}} </p>
                                  </div>
                               </div>
                            </div>

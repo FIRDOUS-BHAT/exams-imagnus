@@ -97,12 +97,12 @@
                </li>
                <li class="ui dropdown">
                   <a href="#" class="opts_account" title="Account">
-                  <img src="images/hd_dp.jpg" alt="" />
+                  <img src="https://icon-library.com/images/student-icon-transparent/student-icon-transparent-27.jpg" alt="" />
                   </a>
                   <div class="menu dropdown_account">
                      <div class="channel_my">
                         <div class="profile_link">
-                           <img src="images/hd_dp.jpg" alt="" />
+                           <img src="https://icon-library.com/images/student-icon-transparent/student-icon-transparent-27.jpg" alt="" />
                            <div class="pd_content">
                               <div class="rhte85">
                                  <h6>Joginder Singh </h6>
@@ -113,7 +113,7 @@
                               <span><a href="../../cdn-cgi/l/email-protection.html" class="__cf_email__" data-cfemail="REDACTED_40_CHAR_SECRET">[email&#160;protected] </a></span>
                            </div>
                         </div>
-                        <a href="my_instructor_profile_view.html" class="dp_link_12">View Instructor Profile </a>
+                        <!-- <a href="my_instructor_profile_view.html" class="dp_link_12">View Instructor Profile </a> -->
                      </div>
                      <div class="night_mode_switch__btn">
                         <a href="#" id="night-mode" class="btn-night-mode">
@@ -123,7 +123,7 @@
                         </span>
                         </a>
                      </div>
-                     <a href="setting.html" class="item channel_item">Setting </a>
+                     <!-- <a href="setting.html" class="item channel_item">Setting </a> -->
                      <a href="sign_in.html" class="item channel_item">
                      </form> <span onclick="document.getElementById('logout_form').submit();">Logout </span></form> </a>
                   </div>
@@ -166,12 +166,12 @@
                      <span class="menu--label">PDF Notes</span>
                      </a>
                   </li>
-                  <li class="menu--item">
+                  <!-- <li class="menu--item">
                      <a href="instructor_notifications.html" class="menu--link {{'active' if active else ''}}" title="Notifications">
                      <i class='uil uil-bell menu--icon'></i>
                      <span class="menu--label">Notifications </span>
                      </a>
-                  </li>
+                  </li> -->
                </ul>
             </div>
             <div class="left_section pt-2">
@@ -237,9 +237,16 @@
 <script src="/static/student_assets/js/custom1.js"></script>
 <script src="/static/student_assets/js/night-mode.js"></script>
 <script src="/static/admin/js/js-snackbar.js"></script>
+   <script src="/static/student_assets/js/core.js"></script>
+   <script src="/static/student_assets/js/cipher-core.js"></script>
+<script src="/static/student_assets/js/aes.js"></script>
+<script src="/static/student_assets/js/tripledes.js"></script>
+<script src="/static/student_assets/js/enc-base64.js"></script>
  <script type="text/javascript">
+    
 //Near checkboxes
-
+   var key = CryptoJS.enc.Base64.parse("#base64Key#");
+   var iv = CryptoJS.enc.Base64.parse("#base64IV#");
 
   $('.form-check-input').on('change', function() {
         $('.form-check-input').not(this).prop('checked', false);
@@ -256,7 +263,7 @@
 
 
 		//timer
-
+   var arr = []
 $(document).on('click', '#submit_question', function(e){
   let chosen = $('[name="example1"]:checked').val()
    let callback = e.target.getAttribute('data-callback')
@@ -266,6 +273,28 @@ $(document).on('click', '#submit_question', function(e){
    //       alert(res)
    //  })
 
+
+
+   
+   if(typeof(chosen) === "undefined"){
+     
+      chosen = ''
+   }
+
+   arr.push(chosen)
+
+   var text = JSON.stringify(arr);
+  
+
+   var encrypted = CryptoJS.AES.encrypt(text, key, { iv: iv });
+   console.log(encrypted.toString());
+   localStorage.setItem("test_series_state", encrypted.toString())
+
+   var decrypted = CryptoJS.AES.decrypt(encrypted, key, { iv: iv });
+   console.log(decrypted.toString(CryptoJS.enc.Utf8));
+   
+   
+    console.log(arr)
    function runsnackbar(message){
   
 
@@ -378,6 +407,10 @@ $('#new_title').text(title)
   
    
    
+
+   
+      
+
 </script>
 
 </body>
