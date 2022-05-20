@@ -1249,7 +1249,7 @@ async def test_series_topics(request: Request, cid: str, tid: str, user=Depends(
         check = await authenticate_student_subscription(cid=cid, user=user)
         if check:
             if await CourseCategoryTestSeries.exists(id=tid):
-
+                student_instance = await Student.get(id=user)
                 test_series_instance = await CourseCategoryTestSeries.get(id=tid)
                 test_series_qstns_instance = await CourseCategoryTestSeriesQuestions.filter(
                     test_series=test_series_instance)
@@ -1257,6 +1257,7 @@ async def test_series_topics(request: Request, cid: str, tid: str, user=Depends(
                 # return test_series_qstns_instance
                 return templates.TemplateResponse('test_attempt.html',
                                                   context={'request': request,
+                                                           'student': student_instance,
                                                            'cid': cid,
                                                            'tid': tid,
                                                            'qstn_nos': qstn_nos,
@@ -1280,7 +1281,7 @@ async def student_pdf_notes(request: Request, cid: str, user: str = Depends(get_
     # try:
     check = await authenticate_student_subscription(cid=cid, user=user)
     if check:
-
+        student_instance = await Student.get(id=user)
         access = await activeSubscription.filter(student__id=user, course__id=cid).values("subscription__id")
         subscription_id = access[0]['subscription__id']
         notes_access = await CourseSubscriptionPlans.get(id=subscription_id).values("no_of_notes")
@@ -1288,7 +1289,7 @@ async def student_pdf_notes(request: Request, cid: str, user: str = Depends(get_
 
         stat = await Student.exists(id=user)
         if stat:
-            student_instance = await Student.get(id=user)
+
             if await Course.exists(id=cid):
                 c_instance = await Course.get(id=cid)
                 course = await Course.get(id=cid)
@@ -1487,6 +1488,7 @@ async def student_pdf_notes(request: Request, cid: str, user: str = Depends(get_
                                               context={'request': request,
                                                        'course_cat_obj': all_notes_data,
                                                        'cid': cid,
+                                                       'student': student_instance,
                                                        'pdf_notes_active': 'active',
                                                        })
         else:
@@ -1503,7 +1505,7 @@ async def student_pdf_notes(request: Request, cid: str, cat_id: str, user: str =
     try:
         check = await authenticate_student_subscription(cid=cid, user=user)
         if check:
-
+            student_instance = await Student.get(id=user)
             access = await activeSubscription.filter(student__id=user, course__id=cid).values("subscription__id")
             subscription_id = access[0]['subscription__id']
             notes_access = await CourseSubscriptionPlans.get(id=subscription_id).values("no_of_notes")
@@ -1650,6 +1652,7 @@ async def student_pdf_notes(request: Request, cid: str, cat_id: str, user: str =
                                                   context={'request': request,
                                                            'course_cat_obj': all_notes_data,
                                                            'cid': cid,
+                                                           'student': student_instance
                                                            })
             else:
                 return RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
@@ -1665,6 +1668,7 @@ async def view_notes(request: Request, cid: str, tid: str, user=Depends(get_curr
     try:
         check = await authenticate_student_subscription(cid=cid, user=user)
         if check:
+            student_instance = await Student.get(id=user)
             if await Topics.exists(id=tid):
                 topic_obj = await Topics.get(id=tid).values("name", "category__name", "category__icon_image")
 
@@ -1674,6 +1678,7 @@ async def view_notes(request: Request, cid: str, tid: str, user=Depends(get_curr
                 return templates.TemplateResponse('view_pdfnotes.html',
                                                   context={'request': request,
                                                            'cid': cid,
+                                                           'student': student_instance,
                                                            'category_image': topic_obj["category__icon_image"],
                                                            'notes_list': notes_instance,
                                                            'topic_name': topic_obj["name"],
@@ -1807,6 +1812,7 @@ async def view_result(request: Request, tid: str, cid: str, user=Depends(get_cur
     try:
         check = await authenticate_student_subscription(cid=cid, user=user)
         if check:
+
             if await CourseCategoryTestSeries.exists(id=tid):
                 test_series_instance = await CourseCategoryTestSeries.get(id=tid)
                 student_instance = await Student.get(id=user)
@@ -1836,6 +1842,7 @@ async def view_result(request: Request, cid: str, tid: str, user=Depends(get_cur
     try:
         check = await authenticate_student_subscription(cid=cid, user=user)
         if check:
+            student_instance = await Student.get(id=user)
             if await CourseCategoryTestSeries.exists(id=tid):
                 test_series_instance = await CourseCategoryTestSeries.get(id=tid)
                 test_series_qstns = await CourseCategoryTestSeriesQuestions.filter(
@@ -1854,6 +1861,7 @@ async def view_result(request: Request, cid: str, tid: str, user=Depends(get_cur
                     }
                     return templates.TemplateResponse('testseries_result.html',
                                                       context={'request': request,
+                                                               'student': student_instance,
                                                                'cid': cid,
                                                                'tid': tid,
                                                                'summary': summary,
