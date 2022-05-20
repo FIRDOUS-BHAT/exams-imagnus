@@ -338,7 +338,8 @@ $(document).on('click','#view_test',function(e) {
          if(data.status){
             const skipped = data.message.skipped
             $('#no_of_skipped').text(data.message.skipped)
-            $('#no_of_attempted').text(`{{ qstn_nos }}`-skipped)
+            $('#no_of_attempted').text(data.message.attempted)
+            $('#no_of_not_visited').text(`{{qstn_nos}}`-(data.message.attempted+ data.message.skipped))
          }
       })
       .catch((error) => {
