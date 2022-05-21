@@ -54,6 +54,7 @@ class StudentTestSeriesRecord(Model):
     wrong_ans = fields.IntField()
     skipped_qns = fields.IntField()
     marks = fields.IntField()
+    test_record_summary = fields.TextField(null=True,blank=True)
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
 
