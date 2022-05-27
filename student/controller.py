@@ -1910,7 +1910,8 @@ async def view_result(request: Request, cid: str, tid: str, user=Depends(get_cur
                     summary = {
                         "correct": test_record_summary.correct_ans,
                         "wrong": test_record_summary.wrong_ans,
-                        "skipped": test_record_summary.skipped_qns
+                        "skipped": test_record_summary.skipped_qns,
+                        "not_attempted": len(test_series_qstns)-(test_record_summary.correct_ans+test_record_summary.wrong_ans)
                     }
                     question_state = []
 
