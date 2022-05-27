@@ -1256,9 +1256,15 @@ async def test_series_topics(request: Request, cid: str, tid: str, user=Depends(
                 student_instance = await Student.get(id=user)
 
                 test_series_instance = await CourseCategoryTestSeries.get(id=tid)
-                topic_instance = await CourseCategoryTestSeries.get(id=tid).values(topic_name="category_topic__topic__name")
+                topic_instance = await CourseCategoryTestSeries.get(id=tid).values(topic_name="category_topic__topic__name",
+                                                                                   course="category_topic__category__course__name",
+                                                                                   category="category_topic__category__category__name",
+                                                                                   category_image="category_topic__category__category__icon_image")
                 topic_name = topic_instance["topic_name"]
-                print(topic_instance)
+                course_name = topic_instance["course"]
+                category_name = topic_instance["category"]
+                category_image = topic_instance["category_image"]
+                title = test_series_instance.title
                 if await StudentTestSeriesRecord.exists(student=student_instance,
                                                         test_series=test_series_instance):
                     await StudentTestSeriesRecord.filter(student=student_instance,
@@ -1278,6 +1284,10 @@ async def test_series_topics(request: Request, cid: str, tid: str, user=Depends(
                                                            'time_duration': test_series_instance.time_duration,
                                                            'counter': 0,
                                                            'qstns': test_series_qstns_instance,
+                                                           'course_name': course_name,
+                                                           'title': title,
+                                                           'category_name': category_name,
+                                                           'category_image': category_image
                                                            })
 
             else:
