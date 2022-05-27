@@ -1893,6 +1893,7 @@ async def view_result(request: Request, cid: str, tid: str, user=Depends(get_cur
             student_instance = await Student.get(id=user)
             if await CourseCategoryTestSeries.exists(id=tid):
                 test_series_instance = await CourseCategoryTestSeries.get(id=tid)
+                title = test_series_instance.title
                 test_series_qstns = await CourseCategoryTestSeriesQuestions.filter(
                     test_series=test_series_instance)
 
@@ -1946,7 +1947,6 @@ async def view_result(request: Request, cid: str, tid: str, user=Depends(get_cur
 
                             opt_dict.update({x: resp})
                         question_state.append(opt_dict)
-                print(question_state[0]['opt_1'][0])
 
                 return templates.TemplateResponse('testseries_result.html',
                                                   context={'request': request,
@@ -1957,6 +1957,7 @@ async def view_result(request: Request, cid: str, tid: str, user=Depends(get_cur
                                                            "test_series_qstns": test_series_qstns,
                                                            "state_summary": state_summary,
                                                            "question_state":question_state,
+                                                           "title": title
 
                                                            })
             else:
