@@ -1,3 +1,4 @@
+import numpy as np
 import json
 import uuid
 from datetime import datetime
@@ -1234,7 +1235,7 @@ async def test_series_topics(request: Request, cid: str, tid: str, user=Depends(
                                                   context={'request': request,
                                                            'cid': cid,  'student': student_instance,
                                                            'test_series_list': test_series_instance,
-                                                           'topic':topic_name
+                                                           'topic': topic_name
                                                            })
             else:
                 return RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
@@ -1253,12 +1254,15 @@ async def test_series_topics(request: Request, cid: str, tid: str, user=Depends(
         if check:
             if await CourseCategoryTestSeries.exists(id=tid):
                 student_instance = await Student.get(id=user)
-                
+
                 test_series_instance = await CourseCategoryTestSeries.get(id=tid)
+                topic_instance = await CourseCategoryTestSeries.get(id=tid).values(topic_name="category_topic__topic__name")
+                topic_name = topic_instance["topic_name"]
+                print(topic_instance)
                 if await StudentTestSeriesRecord.exists(student=student_instance,
-                                                            test_series=test_series_instance):
+                                                        test_series=test_series_instance):
                     await StudentTestSeriesRecord.filter(student=student_instance,
-                                                            test_series=test_series_instance).delete()
+                                                         test_series=test_series_instance).delete()
                 test_series_qstns_instance = await CourseCategoryTestSeriesQuestions.filter(
                     test_series=test_series_instance)
                 qstn_nos = test_series_instance.no_of_qstns
@@ -1266,6 +1270,7 @@ async def test_series_topics(request: Request, cid: str, tid: str, user=Depends(
                 return templates.TemplateResponse('test_attempt.html',
                                                   context={'request': request,
                                                            'student': student_instance,
+                                                           'topic_name': topic_name,
                                                            'cid': cid,
                                                            'tid': tid,
                                                            'qstn_nos': qstn_nos,
@@ -1280,8 +1285,9 @@ async def test_series_topics(request: Request, cid: str, tid: str, user=Depends(
 
         else:
             return RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
-    except Exception:
-        return RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
+    except Exception as e:
+        # return RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
+        raise HTTPException(detail=str(e), status_code=500)
 
 
 @router.get('/student/pdf_notes/{cid}/', responses={404: {"model": HTTPNotFoundError}})
@@ -1845,9 +1851,32 @@ async def view_result(request: Request, tid: str, cid: str, user=Depends(get_cur
         return JSONResponse({"message": str(ex)}, status_code=208, )
 
 
+@router.post('/submit_test_series_result/')
+async def test_series_result(cid: str = Form(...), tid: str = Form(...), answer_state_data: str = Form(...), user=Depends(get_current_user)):
+    try:
+        check = await authenticate_student_subscription(cid=cid, user=user)
+        if check:
+            student_instance = await Student.get(id=user)
+            test_series_instance = await CourseCategoryTestSeries.get(id=tid)
+
+            if await StudentTestSeriesRecord.exists(
+                    student=student_instance,
+                    test_series=test_series_instance):
+                test_record_summary = await StudentTestSeriesRecord.filter(student=student_instance,
+                                                                           test_series=test_series_instance).update(test_record_summary=answer_state_data)
+
+            return RedirectResponse(url="/student/test/result/"+cid+"/"+tid+"/", status_code=status.HTTP_302_FOUND)
+        else:
+            return JSONResponse({"status": False, "message": "Authentication failed."})
+
+    except Exception as e:
+        return JSONResponse({"status": False, "message": str(e)})
+
+
 @router.get('/student/test/result/{cid}/{tid}/')
 async def view_result(request: Request, cid: str, tid: str, user=Depends(get_current_user)):
 
+    global summary, state_summary
     try:
         check = await authenticate_student_subscription(cid=cid, user=user)
         if check:
@@ -1863,20 +1892,63 @@ async def view_result(request: Request, cid: str, tid: str, user=Depends(get_cur
                         test_series=test_series_instance):
                     test_record_summary = await StudentTestSeriesRecord.get(student=student_instance,
                                                                             test_series=test_series_instance)
+
+                    state_summary = np.array(json.loads(
+                        test_record_summary.test_record_summary))
+
                     summary = {
                         "correct": test_record_summary.correct_ans,
                         "wrong": test_record_summary.wrong_ans,
                         "skipped": test_record_summary.skipped_qns
                     }
-                    return templates.TemplateResponse('testseries_result.html',
-                                                      context={'request': request,
-                                                               'student': student_instance,
-                                                               'cid': cid,
-                                                               'tid': tid,
-                                                               'summary': summary,
-                                                               "test_series_qstns": test_series_qstns
+                    question_state = []
 
-                                                               })
+                    for i in range(len(test_series_qstns)):
+                        def get_state_summary(option, curr_stat):
+                            flag2 = "text-white"
+                            if curr_stat == option:
+                                flag1 = "bg-danger"
+                                if curr_stat == test_series_qstns[i].answer:
+                                    flag1 = "bg-success"
+                            else:
+                                flag2 = ''
+                                flag1 = ''
+                                if option == test_series_qstns[i].answer:
+                                    flag2 = "text-white"
+                                    flag1 = "bg-success"
+
+                            return flag2, flag1
+
+                        opt_arr = np.array(
+                            ["opt_1", "opt_2", "opt_3", "opt_4"])
+                        opt_dict = {}
+                        for x in opt_arr:
+                            if (i + 1) <= len(state_summary):
+                                if state_summary[i]:
+                                    resp = get_state_summary(
+                                        x, state_summary[i])
+
+                                else:
+                                    resp = get_state_summary(x, None)
+
+                            else:
+                                resp = get_state_summary(x, None)
+
+                            opt_dict.update({x: resp})
+                        question_state.append(opt_dict)
+                print(question_state[0]['opt_1'][0])
+
+                return templates.TemplateResponse('testseries_result.html',
+                                                  context={'request': request,
+                                                           'student': student_instance,
+                                                           'cid': cid,
+                                                           'tid': tid,
+                                                           'summary': summary,
+                                                           "test_series_qstns": test_series_qstns,
+                                                           "state_summary": state_summary,
+                                                           "question_state":question_state,
+
+                                                           })
             else:
                 return {"status": False, "message": "Something went wrong."}
         else:

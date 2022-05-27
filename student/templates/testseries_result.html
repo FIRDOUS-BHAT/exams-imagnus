@@ -48,6 +48,7 @@
                         </div>
                      </div>
 					 </div>
+               
                    {% for qstns in test_series_qstns%}
 					<div class="card_dash activee">
 					 <div class="row">
@@ -58,23 +59,23 @@
                                  <span>Ques {{loop.index}} :- </span>
                                     {{qstns.question}}                              </div>
                               <div class="card-tests">
-                                 <div class="card-body">
-                                    <p>[A]{{qstns.opt_1}} </p>
+                                 <div class="card-body {{ question_state[loop.index-1]['opt_1'][1]}}">
+                                    <p class="{{ question_state[loop.index-1]['opt_1'][0]}}">[A]{{qstns.opt_1}} </p>
                                  </div>
                               </div>
                               <div class="card-tests">
-                                 <div class="card-body">
-                                    <p>[B] {{qstns.opt_2}} </p>
+                                 <div class="card-body {{ question_state[loop.index-1]['opt_2'][1]}}">
+                                    <p class="{{ question_state[loop.index-1]['opt_2'][0]}}">[B] {{qstns.opt_2}} </p>
                                  </div>
                               </div>
                               <div class="card-tests">
-                                 <div class="card-body bg-danger">
-                                    <p class="{{'text-white'if qstns.answer == qstns.opt_3 else ' '}}">[C] {{qstns.opt_3}} </p>
+                                 <div class="card-body {{ question_state[loop.index-1]['opt_3'][1]}}">
+                                    <p class="{{ question_state[loop.index-1]['opt_3'][0]}}">[C] {{qstns.opt_3}} </p>
                                  </div>
                               </div>
                               <div class="card-tests">
-                                 <div class="card-body  {{'bg-success'if qstns.answer == qstns.opt_4 else ' '}}">
-                                    <p  class="{{'text-white'if qstns.answer == qstns.opt_4 else ' '}}">[D] {{qstns.opt_4}} </p>
+                                 <div class="card-body  {{ question_state[loop.index-1]['opt_4'][1]}}">
+                                    <p  class="{{ question_state[loop.index-1]['opt_4'][0]}}">[D] {{qstns.opt_4}} </p>
                                  </div>
                               </div>
                            </div>

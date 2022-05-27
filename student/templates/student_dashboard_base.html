@@ -212,7 +212,94 @@
 <script src="/static/student_assets/js/tripledes.js"></script>
 <script src="/static/student_assets/js/enc-base64.js"></script>
  <script type="text/javascript">
-    
+
+     
+      //prefixes of implementation that we want to test
+      window.indexedDB = window.indexedDB || window.mozIndexedDB ||
+         window.webkitIndexedDB || window.msIndexedDB;
+
+      //prefixes of window.IDB objects
+      window.IDBTransaction = window.IDBTransaction ||
+         window.webkitIDBTransaction || window.msIDBTransaction;
+      window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange ||
+         window.msIDBKeyRange
+
+      if (!window.indexedDB) {
+         window.alert("Your browser doesn't support a stable version of IndexedDB.")
+      }
+
+   
+      var db;
+      var request = window.indexedDB.open("Imagnus", 1);
+
+      request.onerror = function (event) {
+         console.log("error: ");
+      };
+
+      request.onsuccess = function (event) {
+         db = request.result;
+         console.log("success: " + db);
+      };
+
+      request.onupgradeneeded = function (event) {
+         var db = event.target.result;
+         var objectStore = db.createObjectStore("test_series", { keyPath: "id",autoIncrement: true });
+
+       
+      }
+
+// working with IndexDB
+
+
+
+   
+
+
+
+   function add(chosen) {
+      var request = db.transaction(["test_series"], "readwrite")
+         .objectStore("test_series")
+         .add({ name: chosen });
+
+   }
+
+    function readAllAns() {
+         var state_arr = []
+               var objectStore = db.transaction("test_series").objectStore("test_series");
+
+               objectStore.openCursor().onsuccess = function (event) {
+                  var cursor = event.target.result;
+                
+                  if (cursor) {
+                     state_arr.push(cursor.value.name)
+
+                  cursor.continue();
+                 
+                  } 
+
+                  final_arr = JSON.stringify(state_arr)
+                  console.log(final_arr)
+                  $('#answer_state_data').val(final_arr)
+
+                  $('#submit_test_series').submit()
+                 
+                   
+               };
+               
+            }
+
+
+      function removeStateAns() {
+         var request = db.transaction(["test_series"], "readwrite")
+            .objectStore("test_series")
+            .delete();
+
+         request.onsuccess = function (event) {
+            alert("Kenny's entry has been removed from your database.");
+         };
+      }
+      // removeStateAns()
+
 //Near checkboxes
    var key = CryptoJS.enc.Base64.parse("#base64Key#");
    var iv = CryptoJS.enc.Base64.parse("#base64IV#");
@@ -247,23 +334,26 @@ $(document).on('click', '#submit_question', function(e){
    
    if(typeof(chosen) === "undefined"){
      
-      chosen = ''
+      chosen = '';
    }
-
+   add(chosen)
    arr.push(chosen)
 
    var text = JSON.stringify(arr);
   
 
-   var encrypted = CryptoJS.AES.encrypt(text, key, { iv: iv });
-   console.log(encrypted.toString());
-   localStorage.setItem("test_series_state", encrypted.toString())
-
-   var decrypted = CryptoJS.AES.decrypt(encrypted, key, { iv: iv });
-   console.log(decrypted.toString(CryptoJS.enc.Utf8));
+   // var encrypted = CryptoJS.AES.encrypt(text, key, { iv: iv });
+   // console.log(encrypted.toString());
+   
+   // localStorage.setItem("test_series_state", encrypted.toString())
+   // const testState = localStorage.getItem('test_series_state')
+   // var decrypted = CryptoJS.AES.decrypt(encrypted, key, { iv: iv });
+   // console.log(decrypted.toString(CryptoJS.enc.Utf8));
+   
+  
    
    
-    console.log(arr)
+   //  console.log(arr)
    function runsnackbar(message){
   
 
@@ -313,9 +403,6 @@ $(document).on('click', '#submit_question', function(e){
                    }
                 },
             });
-
-
-
 
 
 })
@@ -380,8 +467,22 @@ $('#new_title').text(title)
 
    
       
+let getTestSummary = () => {
+
+   readAllAns()
+  
+   //  const testState = localStorage.getItem('test_series_state')
+   //  console.log(testState)
+   //  var decrypted = CryptoJS.AES.decrypt(testState, key, { iv: iv });
+   // console.log(decrypted.toString(CryptoJS.enc.Utf8));
+   // $('#submit_test_series').submit()
+}
+
+
+
 
 </script>
+
 
 </body>
 </html>

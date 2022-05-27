@@ -14,7 +14,7 @@
                                        <div class="user">
                                           <img src="images/dashboard/atom.png" class="catg" alt="">
                                        </div>
-                                       <p class="user-status-title"><span class="bold">Particle dynamics: Centre of mass and laboratory coordinates </span></p>
+                                       <p class="user-status-title"><span class="bold">{{topic_name}} </span></p>
                                        <p class="user-status-tag online">UPSC Optionals (Paper I) </p>
                                        <p class="user-status-tag online">Physics </p>
 
@@ -97,46 +97,9 @@
                                  <div class="group_messages">
                                     <div class="chat__message__dt active">
                                        <div class="user-status">
-                                          <button class="btn btn-default steps_btn">1</button>
-                                          <button class="btn btn-default steps_btn">2</button>
-                                          <button class="btn btn-default steps_btn">3</button>
-                                          <button class="btn btn-default steps_btn">4</button>
-                                          <button class="btn btn-default steps_btn">5</button>
-                                          <button class="btn btn-default steps_btn">6</button>
-                                          <button class="btn btn-default steps_btn">7</button>
-                                          <button class="btn btn-default steps_btn">8</button>
-                                          <button class="btn btn-default steps_btn">9</button>
-                                          <button class="btn btn-default steps_btn">10</button>
-                                          <button class="btn btn-default steps_btn">11</button>
-                                          <button class="btn btn-default steps_btn">12</button>
-                                          <button class="btn btn-default steps_btn">13</button>
-                                          <button class="btn btn-default steps_btn">14</button>
-                                          <button class="btn btn-default steps_btn">15</button>
-                                          <button class="btn btn-default steps_btn">16</button>
-                                          <button class="btn btn-default steps_btn">17</button>
-                                          <button class="btn btn-default steps_btn">18</button>
-                                          <button class="btn btn-default steps_btn">19</button>
-                                          <button class="btn btn-default steps_btn">20</button>
-                                          <button class="btn btn-default steps_btn">21</button>
-                                          <button class="btn btn-default steps_btn">22</button>
-                                          <button class="btn btn-default steps_btn">23</button>
-                                          <button class="btn btn-default steps_btn">24</button>
-                                          <button class="btn btn-default steps_btn">25</button>
-                                          <button class="btn btn-default steps_btn">26</button>
-                                          <button class="btn btn-default steps_btn">27</button>
-                                          <button class="btn btn-default steps_btn">28</button>
-                                          <button class="btn btn-default steps_btn">29</button>
-                                          <button class="btn btn-default steps_btn">30</button>
-                                          <button class="btn btn-default steps_btn">31</button>
-                                          <button class="btn btn-default steps_btn">32</button>
-                                          <button class="btn btn-default steps_btn">33</button>
-                                          <button class="btn btn-default steps_btn">34</button>
-                                          <button class="btn btn-default steps_btn">35</button>
-                                          <button class="btn btn-default steps_btn">36</button>
-                                          <button class="btn btn-default steps_btn">37</button>
-                                          <button class="btn btn-default steps_btn">38</button>
-                                          <button class="btn btn-default steps_btn">39</button>
-                                          <button class="btn btn-default steps_btn">40</button>
+                                          {% for i in range(qstn_nos) %}
+                                          <button class="btn btn-default steps_btn">{{i+1}}</button>
+                                          {% endfor%}
 
 
                                        </div>
@@ -186,9 +149,14 @@
                      </div>
       </div>
       <div class="modal-footer">
+         
         <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
-        <form action="/student/test/result/{{cid}}/{{tid}}/">
-        <button type="submit" class="btn btn-success">Submit</button>
+        <form id="submit_test_series" method="POST" action="/submit_test_series_result/">
+
+         <input type="hidden" name="cid" value="{{cid}}" />
+         <input type="hidden" name="tid" value="{{tid}}" />
+         <input type="hidden" name="answer_state_data" id="answer_state_data"/>
+         <button type="button" onclick="getTestSummary()" class="btn btn-success">Submit</button>
       </form>
       </div>
     </div>
