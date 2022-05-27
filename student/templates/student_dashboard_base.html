@@ -250,12 +250,6 @@
 
 // working with IndexDB
 
-
-
-   
-
-
-
    function add(chosen) {
       var request = db.transaction(["test_series"], "readwrite")
          .objectStore("test_series")
@@ -280,9 +274,10 @@
                   final_arr = JSON.stringify(state_arr)
                   console.log(final_arr)
                   $('#answer_state_data').val(final_arr)
+                    var req = window.indexedDB.deleteDatabase("Imagnus");
 
                   $('#submit_test_series').submit()
-                 
+
                    
                };
                
@@ -295,7 +290,7 @@
             .delete();
 
          request.onsuccess = function (event) {
-            alert("Kenny's entry has been removed from your database.");
+<!--            alert("Kenny's entry has been removed from your database.");-->
          };
       }
       // removeStateAns()
@@ -355,8 +350,6 @@ $(document).on('click', '#submit_question', function(e){
    
    //  console.log(arr)
    function runsnackbar(message){
-  
-
       SnackBar({
             message: message,
             status: "success",
@@ -364,7 +357,6 @@ $(document).on('click', '#submit_question', function(e){
          });
 
 }
-
 
     $.ajax({
                 url: callback,
@@ -461,11 +453,7 @@ $('#new_title').text(title)
       $('.menu--link').removeClass('active');
       $(this).toggleClass('active');
    });
-  
-   
-   
 
-   
       
 let getTestSummary = () => {
 
