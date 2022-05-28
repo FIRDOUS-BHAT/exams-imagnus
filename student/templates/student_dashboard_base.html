@@ -251,10 +251,10 @@
 
 // working with IndexDB
 
-   function add(chosen) {
+   function add(counter,chosen) {
       var request = db.transaction(["test_series"], "readwrite")
          .objectStore("test_series")
-         .add({ name: chosen });
+         .put({id:counter, name: chosen });
 
    }
 
@@ -332,12 +332,13 @@ $(document).on('click', '#submit_question', function(e){
      
       chosen = '';
    }
-   add(chosen)
+
+   url_split = callback.split('/')
+   console.log(url_split[8])
+   add(parseInt(url_split[8])+1,chosen)
    arr.push(chosen)
 
    var text = JSON.stringify(arr);
-  
-
    // var encrypted = CryptoJS.AES.encrypt(text, key, { iv: iv });
    // console.log(encrypted.toString());
    
@@ -345,9 +346,7 @@ $(document).on('click', '#submit_question', function(e){
    // const testState = localStorage.getItem('test_series_state')
    // var decrypted = CryptoJS.AES.decrypt(encrypted, key, { iv: iv });
    // console.log(decrypted.toString(CryptoJS.enc.Utf8));
-   
-  
-   
+
    
    //  console.log(arr)
    function runsnackbar(message){
@@ -467,7 +466,11 @@ let getTestSummary = () => {
    // $('#submit_test_series').submit()
 }
 
-
+$('.submit_question').on('click', function (e) {
+  let callback = e.target.getAttribute('data-callback');
+  $('#submit_question').attr('data-callback',callback)
+  $('#submit_question').trigger('click')
+})
 
 
 </script>
