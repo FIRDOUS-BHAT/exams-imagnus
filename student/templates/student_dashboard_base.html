@@ -93,8 +93,9 @@
                         </a>
                      </div>
                      <!-- <a href="setting.html" class="item channel_item">Setting </a> -->
-                     <a href="sign_in.html" class="item channel_item">
-                     </form> <span onclick="document.getElementById('logout_form').submit();">Logout </span></form> </a>
+
+                     <a ><form id="logout_form" action="/logout/" method="post" >
+											 <span onclick="document.getElementById('logout_form').submit();">Logout </span></form></a>
                   </div>
                </li>
             </ul>
@@ -198,7 +199,7 @@
  
  <script src="/static/courses_assets/js/jquery.min.js"></script>
  <script src="/static/courses_assets/js/bootstrap.min.js"></script>
- <!-- <script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script> -->
+<script src="https://unpkg.com/@popperjs/core@2"></script> <!-- <script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script> -->
  <script src="js/vertical-responsive-menu.min.js"></script>
 <script src="/static/student_assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="/static/student_assets/vendor/OwlCarousel/owl.carousel.js"></script>

@@ -1804,10 +1804,8 @@ async def attempting_test(cid: str, tid: str, cur_qstn_id: str, nx_qstn_id: str,
                         "opt_1": qstn_instance.opt_1,
                         "opt_2": qstn_instance.opt_2,
                         "opt_3": qstn_instance.opt_3,
-                        "opt_4": qstn_instance.opt_4,
-
+                        "opt_4": qstn_instance.opt_4
                     }
-
                 if counter < qstn_nos:
 
                     counter += 1
@@ -1817,7 +1815,7 @@ async def attempting_test(cid: str, tid: str, cur_qstn_id: str, nx_qstn_id: str,
                                   "qstn_content": qstn_content, 'nx': None,
                                   'counter': counter}
                     else:
-                        nx_qsn = test_series_qstns_instance[counter].id
+                        nx_qsn = test_series_qstns_instance[counter+1].id
                         result = {'status': True, 'cid': cid, 'tid': tid,
                                   "qstn_content": qstn_content, 'nx': nx_qsn,
                                   'counter': counter}
