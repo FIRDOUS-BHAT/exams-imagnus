@@ -188,7 +188,7 @@ $(document).on('click', '#submit_question', function(e){
 $(document).on('click','#view_test',function(e) {
 
    let callback = e.target.getAttribute('data-callback')
-
+   let no_qstns = $('#display_no_qstns').val()
    fetch(callback,{
       method: 'POST', // or 'PUT'
       headers: {
@@ -203,7 +203,7 @@ $(document).on('click','#view_test',function(e) {
             const skipped = data.message.skipped
             $('#no_of_skipped').text(data.message.skipped)
             $('#no_of_attempted').text(data.message.attempted)
-            $('#no_of_not_visited').text(`{{qstn_nos}}`-(data.message.attempted+ data.message.skipped))
+            $('#no_of_not_visited').text(parseInt(no_qstns)-(data.message.attempted+ data.message.skipped))
          }
       })
       .catch((error) => {
@@ -256,3 +256,4 @@ $('.submit_question').on('click', function (e) {
   $('#submit_question').attr('data-callback',callback)
   $('#submit_question').trigger('click')
 })
+
