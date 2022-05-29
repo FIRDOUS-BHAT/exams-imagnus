@@ -257,3 +257,5 @@ $('.submit_question').on('click', function (e) {
   $('#submit_question').trigger('click')
 })
 
+ document.addEventListener('contextmenu',
+                        event => event.preventDefault());
