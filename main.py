@@ -1,3 +1,4 @@
+import uvicorn
 from fastapi import Body, FastAPI, Request, Response
 from typing import Callable, List
 from fastapi.routing import APIRoute
@@ -324,3 +325,7 @@ register_tortoise(
 
 # if __name__ == "__main__":
 #     run_async(run())
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)

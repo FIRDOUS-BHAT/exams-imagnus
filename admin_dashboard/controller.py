@@ -979,7 +979,7 @@ async def fire_push_notification(course_obj, category_obj, topic_obj, saved_obj,
     async with httpx.AsyncClient() as client:
         content_obj = await client.get(requested_url)
         new_dict = content_obj.json()
-       
+
         extra_notification_kwargs = {
             "open": message,
             "data_payload": new_dict[0]
@@ -1196,7 +1196,8 @@ async def add_category_notes(course_id: str = Form(...), category_id: str = Form
     category_topic_obj = await CategoryTopics.get(id=course_topic_id)
     if lecture_note.filename:
         folder = 'Notes' + '/' + course_obj.slug + '/' + \
-                 category_obj.slug + '/' + topic_obj.slug + '/' + slugify(notes_title)
+                 category_obj.slug + '/' + topic_obj.slug + \
+            '/' + slugify(notes_title)
         image_url = await upload_pdf_notes(s3, folder=folder, image=lecture_note, mimetype='application/pdf')
 
         folder = 'NotesThumbnail' + '/' + course_id + '/' + \
@@ -1889,7 +1890,7 @@ async def get_students(request: Request, user=Depends(get_current_user)):
 async def add_new_date():
     # stud_obj = await StudentChoices.filter(
     #     subscription__id__in=[
-    #         'b7406458-8b67-4da3-a199-46b87003d1a2','baa368fb-388a-4e55-b52b-ae4fa70817c1']
+    #         'b7406458-8b67-4da3-a199-46b87003d1a2', 'baa368fb-388a-4e55-b52b-ae4fa70817c1']
     # )
 
     # i = 0
@@ -1900,10 +1901,10 @@ async def add_new_date():
     # #     await StudentChoices.filter(id=each_obj.id).update(expiry_date=new_expiry_date, updated_at=updated_at)
     # #     i = i + 1
     # #     print(i)
-    #     if ((expiry.month == 4) | (expiry.month == 5)):  # and exp_date.day <= 15
+    #     if ((expiry.month == 6)):  # and exp_date.day <= 15
     #         i = i + 1
     #     # #    new_expiry_date = exp_date + relativedelta(months=2)
-    #         new_expiry_date = parser.parse('2022-06-20T23:59:59.410158+05:30')
+    #         new_expiry_date = parser.parse('2022-06-30T23:59:59.410158+05:30')
     #         await StudentChoices.filter(id=each_obj.id).update(expiry_date=new_expiry_date)
     #         print(i)
     return {"done"}
