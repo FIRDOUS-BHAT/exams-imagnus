@@ -17,7 +17,7 @@
 
       var db;
       var request = window.indexedDB.open("Imagnus", 1);
-
+      
       request.onerror = function (event) {
          console.log("error: ");
       };
@@ -105,13 +105,6 @@ $(document).on('click', '#submit_question', function(e){
   let chosen = $('[name="example1"]:checked').val()
    let callback = e.target.getAttribute('data-callback')
 
-   //  $.post(callback, {"chosen":chosen},function(res){
-
-   //       alert(res)
-   //  })
-
-
-
 
    if(typeof(chosen) === "undefined"){
 
@@ -119,7 +112,7 @@ $(document).on('click', '#submit_question', function(e){
    }
 
    url_split = callback.split('/')
-   console.log(url_split[8])
+   // console.log(url_split[8])
    add(parseInt(url_split[8])+1,chosen)
    arr.push(chosen)
 
@@ -143,7 +136,7 @@ $(document).on('click', '#submit_question', function(e){
 
 }
 
-    $.ajax({
+          $.ajax({
                 url: callback,
                 type: "post", //Change this to post or put
                 data: JSON.stringify({"chosen":chosen}),
@@ -186,7 +179,7 @@ $(document).on('click', '#submit_question', function(e){
 
 
 $(document).on('click','#view_test',function(e) {
-
+   
    let callback = e.target.getAttribute('data-callback')
    let no_qstns = $('#display_no_qstns').val()
    fetch(callback,{
