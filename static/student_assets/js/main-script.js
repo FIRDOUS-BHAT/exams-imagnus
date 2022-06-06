@@ -174,9 +174,7 @@ $(document).on('click', '#submit_question', function(e){
                 },
             });
 
-
 })
-
 
 $(document).on('click','#view_test',function(e) {
    
