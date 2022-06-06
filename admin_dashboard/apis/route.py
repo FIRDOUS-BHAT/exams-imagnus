@@ -1485,7 +1485,7 @@ async def subscription_plans(course_slug: str, student_id: str, _=Depends(get_cu
     c_obj = await Course.get(slug=course_slug)
     category_count = await CourseCategories.filter(course=c_obj, is_free=False).count()
     course_plans = await CourseSubscriptionPlans_Pydantic.from_queryset(
-        CourseSubscriptionPlans.filter(course=c_obj).order_by("validity"))
+        CourseSubscriptionPlans.filter(is_active=True,course=c_obj).order_by("validity"))
     if await Student.exists(id=student_id):
         student_instance = await Student.get(id=student_id)
 
