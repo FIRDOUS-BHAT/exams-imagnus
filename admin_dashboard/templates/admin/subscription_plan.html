@@ -113,11 +113,11 @@
                                  <td class="text-center">
                                     <a title="Edit" class="edit_subscription gray-s" data-course_name="{{ course_plan.course.name }}" data-plan_price="{{ course_plan.plan_price }}" 
                                     data-no_of_videos="{{ course_plan.no_of_videos }}" data-no_of_tests="{{ course_plan.no_of_tests }}" data-subscription_name="{{ course_plan.SubscriptionPlan.name }}"
-                                    data-no_of_notes="{{ course_plan.no_of_notes }}"  data-plan_validity="{{ course_plan.validity }}" data-sid="{{ course_plan.id }}">
+                                    data-no_of_notes="{{ course_plan.no_of_notes }}"  data-plan_validity="{{ course_plan.validity }}" data-sid="{{ course_plan.id }}" data-is_live="{{ '1'if (course_plan.live_classes_access== True) else '0'}}">
                                     
                                     <i class="uil uil-edit-alt" data-course_name="{{ course_plan.course.name }}" data-plan_price="{{ course_plan.plan_price }}" 
                                     data-no_of_videos="{{ course_plan.no_of_videos }}" data-no_of_tests="{{ course_plan.no_of_tests }}" data-plan_validity="{{ course_plan.validity }}"
-                                    data-no_of_notes="{{ course_plan.no_of_notes }}" data-sid="{{ course_plan.id }}" data-subscription_name="{{ course_plan.SubscriptionPlan.name }}"></i></a>
+                                    data-no_of_notes="{{ course_plan.no_of_notes }}" data-sid="{{ course_plan.id }}" data-subscription_name="{{ course_plan.SubscriptionPlan.name }}" data-is_live="{{ '1'if (course_plan.live_classes_access== True) else '0' }}"></i></a>
                                     <a title="Delete" class="gray-s"><i class="uil uil-trash-alt"></i></a>
                                  </td>
                               </tr>
@@ -260,10 +260,16 @@
                               <input type="digit" name="edit_no_of_tests" class="form-control" placeholder="enter fa fa-icon code"
                                  id="edit_no_of_tests">
                            </div>
-                           <button type="submit" class="btn btn-success mt-20"> Submit Plan</button>
+                         
                         </div>
+                     <div class="col-lg-6 col-md-6 mt-10">
 
-
+                     <div class="ui toggle checkbox _1457s2" id="live_classes_access">
+                        <input type="checkbox" id="edit_live_classes_checkbox" name="edit_live_classes_access" value="0" />
+                        <label>Live Classes </label>
+                     </div>
+                     <button type="submit" class="btn btn-success mt-20"> Submit Plan</button>
+                     </div>
                         </div>
          
                      </div>

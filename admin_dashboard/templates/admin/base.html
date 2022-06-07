@@ -1239,6 +1239,10 @@ $('.edit_subscription').click(function(e){
    $('#edit_no_of_tests').val(e.target.getAttribute('data-no_of_tests'))
    $('#edit_no_of_notes').val(e.target.getAttribute('data-no_of_notes'))
    $('#edit_sid').val(e.target.getAttribute('data-sid'))
+   let is_live = e.target.getAttribute('data-is_live')
+   let checked = (is_live == 1)?'checked':''
+   $('#edit_live_classes_checkbox').val(e.target.getAttribute('data-is_live'))
+   $('#edit_live_classes_checkbox').prop('checked',true)
 })
 
 $('.close').click(function () {
