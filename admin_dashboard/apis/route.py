@@ -431,9 +431,13 @@ async def course_category(course_slug: str, category_slug: str, student_id: str,
                                     new_dict = jsonable_encoder(eachLecture)
                                     video_id = eachLecture.id
                                     print("waiting....")
-                                    if video_id in book_marked_videos:
+                                    print("Video id here:", video_id)
+                                    if book_marked_videos:
+                                        if video_id in book_marked_videos:
 
-                                        is_bookmarked = True
+                                            is_bookmarked = True
+                                        else:
+                                            is_bookmarked = False
                                     else:
                                         is_bookmarked = False
                                     new_dict.update(
@@ -466,7 +470,7 @@ async def course_category(course_slug: str, category_slug: str, student_id: str,
 
                         if total_length_of_notes > subscription_notes_counter:
                             new_notes_dict = {"topic": category_topics_obj.topic.dict(exclude={
-                                                                                      "category"})}
+                                "category"})}
                             # category_topics_array.append(
                             #     {"topic": category_topics_obj.topic.dict(exclude={"category"})})
 
@@ -576,7 +580,7 @@ async def course_category(course_slug: str, category_slug: str, student_id: str,
 
                         elif total_length_of_notes <= subscription_notes_counter:
                             new_notes_dict = {"topic": category_topics_obj.topic.dict(exclude={
-                                                                                      "category"})}
+                                "category"})}
 
                             # category_topics_array.append(
                             #     {"topic": category_topics_obj.topic.dict(exclude={"category"})})
@@ -607,7 +611,7 @@ async def course_category(course_slug: str, category_slug: str, student_id: str,
 
                         if total_length_of_test_series > subscription_series_counter:
                             new_lect_dict = {"topic": category_topics_obj.topic.dict(exclude={
-                                                                                     "category"})}
+                                "category"})}
 
                             if len(category_topics_obj.CategoryTestSeries) > subscription_series_counter:
                                 for i in range(subscription_series_counter):
@@ -687,7 +691,7 @@ async def course_category(course_slug: str, category_slug: str, student_id: str,
 
                         elif total_length_of_test_series <= subscription_series_counter:
                             new_lect_dict = {"topic": category_topics_obj.topic.dict(exclude={
-                                                                                     "category"})}
+                                "category"})}
                             if category_topics_obj.CategoryTestSeries:
                                 for eachTest in category_topics_obj.CategoryTestSeries:
                                     new_dict = eachTest.dict(
@@ -1485,7 +1489,7 @@ async def subscription_plans(course_slug: str, student_id: str, _=Depends(get_cu
     c_obj = await Course.get(slug=course_slug)
     category_count = await CourseCategories.filter(course=c_obj, is_free=False).count()
     course_plans = await CourseSubscriptionPlans_Pydantic.from_queryset(
-        CourseSubscriptionPlans.filter(is_active=True,course=c_obj).order_by("validity"))
+        CourseSubscriptionPlans.filter(is_active=True, course=c_obj).order_by("validity"))
     if await Student.exists(id=student_id):
         student_instance = await Student.get(id=student_id)
 
@@ -1752,7 +1756,7 @@ async def add_coupon(name: str, discount: str, coupon_type: int, subscription: s
                     await Coupons.create(
                         name=name.strip(), discount=discount, subscription=subscription, coupon_type=coupon_type)
             return JSONResponse({'status': True, 'message': 'New coupon added'})
-        else:    
+        else:
             if not await Coupons.exists(name=name.strip(), subscription__id=subscription.strip()):
                 subscription = await CourseSubscriptionPlans.get(id=subscription.strip())
                 await Coupons.create(
