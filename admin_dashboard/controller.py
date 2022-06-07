@@ -1324,7 +1324,7 @@ async def subscription_plan(request: Request, user=Depends(get_current_user)):
         return RedirectResponse(url="/administrator/login/", status_code=status.HTTP_302_FOUND)
     plan_obj = await SubscriptionPlans_Pydantic.from_queryset(SubscriptionPlans.all())
     course_obj = await Course_Pydantic.from_queryset(Course.all())
-    course_plans = await CourseSubscriptionPlans_Pydantic.from_queryset(CourseSubscriptionPlans.all())
+    course_plans = await CourseSubscriptionPlans_Pydantic.from_queryset(CourseSubscriptionPlans.all().order_by('-updated_at'))
     return templates.TemplateResponse('subscription_plan.html', context={'request': request,
                                                                          'plan_obj': plan_obj,
                                                                          'courses': course_obj,
@@ -1348,10 +1348,11 @@ async def subscription_plan(plan_name: str = Form(...), sub_title: str = Form(..
 async def edit_subscription_plan(edit_plan_price: str = Form(...), edit_plan_validity: str = Form(...),
                                  edit_no_of_videos: str = Form(...),
                                  edit_no_of_tests: str = Form(...), edit_no_of_notes: str = Form(...),
-                                 edit_sid: str = Form(...)):
+                                 edit_sid: str = Form(...), edit_live_classes_access: int = Form(default=0)):
     await CourseSubscriptionPlans.filter(id=edit_sid).update(plan_price=edit_plan_price, validity=edit_plan_validity,
                                                              no_of_videos=edit_no_of_videos,
-                                                             no_of_notes=edit_no_of_notes, no_of_tests=edit_no_of_tests)
+                                                             no_of_notes=edit_no_of_notes, no_of_tests=edit_no_of_tests,
+                                                             live_classes_access=edit_live_classes_access)
     return RedirectResponse(url='/admin/subscription_plan/', status_code=status.HTTP_303_SEE_OTHER)
 
 
@@ -1890,7 +1891,7 @@ async def get_students(request: Request, user=Depends(get_current_user)):
 async def add_new_date():
     # stud_obj = await StudentChoices.filter(
     #     subscription__id__in=[
-    #         'b7406458-8b67-4da3-a199-46b87003d1a2', 'baa368fb-388a-4e55-b52b-ae4fa70817c1']
+    #         '428fb39a-af94-4043-a0e2-76fe83b9776e']
     # )
 
     # i = 0
@@ -1901,7 +1902,7 @@ async def add_new_date():
     # #     await StudentChoices.filter(id=each_obj.id).update(expiry_date=new_expiry_date, updated_at=updated_at)
     # #     i = i + 1
     # #     print(i)
-    #     if ((expiry.month == 6)):  # and exp_date.day <= 15
+    #     if (((expiry.month == 5) & (expiry.year == 2022)) | ((expiry.month == 6) & (expiry.year == 2022))):  # and exp_date.day <= 15
     #         i = i + 1
     #     # #    new_expiry_date = exp_date + relativedelta(months=2)
     #         new_expiry_date = parser.parse('2022-06-30T23:59:59.410158+05:30')
