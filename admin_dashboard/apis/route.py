@@ -816,8 +816,8 @@ async def course_category(course_slug: str, category_slug: str, student_id: str,
 
                     result = {
                         "Lectures": updated_access_lect_array,
-                        # "Notes": updated_access_notes_array,
-                        # "TestSeries": updated_access_test_series_array,
+                        "Notes": updated_access_notes_array,
+                        "TestSeries": updated_access_test_series_array,
                     }
 
                     return result
