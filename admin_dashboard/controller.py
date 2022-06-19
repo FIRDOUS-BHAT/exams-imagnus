@@ -1617,14 +1617,14 @@ async def get_orders(request: Request, page: int = Query(..., title="Page Number
         .offset((page*perPage)-perPage)
         .limit(perPage)
     )
-    # return orders
-    return templates.TemplateResponse('orders_testseries.html',
-                                      context={
-                                          'request': request,
-                                          'orders': orders,
-                                          'page': page,
-                                          'perPage': perPage,
-                                      })
+    return orders
+    # return templates.TemplateResponse('orders_testseries.html',
+    #                                   context={
+    #                                       'request': request,
+    #                                       'orders': orders,
+    #                                       'page': page,
+    #                                       'perPage': perPage,
+    #                                   })
 
 
 @router.get('/admin/live_classes/')

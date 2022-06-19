@@ -404,10 +404,10 @@ async def preference(request: Request, user=Depends(get_current_user)):
         # return RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
 
 
-@router.get('/get_all_students/', response_model=List[Student_Pydantic],
-            responses={404: {"model": HTTPNotFoundError}})
-async def get_all_students():
-    return await Student_Pydantic.from_queryset(Student.all())
+# @router.get('/get_all_students/', response_model=List[Student_Pydantic],
+#             responses={404: {"model": HTTPNotFoundError}})
+# async def get_all_students():
+#     return await Student_Pydantic.from_queryset(Student.all())
 
 
 @router.get('/student/subscriptions/')
