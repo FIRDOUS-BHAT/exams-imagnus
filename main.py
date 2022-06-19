@@ -221,10 +221,10 @@ async def startup():
     # #     ignore_arg_types=[Request, Response, Session]
     # # )
     # await FastAPILimiter.init(redis)
-    redis = aioredis.from_url(
-        LOCAL_REDIS_URL, encoding="utf8", decode_responses=True)
-    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
-    await database.connect()
+    # redis = aioredis.from_url(
+    #     LOCAL_REDIS_URL, encoding="utf8", decode_responses=True)
+    # FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
+    # await database.connect()
 
 
 @app.on_event("shutdown")
