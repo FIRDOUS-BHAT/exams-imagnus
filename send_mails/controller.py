@@ -108,7 +108,7 @@ async def send_email_background(background_tasks: BackgroundTasks, subject: str,
         subject=subject,
         recipients=[
             email_to,
-            "invoice@imagnus.in"
+            "invoice@imagnus.in" 
         ],
         template_body=body,
         subtype='html',
