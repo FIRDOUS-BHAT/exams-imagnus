@@ -67,7 +67,30 @@ def generate_token(form_data: OAuth2PasswordRequestForm = Depends()):
     # subject identifier for who this token is for example id or username from database
     access_token_expires = util.timedelta(
         minutes=int(config('ACCESS_TOKEN_EXPIRE_MINUTES'))
-        )
+    )
+    access_token = util.create_access_token(
+        data={"sub": form_data.username},
+        expires_delta=access_token_expires,
+    )
+
+    results = {
+        "access_token": access_token,
+        "token_type": "bearer",
+        # "expired_in": int(config('ACCESS_TOKEN_EXPIRE_MINUTES')) * 60,
+
+    }
+    return results
+
+
+@router.post('/v2/auth/token/', response_model=Token)
+def generate_token_new_api(form_data: OAuth2PasswordRequestForm = Depends()):
+    if form_data.username != "REDACTED_LEGACY_API_USERNAME" or form_data.password != "REDACTED_LEGACY_API_PASSWORD":
+        raise HTTPException(status_code=208, detail="Bad username or password")
+
+    # subject identifier for who this token is for example id or username from database
+    access_token_expires = util.timedelta(
+        minutes=int(config('ACCESS_TOKEN_EXPIRE_MINUTES'))
+    )
     access_token = util.create_access_token(
         data={"sub": form_data.username},
         expires_delta=access_token_expires,
@@ -282,9 +305,58 @@ async def login(form_data: UserIn, _=Depends(get_current_user)):
             {"status": False, "message": str(ex)}, status_code=208
         )
 
+from FCM.route import push_service
 
+class UpdateStudentFcmOnLoginPydantic(BaseModel):
+    student_id: uuid.UUID
+    fcm: str
+
+@router.post("/update_fcm_on_login/")
+async def update_fcm_on_login(data: UpdateStudentFcmOnLoginPydantic):
+   try: 
+        if await Student.exists(id=data.student_id):
+            student = await Student.get(id=data.student_id)
+            if student.fcm_token != data.fcm:
+                
+                '''push a notification to existing device for logout'''
+                
+                message_title = 'Login Prevented'
+                message_body = "Another device has logged into your account." 
+                                                    
+                data_message = {
+                                            "open": "logout",
+                                            "data_payload": {}
+                                        }
+                result = push_service.notify_single_device(registration_id=student.fcm_token,
+                                                                                message_title=message_title,
+                                                                                message_body=message_body,
+                                                                                data_message=data_message)
+                student.fcm_token = data.fcm
+                await student.save()
+                return JSONResponse({"status": True, "message": "FCM updated"},status_code=200)
+            else:
+                return JSONResponse({"status": False, "message": "FCM already registered"}, status_code=208)
+        else:
+            return JSONResponse({"status": False,"message":"Student ID is invalid"})
+   except Exception as ex:
+       return JSONResponse({'status': False, 'message': str(ex)})
+          
 class mobileIn(BaseModel):
     mobile: str
+
+class GetFcmOfStudent(BaseModel):
+    student_id: uuid.UUID
+
+@router.post("/get_fcm_/")
+async def get_fcm_(data: GetFcmOfStudent):
+   try: 
+        if await Student.exists(id=data.student_id):
+            student = await Student.get(id=data.student_id).values("fcm_token")
+            return JSONResponse({"status": True,"message": student.fcm_token})
+        else:
+            return JSONResponse({"status": False,"message":"Student ID is invalid"})
+   except Exception as ex:
+       return JSONResponse({'status': False, 'message': str(ex)})
 
 
 # router.state.limiter = limiter
@@ -496,7 +568,7 @@ async def update_student(s3: BaseClient = Depends(s3_auth), data: UpdateStudent 
                 if image is not None:
                     if image.file:
                         folder = 'student-avatars'
-                        image_url = await upload_images(s3, folder=folder, image=image,mimetype=None)
+                        image_url = await upload_images(s3, folder=folder, image=image, mimetype=None)
                         student.dp = image_url
 
                 await student.save()
@@ -920,7 +992,7 @@ async def ask_me(student_id: str = Form(...), category_id: str = Form(...), enqu
         # if not await Ask.exists(student=student_instance, is_replied=False):
         if image:
             folder = 'student-enquiry/' + student_id + '/'
-            image_url = await upload_images(s3, folder=folder, image=image,mimetype=None)
+            image_url = await upload_images(s3, folder=folder, image=image, mimetype=None)
         else:
             image_url = None
         await Ask.create(student=student_instance,

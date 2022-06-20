@@ -785,7 +785,7 @@ async def webhook(request: Request):
     try:
         c_ins = None
         data = await request.json()
-        print(data)
+        
         # print("============================================")
         payment_id = data['payload']['payment']['entity']['id']
         order_id = data['payload']['payment']['entity']['order_id']
