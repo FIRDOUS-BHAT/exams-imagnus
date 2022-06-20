@@ -352,7 +352,7 @@ async def get_fcm_(data: GetFcmOfStudent, _=Depends(get_current_user)):
    try: 
         if await Student.exists(id=data.student_id):
             student = await Student.get(id=data.student_id).values("fcm_token")
-            return JSONResponse({"status": True,"message": student.fcm_token})
+            return JSONResponse({"status": True,"message": student['fcm_token']})
         else:
             return JSONResponse({"status": False,"message":"Student ID is invalid"})
    except Exception as ex:
