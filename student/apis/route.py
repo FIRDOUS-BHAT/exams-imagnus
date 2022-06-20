@@ -312,7 +312,7 @@ class UpdateStudentFcmOnLoginPydantic(BaseModel):
     fcm: str
 
 @router.post("/update_fcm_on_login/")
-async def update_fcm_on_login(data: UpdateStudentFcmOnLoginPydantic):
+async def update_fcm_on_login(data: UpdateStudentFcmOnLoginPydantic, _=Depends(get_current_user)):
    try: 
         if await Student.exists(id=data.student_id):
             student = await Student.get(id=data.student_id)
@@ -347,8 +347,8 @@ class mobileIn(BaseModel):
 class GetFcmOfStudent(BaseModel):
     student_id: uuid.UUID
 
-@router.post("/get_fcm_/")
-async def get_fcm_(data: GetFcmOfStudent):
+@router.post("/get_fcm/")
+async def get_fcm_(data: GetFcmOfStudent, _=Depends(get_current_user)):
    try: 
         if await Student.exists(id=data.student_id):
             student = await Student.get(id=data.student_id).values("fcm_token")
