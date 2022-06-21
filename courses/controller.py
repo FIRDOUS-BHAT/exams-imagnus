@@ -163,7 +163,7 @@ async def subscription_plans_page(request: Request, course_slug: str, _=Depends(
     try:
         c_obj = await Course.get(slug=course_slug)
         course_plans = await CourseSubscriptionPlans_Pydantic.from_queryset(
-            CourseSubscriptionPlans.filter(course=c_obj).order_by("plan_price"))
+            CourseSubscriptionPlans.filter(is_active=True, course=c_obj).order_by("plan_price"))
         return templates.TemplateResponse('subscription.html',
                                           context={'request': request,
                                                    'plans': course_plans
@@ -421,7 +421,6 @@ async def create_razorpay_order(request: Request,
             # await StudyMaterialOrderInstance.filter(student=student, item_id=item_instance).delete()
 
             if create_order == 'True':
-               
 
                 subs_obj = await CourseSubscriptionPlans.get(id=item_id).values("course__id", "validity")
                 subs_obj1 = await CourseSubscriptionPlans.get(id=item_id)
@@ -579,9 +578,9 @@ async def create_razorpay_order(request: Request,
                         "receipt": 'order_rcptid_11'
                     })
                     order_id = order['id']
-                   
+
                     return JSONResponse({"status": True, "order_id": order_id, "amount": amount}, status_code=200)
-                    
+
                 else:
                     return JSONResponse(
                         {"status": False,
@@ -638,7 +637,7 @@ async def confirm_order(request: Request, user=Depends(get_current_user)):
 
             resp = JSONResponse(
                 {"status": False, "message": "Something went wrong"}, status_code=208)
-            
+
         return resp
 
     except Exception as ex:
