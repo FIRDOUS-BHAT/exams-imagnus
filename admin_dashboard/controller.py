@@ -453,7 +453,7 @@ async def edit_course(s3: BaseClient = Depends(s3_auth), edit_name: str = Form(d
 
         if edit_name:
             c_instance.name = edit_name
-            c_instance.slug = slugify(edit_name)
+            # c_instance.slug = slugify(edit_name)
 
         if edit_icon_image.filename:
             image_url = await upload_images(s3, folder='course_icons/mobile_icons', image=edit_icon_image, mimetype=None)
@@ -1909,3 +1909,22 @@ async def add_new_date():
     #         await StudentChoices.filter(id=each_obj.id).update(expiry_date=new_expiry_date)
     #         print(i)
     return {"done"}
+
+
+@router.get('/admin/place_order/')
+async def create_order(request: Request, user=Depends(get_current_user)):
+    courses = await Course.all()
+    return templates.TemplateResponse('place_order.html',
+                                      context={'request': request,
+                                               'courses': courses,
+                                               'interview_registrations': 'active',
+                                               })
+
+
+@router.post('/admin/get_course_subscriptions/')
+async def get_course_subscriptions(request: Request, user=Depends(get_current_user)):
+    try:
+        data = await request.body()
+        return data.course_id
+    except Exception as ex:
+        return JSONResponse({'hi': str(ex)})
