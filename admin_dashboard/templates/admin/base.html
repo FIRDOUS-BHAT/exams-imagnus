@@ -38,7 +38,6 @@
    <link href="/static/admin/vendor/OwlCarousel/assets/owl.theme.default.min.css" rel="preload" as="style" />
    <link rel="preload" type="text/css" href="/static/admin/vendor/semantic/semantic.min.css" as="style" />
    
-   
    <link href="/static/admin/vendor/unicons-2.0.1/css/unicons.css" rel='stylesheet' />
    <link href="/static/admin/css/vertical-responsive-menu1.min.css" rel="stylesheet" />
    <link href="/static/admin/css/instructor-dashboard.css" rel="stylesheet" />
@@ -178,6 +177,13 @@
                      <a href="/admin/live_classes/" class="menu--link {{ 'active' if live_classes_active else ''}}" title="Add Course Overview">
                      <i class='uil uil-copy-landscape menu--icon'></i>
                      <span class="menu--label">Add live classes</span>
+                     </a>
+                  </li>
+                  <li class="menu--item">
+                     <a href="/admin/place_order/" class="menu--link {{ 'active' if registrations_active else ''}}"
+                        title="Messages">
+                        <i class='uil uil-user menu--icon'></i>
+                        <span class="menu--label">Create Order </span>
                      </a>
                   </li>
                   <li class="menu--item">
@@ -1371,6 +1377,24 @@ $('#add_reply').click(function (e) {
    }
 
 
+
+   function getSubscriptionPlans() {
+
+      let course_id = $('#selected_course').val()
+      // alert(course_id)
+
+      if(course_id){
+
+         fetch('/admin/get_course_subscriptions/',{
+            method: 'POST', // or 'PUT'
+            body: {course_id: course_id},
+         }).then(res => res.json())
+         .then(response => {
+            alert(response)
+         })
+      }
+   } 
+
       </script>
 
 
@@ -1384,6 +1408,9 @@ SnackBar({
           status: "error",
           position: "tr" // bl, tl, tr, br
                      });
+
+                
+
 </script>
 
 {% endif %}
