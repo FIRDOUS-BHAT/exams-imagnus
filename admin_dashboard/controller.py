@@ -1925,7 +1925,7 @@ async def create_order(request: Request, user=Depends(get_current_user)):
 async def get_course_subscriptions(request: Request, user=Depends(get_current_user)):
     try:
         data = await request.json()
-        subscriptions = await CourseSubscriptionPlans.filter(course__id=data['course_id']).values(sid="id", name="SubscriptionPlan__name", validity="validity", price="plan_price")
+        subscriptions = await CourseSubscriptionPlans.filter(course__id=data['course_id'],is_active=True).values(sid="id", name="SubscriptionPlan__name", validity="validity", price="plan_price")
         return subscriptions
     except Exception as ex:
         return JSONResponse({'message': str(ex)})
@@ -1933,7 +1933,7 @@ async def get_course_subscriptions(request: Request, user=Depends(get_current_us
 
 @router.post('/admin/place_manual_order/')
 async def manual_order(request:Request,phone_number: str = Form(...), subscription_id: str = Form(...), discount_price: Optional[int] = Form(default=0)):
-    # try:
+  try:
     if not await Student.exists(mobile=phone_number):
         return RedirectResponse(url='/admin/place_order/', status_code=status.HTTP_303_SEE_OTHER)
     student = await Student.get(mobile=phone_number)
@@ -1979,5 +1979,8 @@ async def manual_order(request:Request,phone_number: str = Form(...), subscripti
                     flash(request, result['message'], "danger")
                 
         return RedirectResponse(url='/admin/place_order/', status_code=status.HTTP_303_SEE_OTHER)
-    # except Exception as e:
-    #     return JSONResponse({"status": False, "message": str(e)})
+  except Exception as e:
+        flash(request, str(e), "danger")
+        return RedirectResponse(url='/admin/place_order/', status_code=status.HTTP_303_SEE_OTHER)
+        
+        # return JSONResponse({"status": False, "message": str(e)})
