@@ -1384,13 +1384,20 @@ $('#add_reply').click(function (e) {
       // alert(course_id)
 
       if(course_id){
-
+         let body = JSON.stringify({ course_id: course_id })
          fetch('/admin/get_course_subscriptions/',{
             method: 'POST', // or 'PUT'
-            body: {course_id: course_id},
+            body: body,
          }).then(res => res.json())
          .then(response => {
-            alert(response)
+            $('#subscription_plans').html('')
+            // if(response.status == 200){
+               for(let x in response){
+                     $('#subscription_plans').append('<option value='+response[x].sid+'>'+response[x].name +' | validity:'+response[x].validity +' months | Price:'+ response[x].price +'</option>')
+               }
+            // }
+            
+          
          })
       }
    } 

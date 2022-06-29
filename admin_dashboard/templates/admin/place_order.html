@@ -4,6 +4,25 @@
          <div class="sa4d25">
             <div class="container">
                <div class="row">
+
+                  {% for message in get_flashed_messages(request) %}
+                  <!-- <div class="{{ message.category }}">{{ message.message }}</div> -->
+                  
+                  
+                  <div class="alert alert-{{ message.category }} alert-dismissible fade show " role="alert">
+                  
+                     <div style="text-align:center !important;">
+                        <b>{{ message.message }}</b>
+                  
+                     </div>
+                     <!-- <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> -->
+                  
+                  </div>
+                  
+                  
+                  {% endfor %}
+
+
                   <div class="col-lg-12">
                      <h2 class="st_title"><i class="uil uil-book"></i> Add Subscription Plan </h2>
                   </div>
@@ -61,12 +80,14 @@
                   <div class="modal-header">
                      <h4 class="modal-title">Add Subscription Plan</h4>
                   </div>
+                  <form method="post" action="/admin/place_manual_order/">
                   <div class="modal-body row">
+                     
 				  <div class="col-lg-6 col-md-6 mt-10">
                         <div class="ui search focus lbel25">
                            <label>Mobile Number* </label>
                            <div class="ui left icon input swdh19">
-                              <input class="prompt srch_explore" type="text" placeholder="+91 |  Phone Number">
+                              <input name="phone_number" class="prompt srch_explore" type="text" placeholder="+91 |  Phone Number">
                               <div class="badge_num">10 </div>
                            </div>
                         </div>
@@ -76,7 +97,7 @@
                         <div class="lbel25">
                            <label>Course Category* </label>
                         </div>
-                        <select onchange="getSubscriptionPlans()" id="selected_course" class="ui hj145 dropdown cntry152 prompt srch_explore">
+                        <select name="course_id" onchange="getSubscriptionPlans()" id="selected_course" class="ui hj145 dropdown cntry152 prompt srch_explore">
                            <option value="">Select course ></option>
                               {% for course in courses %}
                            <option value="{{course.id }}">{{ course.name }}</option>
@@ -84,17 +105,17 @@
                         </select>
                      </div>
 					 
-					 <div class="col-lg-6 col-md-6 mt-10">
+					 <div class="col-lg-12 col-md-12 mt-12">
                         <div class="lbel25">
                            <label>Subscription Package* </label>
                         </div>
-                        <select class="ui hj145 dropdown cntry152 prompt srch_explore">
+                        <select name="subscription_id" id="subscription_plans" class="ui hj145 dropdown cntry152 prompt srch_explore">
                            <option value="" disabled>Select Package 
                           
                         </select>
                      </div>
 					 
-					  <div class="col-lg-6 col-md-6 mt-10">
+					  <!-- <div class="col-lg-6 col-md-6 mt-10">
                         <div class="lbel25">
                            <label>Subscription Validity* </label>
                         </div>
@@ -103,22 +124,22 @@
                            <option value="1">1 Month</option>
                            <option value="2">3 Month </option>
                         </select>
-                     </div>
+                     </div> -->
 					 
-                     <div class="col-lg-6 col-md-6 mt-10">
+                     <!-- <div class="col-lg-6 col-md-6 mt-10">
                         <div class="ui search focus lbel25">
                            <label>Course Price* </label>
                            <div class="ui left icon input swdh19">
                               <input class="prompt srch_explore" type="text" value="Rs. 10000">
                            </div>
                         </div>
-                     </div>
+                     </div> -->
 					 
 					 <div class="col-lg-6 col-md-6 mt-10">
                         <div class="ui search focus lbel25">
                            <label>Discount Price* </label>
                            <div class="ui left icon input swdh19">
-                              <input class="prompt srch_explore" type="text" placeholder="enter package discount price">
+                              <input name="discount_price" class="prompt srch_explore" type="text" placeholder="enter package discount price">
                            </div>
                         </div>
                      </div>
@@ -128,9 +149,13 @@
                         <button type="submit" class="btn btn-success"> Submit Plan</button>
                      </div>
                   </div>
+               </form>
+                
                   <div class="modal-footer">
                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                   </div>
+              
+              
                </div>
             </div>
          </div>

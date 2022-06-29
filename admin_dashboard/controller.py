@@ -1572,7 +1572,7 @@ async def get_orders(request: Request, page: int = Query(..., title="Page Number
     segments = data_count/perPage
     # return orders
     client_host = request.client.host
-    forwarded_for = context.data["X-Forwarded-For"].split(',')
+    # forwarded_for = context.data["X-Forwarded-For"].split(',')
 
     return templates.TemplateResponse('course_orders.html',
                                       context={
@@ -1583,7 +1583,7 @@ async def get_orders(request: Request, page: int = Query(..., title="Page Number
                                           'perPage': perPage,
                                           'data_count': data_count,
                                           "client_host": client_host,
-                                          "forwarded_for": forwarded_for[0]
+                                          #   "forwarded_for": forwarded_for[0]
                                       })
 
 
@@ -1924,7 +1924,60 @@ async def create_order(request: Request, user=Depends(get_current_user)):
 @router.post('/admin/get_course_subscriptions/')
 async def get_course_subscriptions(request: Request, user=Depends(get_current_user)):
     try:
-        data = await request.body()
-        return data.course_id
+        data = await request.json()
+        subscriptions = await CourseSubscriptionPlans.filter(course__id=data['course_id']).values(sid="id", name="SubscriptionPlan__name", validity="validity", price="plan_price")
+        return subscriptions
     except Exception as ex:
-        return JSONResponse({'hi': str(ex)})
+        return JSONResponse({'message': str(ex)})
+
+
+@router.post('/admin/place_manual_order/')
+async def manual_order(request:Request,phone_number: str = Form(...), subscription_id: str = Form(...), discount_price: Optional[int] = Form(default=0)):
+    # try:
+    if not await Student.exists(mobile=phone_number):
+        return RedirectResponse(url='/admin/place_order/', status_code=status.HTTP_303_SEE_OTHER)
+    student = await Student.get(mobile=phone_number)
+    print(subscription_id)
+    if not discount_price:
+        subscription = await CourseSubscriptionPlans.get(id=subscription_id)
+        course_price = subscription.plan_price
+    else:
+        course_price = discount_price
+    params = {
+        'username': 'ImagnusAPIs',
+        'password': '5EFGJd6m'
+
+    }
+    order_params = {
+        "payment_mode": 1,
+        "payment_status": 1,
+        "payment_id": "",
+        "order_id": "",
+        "gateway_name": "",
+        "coupon": "",
+        "coupon_discount": 0,
+        "notes": "Order Placed by Admin",
+        "source": "adm",
+        "bill_amount": course_price,
+        "student_id": student.id,
+        "subscription_id": subscription_id
+
+    }
+
+    async with httpx.AsyncClient() as client:
+        r = await client.post(app_url+'/api/student/v2/auth/token/', data=params)
+        decoded = json.loads(r.text)
+        print(decoded['access_token'])
+        headers = {'Authorization': 'Bearer '+decoded['access_token']}
+        async with httpx.AsyncClient(headers=headers) as client1:
+            order_response = await client1.post(app_url+'/api/place_order',
+                                                json=jsonable_encoder(order_params))
+            result = json.loads(order_response.text)
+            if result['status'] == True:
+                    flash(request, "Subscription activated", "success")
+            else:    
+                    flash(request, result['message'], "danger")
+                
+        return RedirectResponse(url='/admin/place_order/', status_code=status.HTTP_303_SEE_OTHER)
+    # except Exception as e:
+    #     return JSONResponse({"status": False, "message": str(e)})

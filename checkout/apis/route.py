@@ -175,7 +175,8 @@ async def place_order(data: PaymentRecordsIn_Pydantic, _=Depends(get_current_use
 
             if razorpay_resp and (not await PaymentRecords.exists(payment_id=payment_id)):
                 payment_status = 2
-
+        if data.source == "adm":
+            payment_status = 2
         if await Student.exists(id=uid):
             user_obj = await Student.get(id=uid)
             subscrip_id = data.subscription_id
