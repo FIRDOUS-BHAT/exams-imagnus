@@ -5,7 +5,7 @@ from fastapi_cache.decorator import cache
 from scholarship_tests.models import ScholarshipTestSeries, ScholarshipTestSeries_Pydantic
 import json
 import uuid
-from datetime import datetime
+from datetime import datetime, date
 from operator import itemgetter
 from typing import List, Optional
 import pytz
@@ -1624,7 +1624,7 @@ class LiveClassesPydantic(BaseModel):
     instructor: InstructorPydantic
     url: str
     thumbnail: Optional[str] = None
-    streaming_time: str
+    streaming_time: datetime
     lecture_duration: Optional[str] = None
 
     @validator('streaming_time', pre=True, always=True)
@@ -1678,6 +1678,29 @@ async def get_live_classes(course_slug: str, student_id: str, _=Depends(get_curr
             LiveClasses.filter(course__slug=course_slug, is_paid=False))
 
     return obj
+
+
+@router.get('/get_filtered_live_classes/{course_slug}/{student_id}/{d}',
+            response_model=List[LiveClassesPydantic]
+            )
+async def get_live_classes(course_slug: str, student_id: str, d: date, _=Depends(get_current_user)):
+    try:
+        print(d.day)
+        print("we've day here========")
+        course = await Course.get(slug=course_slug)
+        student = await Student.get(id=student_id)
+        subscription = await activeSubscription.exists(course=course, student=student)
+        if subscription:
+            print("here=======")
+            obj = await LiveClasses_Pydantic.from_queryset(
+                LiveClasses.filter(course__slug=course_slug, ))
+        else:
+            obj = await LiveClasses_Pydantic.from_queryset(
+                LiveClasses.filter(course__slug=course_slug, is_paid=False))
+
+        return obj
+    except Exception as e:
+        return JSONResponse({'status': False, 'message': str(e)})
 
 
 @router.get('/get_all_live_classes/',

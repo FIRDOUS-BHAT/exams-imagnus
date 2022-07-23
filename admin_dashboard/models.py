@@ -300,7 +300,7 @@ class LiveClasses(Model):
     url = fields.TextField(blank=True, null=True)
     is_paid = fields.BooleanField(default=False)
     thumbnail = fields.TextField(null=True, blank=True)
-    streaming_time = fields.CharField(100, null=True, blank=True)
+    streaming_time = fields.DatetimeField()
     lecture_duration = fields.CharField(max_length=40, blank=True, null=True)
     created_at = fields.DatetimeField(auto_now_add=True)
 

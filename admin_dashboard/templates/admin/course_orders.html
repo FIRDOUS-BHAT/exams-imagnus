@@ -46,9 +46,10 @@
        <th scope="col">Payment Status</th>
       <th scope="col">source</th>
        <th scope="col">Created At</th>
+       <th scope="col">Action</th>
     </tr>
  </thead>
- <tbody id="show_search">
+ <tbody id="show_searh">
      {% for order in orders %}
     <tr  class="text-center">
        <td>00{{ loop.index }} </td>
@@ -60,6 +61,10 @@
        <td>{{ order.payment_status}}</td>
       <td>{{ order.source}}</td>
        <td>{{ order.created_at.strftime('%d %b %Y, %I:%M:%S %p') }}</td>
+       <td >
+      <a title="Delete" class="gray-s"><i class="uil uil-trash-alt"></i></a>
+
+       </td>
     </tr>
     {% endfor %}
  </tbody>
