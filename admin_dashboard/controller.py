@@ -318,7 +318,7 @@ class Cat(BaseModel):
 @router.get("/admin/create_course/",)
 async def get_course_page(request: Request, user=Depends(get_current_user)):
     try:
-        if check_login_auth():
+        if await check_login_auth():
             if user is None:
                 return RedirectResponse(url="/administrator/login/", status_code=status.HTTP_302_FOUND)
             app_url = db_config().app_url
@@ -345,7 +345,7 @@ async def get_course_page(request: Request, user=Depends(get_current_user)):
 
 @router.post("/add_preference")
 async def add_preference(request: Request, pref_name: str = Form(...), user=Depends(get_current_user)):
-    if check_login_auth():
+    if await check_login_auth():
         if user is None:
             return RedirectResponse(url="/administrator/login/", status_code=status.HTTP_302_FOUND)
         res = await Preference.create(
@@ -412,7 +412,7 @@ async def create_course(request: Request, pref_id: str = Form(...),
                         web_icon: UploadFile = File(default=None),
                         s3: BaseClient = Depends(s3_auth), user=Depends(get_current_user)):
     try:
-        if check_login_auth():
+        if await check_login_auth():
             if user is None:
                 return RedirectResponse(url="/administrator/login/", status_code=status.HTTP_302_FOUND)
             preference = await Preference.get(id=pref_id)
@@ -1925,62 +1925,70 @@ async def create_order(request: Request, user=Depends(get_current_user)):
 async def get_course_subscriptions(request: Request, user=Depends(get_current_user)):
     try:
         data = await request.json()
-        subscriptions = await CourseSubscriptionPlans.filter(course__id=data['course_id'],is_active=True).values(sid="id", name="SubscriptionPlan__name", validity="validity", price="plan_price")
+        subscriptions = await CourseSubscriptionPlans.filter(course__id=data['course_id'], is_active=True).values(sid="id", name="SubscriptionPlan__name", validity="validity", price="plan_price")
         return subscriptions
     except Exception as ex:
         return JSONResponse({'message': str(ex)})
 
 
 @router.post('/admin/place_manual_order/')
-async def manual_order(request:Request,phone_number: str = Form(...), subscription_id: str = Form(...), discount_price: Optional[int] = Form(default=0)):
-  try:
-    if not await Student.exists(mobile=phone_number):
-        return RedirectResponse(url='/admin/place_order/', status_code=status.HTTP_303_SEE_OTHER)
-    student = await Student.get(mobile=phone_number)
-    print(subscription_id)
-    if not discount_price:
-        subscription = await CourseSubscriptionPlans.get(id=subscription_id)
-        course_price = subscription.plan_price
-    else:
-        course_price = discount_price
-    params = {
-        'username': 'REDACTED_LEGACY_API_USERNAME',
-        'password': 'REDACTED_LEGACY_API_PASSWORD'
+async def manual_order(request: Request, phone_number: str = Form(...), subscription_id: str = Form(...), discount_price: Optional[int] = Form(default=0)):
+    try:
+        if not await Student.exists(mobile=phone_number):
+            return RedirectResponse(url='/admin/place_order/', status_code=status.HTTP_303_SEE_OTHER)
+        student = await Student.get(mobile=phone_number)
+        print(subscription_id)
+        if not discount_price:
+            subscription = await CourseSubscriptionPlans.get(id=subscription_id)
+            course_price = subscription.plan_price
+        else:
+            course_price = discount_price
+        params = {
+            'username': 'REDACTED_LEGACY_API_USERNAME',
+            'password': 'REDACTED_LEGACY_API_PASSWORD'
 
-    }
-    order_params = {
-        "payment_mode": 1,
-        "payment_status": 1,
-        "payment_id": "",
-        "order_id": "",
-        "gateway_name": "",
-        "coupon": "",
-        "coupon_discount": 0,
-        "notes": "Order Placed by Admin",
-        "source": "adm",
-        "bill_amount": course_price,
-        "student_id": student.id,
-        "subscription_id": subscription_id
+        }
+        order_params = {
+            "payment_mode": 1,
+            "payment_status": 1,
+            "payment_id": "",
+            "order_id": "",
+            "gateway_name": "",
+            "coupon": "",
+            "coupon_discount": 0,
+            "notes": "Order Placed by Admin",
+            "source": "adm",
+            "bill_amount": course_price,
+            "student_id": student.id,
+            "subscription_id": subscription_id
 
-    }
+        }
 
-    async with httpx.AsyncClient() as client:
-        r = await client.post(app_url+'/api/student/v2/auth/token/', data=params)
-        decoded = json.loads(r.text)
-        print(decoded['access_token'])
-        headers = {'Authorization': 'Bearer '+decoded['access_token']}
-        async with httpx.AsyncClient(headers=headers) as client1:
-            order_response = await client1.post(app_url+'/api/place_order',
-                                                json=jsonable_encoder(order_params))
-            result = json.loads(order_response.text)
-            if result['status'] == True:
+        async with httpx.AsyncClient() as client:
+            r = await client.post(app_url+'/api/student/v2/auth/token/', data=params)
+            decoded = json.loads(r.text)
+            print(decoded['access_token'])
+            headers = {'Authorization': 'Bearer '+decoded['access_token']}
+            async with httpx.AsyncClient(headers=headers) as client1:
+                order_response = await client1.post(app_url+'/api/place_order',
+                                                    json=jsonable_encoder(order_params))
+                result = json.loads(order_response.text)
+                if result['status'] == True:
                     flash(request, "Subscription activated", "success")
-            else:    
+                else:
                     flash(request, result['message'], "danger")
-                
-        return RedirectResponse(url='/admin/place_order/', status_code=status.HTTP_303_SEE_OTHER)
-  except Exception as e:
+
+            return RedirectResponse(url='/admin/place_order/', status_code=status.HTTP_303_SEE_OTHER)
+    except Exception as e:
         flash(request, str(e), "danger")
         return RedirectResponse(url='/admin/place_order/', status_code=status.HTTP_303_SEE_OTHER)
-        
+
         # return JSONResponse({"status": False, "message": str(e)})
+
+
+@router.get('/admin/get_live_class_schedules/')
+async def get_live_class_schedules(request: Request, _=Depends(get_current_user)):
+    return templates.TemplateResponse('live_class_time_scheduling.html',
+                                      context={'request': request,
+                                               'schedule_live_class': 'active',
+                                               })

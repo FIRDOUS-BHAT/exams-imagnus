@@ -1,0 +1,135 @@
+{% extends "base.html"%}
+{% block content %}
+      <div class="wrapper">
+         <div class="sa4d25">
+            <div class="container-fluid">
+               <div class="card_dash1">
+                  <div class="card_dash_left1">
+                     <h2 class="st_title">Time Shedule Classes</h2>
+                  </div>
+                  <div class="card_dash_right1">
+                     <button class="create_btn_dash" data-toggle="modal" data-target="#course"> Add Time Shedule </button>
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-lg-12 col-md-7">
+                     <div  class="table mt-20">
+                        <table class="table ucp-table" id="example">
+                           <thead class="thead-s">
+                              <tr  class="text-center">
+                                 <th scope="col">S No. </th>
+                                 <th scope="col">Course Name</th>
+                                 <th scope="col">Instructor </th>
+                                 <th scope="col">Timing </th>
+                                 <th scope="col">Topic Name </th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              <tr  class="text-center">
+                                 <td>001 </td>
+                                 <td><b class="course_active">MPPSC Mains Foundation (Aadhar Hindi Batch) </b></td>
+                                 <td>Dr. KULDEEP SIR (M.B.B.S.)</td>
+                                 <td>09:30 AM</td>
+                                 <td>Biology| Nutrition | Lecture -4 Part-1</td>
+                              </tr>
+                           </tbody>
+                        </table>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         
+       
+            </div>
+        
+         <!-- Modal for add category-->
+         <div id="course" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg">
+               <!-- Modal content-->
+               <div class="modal-content">
+                  <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                     margin-right: 5px;">&times;</button>
+                  <div class="modal-header">
+                     <h4 class="modal-title">Add Time Shedule </h4>
+                  </div>
+                  <div class="modal-body ">
+                    <div class="col-lg-12 col-md-12"> 
+                     <div class="row"> 
+					 
+					 <div class="col-lg-4 col-md-6">
+                        <div class="lbel25">
+                           <label>Select Instructor* </label>
+                        </div>
+                        <select class="ui hj145 dropdown cntry152 prompt srch_explore">
+                           <option value="">Choose Name 
+                           <option value="1">Kuldeep Sir </option>
+                           <option value="2">Sanjeev Sir </option>
+                           <option value="3">Pankaj Sir  </option>
+                           
+                        </select>
+                     </div>
+                     
+                    
+					 
+                      <div class="col-lg-8 col-md-6">
+                        <div class="lbel25">
+                           <label>Select Course* </label>
+                        </div>
+                        <select class="ui hj145 dropdown cntry152 prompt srch_explore">
+                           <option value="">Select Course 
+                           <option value="1">MPPSC MAINS (Shaurya Hindi Batch) </option>
+                           <option value="2">MPPSC Mains Foundation (Aadhar Hindi Batch) </option>
+                        </select>
+                     </div>
+                     
+                     
+                      <div class="col-lg-4 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Timing* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="text" placeholder="Ex: 09:30 AM" name="title" data-purpose="edit-course-title">
+                           </div>
+                        </div>
+                     </div>
+                     
+                     <div class="col-lg-8 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label>Topic Name* </label>
+                           <div class="ui left icon input swdh19">
+                              <input class="prompt srch_explore" type="text" placeholder="Insert your topic title." name="title" data-purpose="edit-course-title" maxlength="200">
+                              <div class="badge_num">200 </div>
+                           </div>
+                        </div>
+                     </div>
+                     
+                    
+                     <div class="col-lg-12 col-md-6">
+                        <button type="submit" class="btn btn-success mt-20"> Submit Shedule</button>
+                     </div>
+                  </div>
+                   </div>
+                  </div>
+                  <div class="modal-footer">
+                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+        
+      </div>
+      <script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="js/vertical-responsive-menu.min.js"></script>
+      <script src="js/jquery-3.3.1.min.js"></script>
+      <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+      <script src="vendor/OwlCarousel/owl.carousel.js"></script>
+      <script src="vendor/semantic/semantic.min.js"></script>
+      <script src="js/custom1.js"></script>
+      <script src="js/night-mode.js"></script>
+      <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+      <script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
+      <script>
+         $(document).ready(function() {
+         $('#example').DataTable();
+         } );
+      </script>
+   {% endblock content %}
