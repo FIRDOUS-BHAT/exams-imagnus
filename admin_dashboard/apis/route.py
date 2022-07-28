@@ -16,7 +16,7 @@ from fastapi.exceptions import HTTPException
 from pydantic import BaseModel, validator
 from starlette.responses import JSONResponse
 from tortoise.contrib.fastapi import HTTPNotFoundError
-
+from dateutil.relativedelta import relativedelta
 from admin_dashboard.controller import upload_images
 from admin_dashboard.models import CategoryTopics, CategoryTopics_Pydantic, Coupons, Preference, Course, \
     Preference_Pydantic, Course_Pydantic, \
@@ -1685,7 +1685,11 @@ async def get_live_classes(course_slug: str, student_id: str, _=Depends(get_curr
             )
 async def get_live_classes(course_slug: str, student_id: str, d: date, _=Depends(get_current_user)):
     try:
-        print(d.day)
+        tradeDate = datetime.combine(d, datetime.min.time())
+
+        dt = tz.localize(tradeDate, is_dst=True)
+        # tradeDay=dt.astimezone(pytz.utc)
+        dt1 = (dt+relativedelta(hours=23,minutes=59,seconds=59))
         print("we've day here========")
         course = await Course.get(slug=course_slug)
         student = await Student.get(id=student_id)
@@ -1693,7 +1697,7 @@ async def get_live_classes(course_slug: str, student_id: str, d: date, _=Depends
         if subscription:
             print("here=======")
             obj = await LiveClasses_Pydantic.from_queryset(
-                LiveClasses.filter(course__slug=course_slug, ))
+                LiveClasses.filter(streaming_time__gte=dt,streaming_time__lte=dt1, course__slug=course_slug,))
         else:
             obj = await LiveClasses_Pydantic.from_queryset(
                 LiveClasses.filter(course__slug=course_slug, is_paid=False))
