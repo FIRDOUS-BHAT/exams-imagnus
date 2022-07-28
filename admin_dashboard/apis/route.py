@@ -1690,17 +1690,15 @@ async def get_live_classes(course_slug: str, student_id: str, d: date, _=Depends
         dt = tz.localize(tradeDate, is_dst=True)
         # tradeDay=dt.astimezone(pytz.utc)
         dt1 = (dt+relativedelta(hours=23, minutes=59, seconds=59))
-        print("we've day here========")
         course = await Course.get(slug=course_slug)
         student = await Student.get(id=student_id)
         subscription = await activeSubscription.exists(course=course, student=student)
         if subscription:
-            print("here=======")
             obj = await LiveClasses_Pydantic.from_queryset(
-                LiveClasses.filter(streaming_time__gte=dt, streaming_time__lte=dt1, course__slug=course_slug,))
+                LiveClasses.filter(course__slug=course_slug).filter(streaming_time__range=[dt,dt1 ]))
         else:
             obj = await LiveClasses_Pydantic.from_queryset(
-                LiveClasses.filter(course__slug=course_slug, is_paid=False))
+                LiveClasses.filter(course__slug=course_slug,is_paid=False).filter(streaming_time__range=[dt,dt1 ]))
 
         return obj
     except Exception as e:
