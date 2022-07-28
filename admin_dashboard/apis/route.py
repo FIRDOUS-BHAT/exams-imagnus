@@ -1622,7 +1622,7 @@ class LiveClassesPydantic(BaseModel):
     title: str
     lecture: lecturePydantic
     instructor: InstructorPydantic
-    url: str
+    url: Optional[str] = None
     thumbnail: Optional[str] = None
     streaming_time: datetime
     lecture_duration: Optional[str] = None
