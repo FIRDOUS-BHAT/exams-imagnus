@@ -1645,13 +1645,15 @@ async def get_live_classes(request: Request, user=Depends(get_current_user)):
 @router.post('/admin/add_live_class/')
 async def add_live_class(course_id: List[str] = Form(...), instructor_id: str = Form(...), mode: str = Form(...),
                          stream_time: str = Form(...),
-                         title: str = Form(...), thumbnail: UploadFile = File(...), url: str = Form(...),
+                         title: str = Form(...), thumbnail: UploadFile = File(default=None), url: Optional[str] = Form(default=None),
                          s3: BaseClient = Depends(s3_auth), user=Depends(get_current_user)):
     #    try:
     for cid in course_id:
         course = await Course.get(id=cid)
         instructor = await Instructor.get(id=instructor_id)
-        image_url = await upload_images(s3, folder='live_classes/thumbnails', image=thumbnail, mimetype=None)
+        image_url = None
+        if thumbnail.filename:
+          image_url = await upload_images(s3, folder='live_classes/thumbnails', image=thumbnail, mimetype=None)
         if mode == '1':
             is_paid = True
         else:
