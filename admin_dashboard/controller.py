@@ -1644,7 +1644,7 @@ async def get_live_classes(request: Request, user=Depends(get_current_user)):
 
 @router.post('/admin/add_live_class/')
 async def add_live_class(course_id: List[str] = Form(...), instructor_id: str = Form(...), mode: str = Form(...),
-                         stream_time: str = Form(...),
+                         stream_time: datetime = Form(...),
                          title: str = Form(...), thumbnail: UploadFile = File(default=None), url: Optional[str] = Form(default=None),
                          s3: BaseClient = Depends(s3_auth), user=Depends(get_current_user)):
     #    try:
@@ -1653,7 +1653,7 @@ async def add_live_class(course_id: List[str] = Form(...), instructor_id: str = 
         instructor = await Instructor.get(id=instructor_id)
         image_url = None
         if thumbnail.filename:
-          image_url = await upload_images(s3, folder='live_classes/thumbnails', image=thumbnail, mimetype=None)
+            image_url = await upload_images(s3, folder='live_classes/thumbnails', image=thumbnail, mimetype=None)
         if mode == '1':
             is_paid = True
         else:
@@ -1683,12 +1683,13 @@ async def add_live_class(course_id: List[str] = Form(...), instructor_id: str = 
 
 
 @router.post('/edit_live_classes')
-async def edit_live_classes(request:Request):
-    
+async def edit_live_classes(request: Request):
+
     flash(request, "Edit successful", "success")
-    
+
     return {}
-    
+
+
 @router.post('/admin/delete_live_classs/')
 async def delete_class(live_class_id: str = Form(...)):
     await LiveClasses.filter(id=live_class_id).delete()
@@ -1944,6 +1945,8 @@ async def get_course_subscriptions(request: Request, user=Depends(get_current_us
 async def manual_order(request: Request, phone_number: str = Form(...), subscription_id: str = Form(...), discount_price: Optional[int] = Form(default=0)):
     try:
         if not await Student.exists(mobile=phone_number):
+            flash(request, "Mobile no. is not registered.", "danger")
+
             return RedirectResponse(url='/admin/place_order/', status_code=status.HTTP_303_SEE_OTHER)
         student = await Student.get(mobile=phone_number)
         print(subscription_id)
