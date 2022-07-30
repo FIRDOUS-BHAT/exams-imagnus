@@ -1682,6 +1682,13 @@ async def add_live_class(course_id: List[str] = Form(...), instructor_id: str = 
 #        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
+@router.post('/edit_live_classes')
+async def edit_live_classes(request:Request):
+    
+    flash(request, "Edit successful", "success")
+    
+    return {}
+    
 @router.post('/admin/delete_live_classs/')
 async def delete_class(live_class_id: str = Form(...)):
     await LiveClasses.filter(id=live_class_id).delete()
