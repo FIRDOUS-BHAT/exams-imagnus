@@ -1682,13 +1682,23 @@ async def add_live_class(course_id: List[str] = Form(...), instructor_id: str = 
 #        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
-@router.post('/edit_live_classes')
-async def edit_live_classes(request: Request):
-
+@router.post('/admin/edit_live_classes')
+async def edit_live_classes(request: Request,edit_live_class_id:str=Form(...),
+                            s3: BaseClient = Depends(s3_auth),
+                            edit_icon_image:UploadFile = File(default=None), 
+                            link_class:str = Form(default=None)):
+    if link_class:
+        if await LiveClasses.get(id=edit_live_class_id):
+             live_class = await LiveClasses.get(id=edit_live_class_id).update(url=link_class)
+             
+        
+    if edit_icon_image.filename:
+        image_url = await upload_images(s3, folder='live_classes/thumbnails', image=edit_icon_image, mimetype=None)
+        if await LiveClasses.get(id=edit_live_class_id):
+            live_class = await LiveClasses.get(id=edit_live_class_id).update(thumbnail=image_url)
     flash(request, "Edit successful", "success")
 
-    return {}
-
+    return RedirectResponse(url='/admin/live_classes/', status_code=status.HTTP_303_SEE_OTHER)
 
 @router.post('/admin/delete_live_classs/')
 async def delete_class(live_class_id: str = Form(...)):
