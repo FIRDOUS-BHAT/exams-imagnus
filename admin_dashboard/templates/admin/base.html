@@ -533,6 +533,47 @@
          </div>
 
 
+           <!-- Modal for live classes-->
+         <div id="edit_live_class" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+               <!-- Modal content-->
+               <div class="modal-content">
+                  <button type="button" class="close" data-dismiss="modal" style="text-align: right;
+                     margin-right: 5px;">&times;</button>
+                  <div class="modal-header">
+                     <h4 class="modal-title">Add Course</h4>
+                  </div>
+                  <div class="modal-body">
+                     <form action="/edit_live_class" method="post" enctype="multipart/form-data">
+                     <div class="col-lg-12 col-md-6">
+                        
+                        <input type="hidden" name="edit_live_class_id" id="edit_live_class_id">
+                     
+                     </div>
+                   
+                      <div class="col-lg-12 col-md-6 mt-10">
+                        <div class="ui search focus lbel25">
+                           <label class="form-label" for=""> Thumbnail*</label>
+                           <input type="file" name="edit_icon_image" class="form-control btn btn-danger" />
+                        </div>
+                         <div class="ui search focus lbel25">
+                           <label class="form-label" for=""> Add class link*</label>
+                           <input type="text" name="link_class" class="form-control" />
+                        </div>
+
+                          
+                        <button type="submit" class="btn btn-success mt-20"> Submit Course</button>
+                     </div>
+                     </form>
+                  </div>
+                  <div class="modal-footer">
+                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+
 
 
            <!-- Modal for add topic-->
