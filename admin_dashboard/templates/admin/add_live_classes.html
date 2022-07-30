@@ -45,7 +45,7 @@
                             <td><a href="{{ class.url }}" >{{ class.url }}</a></td>
                             <td>{{ 'Paid' if class.is_paid else 'Free' }}</td>
                             <td>
-                              <a class="edit_course" data-id="96b5566c-d8f6-4bf5-97c0-e7c639332c26" data-preference="MPPSC Civil Services" data-course="MAINS PAPER FOURTH (Hindi)" data-toggle="modal" data-target="#edit_live_class" title="Edit"><i class="uil uil-edit-alt" data-id="96b5566c-d8f6-4bf5-97c0-e7c639332c26" data-preference="MPPSC Civil Services" data-course="MAINS PAPER FOURTH (Hindi)"></i>
+                              <a class="edit_course" data-id="{{ class.id}}" data-url="{{ class.url }}" data-course="MAINS PAPER FOURTH (Hindi)" data-toggle="modal" data-target="#edit_live_class" title="Edit"><i class="uil uil-edit-alt" data-id="{{ class.id}}" data-url="{{ class.url }}" ></i>
                               </a>
                               <a href="#" title="Delete" class="gray-s live_class_delete" data-did="{{ class.id }}" data-toggle="modal" data-target="#Delete"><i data-did="{{ class.id }}" class="uil uil-trash-alt"></i></a></td>
                             <td><button title="This will repeat the push notification" type="button"
