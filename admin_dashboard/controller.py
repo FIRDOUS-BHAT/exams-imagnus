@@ -1647,7 +1647,7 @@ async def add_live_class(course_id: List[str] = Form(...), instructor_id: str = 
                          stream_time: datetime = Form(...),
                          title: str = Form(...), thumbnail: UploadFile = File(default=None), url: Optional[str] = Form(default=None),
                          s3: BaseClient = Depends(s3_auth), user=Depends(get_current_user)):
-    #    try:
+  try:
     for cid in course_id:
         course = await Course.get(id=cid)
         instructor = await Instructor.get(id=instructor_id)
@@ -1678,8 +1678,8 @@ async def add_live_class(course_id: List[str] = Form(...), instructor_id: str = 
     return RedirectResponse(url='/admin/live_classes/', status_code=status.HTTP_303_SEE_OTHER)
 
 
-#    except Exception as ex:
-#        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
+  except Exception as ex:
+       return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 @router.post('/admin/edit_live_classes')
