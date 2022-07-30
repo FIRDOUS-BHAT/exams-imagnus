@@ -544,7 +544,7 @@
                      <h4 class="modal-title">Add Course</h4>
                   </div>
                   <div class="modal-body">
-                     <form action="/edit_live_class" method="post" enctype="multipart/form-data">
+                     <form action="/admin/edit_live_classes" method="post" enctype="multipart/form-data">
                      <div class="col-lg-12 col-md-6">
                         
                         <input type="hidden" name="edit_live_class_id" id="edit_live_class_id">
@@ -1346,6 +1346,7 @@ $('#add_reply').click(function (e) {
      
    })
 
+   if(document.getElementById('search')){
 
    document.getElementById('search').onclick = function (e){
       let mobile = document.getElementById("srch_mobile").value;
@@ -1410,14 +1411,18 @@ $('#add_reply').click(function (e) {
          })
       }
    }
+}
+   
 
-   document.getElementById('srch_mobile').onkeydown = (e)=>{
+
+if(document.getElementById('srch_mobile')){
+document.getElementById('srch_mobile').onkeydown = (e)=>{
        if (e.keyCode == 13)
          document.getElementById('search').click();
 
    }
 
-
+}
 
    function getSubscriptionPlans() {
 
@@ -1443,6 +1448,13 @@ $('#add_reply').click(function (e) {
       }
    } 
 
+
+   $(document).on('click','.edit_live_class',function(e) {
+
+      let id = $(this).attr('data-id')
+      $('#edit_live_class_id').val(id)
+     
+   })
       </script>
 
 
@@ -1458,6 +1470,8 @@ SnackBar({
                      });
 
                 
+
+
 
 </script>
 
