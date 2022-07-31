@@ -1643,7 +1643,7 @@ async def get_live_classes(request: Request, user=Depends(get_current_user)):
 
 
 @router.post('/admin/add_live_class/')
-async def add_live_class(course_id: List[str] = Form(...), instructor_id: str = Form(...), mode: str = Form(...),
+async def add_live_class(request:Request,course_id: List[str] = Form(...), instructor_id: str = Form(...), mode: str = Form(...),
                          stream_time: datetime = Form(...),
                          title: str = Form(...), thumbnail: UploadFile = File(default=None), url: Optional[str] = Form(default=None),
                          s3: BaseClient = Depends(s3_auth), user=Depends(get_current_user)):
