@@ -1679,7 +1679,10 @@ async def add_live_class(course_id: List[str] = Form(...), instructor_id: str = 
 
 
   except Exception as ex:
-       return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
+          flash(request, str(ex), "danger")
+          return RedirectResponse(url='/admin/live_classes/', status_code=status.HTTP_303_SEE_OTHER)
+
+    #    return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 @router.post('/admin/edit_live_classes')
