@@ -1359,12 +1359,11 @@ $('#add_reply').click(function (e) {
          })
          .then(res => res.json())
          .then(response => {
-             document.getElementById('show_search').innerHTML = ''
+             document.getElementById('show_search').innerHTML = ""
              resp = response.message
              if(response.source == 'course_orders'){
             for(let i in resp){
                created_at = new Date('resp[i].created_at').toLocaleDateString('en-us', { weekday: "long", year: "numeric", month: "short", day: "numeric" }) 
-               console.log(created_at)
                let mode =  (resp[i].payment_mode==1)?'online':'offline'
                let status = (resp[i].payment_status == 1)?"Pending":"Confirmed"
 
@@ -1396,9 +1395,9 @@ $('#add_reply').click(function (e) {
                for (let i in resp) {
 
 
-               var tesseries_orders ='<tr class="text-center"><td>00'+(i+1)+' </td><td><b class="course_active">'+resp[i].student.fullname +' <br/> '+ resp[i].student.mobile +'</b></td><td>'+resp[i].test_series.course.name +'</td><td></td><td class="text-success">'+resp[i].razorpay_order_id +' / <br/> '+ resp[i].razorpay_payment_id +'</td><td>Rs.'+ resp[i].bill_amount +'</td><td>'+ resp[i].created_at +'</td></tr>';
+               var testseries_orders ='<tr class="text-center"><td>00'+(i+1)+' </td><td><b class="course_active">'+resp[i].student.fullname +' <br/> '+ resp[i].student.mobile +'</b></td><td>'+resp[i].test_series.course.name +'</td><td></td><td class="text-success">'+resp[i].razorpay_order_id +' / <br/> '+ resp[i].razorpay_payment_id +'</td><td>Rs.'+ resp[i].bill_amount +'</td><td>'+ resp[i].created_at +'</td></tr>';
 
-                document.getElementById('show_search').innerHTML += tesseries_orders
+                document.getElementById('show_search').innerHTML += testseries_orders
 
                }
 
