@@ -1,120 +1,188 @@
+{% extends "base.html" %} {% block content %}
 
-{% extends "base.html" %}
-{% block content %}
+<div class="wrapper">
+  <div class="sa4d25">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-12">
+          <h2 class="st_title"><i class="uil uil-user"></i>Courses Orders</h2>
+        </div>
 
+        <div class="col-lg-2 col-md-2 col-sm-2">
+          <div class="form-group list-filter-item">
+            <label>Student Mobile No.</label>
+            <input type="text" id="srch_mobile" class="form-control input-sm" />
+            <input type="hidden" id="source" value="course_orders" />
+          </div>
+        </div>
 
+        <div class="col-lg-2 col-md-2 col-sm-2">
+          <div class="form-group" style="margin-top: 32px">
+            <button class="btn-primary" id="search">Search</button>
+          </div>
+        </div>
 
-
- <div class="wrapper">
-    <div class="sa4d25">
-       <div class="container-fluid">
-           <div class="row">
-                <div class="col-lg-12">
-                <h2 class="st_title"><i class="uil uil-user"></i>Courses Orders </h2>
-             </div>
-            
-               <div class="col-lg-2 col-md-2 col-sm-2">
-                  <div class="form-group list-filter-item">
-                     <label>Student Mobile No.</label>
-                  <input type="text" id="srch_mobile" class="form-control input-sm">
-                  <input type="hidden" id="source" value="course_orders" />
-                  </div>
-               </div>
-               
-               <div class="col-lg-2 col-md-2 col-sm-2">
-               <div class="form-group" style="margin-top:32px">
-                
-                        <button class="btn-primary" id="search" >Search</button>
-                      
-                  </div>
-               </div>
-                 
-             <div class="col-lg-12 col-md-7">
-                <div  class="table mt-20">
-                  
-                   </div>
-                  {{ forwarded_for }}
-<table class="table ucp-table" id="example0">
- <thead class="thead-s">
-    <tr  class="text-center">
-       <th scope="col">S No. </th>
-       <th scope="col">Student Name </th>
-       <th scope="col">Course Name </th>
-       <th scope="col">Payment Mode</th>
-       <th scope="col">Order Id <br> / Payment Id </th>
-       <th scope="col">Amount </th>
-       <th scope="col">Payment Status</th>
-      <th scope="col">source</th>
-       <th scope="col">Created At</th>
-       <th scope="col">Action</th>
-    </tr>
- </thead>
- <tbody id="show_searh">
-     {% for order in orders %}
-    <tr  class="text-center">
-       <td>00{{ loop.index }} </td>
-       <td><b class="course_active">{{ order.student.fullname }} <br> {{ order.student.mobile }}</b></td>
-       <td>{{ order.subscription.course.name }}</td>
-       <td> {{ order.payment_mode }}</td>
-       <td class="text-success">{{ order.order_id }} <br> / {{ order.payment_id }}</td>
-       <td>Rs.{{ order.bill_amount }}</td>
-       <td>{{ order.payment_status}}</td>
-      <td>{{ order.source}}</td>
-       <td>{{ order.created_at.strftime('%d %b %Y, %I:%M:%S %p') }}</td>
-       <td >
-      <a title="Delete" class="gray-s"><i class="uil uil-trash-alt"></i></a>
-
-       </td>
-    </tr>
-    {% endfor %}
- </tbody>
-</table>
-<div class="row">
-   <div class="col-sm-12 col-md-5">
-      <div class="dataTables_info" id="example_info" role="status" aria-live="polite">Showing {{((page*perPage)-perPage)+1}} to {{page*perPage}} of {{data_count}} entries
-      </div>
-   </div>
-   <div class="col-sm-12 col-md-7">
-      <div class="dataTables_paginate paging_simple_numbers" id="example_paginate">
-         <ul class="pagination">
-            <li class="paginate_button page-item previous {{'disabled' if page ==1 else ''}}" id="example_previous">
-               <a href="/admin/course_orders/?page={{page-1}}&perPage={{perPage}}"
-                  aria-controls="example" data-dt-idx="0" tabindex="0" class="page-link">Previous</a></li>
-            <li class="paginate_button page-item active">
-               <a href="/admin/course_orders/?page={{page}}&perPage={{perPage}}" aria-controls="example" data-dt-idx="1"
-                  tabindex="0" class="page-link">{{page}}</a></li>
-                  <li class="paginate_button page-item ">
-                     <a href="/admin/course_orders/?page={{page+1}}&perPage={{perPage}}" aria-controls="example" data-dt-idx="1" tabindex="0"
-                        class="page-link">{{page+1}}</a>
+        <div class="col-lg-12 col-md-7">
+          <div class="table mt-20"></div>
+          {{ forwarded_for }}
+          <table class="table ucp-table" id="example0">
+            <thead class="thead-s">
+              <tr class="text-center">
+                <th scope="col">S No.</th>
+                <th scope="col">Student Name</th>
+                <th scope="col">Course Name</th>
+                <th scope="col">Payment Mode</th>
+                <th scope="col">
+                  Order Id <br />
+                  / Payment Id
+                </th>
+                <th scope="col">Amount</th>
+                <th scope="col">Payment Status</th>
+                <th scope="col">source</th>
+                <th scope="col">Created At</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody id="show_search">
+              {% for order in orders %}
+              <tr class="text-center">
+                <td>00{{ loop.index }}</td>
+                <td>
+                  <b class="course_active"
+                    >{{ order.student.fullname }} <br />
+                    {{ order.student.mobile }}</b
+                  >
+                </td>
+                <td>{{ order.subscription.course.name }}</td>
+                <td>{{ order.payment_mode }}</td>
+                <td class="text-success">
+                  {{ order.order_id }} <br />
+                  / {{ order.payment_id }}
+                </td>
+                <td>Rs.{{ order.bill_amount }}</td>
+                <td>{{ order.payment_status}}</td>
+                <td>{{ order.source}}</td>
+                <td>
+                  {{ order.created_at.strftime('%d %b %Y, %I:%M:%S %p') }}
+                </td>
+                <td>
+                  <a title="Delete" class="gray-s"
+                    ><i class="uil uil-trash-alt"></i
+                  ></a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <div class="row">
+            <div class="col-sm-12 col-md-5">
+              <div
+                class="dataTables_info"
+                id="example_info"
+                role="status"
+                aria-live="polite"
+              >
+                Showing {{((page*perPage)-perPage)+1}} to {{page*perPage}} of
+                {{data_count}} entries
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-7">
+              <div
+                class="dataTables_paginate paging_simple_numbers"
+                id="example_paginate"
+              >
+                <ul class="pagination">
+                  <li
+                    class="paginate_button page-item previous {{'disabled' if page ==1 else ''}}"
+                    id="example_previous"
+                  >
+                    <a
+                      href="/admin/course_orders/?page={{page-1}}&perPage={{perPage}}"
+                      aria-controls="example"
+                      data-dt-idx="0"
+                      tabindex="0"
+                      class="page-link"
+                      >Previous</a
+                    >
                   </li>
-                  <li class="paginate_button page-item ">
-                     <a href="/admin/course_orders/?page={{page+2}}&perPage={{perPage}}" aria-controls="example" data-dt-idx="1" tabindex="0"
-                        class="page-link">{{page+2}}</a>
-                  </li>
-                  <li class="paginate_button page-item ">
-                     <a href="/admin/course_orders/?page={{page+3}}&perPage={{perPage}}" aria-controls="example" data-dt-idx="1" tabindex="0"
-                        class="page-link">{{page+3}}</a>
+                  <li class="paginate_button page-item active">
+                    <a
+                      href="/admin/course_orders/?page={{page}}&perPage={{perPage}}"
+                      aria-controls="example"
+                      data-dt-idx="1"
+                      tabindex="0"
+                      class="page-link"
+                      >{{page}}</a
+                    >
                   </li>
                   <li class="paginate_button page-item">
-                     <a href="/admin/course_orders/?page={{page+4}}&perPage={{perPage}}" aria-controls="example" data-dt-idx="1" tabindex="0"
-                        class="page-link">{{page+4}}</a>
+                    <a
+                      href="/admin/course_orders/?page={{page+1}}&perPage={{perPage}}"
+                      aria-controls="example"
+                      data-dt-idx="1"
+                      tabindex="0"
+                      class="page-link"
+                      >{{page+1}}</a
+                    >
                   </li>
-                  <li class="paginate_button page-item ">
-                     <a href="/admin/course_orders/?page={{page+5}}&perPage={{perPage}}" aria-controls="example" data-dt-idx="1" tabindex="0"
-                        class="page-link">{{page+5}}</a>
+                  <li class="paginate_button page-item">
+                    <a
+                      href="/admin/course_orders/?page={{page+2}}&perPage={{perPage}}"
+                      aria-controls="example"
+                      data-dt-idx="1"
+                      tabindex="0"
+                      class="page-link"
+                      >{{page+2}}</a
+                    >
                   </li>
-            <li class="paginate_button page-item next" id="example_next">
-               <a href="/admin/course_orders/?page={{page+6}}&perPage={{perPage}}" aria-controls="example"
-                  data-dt-idx="2" tabindex="0" class="page-link">Next</a></li>
-         </ul>
-      </div>
-   </div>
-</div>
-</div>
-             </div>
-             
+                  <li class="paginate_button page-item">
+                    <a
+                      href="/admin/course_orders/?page={{page+3}}&perPage={{perPage}}"
+                      aria-controls="example"
+                      data-dt-idx="1"
+                      tabindex="0"
+                      class="page-link"
+                      >{{page+3}}</a
+                    >
+                  </li>
+                  <li class="paginate_button page-item">
+                    <a
+                      href="/admin/course_orders/?page={{page+4}}&perPage={{perPage}}"
+                      aria-controls="example"
+                      data-dt-idx="1"
+                      tabindex="0"
+                      class="page-link"
+                      >{{page+4}}</a
+                    >
+                  </li>
+                  <li class="paginate_button page-item">
+                    <a
+                      href="/admin/course_orders/?page={{page+5}}&perPage={{perPage}}"
+                      aria-controls="example"
+                      data-dt-idx="1"
+                      tabindex="0"
+                      class="page-link"
+                      >{{page+5}}</a
+                    >
+                  </li>
+                  <li class="paginate_button page-item next" id="example_next">
+                    <a
+                      href="/admin/course_orders/?page={{page+6}}&perPage={{perPage}}"
+                      aria-controls="example"
+                      data-dt-idx="2"
+                      tabindex="0"
+                      class="page-link"
+                      >Next</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
-       </div>
+        </div>
+      </div>
     </div>
+  </div>
+</div>
 
-    {% endblock %}
+{% endblock %}
