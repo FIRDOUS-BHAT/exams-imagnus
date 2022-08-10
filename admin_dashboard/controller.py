@@ -593,7 +593,8 @@ async def add_category(topic_cat_id: str = Form(...), cat_topic_title: str = For
     category = await Category.get(id=topic_cat_id)
     titles = cat_topic_title.split('|')
     for title in titles:
-        if not await Topics.exists(category=category, name=title):
+        slug=slugify(title)
+        if not await Topics.exists(category=category, slug=slug):
             obj = await Topics.create(
                 category=category, name=title, slug=slugify(title),
                 updated_at=updated_at, created_at=updated_at
@@ -709,8 +710,8 @@ async def add_category_lecture(course_id: str = Form(...),
         #     status_code=status.HTTP_303_SEE_OTHER)
 
 
-@router.get("/admin/category_lectures/{course}/{category}/{topic}/", )
-async def get_category_lectures(request: Request, course: str, category: str, topic: str,
+@router.get("/admin/category_lectures/{course_slug}/{category_slug}/{topic_slug}/", )
+async def get_category_lectures(request: Request, course_slug: str, category_slug: str, topic_slug: str,
                                 user=Depends(get_current_user)):
     if user is None:
         return RedirectResponse(url="/administrator/login/", status_code=status.HTTP_302_FOUND)
@@ -721,13 +722,18 @@ async def get_category_lectures(request: Request, course: str, category: str, to
         message = ''
     request.session.clear()
 
-    course = await Course.get(slug=course)
-    category = await Category.get(slug=category)
-    topic_obj = await Topics.get(category=category, slug=topic)
-    cat_list = await CourseCategories_Pydantic.from_queryset(CourseCategories.filter(course=course, category=category))
-    course_category_obj = await CourseCategories.get(id=cat_list[0].id)
-    category_topic_id = await CategoryTopics.filter(category=course_category_obj, topic=topic_obj)
-    category_topic_obj = await CategoryTopics.get(id=category_topic_id[0].id)
+    course = await Course.get(slug=course_slug)
+    category = await Category.get(slug=category_slug)
+    topic_obj = await Topics.get(category__slug=category_slug, slug=topic_slug)
+    # return topic_obj
+
+    # cat_list = await CourseCategories_Pydantic.from_queryset(CourseCategories.filter(course=course, category=category))
+    course_category_obj = await CourseCategories.get(course__slug=course_slug, category__slug=category_slug)
+
+    # course_category_obj = await CourseCategories.get(id=cat_list[0].id)
+    # category_topic_id = await CategoryTopics.filter(category=course_category_obj, topic=topic_obj)
+    category_topic_obj = await CategoryTopics.get(category__course__slug=course_slug,
+                                                  category__category__slug=category_slug, topic=topic_obj)
 
     lecture_obj = await CourseCategoryLectures_Pydantic.from_queryset(
         CourseCategoryLectures.filter(category_topic=category_topic_obj).order_by('order_display'))
@@ -743,13 +749,13 @@ async def get_category_lectures(request: Request, course: str, category: str, to
     # return existing_category_courses
     response = templates.TemplateResponse('course_addcategory.html',
                                           context={'request': request,
-                                                   'course_category_id': cat_list[0].id,
+                                                   'course_category_id': course_category_obj.id,
                                                    'course': course,
                                                    'category': category,
                                                    'lectures': lecture_obj,
                                                    'notes': notes_obj,
                                                    'test_series': test_series,
-                                                   'course_topic_id': category_topic_id[0].id,
+                                                   'course_topic_id': category_topic_obj.id,
                                                    'topic': topic_obj,
                                                    'existed_courses': existing_category_courses,
                                                    'error_message': message,
