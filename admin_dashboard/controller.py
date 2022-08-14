@@ -2032,5 +2032,5 @@ async def delete_subscription(request: Request,_=Depends(get_current_user)):
         await PaymentRecords.get(id=data['sid']).delete()
         return JSONResponse({'status': True, 'message':'deletion successful'})
     else:
-        return JSONResponse({'status': True, 'message':'deletion successful'})
+        return JSONResponse({'status': False, 'message':'something went wrong'})
         
