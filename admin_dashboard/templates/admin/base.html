@@ -703,6 +703,8 @@ aria-hidden="true"
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"
    integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ=="
    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+   <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
     <script>
 
         $(document).ready(function() {
@@ -1368,7 +1370,7 @@ $('#add_reply').click(function (e) {
                let status = (resp[i].payment_status == 1)?"Pending":"Confirmed"
 
               
-            document.getElementById('show_search').innerHTML += '<tr class="text-center"><td td > 00'+i+' </td><td><b class="course_active">'+resp[i].student__fullname+'<br>'+mobile+'</b></td><td>'+resp[i].subscription__course__name+'</td><td>'+mode+'</td><td class="text-success">'+resp[i].order_id+'<br>/'+resp[i].payment_id+'</td><td>'+resp[i].bill_amount+'</td><td>'+status+'</td><td>'+ resp[i].source+'</td><td>'+ resp[i].created_at+'</td></tr>'
+            document.getElementById('show_search').innerHTML += '<tr class="text-center"><td td > 00'+i+' </td><td><b class="course_active">'+resp[i].student__fullname+'<br>'+mobile+'</b></td><td>'+resp[i].subscription__course__name+'</td><td>'+mode+'</td><td class="text-success">'+resp[i].order_id+'<br>/'+resp[i].payment_id+'</td><td>'+resp[i].bill_amount+'</td><td>'+status+'</td><td>'+ resp[i].source+'</td><td>'+ resp[i].created_at+'</td> <td><a onclick="deleteSubscription('+resp[i].id+')" title="Delete" class="gray-s"><i class="uil uil-trash-alt"></i></a></td></tr>'
             }
          }else if(response.source == 'material_orders'){
 
@@ -1454,6 +1456,49 @@ document.getElementById('srch_mobile').onkeydown = (e)=>{
       $('#edit_live_class_id').val(id)
      
    })
+
+let deleteSubscription = (subs_id)=> {
+
+   swal({
+  title: "Are you sure?",
+  text: "Once deleted, you will not be able to recover this record!",
+  icon: "warning",
+  buttons: true,
+  dangerMode: true,
+})
+.then((willDelete) => {
+  if (willDelete) {
+   // delete order goes here
+   fetch('/admin/delete_subscription/',{
+      method: 'DELETE', // or 'PUT'
+      body: JSON.stringify({sid: subs_id})
+   }).then(r=>r.json)
+   .then(response => {
+      if(response.status == true){
+         swal("Poof! Your record has been deleted!", {
+          icon: "success",
+        });
+         setTimeout(()=>{
+            window.location.reload()
+         },1000)
+      }else {
+    swal("Record is safe!");
+  }
+   
+  
+});
+  
+}
+
+
+
+})
+
+}
+
+
+
+
       </script>
 
 
