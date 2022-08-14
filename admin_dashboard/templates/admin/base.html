@@ -1472,7 +1472,7 @@ let deleteSubscription = (subs_id)=> {
    fetch('/admin/delete_subscription/',{
       method: 'DELETE', // or 'PUT'
       body: JSON.stringify({sid: subs_id})
-   }).then(r=>r.json)
+   }).then(r=>r.json())
    .then(response => {
       if(response.status == true){
          swal("Poof! Your record has been deleted!", {
