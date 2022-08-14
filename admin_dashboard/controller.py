@@ -2023,3 +2023,14 @@ async def get_live_class_schedules(request: Request, _=Depends(get_current_user)
                                       context={'request': request,
                                                'schedule_live_class': 'active',
                                                })
+
+
+@router.delete('/admin/delete_subscription')
+async def delete_subscription(request: Request,_=Depends(get_current_user)):
+    data = await request.json()
+    if await PaymentRecords.exists(id=data['sid']):
+        await PaymentRecords.get(id=data['sid']).delete()
+        return JSONResponse({'status': True, 'message':'deletion successful'})
+    else:
+        return JSONResponse({'status': True, 'message':'deletion successful'})
+        
