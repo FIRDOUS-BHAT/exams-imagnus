@@ -42,6 +42,13 @@ class Student(Model):
     created_at = fields.DatetimeField(auto_now_add=True)
 
 
+class StudentCoursePreferences(Model):
+    student = fields.ForeignKeyField(
+        "models.Student", related_name="students_StudentCoursePreferences", on_delete='CASCADE',)
+    course = fields.ForeignKeyField("models.Course", related_name="courses_StudentCoursePreferences", on_delete='CASCADE',)
+    updated_at = fields.DatetimeField(auto_now=True)
+    created_at = fields.DatetimeField(auto_now_add=True)
+
 class StudentTestSeriesRecord(Model):
     id = fields.UUIDField(pk=True)
     student = fields.ForeignKeyField(
@@ -59,6 +66,8 @@ class StudentTestSeriesRecord(Model):
     created_at = fields.DatetimeField(auto_now_add=True)
 
 
+
+        
 class UsedCoupons(Model):
     id = fields.UUIDField(pk=True)
     coupon = fields.ForeignKeyField(
