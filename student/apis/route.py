@@ -28,7 +28,7 @@ from configs import appinfo
 from student.apis.pydantic_models import StudentVideoActivityPydanticIn, ActivityPydantic, \
     StudentNotesActivityPydanticIn, StudentTestSeriesActivityIn, GetBookmarksPydantic, RecommendedLecturesPydantic, \
     loginResponsePydantic, queryPydantic, studentPydantic
-from student.models import Student, StudentTestSeriesRecord, Student_Pydantic, StudentIn_Pydantic, Token, UsedCoupons, \
+from student.models import Student, StudentCoursePreferences, StudentTestSeriesRecord, Student_Pydantic, StudentIn_Pydantic, Token, UsedCoupons, \
     UserIn
 from student_choices.models import StudentChoices, studentVideoActivity, \
     studentNotesActivity, studentTestSeriesActivity, studentActivity, BookMarkedVideos, activeSubscription, \
@@ -165,6 +165,80 @@ async def register_student(user: StudentIn_Pydantic, _=Depends(get_current_user)
         # return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
         return JSONResponse(
             {"detail": str(ex)}, status_code=208)
+
+
+class StudentRegisterPydantic(BaseModel):
+    fullname: str
+    mobile: str
+    email: str
+    fcm_token: str
+    password: str
+    course_pref_id: Optional[str]=None
+    
+@router.post('/v1/register', status_code=201, response_model=loginResponsePydantic)
+async def register_student(user: StudentRegisterPydantic, _=Depends(get_current_user)):
+    try:
+        updated_at = datetime.now(tz)
+        try:
+            # Validate.
+
+            valid = validate_email(user.email)
+
+            # Update with the normalized form.
+            email = valid.email
+
+        except EmailNotValidError as e:
+            # email is not valid, exception message is human-readable
+            return JSONResponse(
+                {"detail": "Invalid email id"}, status_code=208)
+
+        mob_obj = await Student.exists(mobile=user.mobile)
+        email_obj = await Student.exists(email=user.email)
+
+        if mob_obj:
+            # raise HTTPException(status_code=208, detail="Student with this Mobile Number already exists.")
+            return JSONResponse(
+                {"detail": "Mobile Number already exists"}, status_code=208)
+        elif email_obj:
+
+            # raise HTTPException(status_code=208, detail="Student with this Email id already exists.")
+            return JSONResponse(
+                {"detail": "Email Id already exists"}, status_code=208)
+        else:
+            
+            # obj = await Student.create(**user.dict(exclude_unset=True))
+            obj = await Student.create(
+                fullname=user.fullname,
+                mobile=user.mobile,
+                email=user.email.replace(" ", ""),
+                dp="https://ik.imagekit.io/imagnus/student-avatars/default_pp.png",
+                fcm_token=user.fcm_token,
+                password=util.get_password_hash(user.password),
+                status="1"
+               
+            )
+            if user.course_pref_id:
+                course = await Course.get(id=user.course_pref_id)
+                await StudentCoursePreferences.create(course=course, student=obj)
+            
+            new_payment_records = []
+            user = await Student_Pydantic.from_queryset_single(Student.get(mobile=user.mobile))
+            result = jsonable_encoder(user.dict(exclude={'password'}))
+            result.update({"subscriptions": new_payment_records})
+            resp = JSONResponse(
+                {'status': True, 'message': result},
+                status_code=200)
+
+            return {'status': True, 'message': result}
+
+            # return await Student_Pydantic.from_tortoise_orm(obj)
+            # return Status(message="Student has been registered")
+    except Exception as ex:
+        # return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
+        return JSONResponse(
+            {"detail": str(ex)}, status_code=208)
+
+
 
 
 @router.post("/login",
