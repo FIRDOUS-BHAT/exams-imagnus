@@ -23,7 +23,7 @@ class Auth(BaseModel):
 router = APIRouter()
 
 
-@router.post('/auth/token', response_model=model.Token)
+@router.post('/auth/token/old/', response_model=model.Token)
 def generate_token(form_data: OAuth2PasswordRequestForm = Depends()):
     if form_data.username != "test" or form_data.password != "test":
         raise HTTPException(status_code=208, detail="Bad username or password")

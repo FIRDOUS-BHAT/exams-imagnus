@@ -1919,8 +1919,8 @@ async def get_students(request: Request, user=Depends(get_current_user)):
 @router.get('/update_expiry_date/')
 async def add_new_date():
     # stud_obj = await StudentChoices.filter(
-    #     subscription__id__in=[
-    #         '428fb39a-af94-4043-a0e2-76fe83b9776e']
+    #     course__id__in=[
+    #         'eaa1467e-3e01-423b-9bcd-36d7b2cdbe5e']
     # )
 
     # i = 0
@@ -1931,12 +1931,12 @@ async def add_new_date():
     # #     await StudentChoices.filter(id=each_obj.id).update(expiry_date=new_expiry_date, updated_at=updated_at)
     # #     i = i + 1
     # #     print(i)
-    #     if (((expiry.month == 5) & (expiry.year == 2022)) | ((expiry.month == 6) & (expiry.year == 2022))):  # and exp_date.day <= 15
-    #         i = i + 1
-    #     # #    new_expiry_date = exp_date + relativedelta(months=2)
-    #         new_expiry_date = parser.parse('2022-06-30T23:59:59.410158+05:30')
-    #         await StudentChoices.filter(id=each_obj.id).update(expiry_date=new_expiry_date)
-    #         print(i)
+    #     # if (expiry.month == (11)) & (expiry.year == 2022):  # and exp_date.day <= 15
+    #     #     i = i + 1
+    #     # # #    new_expiry_date = exp_date + relativedelta(months=2)
+    #     #     new_expiry_date = parser.parse('2022-12-01T23:59:59.410158+05:30')
+    #     #     await StudentChoices.filter(id=each_obj.id).update(expiry_date=new_expiry_date)
+    #     #     print(i)
     return {"done"}
 
 
