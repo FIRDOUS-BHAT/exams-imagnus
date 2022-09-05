@@ -60,7 +60,7 @@ class Status(BaseModel):
     message: str
 
 
-@router.post('/auth/token', response_model=Token)
+@router.post('/auth/token/old', response_model=Token)
 def generate_token(form_data: OAuth2PasswordRequestForm = Depends()):
     if form_data.username != "REDACTED_LEGACY_API_USERNAME" or form_data.password != "REDACTED_LEGACY_API_PASSWORD":
         raise HTTPException(status_code=208, detail="Bad username or password")

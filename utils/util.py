@@ -21,7 +21,7 @@ def app_setting():
 settings = app_setting()
 
 oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl="/api/student/auth/token"
+    tokenUrl="/api/student/v2/auth/token"
 )
 
 pwd_context = CryptContext(schemes=["bcrypt"])
