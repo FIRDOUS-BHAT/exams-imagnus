@@ -1623,14 +1623,15 @@ async def get_orders(request: Request, page: int = Query(..., title="Page Number
         .offset((page*perPage)-perPage)
         .limit(perPage)
     )
-    return orders
-    # return templates.TemplateResponse('orders_testseries.html',
-    #                                   context={
-    #                                       'request': request,
-    #                                       'orders': orders,
-    #                                       'page': page,
-    #                                       'perPage': perPage,
-    #                                   })
+    # orders =  await TestSeriesOrders.all().order_by('-created_at').offset((page*perPage)-perPage).limit(perPage)
+    # return jsonable_encoder(orders)
+    return templates.TemplateResponse('orders_testseries.html',
+                                      context={
+                                          'request': request,
+                                          'orders': orders,
+                                          'page': page,
+                                          'perPage': perPage,
+                                      })
 
 
 @router.get('/admin/live_classes/')
@@ -2034,3 +2035,10 @@ async def delete_subscription(request: Request,_=Depends(get_current_user)):
     else:
         return JSONResponse({'status': False, 'message':'something went wrong'})
         
+        
+@router.get('/admin/current/affairs/') 
+async def current_affairs(request: Request, _=Depends(get_current_user)):
+    return templates.TemplateResponse('current_affairs.html',
+                                      context={'request': request,
+                                               'current_affairs': 'active',
+                                               })
