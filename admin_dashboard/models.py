@@ -385,6 +385,14 @@ class InterViewProgram(Model):
     created_at = fields.DatetimeField(auto_now_add=True)
 
 
+class CurrentAffairs(Model):
+    day = fields.CharField(2)
+    month_year = fields.CharField(30)
+    file_url = fields.TextField()
+    is_active = fields.BooleanField(default=True)
+    updated_at = fields.DatetimeField(auto_now=True)
+    created_at = fields.DatetimeField(auto_now_add=True)
+
 Tortoise.init_models(["admin_dashboard.models", "student.models", ], "models")
 Preference_Pydantic = pydantic_model_creator(Preference)
 PreferenceIn_Pydantic = pydantic_model_creator(
@@ -427,3 +435,4 @@ offerBanners_Pydantic = pydantic_model_creator(offerBanners)
 CourseCartIn_Pydantic = pydantic_model_creator(
     CourseCart, name="CourseCartIn", exclude_readonly=True)
 CourseCart_Pydantic = pydantic_model_creator(CourseCart)
+CurrentAffairs_Pydantic = pydantic_model_creator(CurrentAffairs)

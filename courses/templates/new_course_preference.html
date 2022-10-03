@@ -87,13 +87,14 @@
                                              <div class="field fltr-radio">
                                                 <ul class="no-ul-list">
 												{% for preference in preferences %}
-												{%if loop.index ==1%}
+												
+												<!-- {%if loop.index ==1%} -->
                                                    <li class="{{ 'active' if loop.index ==1 else ''}}">
                                                       <!-- <input  id="{{ preference.slug }}" onclick="openCourses('{{ preference.slug }}')" class="checkbox-custom"
 													   name="radio_button" type="radio"> -->
                                                       <label for="a-p" class="checkbox-custom-label">{{ preference.name }}</label>
                                                    </li>
-												   {%endif %}
+												   <!-- {%endif %} -->
                                                 {% endfor %}
                                                    
                                                 </ul>
