@@ -81,6 +81,7 @@
                         <div class="top_countries_title">
                            <h2> Add Daily Current Affairs  </h2>
                         </div>
+                        <form action="/admin/add/current/affairs/" method="post" enctype="multipart/form-data">
                         <div class="payout_content">
                            <div class="col-lg-12 col-md-6">
                               <div class="lbel25">
@@ -88,11 +89,11 @@
                               </div>
                               <div class="row">
                               <div class="col-lg-4 col-md-4">
-                                 <input class="form-control" type="text" name="datepicker2" id="datepicker2" placeholder="Insert date Ex: 01 August 2022.">
+                                 <input class="form-control" type="text" name="day" id="datepicker2" placeholder="01">
 
                               </div>
                               <div class="col-lg-8 col-md-8">
-                              <input type="text" name="datepicker1" id="datepicker1" class="form-control">
+                              <input type="text" name="month_year" id="datepicker1" class="form-control" placeholder="Jan 2022">
                               </div>
                               </div>
                            </div>
@@ -107,11 +108,12 @@
                            <div class="col-lg-12 col-md-6 mt-10">
                               <div class="ui search focus lbel25">
                                  <label class="form-label" for="customFile"> Choose PDF File*</label>
-                                 <input type="file" class="form-control btn btn-danger" id="customFile" />
+                                 <input type="file" class="form-control btn btn-danger" name="file" accept="application/pdf" id="customFile" />
                               </div>
                               <button type="submit" class="btn btn-success mt-20"> Submit Current Affairs</button>
                            </div>
                         </div>
+                        </form>
                      </div>
                   </div>
                   <div class="col-lg-8 col-md-7">

@@ -2042,3 +2042,18 @@ async def current_affairs(request: Request, _=Depends(get_current_user)):
                                       context={'request': request,
                                                'current_affairs': 'active',
                                                })
+@router.post('/admin/add/current/affairs/')
+async def add_current_affairs(request:Request,day:str = Form(...),month_year:str=Form(...),file: UploadFile = File(...),
+                              s3: BaseClient = Depends(s3_auth), user=Depends(get_current_user)):
+    if not await CurrentAffairs.exists(day=day,month_year=month_year):
+        file_url = await upload_images(s3, folder='current_affairs', image=file, mimetype=None)
+
+        res = await CurrentAffairs.create(day=day,month_year=month_year,file_url=file_url)
+        if res:
+            flash(request, "Added Successfully.", "success")
+            
+            return RedirectResponse(url='/admin/current/affairs/', status_code=status.HTTP_303_SEE_OTHER)
+        else:
+            flash(request, "error occured.", "danger")
+            
+            return RedirectResponse(url='/admin/current/affairs/', status_code=status.HTTP_303_SEE_OTHER)
