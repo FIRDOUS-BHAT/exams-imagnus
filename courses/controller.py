@@ -786,17 +786,22 @@ async def place_order(request: Request, uid=Depends(get_current_user)):
             {"status": False, "message": str(ex)}, status_code=208)
 
 
-@router.get('/course/m/current_affairs')
+@router.get('/m/current_affairs')
 async def get_current_monthly_affairs(request:Request):
-     current_affairs = await CurrentAffairs.all()
+     current_affairs = await CurrentAffairs.all().distinct().values('month_year')
      return templates.TemplateResponse('current_affairs_month.html',
                                               context={'request': request,
                                                        'current_affairs':current_affairs
                                                        })
-@router.get('/course/current_affairs')
-async def get_current_affairs(request:Request):
-    current_affairs = await CurrentAffairs.all()
+
+@router.get('/{month}/current_affairs')
+async def get_current_affairs(request:Request,month:str):
+    current_affairs = await CurrentAffairs.filter(month_year=month)
+    # return current_affairs
     return templates.TemplateResponse('current_affairs.html',
                                               context={'request': request,
-                                                       'current_affairs':current_affairs
+                                                       'current_affairs':current_affairs,
+                                                       'month': month
                                                        })
+    
+    

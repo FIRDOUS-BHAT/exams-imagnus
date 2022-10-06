@@ -1,174 +1,323 @@
  {% extends "base.html" %}
          {% block content %}
-      <div class="wrapper">
-         <div class="sa4d25">
-            <div class="container">
-               <div class="row">
-                  <div class="col-lg-12">
-                     <h2 class="st_title"><i class="uil uil-book"></i> Current Affairs  </h2>
-                  </div>
-               </div>
-               <div class="row">
-                  <div class="col-lg-12 tab-panel" id="pills-discount" role="tabpanel">
-                     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                        <div class="panel panel-default">
-                           <div class="panel-heading" role="tab" id="headingOne">
-                              <div class="panel-title adcrse1250">
-                                 <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                 Add Monthly Current Affairs 
-                                 </a>
-                              </div>
-                           </div>
-                           <div id="collapseOne" class="panel-collapse collapse show" role="tabpanel" aria-labelledby="headingOne">
-                              <div class="panel-body adcrse_body">
-                                 <div class="row">
-                                    <div class="col-lg-12">
-                                       <div class="discount_form">
-                                          <div class="row">
-                                             <div class="col-lg-4 col-md-6 mt-10">
-                                                <div class="ui search focus lbel25">
-                                                   <label>Enter Month* </label>
-                                                   <div class="ui left icon input swdh19">
-                                                      <input class="prompt srch_explore" type="text" placeholder="Insert date Ex: August 2022." name="title" id="main[title]" value="">
-                                                   </div>
-                                                   <button type="submit" class="btn btn-success mt-20"> Submit</button>
-                                                </div>
-                                             </div>
-                                             <div class="col-lg-8 col-md-7">
-                                                <div class="table-responsive mt-30">
-                                                   <table class="table ucp-table earning__table">
-                                                      <thead class="thead-s">
-                                                         <tr>
-                                                            <th scope="col">S No. </th>
-                                                            <th scope="col">Creation Date </th>
-                                                            <th scope="col">Monthly Current Affairs </th>
-                                                         </tr>
-                                                      </thead>
-                                                      <tbody>
-                                                         <tr>
-                                                            <td>001 </td>
-                                                            <td>23/04/2022 </td>
-                                                            <td>August 2022 </td>
-                                                         </tr>
-                                                         <tr>
-                                                            <td>002 </td>
-                                                            <td>23/04/2022 </td>
-                                                            <td>September 2022 </td>
-                                                         </tr>
-                                                         <tr>
-                                                            <td>003 </td>
-                                                            <td>23/04/2022 </td>
-                                                            <td>November 2022 </td>
-                                                         </tr>
-                                                      </tbody>
-                                                   </table>
-                                                </div>
-                                             </div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-                  <div class="col-lg-4 col-md-5">
-                     <div class="top_countries">
-                        <div class="top_countries_title">
-                           <h2> Add Daily Current Affairs  </h2>
-                        </div>
-                        <div class="payout_content">
-                           <div class="col-lg-12 col-md-6">
-                              <div class="lbel25">
-                                 <label>Choose Month* </label>
-                              </div>
-                              <select class="ui hj145 dropdown cntry152 prompt srch_explore">
-                                 <option value="">Select Month 
-                                 <option value="1">August 2022</option>
-                                 <option value="2">September 2022 </option>
-                              </select>
-                           </div>
-                           <div class="col-lg-12 col-md-6 mt-10">
-                              <div class="ui search focus lbel25">
-                                 <label>Enter Date* </label>
-                                 <div class="ui left icon input swdh19">
-                                    <input class="prompt srch_explore" type="text" placeholder="Insert date Ex: 01 August 2022." name="title" id="main[title]" value="">
-                                 </div>
-                              </div>
-                           </div>
-                           <div class="col-lg-12 col-md-6 mt-10">
-                              <div class="ui search focus lbel25">
-                                 <label class="form-label" for="customFile"> Choose PDF File*</label>
-                                 <input type="file" class="form-control btn btn-danger" id="customFile" />
-                              </div>
-                              <button type="submit" class="btn btn-success mt-20"> Submit Current Affairs</button>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-                  <div class="col-lg-8 col-md-7">
-                     <div class="table-responsive">
-                        <table class="table ucp-table earning__table">
-                           <thead class="thead-s">
-                              <tr>
-                                 <th scope="col">S No. </th>
-                                 <th scope="col">Monthly</th>
-                                 <th scope="col">Date</th>
-                                 <th scope="col">PDF Notes</th>
-                              </tr>
-                           </thead>
-                           <tbody>
-                              <tr>
-                                 <td>001 </td>
-                                 <td>August 2022 </td>
-                                 <td>02 August 2022 </td>
-                                 <td><a href="https://www.mponline.gov.in/quick%20links/faq/document/mppsc.pdf" target="_blank"> Current Affairs FIle </a></td>
-                              </tr>
-                              <tr>
-                                 <td>002 </td>
-                                 <td>August 2022 </td>
-                                 <td>02 August 2022 </td>
-                                 <td><a href="https://www.mponline.gov.in/quick%20links/faq/document/mppsc.pdf" target="_blank"> Current Affairs FIle </a></td>
-                              </tr>
-                              <tr>
-                                 <td>003 </td>
-                                 <td>August 2022 </td>
-                                 <td>02 August 2022 </td>
-                                 <td><a href="https://www.mponline.gov.in/quick%20links/faq/document/mppsc.pdf" target="_blank"> Current Affairs FIle </a></td>
-                              </tr>
-                           </tbody>
-                        </table>
-                     </div>
-                  </div>
-               </div>
+      <!-- End Navigation -->
+           <div class="clearfix"></div>
+      <!-- ============================================================== -->
+      <!-- Top header  -->
+      <!-- ============================================================== -->
+      <!-- ============================ Hero Banner  Start================================== -->
+      <section class="newsletter themes-bg2 inverse-theme" data-wow-duration="2s" data-wow-delay="0.2s">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-6 col-md-6 mt-20">
+              <div class="text-left">
+                <h2 class="text-white title m-b10">All the Current affairs is available in Hindi & English. </h2>
+                <p>Our Current affairs analysis consists of two parts - Daily News and Important Editorials. We cover Daily News by choosing the most relevant topics.</p>
+              </div>
             </div>
-         </div>
-         <footer class="footer mt-40">
-            <div class="container-fluid">
-               <div class="row">
-                  <div class="col-lg-12">
-                     <div class="footer_bottm">
-                        <div class="row">
-                           <div class="col-md-6">
-                              <ul class="fotb_left">
-                                 <li>
-                                    <a href="index.html">
-                                       <div class="footer_logo">
-                                          <img src="images/fav.png" alt="" />
-                                       </div>
-                                    </a>
-                                 </li>
-                                 <li>
-                                    <p>© 2021  <strong>Imagnus Academy </strong>. All Rights Reserved. </p>
-                                 </li>
-                              </ul>
-                           </div>
+            <div class="col-lg-6 col-md-6">
+              <div class="row">
+                <div class="col-md-12">
+                  <div id="testimonials_style" class="slick-carousel-3 arrow_middle">
+                    <div class="testimonial-detail">
+                      <div class="client-detail-box">
+                        <div class="img-responsive">
+                          <img src="assets/img/a3.png" alt="imagnus academy online coaching classes" style="height:240px; margin:0 auto;">
                         </div>
-                     </div>
+                      </div>
+                    </div>
+                    <div class="testimonial-detail">
+                      <div class="client-detail-box">
+                        <div class="img-responsive">
+                          <img src="assets/img/ia.png" alt="imagnus academy online coaching classes" style="height:240px; margin:0 auto;">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="testimonial-detail">
+                      <div class="client-detail-box">
+                        <div class="img-responsive">
+                          <img src="assets/img/a2.png" alt="imagnus academy online coaching classes" style="height:240px; margin:0 auto;">
+                        </div>
+                      </div>
+                    </div>
                   </div>
-               </div>
+                </div>
+              </div>
             </div>
-         </footer>
-      </div>
-          {% endblock %}
+          </div>
+        </div>
+      </section>
+      <!-- ============================ Hero Banner End ================================== -->
+      <!-- ============================ Featured Courses Start ================================== -->
+      <section>
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-12 col-md-6 section-head style-1 text-center mb-30">
+              <h6 class="sub-title bgl-primary m-b20 text-primary"> Current Affairs </h6>
+              <h4>Available <span class="theme-cl"> Current Affairs </span>by Categories </h4>
+            </div>
+          </div>
+          <div class="row">
+           
+            {% if current_affairs %}
+            {% for item in current_affairs %}
+            <div class="col-lg-4 col-md-4 col-sm-12">
+              <div class="card">
+                <!-- Single Course -->
+                <div class="dashboard_single_course">
+                  <div class="dashboard_single_course_caption">
+                    <div class="dashboard_single_course_head">
+                      <div class="dashboard_single_course_head_flex">
+                        <span class="dashboard_instructor">Current Affairs: {{ month }} </span>
+                        <h2 class="dashboard_course_title">Updated on: {{ item.day }} {{ item.month_year}} </h2>
+                      </div>
+                    </div>
+                    <div class="dashboard_single_course_progress">
+                      <div class="dashboard_single_course_progress_2">
+                        <ul class="m-0">
+                          <a href="{{ item.file_url}}" target="_blank" class="btn btn-primary btn-sm" download>Download Now <i class="ti-download"></i>
+                          </a>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+           {% endfor %}
+			     {% endif %}
+          </div>
+        </div>
+      </section>
+      <!-- ============================ Featured Courses End ================================== -->
+      <!-- ========================== About Facts List Section =============================== -->
+      <section class="bg-light">
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <div class="list_facts_wrap">
+                <div class="sec-heading mb-3">
+                  <h2> Benefits of <span class="theme-cl">Test Series</span>
+                  </h2>
+                </div>
+                <div class="list_facts">
+                  <div class="list_facts_icons">
+                    <i class="ti-desktop"></i>
+                  </div>
+                  <div class="list_facts_caption">
+                    <h4>Updated Syllabus</h4>
+                    <p>Each and every aspect of the topic described in compliance with the updated syllabus.</p>
+                  </div>
+                </div>
+                <div class="list_facts">
+                  <div class="list_facts_icons">
+                    <i class="ti-heart"></i>
+                  </div>
+                  <div class="list_facts_caption">
+                    <h4>Important Facts</h4>
+                    <p>All the relevant topics cover introduction, features, important facts and figures, analysis, etc.</p>
+                  </div>
+                </div>
+                <div class="list_facts">
+                  <div class="list_facts_icons">
+                    <i class="ti-harddrives"></i>
+                  </div>
+                  <div class="list_facts_caption">
+                    <h4>Boost Understanding</h4>
+                    <p>The notes have a proper linkage of subjects with current affairs to boost understanding.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <div class="list_facts_wrap_img">
+                <img src="assets/img/ic.png" class="img-fluid" alt="" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- ========================== About Facts List Section =============================== -->
+      <!-- ============================== Start Newsletter ================================== -->
+      <section class="newsletter themes-bg inverse-theme" data-wow-duration="2s" data-wow-delay="0.2s">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-6 col-md-6">
+              <div class="text-left">
+                <h2 class="text-white title m-b10">Start Your Exam Preparation Now! </h2>
+                <p>Learn from India's best teachers and clear your doubts in real time. Schedule timely reminders and study in the comfort of your home. Learn and compete with other students in real time. </p>
+                <form class="sup-form">
+                  <input type="text" class="form-control sigmup-me" placeholder="+91 | Phone Number" required="required" />
+                  <input type="submit" class="btn btn-primary gradient" value="Get Started" />
+                </form>
+              </div>
+            </div>
+            <div class="col-lg-1 col-md-6"></div>
+            <div class="col-lg-5 col-md-6">
+              <img src="/static/courses_assets/img/home-promo.png" alt="imagnus academy online coaching classes" style="height:270px;">
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- ================================= End Newsletter =============================== -->
+      <!-- ============================ Footer Start ================================== -->
+      <footer class="dark-footer skin-dark-footer">
+        <div>
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-3 col-md-3">
+                <div class="footer-widget">
+                  <div class="logo">
+                    <h2 style="color: #fff;">I-Magnus</h2>
+                  </div>
+                  <div class="footer-add">
+                    <ul>
+                      <li>
+                        <i class="fa fa-phone"></i>
+                        <span>+91 9826297935 </span>
+                        <br>
+                        <i class="fa fa-phone"></i>
+                        <span>+91 9111665500 </span>
+                      </li>
+                      <li>
+                        <i class="fa fa-envelope"></i>
+                        <span>info@imagnus.in </span>
+                        <br>
+                        <i class="fa fa-envelope"></i>
+                        <span>support@imagnus.in </span>
+                      </li>
+                      <li>
+                        <i class="fa fa-map-marker"></i>
+                        <span>174, Near Bombay Hospital, Indore, Madhya Pradesh 452010, India </span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-3">
+                <div class="footer-widget">
+                  <h4 class="widget-title">Our links </h4>
+                  <ul class="text-white">
+                    <li>
+                      <a href="https://www.imagnus.in">Home </a>
+                    </li>
+                    <li>
+                      <a href="https://www.imagnus.in/about_us">About Us </a>
+                    </li>
+                    <li>
+                      <a href="https://www.imagnus.in/terms-conditions">terms and Conditions </a>
+                    </li>
+                    <li>
+                      <a href="https://www.imagnus.in/privacy-policy">Privacy Policy </a>
+                    </li>
+                    <li>
+                      <a href="https://www.imagnus.in/disclaimer">Disclaimer </a>
+                    </li>
+                    <li>
+                      <a href="https://www.imagnus.in/contact-us">Contacts</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-3">
+                <div class="footer-widget">
+                  <h4 class="widget-title">Top Courses </h4>
+                  <ul class="footer-menu">
+                    <li>
+                      <a href="https://www.imagnus.in/best-online-mp-constable-coaching-classes-in-indore">MP Constable </a>
+                    </li>
+                    <li>
+                      <a href="https://www.imagnus.in/best-online-neet-coaching-classes-in-indore">NEET </a>
+                    </li>
+                    <li>
+                      <a href="https://www.imagnus.in/best-online-nursing-coaching-classes-in-indore">Nursing </a>
+                    </li>
+                    <li>
+                      <a href="https://www.imagnus.in/best-online-bank-po-coaching-classes-in-indore">Bank PO</a>
+                    </li>
+                    <li>
+                      <a href="https://www.imagnus.in/best-online-aiims-coaching-classes-in-indore">AIIMS </a>
+                    </li>
+                    <li>
+                      <a href="https://www.imagnus.in/best-online-iit-jee-coaching-classes-in-indore">IIT-JEE </a>
+                    </li>
+                    <li>
+                      <a href="https://www.imagnus.in/best-online-upsc-coaching-classes-in-indore">UPSC </a>
+                    </li>
+                    <li>
+                      <a href="https://www.imagnus.in/best-online-ssc-coaching-classes-in-indore">SSC </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-12">
+                <div class="footer-widget">
+                  <h4 class="widget-title">Download Apps </h4>
+                  <a href="#" class="other-store-link">
+                    <div class="other-store-app">
+                      <div class="os-app-icon">
+                        <i class="lni-playstore theme-cl"></i>
+                      </div>
+                      <div class="os-app-caps"> Google Play <span>Get It Now </span>
+                      </div>
+                    </div>
+                  </a>
+                  <a href="#" class="other-store-link">
+                    <div class="other-store-app">
+                      <div class="os-app-icon">
+                        <i class="lni-apple theme-cl"></i>
+                      </div>
+                      <div class="os-app-caps"> App Store <span>Now it Available </span>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <div class="container">
+            <div class="row align-items-center">
+              <div class="col-lg-6 col-md-6">
+                <p class="mb-0">Copyright © I-Magnus Academy 2021. All rights reserved. </p>
+              </div>
+              <div class="col-lg-6 col-md-6 text-right">
+                <ul class="footer-bottom-social">
+                  <li>
+                    <a href="#">
+                      <i class="ti-facebook"></i>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#">
+                      <i class="ti-twitter"></i>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#">
+                      <i class="ti-instagram"></i>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#">
+                      <i class="ti-linkedin"></i>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+      <a id="back2Top" class="top-scroll" title="Back to top" href="#">
+        <i class="ti-arrow-up"></i>
+      </a>
+    </div>
+    <!-- ============================================================== -->
+    <!-- End Wrapper -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- All Jquery -->
+    <!-- ============================================================== -->
+    {% endblock %}
