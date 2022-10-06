@@ -1,0 +1,166 @@
+ {% extends "base.html" %}
+         {% block content %}
+      <!-- End Navigation -->
+      <div class="clearfix"></div>
+      <!-- ============================================================== -->
+      <!-- Top header  -->
+      <!-- ============================================================== -->
+      <!-- ============================ Hero Banner  Start================================== -->
+      <section class="newsletter themes-bg2 inverse-theme" data-wow-duration="2s" data-wow-delay="0.2s">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-6 col-md-6 mt-20">
+              <div class="text-left">
+                <h2 class="text-white title m-b10">All the Current affairs is available in Hindi & English. </h2>
+                <p>Our Current affairs analysis consists of two parts - Daily News and Important Editorials. We cover Daily News by choosing the most relevant topics.</p>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6">
+              <div class="row">
+                <div class="col-md-12">
+                  <div id="testimonials_style" class="slick-carousel-3 arrow_middle">
+                    <div class="testimonial-detail">
+                      <div class="client-detail-box">
+                        <div class="img-responsive">
+                          <img src="assets/img/a3.png" alt="imagnus academy online coaching classes" style="height:240px; margin:0 auto;">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="testimonial-detail">
+                      <div class="client-detail-box">
+                        <div class="img-responsive">
+                          <img src="assets/img/ia.png" alt="imagnus academy online coaching classes" style="height:240px; margin:0 auto;">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="testimonial-detail">
+                      <div class="client-detail-box">
+                        <div class="img-responsive">
+                          <img src="assets/img/a2.png" alt="imagnus academy online coaching classes" style="height:240px; margin:0 auto;">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- ============================ Hero Banner End ================================== -->
+      <!-- ============================ Featured Courses Start ================================== -->
+      <section>
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-12 col-md-6 section-head style-1 text-center mb-30">
+              <h6 class="sub-title bgl-primary m-b20 text-primary"> Current Affairs </h6>
+              <h4>Available <span class="theme-cl"> Current Affairs </span>by Categories </h4>
+            </div>
+          </div>
+          <div class="row">
+            {% if current_affairs %}
+           {% for item in current_affairs %}
+            <div class="col-lg-4 col-md-4 col-sm-12">
+               
+              <div class="card">
+                <!-- Single Course -->
+                <div class="dashboard_single_course">
+                  <div class="dashboard_single_course_caption">
+                    <div class="dashboard_single_course_head">
+                      <div class="dashboard_single_course_head_flex">
+                        <h2 class="dashboard_course_title">Current Affairs: {{ item.month_year }} </h2>
+						<span class="dashboard_instructor"> This will help the students in preparing efficiently for the examination. </span>
+                      </div>
+                    </div>
+                    <div class="dashboard_single_course_progress">
+                      <div class="dashboard_single_course_progress_2">
+                        <ul class="m-0">
+                          <a href="{{ item.file_url}}" target="_blank" class="btn btn-primary btn-sm">view details <i class="ti-eye"></i>
+                          </a>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+             
+            </div>
+           {% endfor %}
+           {%endif %}
+         
+          </div>
+        </div>
+      </section>
+      <!-- ============================ Featured Courses End ================================== -->
+      <!-- ========================== About Facts List Section =============================== -->
+      <section class="bg-light">
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <div class="list_facts_wrap">
+                <div class="sec-heading mb-3">
+                  <h2> Benefits of <span class="theme-cl">Test Series</span>
+                  </h2>
+                </div>
+                <div class="list_facts">
+                  <div class="list_facts_icons">
+                    <i class="ti-desktop"></i>
+                  </div>
+                  <div class="list_facts_caption">
+                    <h4>Updated Syllabus</h4>
+                    <p>Each and every aspect of the topic described in compliance with the updated syllabus.</p>
+                  </div>
+                </div>
+                <div class="list_facts">
+                  <div class="list_facts_icons">
+                    <i class="ti-heart"></i>
+                  </div>
+                  <div class="list_facts_caption">
+                    <h4>Important Facts</h4>
+                    <p>All the relevant topics cover introduction, features, important facts and figures, analysis, etc.</p>
+                  </div>
+                </div>
+                <div class="list_facts">
+                  <div class="list_facts_icons">
+                    <i class="ti-harddrives"></i>
+                  </div>
+                  <div class="list_facts_caption">
+                    <h4>Boost Understanding</h4>
+                    <p>The notes have a proper linkage of subjects with current affairs to boost understanding.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <div class="list_facts_wrap_img">
+                <img src="assets/img/ic.png" class="img-fluid" alt="" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- ========================== About Facts List Section =============================== -->
+      <!-- ============================== Start Newsletter ================================== -->
+      <section class="newsletter themes-bg inverse-theme" data-wow-duration="2s" data-wow-delay="0.2s">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-6 col-md-6">
+              <div class="text-left">
+                <h2 class="text-white title m-b10">Start Your Exam Preparation Now! </h2>
+                <p>Learn from India's best teachers and clear your doubts in real time. Schedule timely reminders and study in the comfort of your home. Learn and compete with other students in real time. </p>
+                <form class="sup-form">
+                  <input type="text" class="form-control sigmup-me" placeholder="+91 | Phone Number" required="required" />
+                  <input type="submit" class="btn btn-primary gradient" value="Get Started" />
+                </form>
+              </div>
+            </div>
+            <div class="col-lg-1 col-md-6"></div>
+            <div class="col-lg-5 col-md-6">
+              <img src="/static/courses_assets/img/home-promo.png" alt="imagnus academy online coaching classes" style="height:270px;">
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- ================================= End Newsletter =============================== -->
+      <!-- ============================ Footer Start ================================== -->
+     {% endblock %}

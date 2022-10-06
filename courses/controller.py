@@ -18,7 +18,7 @@ from starlette.responses import JSONResponse, RedirectResponse, Response
 from tortoise.contrib.fastapi import HTTPNotFoundError
 
 from FCM.route import push_service
-from admin_dashboard.models import Course_Pydantic, CourseCart, CourseCategoryLectures, Instructor, Instructor_Pydantic, \
+from admin_dashboard.models import Course_Pydantic, CourseCart, CourseCategoryLectures, CurrentAffairs, Instructor, Instructor_Pydantic, \
     Course, \
     CourseCategories, CourseCategories_Pydantic, CourseSubscriptionPlans_Pydantic, CourseSubscriptionPlans, Preference
 from checkout.apis.route import confirmOrderPydantic
@@ -784,3 +784,19 @@ async def place_order(request: Request, uid=Depends(get_current_user)):
     except Exception as ex:
         return JSONResponse(
             {"status": False, "message": str(ex)}, status_code=208)
+
+
+@router.get('/course/m/current_affairs')
+async def get_current_monthly_affairs(request:Request):
+     current_affairs = await CurrentAffairs.all()
+     return templates.TemplateResponse('current_affairs_month.html',
+                                              context={'request': request,
+                                                       'current_affairs':current_affairs
+                                                       })
+@router.get('/course/current_affairs')
+async def get_current_affairs(request:Request):
+    current_affairs = await CurrentAffairs.all()
+    return templates.TemplateResponse('current_affairs.html',
+                                              context={'request': request,
+                                                       'current_affairs':current_affairs
+                                                       })
