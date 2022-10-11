@@ -2038,9 +2038,11 @@ async def delete_subscription(request: Request,_=Depends(get_current_user)):
         
 @router.get('/admin/current/affairs/') 
 async def current_affairs(request: Request, _=Depends(get_current_user)):
+    current_affairs = await CurrentAffairs.all().order_by("-created_at")
+    
     return templates.TemplateResponse('current_affairs.html',
                                       context={'request': request,
-                                               'current_affairs': 'active',
+                                               'current_affairs': current_affairs,
                                                })
 @router.post('/admin/add/current/affairs/')
 async def add_current_affairs(request:Request,day:str = Form(...),month_year:str=Form(...),file: UploadFile = File(...),
