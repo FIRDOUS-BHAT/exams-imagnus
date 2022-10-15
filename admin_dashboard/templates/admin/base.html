@@ -1466,6 +1466,8 @@ document.getElementById('srch_mobile').onkeydown = (e)=>{
 
 let deleteSubscription = (subs_id)=> {
 
+   const url = $('#delete_url').val()
+
    swal({
   title: "Are you sure?",
   text: "Once deleted, you will not be able to recover this record!",
@@ -1475,8 +1477,9 @@ let deleteSubscription = (subs_id)=> {
 })
 .then((willDelete) => {
   if (willDelete) {
-   // delete order goes here
-   fetch('/admin/delete_subscription/',{
+   // delete order goes here </a></p>
+   // /admin/delete_subscription/
+   fetch(url,{
       method: 'DELETE', // or 'PUT'
       body: JSON.stringify({sid: subs_id})
    }).then(r=>r.json())

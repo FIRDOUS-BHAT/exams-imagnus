@@ -118,6 +118,7 @@
                   </div>
                   <div class="col-lg-8 col-md-7">
                      <div class="table-responsive">
+                        <input type="hidden" id="delete_url" value="/admin/delete_current_affairs" placeholder="">
                         <table class="table ucp-table earning__table">
                            <thead class="thead-s">
                               <tr>
@@ -125,6 +126,7 @@
                                  <th scope="col">Day</th>
                                  <th scope="col">Date</th>
                                  <th scope="col">PDF Notes</th>
+                                 <th scope="col">Actions</th>
                               </tr>
                            </thead>
                            <tbody>
@@ -134,6 +136,11 @@
                                  <td>{{affair.day}} </td>
                                  <td>{{affair.month_year}} </td>
                                  <td><a href="{{affair.file_url}}" target="_blank"> Current Affairs FIle </a></td>
+                          <td>
+                            <a onclick="deleteSubscription('{{affair.id}}')" title="Delete" class="gray-s"
+                    ><i class="uil uil-trash-alt"></i
+                  ></a>
+                          </td>
                               </tr>
                               {% endfor %}
                             

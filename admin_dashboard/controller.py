@@ -1877,7 +1877,9 @@ async def search_order(request: Request):
     mobile = data["mobile"]
 
     if await Student.exists(mobile=mobile):
+        
         student = await Student.get(mobile=mobile)
+        pay_objs=None
         if data["source"] == 'course_orders':
 
             student_id = student.id
@@ -2059,3 +2061,12 @@ async def add_current_affairs(request:Request,day:str = Form(...),month_year:str
             flash(request, "error occured.", "danger")
             
             return RedirectResponse(url='/admin/current/affairs/', status_code=status.HTTP_303_SEE_OTHER)
+        
+@router.delete('/admin/delete_current_affairs/',name="delete-current-affairs") 
+async def  delete_current_affairs(request:Request, _=Depends(get_current_user)):
+    try:
+        data = await request.json()
+        await CurrentAffairs.get(id=data['sid']).delete()
+        return {"status":True,"message": "Record deleted successfully"}      
+    except Exception as ex:
+        return {"status":False,"message": str(ex)}
