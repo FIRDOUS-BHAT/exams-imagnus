@@ -44,12 +44,13 @@ async def sendSMS(apikey, numbers, sender, message):
 @router.post('/send_otp/')
 async def send_otp(mobile: str, _=Depends(get_current_user)):
     otp = await generateOTP()
-    message = otp + " is your verification code for registration at i-Magnus."
+    # message = otp + " is your verification code for registration at i-Magnus."
+    message = otp + " is your one time verification code for registration at i-Magnus."
     resp = await sendSMS('ODg1YjEyMDg5YWVkNGI3MGY5ZDhhODA4ZDMxNzIwNWQ=', '91' + mobile,
                          'IMGNUS', message)
     resp = json.loads(resp)
     if resp['status'] == 'success':
-
+        print('OTP SENT TO '+mobile)
         res = {
             "status": resp['status'],
             "otp": otp
