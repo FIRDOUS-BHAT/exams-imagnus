@@ -1,16 +1,16 @@
-# import requests
-# from bs4 import BeautifulSoup, NavigableString, Tag
-# import csv
-# # Make a request
-# # url =  "https://exams.imagnus.in/admin/student_enquiries/"
-# url = "https://ineuron.ai/home/coursedetail/full-stack-data-science-with-1-year-internship--117"
-# page = requests.get(url)
-# soup = BeautifulSoup(page.content, 'html.parser')
-# if page:
-#     print('CONNECTION SUCCESSFULL')
-# # Create top_items as empty list
-# all_products = []
-#
+import requests
+from bs4 import BeautifulSoup, NavigableString, Tag
+import csv
+# Make a request
+# url =  "https://exams.imagnus.in/admin/student_enquiries/"
+url = "https://wise.com/gb/blog/world-currency-symbols"
+page = requests.get(url)
+soup = BeautifulSoup(page.content, 'html.parser')
+if page:
+    print('CONNECTION SUCCESSFULL')
+# Create top_items as empty list
+all_products = []
+
 # # Extract and store in top_items according to instructions on the left
 # '''products = soup.select('div.thumbnail')
 # for product in products:
@@ -78,3 +78,22 @@
 #     dict_writer = csv.DictWriter(output_file, keys)
 #     dict_writer.writeheader()
 #     dict_writer.writerows(all_chapters)
+
+all_currencies = []
+dsChapters = soup.select('tbody')[5]
+
+for eachRow in dsChapters.select('tr'):
+    symbol = eachRow.select('td')[0].text.strip()
+    currency_code = eachRow.select('td')[3].text.strip()
+    
+    all_currencies.append({
+        'currency_code': currency_code,
+        'symbol': symbol
+        
+    })
+
+keys = all_currencies[0].keys()
+with open('currency_symbols.csv', 'a', newline='') as output_file:
+    dict_writer = csv.DictWriter(output_file, keys)
+    dict_writer.writeheader()
+    dict_writer.writerows(all_currencies)
