@@ -1253,3 +1253,28 @@ async def student_coupons(data: StudentCouponListing, _=Depends(get_current_user
         return obj
     except Exception as ex:
         return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
+
+class VideoDetails(BaseModel):
+    src: str
+    video_id: str
+@router.post('/get_video_details/')
+async def get_video_details(data:VideoDetails, _=Depends(get_current_user)):
+   try:
+    if(data.src == 'vimeo'):
+        if data.video_id is not None:
+            import http.client
+
+            conn = http.client.HTTPSConnection("api.vimeo.com")
+            payload = ''
+            headers = {
+            'Authorization': 'bearer 07d29a422ae59fd14a17cbdd840b194b',
+            'Content-Type': 'application/json',
+            'Accept': 'application/vnd.vimeo.*+json;version=3.4'
+            }
+            conn.request("GET", "/videos/"+data.video_id, payload, headers)
+            res = conn.getresponse()
+            data = res.read()
+            # print(data.decode("utf-8"))
+            return {"status": False, "message": jsonable_encoder(data)}
+   except Exception as ex:
+       return {"status": False, "message": str(ex)}         
