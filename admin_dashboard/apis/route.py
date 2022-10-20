@@ -1624,7 +1624,7 @@ class LiveClassesPydantic(BaseModel):
     instructor: InstructorPydantic
     url: Optional[str] = None
     thumbnail: Optional[str] = None
-    streaming_time: datetime
+    streaming_time: Optional[datetime] = None
     lecture_duration: Optional[str] = None
 
     @validator('streaming_time', pre=True, always=True)
@@ -1645,7 +1645,7 @@ class PNLiveClassesPydantic(BaseModel):
     instructor: InstructorPydantic
     url: str
     thumbnail: Optional[str] = None
-    streaming_time: str
+    streaming_time: Optional[datetime] = None
     lecture_duration: Optional[str] = None
     course: PNCoursePydantic
 
