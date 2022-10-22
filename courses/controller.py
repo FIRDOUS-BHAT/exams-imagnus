@@ -251,9 +251,13 @@ async def student_dashboard(request: Request, user=Depends(get_current_user)):
 
         if course_exist:
             course_count = await PaymentRecords.filter(student__id=user).count()
-            subscriptions = await StudentChoice_Pydantic.from_queryset(
-                StudentChoices.filter(student__id=user, expiry_date__gte=now)
-            )
+            # subscriptions = await StudentChoice_Pydantic.from_queryset(
+            #     StudentChoices.filter(student__id=user, expiry_date__gte=now)
+            # )
+            subscriptions = await StudentChoices.filter(student__id=user, expiry_date__gte=now)\
+                            .values(
+                                web_icon="course__web_icon",preference_name="course__preference__name",
+                                course_name="course__name",plan_price="subscription__plan_price",course_id="course__id" )
         else:
             subscriptions = None
         std_m_exist = await StudyMaterialOrderInstance.exists(student__id=user, package_mode=1)
@@ -286,7 +290,7 @@ async def student_dashboard(request: Request, user=Depends(get_current_user)):
                                                        'total_order_count': total_order_count,
                                                        'subscription_count': course_count,
                                                        'std_m_count': std_m_count,
-                                                       'subscriptions': subscriptions,
+                                                       'subscriptions': subscriptions[0],
                                                        'std_ms': std_m,
                                                        'testseries': testseries
                                                        })
@@ -300,8 +304,8 @@ async def student_dashboard(request: Request, user=Depends(get_current_user)):
                                                        'std_ms': std_m
                                                        })
     except Exception as ex:
-        # return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
-        return RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
+        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
+        # return RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
 
 
 @router.get('/student/my-purchases/', )
