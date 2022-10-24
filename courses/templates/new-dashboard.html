@@ -34,6 +34,7 @@
                             <h4>{{ subscription_count }}</h4>
                             <span>My Courses</span>
                          </div>
+                        
                          <div class="dashboard_stats_wrap-icon"><i class="ti-check-box"></i></div>
                       </div>
                    </div>
@@ -89,23 +90,24 @@
                                        <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
                                           <div class="accordion" id="generalac">
                                             {% if subscriptions: %}
+                                           
                                             {% for subscription in subscriptions: %}
                                              <div class="card">
                                                 <!-- Single Course -->
                                                 <div class="dashboard_single_course">
                                                    <div class="dashboard_single_course_thumb">
-                                                      <img src="{{ subscriptions['web_icon'] }}" class="img-fluid" alt="">
+                                                      <img src="{{ subscription.web_icon }}" class="img-fluid" alt="">
                                                       <div class="dashboard_action">
                                                       </div>
                                                    </div>
                                                    <div class="dashboard_single_course_caption">
                                                       <div class="dashboard_single_course_head">
                                                          <div class="dashboard_single_course_head_flex">
-                                                            <span class="dashboard_instructor">{{ subscriptions['preference_name'] }}</span>
-                                                            <h2 class="dashboard_course_title">{{ subscriptions['course_name'] }}</h2>
+                                                            <span class="dashboard_instructor">{{ subscription.preference_name }}</span>
+                                                            <h2 class="dashboard_course_title">{{ subscription.course_name }}</h2>
                                                          </div>
                                                          <div class="dc_head_right">
-                                                            <h4 class="dc_price_rate theme-cl">Rs.{{ subscriptions['plan_price'] }}</h4>
+                                                            <h4 class="dc_price_rate theme-cl">Rs.{{ subscription.plan_price }}</h4>
                                                          </div>
                                                       </div>
                                                       <div class="dashboard_single_course_progress">
@@ -117,7 +119,7 @@
                                                          </div>
                                                          <div class="dashboard_single_course_progress_2">
                                                             <ul class="m-0">
-                                                               <a href="/student/dashboard/{{ subscriptions['course_id']}}/" class="btn btn-primary btn-md">View Course <i class="ti-angle-double-right"></i></a>
+                                                               <a href="/student/dashboard/{{ subscription.course_id}}/" class="btn btn-primary btn-md">View Course <i class="ti-angle-double-right"></i></a>
                                                             </ul>
                                                          </div>
                                                       </div>
