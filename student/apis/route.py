@@ -1254,6 +1254,7 @@ async def student_coupons(data: StudentCouponListing, _=Depends(get_current_user
     except Exception as ex:
         return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
+import http.client
 class VideoDetails(BaseModel):
     src: str
     video_id: str
@@ -1262,7 +1263,7 @@ async def get_video_details(data:VideoDetails, _=Depends(get_current_user)):
    try:
     if(data.src == 'vimeo'):
         if data.video_id is not None:
-            import http.client
+           
 
             conn = http.client.HTTPSConnection("api.vimeo.com")
             payload = ''
@@ -1275,6 +1276,34 @@ async def get_video_details(data:VideoDetails, _=Depends(get_current_user)):
             res = conn.getresponse()
             data = res.read()
             # print(data.decode("utf-8"))
-            return {"status": False, "message": jsonable_encoder(data)}
+            return {"status": True, "message": jsonable_encoder(data)}
    except Exception as ex:
-       return {"status": False, "message": str(ex)}         
+       return {"status": False, "message": str(ex)}        
+   
+import httpx
+import json  
+@router.post('/download_video') 
+async def download_videos( _=Depends(get_current_user)):
+       
+        try:
+            conn = http.client.HTTPSConnection("api.vimeo.com")
+            payload = ''
+            headers = {
+            'Authorization': 'bearer REDACTED_TOKEN',
+            'Content-Type': 'application/json',
+            'Accept': 'application/vnd.vimeo.*+json;version=3.4'
+            }
+            conn.request("GET", "/videos/684172967", payload, headers)
+            res = conn.getresponse()
+            data = res.read()
+            # print(json.loads(data))
+            json_response = json.loads(data)
+            # return json_response['download'][2]['link']
+            async with httpx.AsyncClient() as client:
+                print(json_response['download'][2]['link'])
+                content_obj = await client.get(json_response['download'][2]['link'])
+                print(content_obj)
+                if content_obj.status_code == 200:
+                    return content_obj.json()   
+        except Exception as ex:
+            return str(ex)

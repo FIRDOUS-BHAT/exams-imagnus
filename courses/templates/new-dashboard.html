@@ -151,15 +151,16 @@
                                        
                                        <div class="tab-pane fade" id="payment" role="tabpanel" aria-labelledby="payment-tab">
                                           <div class="accordion" id="paymentac">
+                                           
                                              {% if std_ms:%}
-                                             {% for std_m in std_ms: %}
-                                             {% set inner_loop = loop %}
-                                             {% for items in std_m.order_StudyMaterialOrderInstance %}
+                                            
+                                             {% for items in std_ms: %}
+                                            
                                              
                                              <div class="card">
                                                 <div class="dashboard_single_course">
                                                    <div class="dashboard_single_course_thumb">
-                                                      <img src="{{ items.item_id.web_icon }}" class="img-fluid" alt="">
+                                                      <img src="{{ items.web_icon }}" class="img-fluid" alt="">
                                                       <div class="dashboard_action">
                                                       </div>
                                                    </div>
@@ -167,26 +168,26 @@
                                                       <div class="dashboard_single_course_head">
                                                          <div class="dashboard_single_course_head_flex">
                                                             <!-- <span class="dashboard_instructor"></span> -->
-                                                            <h2 class="dashboard_course_title">{{ items.item_id.name }}</h2>
+                                                            <h2 class="dashboard_course_title">{{ items.course_title }}</h2>
                                                          </div>
                                                          <div class="dc_head_right">
-                                                            <h4 class="dc_price_rate theme-cl">Rs.{{ items.item_id.discount_price }}</h4>
+                                                            <h4 class="dc_price_rate theme-cl">Rs.{{ items.discount_price }}</h4>
                                                          </div>
                                                       </div>
                                                       <div class="dashboard_single_course_progress">
                                                          <div class="dashboard_single_course_progress_1">
-                                                            <label><span id="show_percentage{{ inner_loop.index }}">0</span> % Completed</label>
-                                                            <div class="start-download" id="start-download{{ inner_loop.index }}">Starting Download...</div>
-                                                            <div id=download-ui-container">
+                                                            <label><span id="show_percentage{{ loop.index }}">0</span> % Completed</label>
+                                                            <div class="start-download" id="start-download{{ loop.index }}">Starting Download...</div>
+                                                            <div id="download-ui-container">
                                                              
-                                                               <div class="download-progress-container" id="download-progress-container{{ inner_loop.index }}"><div class="download-progress" id="download-progress{{ inner_loop.index }}"></div></div>
+                                                               <div class="download-progress-container" id="download-progress-container{{ loop.index }}"><div class="download-progress" id="download-progress{{ loop.index }}"></div></div>
                                                              
                                                             </div>
                                                          </div>
                                                          <div class="dashboard_single_course_progress_2">
                                                             <ul class="m-0">
-                                                               <button id="download-button{{ inner_loop.index }}" data-index="{{ inner_loop.index }}" data-mat-id="{{ items.id }}" class="btn btn-primary btn-md download_material">Download  Now <i class="ti-download" data-mat-id="{{ items.id }}"></i></button>
-                                                               <a class="btn btn-primary btn-md save-file" id="save-file{{ inner_loop.index }}">Save File</a>
+                                                               <button id="download-button{{ loop.index }}" data-index="{{ loop.index }}" data-mat-id="{{ items.id }}" class="btn btn-primary btn-md download_material">Download  Now <i class="ti-download" data-mat-id="{{ items.id }}"></i></button>
+                                                               <a class="btn btn-primary btn-md save-file" id="save-file{{ loop.index }}">Save File</a>
                                                             </ul>
                                                          </div>
                                                       </div>
@@ -194,7 +195,7 @@
                                                 </div>
                                              </div>
                                              {% endfor %}
-                                             {% endfor %}
+                                            
                                              {% else %} 
 
                                              <div class="row justify-content-center">
