@@ -263,9 +263,11 @@ async def student_dashboard(request: Request, user=Depends(get_current_user)):
         std_m_exist = await StudyMaterialOrderInstance.exists(student__id=user, package_mode=1)
         if await StudyMaterialOrderInstance.exists(student__id=user, package_mode=1):
             std_m_count = await StudyMaterialOrderInstance.filter(student__id=user).count()
-            std_m = await StudyMaterialOrderInstance_Pydantic.from_queryset(
-                StudyMaterialOrderInstance.filter(student__id=user)
-            )
+            # std_m = await StudyMaterialOrderInstance_Pydantic.from_queryset(
+            #     StudyMaterialOrderInstance.filter(student__id=user)
+            # )
+            std_m = await StudyMaterialOrderItems.filter(order__student__id=user)\
+                .values(web_icon="item_id__web_icon", course_title="item_id__name", discount_price="item_id__discount_price")
 
         elif await StudyMaterialOrderInstance.exists(student__id=user, package_mode=2):
             std_m_count = await StudyMaterialOrderInstance.filter(student__id=user).count()
@@ -273,7 +275,7 @@ async def student_dashboard(request: Request, user=Depends(get_current_user)):
             #     StudyMaterialOrderInstance.filter(student__id=user)
             # )
             std_m = await StudyMaterialOrderItems.filter(order__student__id=user)\
-                .values(web_icon="item_id__web_icon",course_title="item_id__name")
+                .values(web_icon="item_id__web_icon",course_title="item_id__name",discount_price="item_id__discount_price")
             
         else:
             std_m = None
@@ -287,7 +289,7 @@ async def student_dashboard(request: Request, user=Depends(get_current_user)):
             testseries = None
         total_order_count = course_count + std_m_count + test_series_count
         if course_exist or std_m_exist:
-            # return subscriptions
+            # return std_m
             return templates.TemplateResponse('new-dashboard.html',
                                               context={'request': request,
                                                        'total_order_count': total_order_count,
