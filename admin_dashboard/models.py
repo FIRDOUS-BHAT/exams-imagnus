@@ -58,6 +58,7 @@ class Course(Model):
     icon_image = fields.TextField()
     description = fields.TextField(null=True, blank=True)
     web_icon = fields.TextField(null=True, blank=True)
+    telegram_link = fields.TextField(null=True, blank=True)
     is_active = fields.BooleanField(default=True)
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
