@@ -1,4 +1,6 @@
 
+import botocore.vendored.requests.packages.urllib3 as urllib3
+import boto3
 from FCM.route import push_service
 from email_validator import validate_email, EmailNotValidError
 from fastapi_cache.decorator import cache
@@ -1280,8 +1282,11 @@ async def get_video_details(data:VideoDetails, _=Depends(get_current_user)):
    except Exception as ex:
        return {"status": False, "message": str(ex)}        
    
+from fastapi.responses import FileResponse
+   
 import httpx
 import json  
+import requests
 @router.post('/download_video') 
 async def download_videos( _=Depends(get_current_user)):
        
@@ -1302,8 +1307,16 @@ async def download_videos( _=Depends(get_current_user)):
             async with httpx.AsyncClient() as client:
                 print(json_response['download'][2]['link'])
                 content_obj = await client.get(json_response['download'][2]['link'])
-                print(content_obj)
-                if content_obj.status_code == 200:
-                    return content_obj.json()   
+            # http1=urllib3.PoolManager()
+            # s3.upload_fileobj(request('GET', url,preload_content=False), bucket, key)
+            # return json_response['download'][2]['link']
+            # return FileResponse(path=json_response['download'][2]['link'], filename="file_path", media_type='text/mp4')
+
+            # async with httpx.AsyncClient() as client:
+            #     print(json_response['download'][2]['link'])
+            #     content_obj = await client.get(json_response['download'][2]['link'])
+            #     print(content_obj)
+            #     if content_obj.status_code == 200:
+            #         return content_obj.json()   
         except Exception as ex:
             return str(ex)
