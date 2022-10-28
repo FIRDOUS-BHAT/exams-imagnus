@@ -445,7 +445,9 @@ async def add_category(s3: BaseClient = Depends(s3_auth), cat_name: str = Form(.
 async def edit_course(s3: BaseClient = Depends(s3_auth), edit_name: str = Form(default=None),
                       edit_icon_image: UploadFile = File(default=None),
                       edit_web_icon: UploadFile = File(default=None),
-                      edit_course_id: str = Form(...), user=Depends(get_current_user)):
+                      edit_course_id: str = Form(...), 
+                      edit_telegram_link: str = Form(default=None), 
+                      user=Depends(get_current_user)):
     if user is None:
         return RedirectResponse(url="/administrator/login/", status_code=status.HTTP_302_FOUND)
     c_instance = await Course.get(id=edit_course_id)
@@ -462,6 +464,8 @@ async def edit_course(s3: BaseClient = Depends(s3_auth), edit_name: str = Form(d
         if edit_web_icon.filename:
             web_image_url = await upload_images(s3, folder='course_icons/web_icons', image=edit_web_icon, mimetype=None)
             c_instance.web_icon = web_image_url
+        if edit_telegram_link:
+            c_instance.telegram_link = edit_telegram_link
     c_instance.updated_at = updated_at
     await c_instance.save()
 
