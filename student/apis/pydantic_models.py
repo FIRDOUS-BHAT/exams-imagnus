@@ -41,6 +41,7 @@ class CoursePydantic(BaseModel):
     id: uuid.UUID
     name: str
     slug: str
+    telegram_link: Optional[str] = None
 
 
 class categoryobjPydantic(BaseModel):
