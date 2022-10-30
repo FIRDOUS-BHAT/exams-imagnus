@@ -458,7 +458,7 @@
                         </div>
                           <div class="ui search focus lbel25">
                            <label class="form-label" for="">Telegram Link*</label>
-                           <input type="text" name="edit_telegram_link" class="form-control" />
+                           <input type="text" id="edit_telegram_link" name="edit_telegram_link" class="form-control" />
                         </div>
                         <button type="submit" class="btn btn-success mt-20"> Submit Course</button>
                      </div>
@@ -747,10 +747,12 @@ aria-hidden="true"
             let course_id = e.target.getAttribute('data-id')
             let pref_name = e.target.getAttribute('data-preference')
             let course_name = e.target.getAttribute('data-course')
+            let telegram = e.target.getAttribute('data-telegram')
 
             $('#pref_id').html('<option>'+ pref_name +'</option>')
             $('#edit_c_name').val(course_name)
             $('#edit_course_id').val(course_id)
+            $('#edit_telegram_link').val(telegram)
 
          })
 
