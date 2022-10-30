@@ -464,6 +464,7 @@ async def edit_course(s3: BaseClient = Depends(s3_auth), edit_name: str = Form(d
         if edit_web_icon.filename:
             web_image_url = await upload_images(s3, folder='course_icons/web_icons', image=edit_web_icon, mimetype=None)
             c_instance.web_icon = web_image_url
+        
         if edit_telegram_link:
             c_instance.telegram_link = edit_telegram_link
     c_instance.updated_at = updated_at
