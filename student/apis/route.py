@@ -572,7 +572,8 @@ async def student_details(uid: str, _=Depends(get_current_user)):
                 course_obj = {
                     "id": course.id,
                     "name": course.name,
-                    "slug": course.slug
+                    "slug": course.slug,
+                    "telegram_link": course.telegram_link
                 }
                 time_left = exp_date - datetime_1
                 new_dict.update({'subscription': subscription})
