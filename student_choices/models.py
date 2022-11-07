@@ -117,9 +117,7 @@ class BookMarkedVideos(Model):
     video = fields.ForeignKeyField(
         "models.CourseCategoryLectures", related_name="students_bookmarked_video", on_delete='CASCADE', index=True
     )
-    category = fields.ForeignKeyField(
-        "models.Category", related_name="category_BookMarkedVideos", on_delete='CASCADE', index=True
-    )
+    isBookmarked = fields.BooleanField(default=True)
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
 
