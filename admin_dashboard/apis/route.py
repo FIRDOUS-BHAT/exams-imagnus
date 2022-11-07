@@ -163,6 +163,14 @@ async def getBookMarkedNotes(student_id):
         return None
 
 
+@router.post('/get_course_category/{course_slug}/{category_slug}/{student_id}/')
+async def get_course_category(course_slug: str, category_slug: str, student_id: str, _=Depends(get_current_user)):
+    course_categories = await CourseCategoryLectures.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug).\
+        prefetch_related("video_studentVideoActivity",
+                         "students_bookmarked_video")
+    return course_categories
+
+
 @router.post('/v1/course_category/{course_slug}/{category_slug}/{student_id}/',
              #  response_model=CourseCategoryPydantic
              )
@@ -1695,10 +1703,10 @@ async def get_live_classes(course_slug: str, student_id: str, d: date, _=Depends
         subscription = await activeSubscription.exists(course=course, student=student)
         if subscription:
             obj = await LiveClasses_Pydantic.from_queryset(
-                LiveClasses.filter(course__slug=course_slug).filter(streaming_time__range=[dt,dt1 ]))
+                LiveClasses.filter(course__slug=course_slug).filter(streaming_time__range=[dt, dt1]))
         else:
             obj = await LiveClasses_Pydantic.from_queryset(
-                LiveClasses.filter(course__slug=course_slug,is_paid=False).filter(streaming_time__range=[dt,dt1 ]))
+                LiveClasses.filter(course__slug=course_slug, is_paid=False).filter(streaming_time__range=[dt, dt1]))
 
         return obj
     except Exception as e:

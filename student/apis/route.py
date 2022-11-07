@@ -1008,11 +1008,8 @@ async def bookmark_video(student_id: str, video_id: str, _=Depends(get_current_u
     try:
         student_instance = await Student.get(id=student_id)
         video_instance = await CourseCategoryLectures.get(id=video_id)
-        category_values = await CourseCategoryLectures.get(id=video_id).values("category_topic__category__category__id")
-        category_id = category_values["category_topic__category__category__id"]
-        category_instance = await Category.get(id=category_id)
         if not await BookMarkedVideos.exists(student=student_instance, video=video_instance):
-            await BookMarkedVideos.create(student=student_instance, category=category_instance, video=video_instance)
+            await BookMarkedVideos.create(student=student_instance,video=video_instance)
             return JSONResponse({"status": True, "message": "bookmarked"}, status_code=201)
         else:
             await BookMarkedVideos.filter(student=student_instance, video=video_instance).delete()
