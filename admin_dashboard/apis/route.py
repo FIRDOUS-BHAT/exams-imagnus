@@ -167,7 +167,7 @@ async def getBookMarkedNotes(student_id):
 async def get_course_category(course_slug: str, category_slug: str, student_id: str, _=Depends(get_current_user)):
     course_categories = await CourseCategoryLectures.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug).\
         prefetch_related("video_studentVideoActivity",
-                         "students_bookmarked_video")
+                         "students_bookmarked_video").limit(10)
     return course_categories
 
 
