@@ -1,0 +1,17 @@
+{% extends "base.html" %} {% block content %}
+
+<h4>Progress bar</h4>
+
+
+<script>
+    const authorizationToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJJbWFnbnVzQVBJcyIsImV4cCI6MTY2ODM1NjE5OX0.ivrzY2SsCD1wp_P1SiU_R7euwYOYPa5yrZjn5STI7wk"
+    const evtSource = new EventSource("/api/student/download_video",
+       {
+            headers: {
+                'Authorization': 'Bearer ' + authorizationToken
+            }
+        }
+    );
+</script>
+
+{% endblock %}

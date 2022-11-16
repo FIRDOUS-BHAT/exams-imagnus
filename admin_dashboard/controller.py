@@ -2075,3 +2075,10 @@ async def  delete_current_affairs(request:Request, _=Depends(get_current_user)):
         return {"status":True,"message": "Record deleted successfully"}      
     except Exception as ex:
         return {"status":False,"message": str(ex)}
+    
+@router.get('/admin/display-download-video')    
+async def display_progress(request: Request, _=Depends(get_current_user)):
+    return templates.TemplateResponse('video_download_progress.html', context={
+        'request': request,
+        'app_url': app_url
+    })

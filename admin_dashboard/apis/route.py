@@ -163,12 +163,36 @@ async def getBookMarkedNotes(student_id):
         return None
 
 
-@router.post('/get_course_category/{course_slug}/{category_slug}/{student_id}/')
+@router.post('/get_course_category/{course_slug}/{category_slug}/{student_id}/',
+             response_model=CourseCategoryPydantic
+             )
 async def get_course_category(course_slug: str, category_slug: str, student_id: str, _=Depends(get_current_user)):
-    course_categories = await CourseCategoryLectures.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug).\
-        prefetch_related("video_studentVideoActivity",
-                         "students_bookmarked_video").limit(10)
-    return course_categories
+    
+    
+    topics = await CourseCategoryLectures.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug).group_by("category_topic__topic__id").values(topic_id="category_topic__topic__id")
+    lectures = []
+    notes = []
+    test_series = []
+    for topic in topics:
+       
+        topic_obj = await Topics.get(id=topic["topic_id"]).values("id","name","slug")
+       
+        lectures_obj = await CourseCategoryLectures.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug,category_topic__topic__id=topic["topic_id"]).\
+             order_by("order_display").prefetch_related("video_studentVideoActivity",
+                             "students_bookmarked_video").values("id", "title", "slug", "discription", "web_video_url", "app_thumbnail", "video_duration", "mobile_video_url")
+        lectures.append({"topic": topic_obj, "CategoryLectures": lectures_obj})
+       
+        notes_obj = await CourseCategoryNotes.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug).\
+            order_by("order_display").prefetch_related("notes_studentNotesActivity",
+                            "students_bookmarked_notes").values("id","title","slug","thumbnail","notes_url")
+        notes.append({"topic": topic_obj, "CategoryNotes": notes_obj})
+        test_series_obj = await CourseCategoryTestSeries.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug).\
+            order_by("order_display").prefetch_related("test_series_studentTestSeriesActivity",
+                            "students_bookmarked_testseries").values("id", "title", "thumbnail", "no_of_qstns", "time_duration", "marks")
+        test_series.append(
+            {"topic": topic_obj, "CategoryTestSeries": test_series_obj})
+        
+    return {"Lectures": lectures,"Notes":notes,"TestSeries":test_series}
 
 
 @router.post('/v1/course_category/{course_slug}/{category_slug}/{student_id}/',
@@ -1313,7 +1337,8 @@ async def course_category(course_slug: str, category_slug: str, student_id: str,
                                 if category_topics_obj.CategoryTestSeries:
                                     for eachTest in category_topics_obj.CategoryTestSeries:
                                         new_dict = eachTest.dict(
-                                            exclude={'CategoryTestSeriesQuestions'})
+                                            exclude={'CategoryTestSeriesQuestions'}
+                                            )
                                         test_series_id = eachTest.id
                                         is_bookmarked = await check_isBookmarkedTestSeries(test_series_id)
                                         new_dict.update(
