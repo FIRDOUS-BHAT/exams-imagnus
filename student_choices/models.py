@@ -133,6 +133,7 @@ class BookMarkedNotes(Model):
     category = fields.ForeignKeyField(
         "models.Category", related_name="category_BookMarkedNotes", on_delete='CASCADE', index=True
     )
+    isBookmarked = fields.BooleanField(default=True)
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
 
@@ -148,6 +149,7 @@ class BookMarkedTestseries(Model):
     category = fields.ForeignKeyField(
         "models.Category", related_name="category_BookMarkedTestseries", on_delete='CASCADE', index=True
     )
+    isBookmarked = fields.BooleanField(default=True)
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
 

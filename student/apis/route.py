@@ -1,4 +1,13 @@
 
+from vimeo_downloader import Vimeo
+import json
+import rich.progress
+import requests
+import httpx
+from fastapi.responses import FileResponse
+import http.client
+import sys
+import tempfile
 import botocore.vendored.requests.packages.urllib3 as urllib3
 import boto3
 from FCM.route import push_service
@@ -175,8 +184,9 @@ class StudentRegisterPydantic(BaseModel):
     email: str
     fcm_token: str
     password: str
-    course_pref_id: Optional[str]=None
-    
+    course_pref_id: Optional[str] = None
+
+
 @router.post('/v1/register', status_code=201, response_model=loginResponsePydantic)
 async def register_student(user: StudentRegisterPydantic, _=Depends(get_current_user)):
     try:
@@ -207,7 +217,7 @@ async def register_student(user: StudentRegisterPydantic, _=Depends(get_current_
             return JSONResponse(
                 {"detail": "Email Id already exists"}, status_code=208)
         else:
-            
+
             # obj = await Student.create(**user.dict(exclude_unset=True))
             obj = await Student.create(
                 fullname=user.fullname,
@@ -217,12 +227,12 @@ async def register_student(user: StudentRegisterPydantic, _=Depends(get_current_
                 fcm_token=user.fcm_token,
                 password=util.get_password_hash(user.password),
                 status="1"
-               
+
             )
             if user.course_pref_id:
                 course = await Course.get(id=user.course_pref_id)
                 await StudentCoursePreferences.create(course=course, student=obj)
-            
+
             new_payment_records = []
             user = await Student_Pydantic.from_queryset_single(Student.get(mobile=user.mobile))
             result = jsonable_encoder(user.dict(exclude={'password'}))
@@ -239,8 +249,6 @@ async def register_student(user: StudentRegisterPydantic, _=Depends(get_current_
         # return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
         return JSONResponse(
             {"detail": str(ex)}, status_code=208)
-
-
 
 
 @router.post("/login",
@@ -1009,7 +1017,7 @@ async def bookmark_video(student_id: str, video_id: str, _=Depends(get_current_u
         student_instance = await Student.get(id=student_id)
         video_instance = await CourseCategoryLectures.get(id=video_id)
         if not await BookMarkedVideos.exists(student=student_instance, video=video_instance):
-            await BookMarkedVideos.create(student=student_instance,video=video_instance)
+            await BookMarkedVideos.create(student=student_instance, video=video_instance)
             return JSONResponse({"status": True, "message": "bookmarked"}, status_code=201)
         else:
             await BookMarkedVideos.filter(student=student_instance, video=video_instance).delete()
@@ -1255,67 +1263,84 @@ async def student_coupons(data: StudentCouponListing, _=Depends(get_current_user
     except Exception as ex:
         return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
-import http.client
+
 class VideoDetails(BaseModel):
     src: str
     video_id: str
+
+
 @router.post('/get_video_details/')
-async def get_video_details(data:VideoDetails, _=Depends(get_current_user)):
-   try:
-    if(data.src == 'vimeo'):
-        if data.video_id is not None:
-           
+async def get_video_details(data: VideoDetails, _=Depends(get_current_user)):
+    try:
+        if(data.src == 'vimeo'):
+            if data.video_id is not None:
 
-            conn = http.client.HTTPSConnection("api.vimeo.com")
-            payload = ''
-            headers = {
+                conn = http.client.HTTPSConnection("api.vimeo.com")
+                payload = ''
+                headers = {
+                    'Authorization': 'bearer REDACTED_TOKEN',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/vnd.vimeo.*+json;version=3.4'
+                }
+                conn.request("GET", "/videos/"+data.video_id, payload, headers)
+                res = conn.getresponse()
+                data = res.read()
+                # print(data.decode("utf-8"))
+                return {"status": True, "message": jsonable_encoder(data)}
+    except Exception as ex:
+        return {"status": False, "message": str(ex)}
+
+
+@router.get('/download_video')
+async def download_videos(_=Depends(get_current_user)):
+
+    try:
+        conn = http.client.HTTPSConnection("api.vimeo.com")
+        payload = ''
+        headers = {
             'Authorization': 'bearer REDACTED_TOKEN',
             'Content-Type': 'application/json',
             'Accept': 'application/vnd.vimeo.*+json;version=3.4'
-            }
-            conn.request("GET", "/videos/"+data.video_id, payload, headers)
-            res = conn.getresponse()
-            data = res.read()
-            # print(data.decode("utf-8"))
-            return {"status": True, "message": jsonable_encoder(data)}
-   except Exception as ex:
-       return {"status": False, "message": str(ex)}        
-   
-from fastapi.responses import FileResponse
-   
-import httpx
-import json  
-import requests
-@router.post('/download_video') 
-async def download_videos( _=Depends(get_current_user)):
+        }
+        conn.request("GET", "/videos/684172967", payload, headers)
+        res = conn.getresponse()
+        data = res.read()
+        # print(json.loads(data))
+        json_response = json.loads(data)
+        
        
-        try:
-            conn = http.client.HTTPSConnection("api.vimeo.com")
-            payload = ''
-            headers = {
-            'Authorization': 'bearer REDACTED_TOKEN',
-            'Content-Type': 'application/json',
-            'Accept': 'application/vnd.vimeo.*+json;version=3.4'
-            }
-            conn.request("GET", "/videos/684172967", payload, headers)
-            res = conn.getresponse()
-            data = res.read()
-            # print(json.loads(data))
-            json_response = json.loads(data)
-            # return json_response['download'][2]['link']
-            async with httpx.AsyncClient() as client:
-                print(json_response['download'][2]['link'])
-                content_obj = await client.get(json_response['download'][2]['link'])
-            # http1=urllib3.PoolManager()
-            # s3.upload_fileobj(request('GET', url,preload_content=False), bucket, key)
-            # return json_response['download'][2]['link']
-            # return FileResponse(path=json_response['download'][2]['link'], filename="file_path", media_type='text/mp4')
+        # open('video.mp4', 'wb').write(r.content)
+        file_name = 'video.mp4'
+        link = json_response['download'][2]['link']
+        response = requests.get(link, stream=True)
+        
+        with open(file_name, "wb") as f:
+               print("Downloading %s" % file_name)
+           
+            
+               
+                # with httpx.stream("GET", link) as response:
+        
+               total = int(response.headers["Content-Length"])
+               with rich.progress.Progress(
+                            "[progress.percentage]{task.percentage:>3.0f}%",
+                            rich.progress.BarColumn(bar_width=None),
+                            rich.progress.DownloadColumn(),
+                            rich.progress.TransferSpeedColumn(),
+                        ) as progress:
+                            download_task = progress.add_task(
+                                "Download", total=total)
+                            i=1
+                            for chunk in response.iter_content(chunk_size = 1024): 
+                                if chunk: 
+                                    
+                                    f.write(chunk) 
+                                    progress.update(
+                                        download_task, completed=i*1024)
+                                    i=i+1
+                                    # yield "data: {}\n\n".format(progress)"
+            
+    except Exception as ex:
+        return str(ex)
 
-            # async with httpx.AsyncClient() as client:
-            #     print(json_response['download'][2]['link'])
-            #     content_obj = await client.get(json_response['download'][2]['link'])
-            #     print(content_obj)
-            #     if content_obj.status_code == 200:
-            #         return content_obj.json()   
-        except Exception as ex:
-            return str(ex)
+
