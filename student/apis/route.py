@@ -1,5 +1,4 @@
 
-from vimeo_downloader import Vimeo
 import json
 import rich.progress
 import requests
