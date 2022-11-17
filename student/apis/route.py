@@ -31,7 +31,7 @@ from admin_dashboard.apis.pydantic_models import CourseCategoryTestSeriesOut
 from admin_dashboard.controller import upload_images
 from admin_dashboard.models import Coupons, Course, Category, CourseCategoryLectures, CourseCategoryNotes, \
     CourseCategoryTestSeries_Pydantic, CourseCategoryTestSeries, CourseSubscriptionPlans, \
-    CourseCategoryLectures_Pydantic, CourseCategories, SubscriptionPlans
+    CourseCategoryLectures_Pydantic, CourseCategories, SubscriptionPlans,CourseCategoryTestSeriesQuestions
 from aws_services.deps import s3_auth
 from checkout.models import PaymentRecords, PaymentRecords_Pydantic
 from configs import appinfo
@@ -957,15 +957,18 @@ async def active_subscription(student_id: str, c_slug: str, subscription_id: str
 
 
 @router.get('/test_series/{test_series_id}/',
-            response_model=List[CourseCategoryTestSeriesOut],
+            # response_model=List[CourseCategoryTestSeriesOut],
             )
 async def each_test_series(test_series_id: str, _=Depends(get_current_user)):
     try:
         # series_obj = await CourseCategoryTestSeries.get(id=test_series_id)
-        test_series = await CourseCategoryTestSeries_Pydantic.from_queryset(
-            CourseCategoryTestSeries.filter(id=test_series_id))
+        # test_series = await CourseCategoryTestSeries_Pydantic.from_queryset(
+        #     CourseCategoryTestSeries.filter(id=test_series_id))
+        test_series = await CourseCategoryTestSeries.filter(id=test_series_id).values("series_no","marks","no_of_qstns","title","time_duration","description","thumbnail")
+        questions = await CourseCategoryTestSeriesQuestions.filter(test_series__id=test_series_id).values("id","question","opt_1","opt_2","opt_3","opt_4","answer","solution")
         # test_series = await CourseCategoryTestSeriesQuestions_Pydantic.from_queryset(
         #     CourseCategoryTestSeriesQuestions.filter(test_series=series_obj))
+        test_series.append({"CategoryTestSeriesQuestions":questions})
         return test_series
     except Exception as ex:
         return JSONResponse(
