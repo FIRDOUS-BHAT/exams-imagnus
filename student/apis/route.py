@@ -968,7 +968,8 @@ async def each_test_series(test_series_id: str, _=Depends(get_current_user)):
         questions = await CourseCategoryTestSeriesQuestions.filter(test_series__id=test_series_id).values("id","question","opt_1","opt_2","opt_3","opt_4","answer","solution")
         # test_series = await CourseCategoryTestSeriesQuestions_Pydantic.from_queryset(
         #     CourseCategoryTestSeriesQuestions.filter(test_series=series_obj))
-        test_series.append({"CategoryTestSeriesQuestions":questions})
+       
+        test_series[0].update({"CategoryTestSeriesQuestions":questions})
         return test_series
     except Exception as ex:
         return JSONResponse(
