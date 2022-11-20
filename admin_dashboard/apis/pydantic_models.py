@@ -88,7 +88,7 @@ class CategoryNotesPydantic(BaseModel):
 
 
 class CategoryTestSeriesPydantic(BaseModel):
-    id: uuid.UUID
+    id: Optional[uuid.UUID] = None
     series_no: Optional[str] = None
     time_duration: Optional[int] = None
     marks: Optional[int] = None
