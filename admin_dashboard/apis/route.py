@@ -1291,6 +1291,7 @@ async def course_category(course_slug: str, category_slug: str, student_id: str,
                     return category_topics_array
 
                 async def execute_test_series_loop(array, subscription_series_counter):
+                    
                     category_topics_array = []
 
                     for category_topics_obj in array:
@@ -1301,6 +1302,7 @@ async def course_category(course_slug: str, category_slug: str, student_id: str,
                                                                                      "category"})}
 
                             if len(category_topics_obj.CategoryTestSeries) > subscription_series_counter:
+                               
                                 for i in range(subscription_series_counter):
                                     new_dict = category_topics_obj.CategoryTestSeries[i].dict(
                                         exclude={'CategoryTestSeriesQuestions'})
@@ -1320,6 +1322,8 @@ async def course_category(course_slug: str, category_slug: str, student_id: str,
                                     # test_series_id = category_topics_obj.CategoryTestSeries[
                                     #     subscription_series_counter + j].id
                                     # is_bookmarked = await check_isBookmarkedTestSeries(test_series_id)
+                                    updated_dict.update(
+                                        {"id": None})
                                     updated_dict.update(
                                         {"isBookmarked": False})
                                     # attempted = await testseries_activity(test_series_id)
