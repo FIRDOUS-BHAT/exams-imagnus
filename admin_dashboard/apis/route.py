@@ -1442,7 +1442,7 @@ async def course_category(course_slug: str, category_slug: str, student_id: str,
                             }
 
                             return result
-                else:
+                        else:
                             '''Free content free tier'''
 
                             initial_video_counter = 2
