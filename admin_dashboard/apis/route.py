@@ -1316,9 +1316,9 @@ async def course_category(course_slug: str, category_slug: str, student_id: str,
                                 for j in range(remaining_counter):
                                     updated_dict = category_topics_obj.CategoryTestSeries[
                                         subscription_series_counter + j].dict(exclude={'CategoryTestSeriesQuestions'})
-                                    # test_series_id = None
-                                    test_series_id = category_topics_obj.CategoryTestSeries[
-                                        subscription_series_counter + j].id
+                                    test_series_id = None
+                                    # test_series_id = category_topics_obj.CategoryTestSeries[
+                                    #     subscription_series_counter + j].id
                                     is_bookmarked = await check_isBookmarkedTestSeries(test_series_id)
                                     updated_dict.update(
                                         {"isBookmarked": is_bookmarked})
