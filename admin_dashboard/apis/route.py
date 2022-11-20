@@ -1319,12 +1319,12 @@ async def course_category(course_slug: str, category_slug: str, student_id: str,
                                     test_series_id = None
                                     # test_series_id = category_topics_obj.CategoryTestSeries[
                                     #     subscription_series_counter + j].id
-                                    is_bookmarked = await check_isBookmarkedTestSeries(test_series_id)
+                                    # is_bookmarked = await check_isBookmarkedTestSeries(test_series_id)
                                     updated_dict.update(
-                                        {"isBookmarked": is_bookmarked})
-                                    attempted = await testseries_activity(test_series_id)
+                                        {"isBookmarked": False})
+                                    # attempted = await testseries_activity(test_series_id)
                                     updated_dict.update(
-                                        {"attempted": attempted})
+                                        {"attempted": False})
                                     access_series.append(updated_dict)
 
                                 new_lect_dict.update(
