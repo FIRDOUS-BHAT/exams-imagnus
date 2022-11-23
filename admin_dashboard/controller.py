@@ -2082,3 +2082,18 @@ async def display_progress(request: Request, _=Depends(get_current_user)):
         'request': request,
         'app_url': app_url
     })
+import numpy as np    
+@router.get('/update_video_id/')
+async def update_video_id(request: Request, _=Depends(get_current_user)):
+        lectures = await CourseCategoryLectures.all().values('id','mobile_video_url','video_id')
+        new_lectures = np.array(lectures)
+        i = 0
+        for x in new_lectures:
+            if not x['video_id']:
+                if 'https://player.vimeo.com' in x['mobile_video_url']:
+                    url_split = x['mobile_video_url'].split('/')
+                    print(x)
+                    video_id_seg = url_split[4].split('.')
+                    print(video_id_seg[0])
+                    await CourseCategoryLectures.filter(id=x['id']).update(video_id=video_id_seg[0])
+        return len(lectures)   

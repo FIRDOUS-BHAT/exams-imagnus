@@ -170,6 +170,7 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
     
     
     topics = await CourseCategoryLectures.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug).group_by("category_topic__topic__id").values(topic_id="category_topic__topic__id")
+    topics = np.array(topics)
     lectures = []
     notes = []
     test_series = []
@@ -183,11 +184,11 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
         lectures.append({"topic": topic_obj, "CategoryLectures": lectures_obj})
        
         notes_obj = await CourseCategoryNotes.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug).\
-            order_by("order_display").prefetch_related("notes_studentNotesActivity",
+            prefetch_related("notes_studentNotesActivity",
                             "students_bookmarked_notes").values("id","title","slug","thumbnail","notes_url")
         notes.append({"topic": topic_obj, "CategoryNotes": notes_obj})
         test_series_obj = await CourseCategoryTestSeries.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug).\
-            order_by("order_display").prefetch_related("test_series_studentTestSeriesActivity",
+           prefetch_related("test_series_studentTestSeriesActivity",
                             "students_bookmarked_testseries").values("id", "title", "thumbnail", "no_of_qstns", "time_duration", "marks")
         test_series.append(
             {"topic": topic_obj, "CategoryTestSeries": test_series_obj})
