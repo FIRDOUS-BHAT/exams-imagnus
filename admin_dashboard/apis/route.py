@@ -210,7 +210,7 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
                     subscription_initial_video_counter = subscription_initial_video_counter - each_topic_lectures_length
 
             lectures.append(
-                {"topic": topic_obj, "CategoryLectures": allowed_lectures})
+                {"topic": topic_obj, "CategoryLectures": allowed_lectures[0]})
         return lectures
 
     async def execute_notes_loop(initial_notes_counter):
@@ -228,9 +228,7 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
             each_topic_notes_length = len(notes_obj)
 
             if each_topic_notes_length <= total_length_of_notes:
-                print("each_topic_lectures_length <= total_length_of_lectures")
                 if initial_notes_counter <= each_topic_notes_length:
-                    print("subscription_initial_video_counter <= each_topic_lectures_length")
                     for i in range(initial_notes_counter):
                         allowed_notes.append(notes_obj[i])
                         
@@ -247,7 +245,7 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
                     initial_notes_counter = initial_notes_counter - each_topic_notes_length
 
             
-            notes.append({"topic": topic_obj, "CategoryNotes": allowed_notes})
+            notes.append({"topic": topic_obj, "CategoryNotes": allowed_notes[0]})
             
         return notes
 
@@ -286,7 +284,7 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
 
            
             test_series.append(
-                {"topic": topic_obj, "CategoryTestSeries": allowed_test_series})
+                {"topic": topic_obj, "CategoryTestSeries": allowed_test_series[0]})
         return test_series
 
     category_course_ins = await CourseCategories.get(course__slug=course_slug, category__slug=category_slug)
