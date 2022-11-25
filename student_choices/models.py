@@ -105,6 +105,7 @@ class studentTestSeriesActivity(Model):
     test_series_id = fields.ForeignKeyField(
         "models.CourseCategoryTestSeries", related_name="test_series_studentTestSeriesActivity", on_delete='CASCADE',
     )
+    attempted = fields.BooleanField(default=False)
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
 
