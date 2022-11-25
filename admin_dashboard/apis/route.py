@@ -188,9 +188,9 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
             each_topic_lectures_length = len(lectures_obj)
 
             if each_topic_lectures_length <= total_length_of_lectures:
-                print("each_topic_lectures_length <= total_length_of_lectures")
+               
                 if subscription_initial_video_counter <= each_topic_lectures_length:
-                    print("subscription_initial_video_counter <= each_topic_lectures_length")
+                    
                     for i in range(subscription_initial_video_counter):
                         allowed_lectures.append(lectures_obj[i])
                         
@@ -204,13 +204,13 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
                         allowed_lectures.append(disallowed_dict)
                     subscription_initial_video_counter = 0    
                 else:
-                    print("subscription_initial_video_counter > each_topic_lectures_length")
+                   
                     allowed_lectures.append(lectures_obj)
                     
                     subscription_initial_video_counter = subscription_initial_video_counter - each_topic_lectures_length
 
             lectures.append(
-                {"topic": topic_obj, "CategoryLectures": lectures_obj})
+                {"topic": topic_obj, "CategoryLectures": allowed_lectures})
         return lectures
 
     async def execute_notes_loop(initial_notes_counter):
