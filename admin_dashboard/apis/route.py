@@ -242,7 +242,6 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
                         allowed_notes.append(disallowed_dict)
                     initial_notes_counter = 0    
                 else:
-                    print("subscription_initial_video_counter > each_topic_lectures_length")
                     allowed_notes.append(notes_obj)
                     
                     initial_notes_counter = initial_notes_counter - each_topic_notes_length
