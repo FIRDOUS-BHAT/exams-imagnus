@@ -248,9 +248,7 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
                     initial_notes_counter = initial_notes_counter - each_topic_notes_length
 
             
-            
-            
-            notes.append({"topic": topic_obj, "CategoryNotes": notes_obj})
+            notes.append({"topic": topic_obj, "CategoryNotes": allowed_notes})
             
         return notes
 
@@ -264,7 +262,8 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
 
             test_series_obj = await CourseCategoryTestSeries.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug).\
                 prefetch_related("test_series_studentTestSeriesActivity",
-                                 "students_bookmarked_testseries").values("id", "title", "thumbnail", "no_of_qstns", "time_duration", "marks")
+                                 "students_bookmarked_testseries")
+                # .values("id", "title", "thumbnail", "no_of_qstns", "time_duration", "marks")
            
             each_topic_test_series_length = len(test_series_obj)
 
@@ -289,7 +288,7 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
 
            
             test_series.append(
-                {"topic": topic_obj, "CategoryTestSeries": test_series_obj})
+                {"topic": topic_obj, "CategoryTestSeries": allowed_test_series})
         return test_series
 
     category_course_ins = await CourseCategories.get(course__slug=course_slug, category__slug=category_slug)
