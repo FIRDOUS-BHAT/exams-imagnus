@@ -280,6 +280,7 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
                     for j in range(not_allowed_test_series_length):
                         disallowed_dict = test_series_obj[subscription_test_series_counter + j]
                         disallowed_dict.update({"id":None})
+                        disallowed_dict.update({"attempted":False})
                         allowed_test_series.append(disallowed_dict)
                     subscription_test_series_counter = 0    
                 else:
