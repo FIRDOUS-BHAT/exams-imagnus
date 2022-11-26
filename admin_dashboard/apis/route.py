@@ -273,6 +273,7 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
                 if subscription_test_series_counter <= each_topic_test_series_length:
                    
                     for i in range(subscription_test_series_counter):
+                        test_series_obj[i].update({"isBookmarked":False})
                         allowed_test_series.append(test_series_obj[i])
                         
                     not_allowed_test_series_length = each_topic_test_series_length - subscription_test_series_counter
@@ -285,6 +286,9 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
                         allowed_test_series.append(disallowed_dict)
                     subscription_test_series_counter = 0    
                 else:
+                    for x in test_series_obj:
+                       x.update({"isBookmarked":False})
+                       allowed_test_series.append(x)
                     allowed_test_series.append(test_series_obj)
                     
                     subscription_test_series_counter = subscription_test_series_counter - each_topic_test_series_length
