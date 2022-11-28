@@ -156,7 +156,7 @@ async def get_students_rank(data: rankPydantic, _=Depends(get_current_user)):
             result_obj = await StudentScholarshipTestSeriesRecord.get(
                 student__id=student_id, test_series__id=test_series_id)
             rank_query = await StudentScholarshipTestSeriesRecord.all().order_by('-marks', 'time_taken')
-            top_ten = await StudentScholarshipTestSeriesRecord.all().order_by('-marks', 'time_taken').limit(10)
+            top_ten = await StudentScholarshipTestSeriesRecord.all().order_by('-marks', 'time_taken').limit(10).values("id","marks","time_taken","student_id","test_series_id",student_name="student__fullname")
             np_arr = np.array(rank_query)
             index_of_student = 0
             for i in range(np_arr.size):
