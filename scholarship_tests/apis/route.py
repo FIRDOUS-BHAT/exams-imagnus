@@ -1,3 +1,4 @@
+import numpy as np
 from fastapi.encoders import jsonable_encoder
 import pytz
 from fastapi import APIRouter, Depends, UploadFile, File
@@ -5,7 +6,7 @@ from datetime import datetime
 from utils.util import get_current_user
 
 from starlette.responses import JSONResponse
-from scholarship_tests.models import ScholarshipTestSeries, ScholarshipTestSeries_Pydantic, StudentScholarshipTestSeriesRecord
+from scholarship_tests.models import ScholarshipTestSeries, ScholarshipTestSeries_Pydantic, ScholarshipTestSeriesQuestions, StudentScholarshipTestSeriesRecord
 from scholarship_tests.pydantic_models import rankPydantic, studentIdPydanctic, testRecordIn_Pydantic
 from student.models import Student
 '''Scholarship testseries here'''
@@ -149,17 +150,35 @@ async def get_students_rank(data: rankPydantic, _=Depends(get_current_user)):
     ):
         updated_at = datetime.now(tz)
         if await ScholarshipTestSeries.exists(id=test_series_id, result_announcement_date__lte=updated_at):
-            test_series_obj = await ScholarshipTestSeries_Pydantic.from_queryset_single(
-                ScholarshipTestSeries.get(id=test_series_id))
+            test_series_obj = await ScholarshipTestSeries.get(id=test_series_id)
+            test_series_questions = await ScholarshipTestSeriesQuestions.filter(test_series__id=test_series_id)
+
             result_obj = await StudentScholarshipTestSeriesRecord.get(
                 student__id=student_id, test_series__id=test_series_id)
+            rank_query = await StudentScholarshipTestSeriesRecord.all().order_by('-marks', 'time_taken')
+            top_ten = await StudentScholarshipTestSeriesRecord.all().order_by('-marks', 'time_taken').limit(10)
+            np_arr = np.array(rank_query)
+            index_of_student = 0
+            for i in range(np_arr.size):
+                
+                if str(np_arr[i].student_id) == str(student_id):
+                    
+                  index_of_student = i
+                  break
+            
+            new_dict = jsonable_encoder(test_series_obj)
+            new_dict.update(
+                {"ScholarshipTestSeries": test_series_questions})
+
             message = {
-                "rank": 100,
+                "rank": str(i)+'/'+str(len(rank_query)),
+                "top_ten": jsonable_encoder(top_ten),
+                
                 # "correct_ans": result_obj.correct_ans,
                 # "wrong_ans": result_obj.wrong_ans,
                 # "skipped_qns": result_obj.skipped_qns,
                 # "time_taken": result_obj.time_taken,
-                "test_series_obj": jsonable_encoder(test_series_obj),
+                "test_series_obj": jsonable_encoder(new_dict),
                 # "test_record_summary": result_obj.test_record_summary,
             }
             return JSONResponse({"status": True, "message": message}, status_code=200)
