@@ -187,8 +187,8 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
             # lectures_obj = np.array(lectures_obj)
             each_topic_lectures_length = len(lectures_obj)
 
-            if each_topic_lectures_length <= total_length_of_lectures:
-                if subscription_initial_video_counter <= each_topic_lectures_length:
+            
+            if subscription_initial_video_counter <= each_topic_lectures_length:
                     print("subscription_initial_video_counter <= each_topic_lectures_length")
                     for i in range(subscription_initial_video_counter):
                         allowed_lectures.append(lectures_obj[i])
@@ -202,7 +202,7 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
                         disallowed_dict.update({"video_id":None})
                         allowed_lectures.append(disallowed_dict)
                     subscription_initial_video_counter = 0    
-                else:
+            else:
                     
                     allowed_lectures.append(lectures_obj)
                     
