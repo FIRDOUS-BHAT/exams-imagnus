@@ -257,7 +257,7 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
             allowed_test_series = []
             topic_obj = await Topics.get(id=topic["topic_id"]).values("id", "name", "slug")
 
-            test_series_obj = await CourseCategoryTestSeries.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug,category_topic__topic__id=topic["topic_id"]).\
+            test_series_obj = await CourseCategoryTestSeries.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug, category_topic__topic__id=topic["topic_id"]).\
                 prefetch_related("test_series_studentTestSeriesActivity",
                                  "students_bookmarked_testseries").values("id", "title", "thumbnail", "no_of_qstns", "time_duration", "marks", "description")
            
