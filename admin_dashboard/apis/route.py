@@ -188,7 +188,6 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
             each_topic_lectures_length = len(lectures_obj)
 
             if each_topic_lectures_length <= total_length_of_lectures:
-                print("each_topic_lectures_length <= total_length_of_lectures")
                 if subscription_initial_video_counter <= each_topic_lectures_length:
                     print("subscription_initial_video_counter <= each_topic_lectures_length")
                     for i in range(subscription_initial_video_counter):
@@ -204,13 +203,13 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
                         allowed_lectures.append(disallowed_dict)
                     subscription_initial_video_counter = 0    
                 else:
-                    print("subscription_initial_video_counter > each_topic_lectures_length")
+                    
                     allowed_lectures.append(lectures_obj)
                     
                     subscription_initial_video_counter = subscription_initial_video_counter - each_topic_lectures_length
 
             lectures.append(
-                {"topic": topic_obj, "CategoryLectures": lectures_obj})
+                {"topic": topic_obj, "CategoryLectures": allowed_lectures[0]})
         return lectures
 
     async def execute_notes_loop(initial_notes_counter):
@@ -221,16 +220,14 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
             allowed_notes = []
             topic_obj = await Topics.get(id=topic["topic_id"]).values("id", "name", "slug")
 
-            notes_obj = await CourseCategoryNotes.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug).\
+            notes_obj = await CourseCategoryNotes.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug,category_topic__topic__id=topic["topic_id"]).\
                 prefetch_related("notes_studentNotesActivity",
                                  "students_bookmarked_notes").values("id", "title", "slug", "thumbnail", "notes_url")
             
             each_topic_notes_length = len(notes_obj)
 
             if each_topic_notes_length <= total_length_of_notes:
-                print("each_topic_lectures_length <= total_length_of_lectures")
                 if initial_notes_counter <= each_topic_notes_length:
-                    print("subscription_initial_video_counter <= each_topic_lectures_length")
                     for i in range(initial_notes_counter):
                         allowed_notes.append(notes_obj[i])
                         
@@ -242,15 +239,12 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
                         allowed_notes.append(disallowed_dict)
                     initial_notes_counter = 0    
                 else:
-                    print("subscription_initial_video_counter > each_topic_lectures_length")
                     allowed_notes.append(notes_obj)
                     
                     initial_notes_counter = initial_notes_counter - each_topic_notes_length
 
             
-            
-            
-            notes.append({"topic": topic_obj, "CategoryNotes": notes_obj})
+            notes.append({"topic": topic_obj, "CategoryNotes": allowed_notes[0]})
             
         return notes
 
@@ -262,7 +256,7 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
             allowed_test_series = []
             topic_obj = await Topics.get(id=topic["topic_id"]).values("id", "name", "slug")
 
-            test_series_obj = await CourseCategoryTestSeries.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug).\
+            test_series_obj = await CourseCategoryTestSeries.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug,category_topic__topic__id=topic["topic_id"]).\
                 prefetch_related("test_series_studentTestSeriesActivity",
                                  "students_bookmarked_testseries").values("id", "title", "thumbnail", "no_of_qstns", "time_duration", "marks", "description")
            
@@ -295,7 +289,7 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
 
            
             test_series.append(
-                {"topic": topic_obj, "CategoryTestSeries": test_series_obj})
+                {"topic": topic_obj, "CategoryTestSeries": allowed_test_series[0]})
         return test_series
 
     category_course_ins = await CourseCategories.get(course__slug=course_slug, category__slug=category_slug)
