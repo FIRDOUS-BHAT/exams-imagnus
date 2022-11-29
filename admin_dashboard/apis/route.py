@@ -257,15 +257,16 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
             allowed_test_series = []
             topic_obj = await Topics.get(id=topic["topic_id"]).values("id", "name", "slug")
 
-            test_series_obj = await CourseCategoryTestSeries.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug,category_topic__topic__id=topic["topic_id"]).\
+            test_series_obj = await CourseCategoryTestSeries.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug).\
                 prefetch_related("test_series_studentTestSeriesActivity",
                                  "students_bookmarked_testseries").values("id", "title", "thumbnail", "no_of_qstns", "time_duration", "marks", "description")
            
             each_topic_test_series_length = len(test_series_obj)
 
-            
+            print(test_series_obj)
             if subscription_test_series_counter <= each_topic_test_series_length:
-                   
+                    print("TestSeries:subscription_test_series_counter <= each_topic_lectures_length")
+
                     for i in range(subscription_test_series_counter):
                         test_series_obj[i].update({"isBookmarked":False})
                         allowed_test_series.append(test_series_obj[i])
@@ -280,6 +281,8 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
                         allowed_test_series.append(disallowed_dict)
                     subscription_test_series_counter = 0    
             else:
+                    print("TestSeries:subscription_test_series_counter > each_topic_lectures_length")
+ 
                     add_bookmark = []
                     for x in test_series_obj:
                        x.update({"isBookmarked":False})
