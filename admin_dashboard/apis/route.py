@@ -250,7 +250,7 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
         return notes
 
     async def execute_test_series_loop(subscription_test_series_counter):
-        topics = await CourseCategoryNotes.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug).group_by("category_topic__topic__id").values(topic_id="category_topic__topic__id")
+        topics = await CourseCategoryTestSeries.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug).group_by("category_topic__topic__id").values(topic_id="category_topic__topic__id")
         topics = np.array(topics)
         test_series = []
         for topic in topics:
