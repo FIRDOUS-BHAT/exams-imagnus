@@ -240,12 +240,12 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
                         allowed_notes.append(disallowed_dict)
                     initial_notes_counter = 0    
                 else:
-                    allowed_notes.append(notes_obj)
+                    allowed_notes = notes_obj
                     
                     initial_notes_counter = initial_notes_counter - each_topic_notes_length
 
             
-            notes.append({"topic": topic_obj, "CategoryNotes": allowed_notes[0]})
+            notes.append({"topic": topic_obj, "CategoryNotes": allowed_notes})
             
         return notes
 
@@ -263,9 +263,8 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
            
             each_topic_test_series_length = len(test_series_obj)
 
-            if each_topic_test_series_length <= total_length_of_test_series:
-                print("each_topic_lectures_length <= total_length_of_lectures")
-                if subscription_test_series_counter <= each_topic_test_series_length:
+            
+            if subscription_test_series_counter <= each_topic_test_series_length:
                    
                     for i in range(subscription_test_series_counter):
                         test_series_obj[i].update({"isBookmarked":False})
@@ -280,17 +279,18 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
                         disallowed_dict.update({"isBookmarked":False})
                         allowed_test_series.append(disallowed_dict)
                     subscription_test_series_counter = 0    
-                else:
+            else:
+                    add_bookmark = []
                     for x in test_series_obj:
                        x.update({"isBookmarked":False})
-                       allowed_test_series.append(x)
-                    allowed_test_series.append(test_series_obj)
+                       add_bookmark.append(x)
+                    allowed_test_series = add_bookmark
                     
                     subscription_test_series_counter = subscription_test_series_counter - each_topic_test_series_length
 
            
             test_series.append(
-                {"topic": topic_obj, "CategoryTestSeries": allowed_test_series[0]})
+                {"topic": topic_obj, "CategoryTestSeries": allowed_test_series})
         return test_series
 
     category_course_ins = await CourseCategories.get(course__slug=course_slug, category__slug=category_slug)
