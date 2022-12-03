@@ -166,11 +166,11 @@ async def get_students_rank(data: rankPydantic, _=Depends(get_current_user)):
                   index_of_student = i
                   break
             
-            new_dict = jsonable_encoder(result_obj)
+            new_dict = jsonable_encoder(test_series_obj)
             new_dict.update(
-                {"ScholarshipTestSeries": test_series_obj})
+                {"ScholarshipTestSeries": test_series_questions})
             new_dict.update(
-                {"ScholarshipTestSeriesQuestions": test_series_questions})
+                {"ScholarshipTestSeries_student": result_obj})
 
             message = {
                 "rank": str(i)+'/'+str(len(rank_query)),
