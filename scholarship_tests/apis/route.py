@@ -166,9 +166,11 @@ async def get_students_rank(data: rankPydantic, _=Depends(get_current_user)):
                   index_of_student = i
                   break
             
-            new_dict = jsonable_encoder(test_series_obj)
+            new_dict = jsonable_encoder(result_obj)
             new_dict.update(
-                {"ScholarshipTestSeries": test_series_questions})
+                {"ScholarshipTestSeries": test_series_obj})
+            new_dict.update(
+                {"ScholarshipTestSeriesQuestions": test_series_questions})
 
             message = {
                 "rank": str(i)+'/'+str(len(rank_query)),
@@ -185,4 +187,4 @@ async def get_students_rank(data: rankPydantic, _=Depends(get_current_user)):
         else:
             return JSONResponse({"status": True, "message": "No data Found"}, status_code=208)
     else:
-        return JSONResponse({"status": True, "message": "No data Found"}, status_code=208)
+        return JSONResponse({"status": False, "message": "No data Found"}, status_code=208)
