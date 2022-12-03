@@ -180,7 +180,8 @@ async def admin_register(mobile: str, password: str):
 @router.post('/secure/admin/login/')
 async def login(request: Request, data: OAuth2PasswordRequestForm = Depends()):
     try:
-        request_ip = request.client.host
+        # request_ip = request.client.host
+        request_ip = "1.1.1.1"
         header = request.headers
         ips = context.data["X-Forwarded-For"]
         ips = "27.7.244.155,127.0.0.1"
