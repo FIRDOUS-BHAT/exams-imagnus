@@ -5,6 +5,7 @@ from fastapi_cache.decorator import cache
 from scholarship_tests.models import ScholarshipTestSeries, ScholarshipTestSeries_Pydantic
 import json
 import uuid
+from slugify import slugify
 from datetime import datetime, date
 from operator import itemgetter
 from typing import List, Optional
@@ -1833,7 +1834,8 @@ async def course_overview(course_slug: str, _=Depends(get_current_user)):
 
 @router.post('/add_instructor')
 async def add_instructor(data: InstructorIn_Pydantic, _=Depends(get_current_user)):
-    if await Instructor.create(**data.dict(exclude_unset=True)):
+    # if await Instructor.create(**data.dict(exclude_unset=True)):
+    if await Instructor.create(name=data.name,slug=slugify(data.name)):
         return {"added successfully"}
     else:
         return {"An error occurred"}
