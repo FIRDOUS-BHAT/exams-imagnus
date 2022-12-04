@@ -8,6 +8,7 @@ from tortoise.fields.data import JsonLoadsFunc
 
 class studentIdPydanctic(BaseModel):
     student_id: uuid.UUID
+    course_id: uuid.UUID
     lang: Optional[str] = None
 
 
