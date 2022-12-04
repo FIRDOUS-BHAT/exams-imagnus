@@ -6,6 +6,8 @@ from tortoise import Tortoise
 
 class ScholarshipTestSeries(Model):
     id = fields.UUIDField(pk=True)
+    course = fields.ForeignKeyField(
+        "models.Course", related_name="scholarship_test_course", on_delete='CASCADE')
     on_date = fields.DatetimeField(null=True, blank=True)
     end_date = fields.DatetimeField(null=True, blank=True)
     result_announcement_date = fields.DatetimeField(null=True, blank=True)
@@ -57,7 +59,8 @@ class StudentScholarshipTestSeriesRecord(Model):
     created_at = fields.DatetimeField(auto_now_add=True)
 
 
-Tortoise.init_models(["scholarship_tests.models", "student.models"], "models")
+Tortoise.init_models(["scholarship_tests.models",
+                     "student.models", "admin_dashboard.models"], "models")
 ScholarshipTestSeries_Pydantic = pydantic_model_creator(ScholarshipTestSeries)
 ScholarshipTestSeriesQuestions_Pydantic = pydantic_model_creator(
     ScholarshipTestSeriesQuestions)
