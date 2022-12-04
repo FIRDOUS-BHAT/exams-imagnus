@@ -1503,6 +1503,7 @@ async def scholarship_testseries_page(request: Request):
 
 @router.post('/admin/add/scholarship/testseries/')
 async def add_scholarship_testseries(request: Request, on_date: datetime = Form(...), end_date: datetime = Form(...),
+                                     announce_date: datetime = Form(...),
                                      time_duration: int = Form(...), total_marks: int = Form(...),
                                      title: str = Form(...),
                                      lang: str = Form(...),
@@ -1527,6 +1528,7 @@ async def add_scholarship_testseries(request: Request, on_date: datetime = Form(
     test_series_instance = await ScholarshipTestSeries.create(
         on_date=on_date,
         end_date=end_date,
+        result_announcement_date=announce_date,
         image=image_url,
         description=description,
         time_duration=time_duration,
