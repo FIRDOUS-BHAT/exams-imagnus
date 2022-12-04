@@ -1507,6 +1507,7 @@ async def scholarship_testseries_page(request: Request):
 async def add_scholarship_testseries(request: Request, on_date: datetime = Form(...), end_date: datetime = Form(...),
                                      announce_date: datetime = Form(...),
                                      time_duration: int = Form(...), total_marks: int = Form(...),
+                                     course_id: str = Form(...),
                                      title: str = Form(...),
                                      lang: str = Form(...),
                                      image: UploadFile = File(...),
@@ -1523,11 +1524,12 @@ async def add_scholarship_testseries(request: Request, on_date: datetime = Form(
     # print(new_datetime)
     data = pd.read_excel(
         testseries_file.file.read())
-
-    await ScholarshipTestSeries.filter(lang=lang).delete()
+    course = await Course.get(id=course_id)
+    await ScholarshipTestSeries.filter(lang=lang,course__id=course_id).delete()
     folder = 'scholarship/2022/banner_images/'
     image_url = await upload_pdf_notes(s3, folder=folder, image=image, mimetype=None)
     test_series_instance = await ScholarshipTestSeries.create(
+        course=course,
         on_date=on_date,
         end_date=end_date,
         result_announcement_date=announce_date,
