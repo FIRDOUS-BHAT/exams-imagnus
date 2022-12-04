@@ -1515,18 +1515,21 @@ async def add_scholarship_testseries(request: Request, on_date: datetime = Form(
                                      description: str = Form(...),
                                      s3: BaseClient = Depends(s3_auth),
                                      ):
+  try:
     async def get_localtimezone(dt_params):
         lc_datetime = tz.localize(dt_params)
         new_datetime = lc_datetime.isoformat()
 
         return new_datetime
 
-    # print(new_datetime)
+    
     data = pd.read_excel(
         testseries_file.file.read())
+    
     course = await Course.get(id=course_id)
-    await ScholarshipTestSeries.filter(lang=lang,course__id=course_id).delete()
-    folder = 'scholarship/2022/banner_images/'
+    
+    await ScholarshipTestSeries.filter(lang=lang,course=course).delete()
+    folder = 'scholarship/2022/banner_images'
     image_url = await upload_pdf_notes(s3, folder=folder, image=image, mimetype=None)
     test_series_instance = await ScholarshipTestSeries.create(
         course=course,
@@ -1539,7 +1542,7 @@ async def add_scholarship_testseries(request: Request, on_date: datetime = Form(
         total_marks=total_marks, no_of_qstns=len(data),
         lang=lang, title=title,
     )
-
+    
     for i, k in data.iterrows():
         await ScholarshipTestSeriesQuestions.create(
             question=k['questions'],
@@ -1548,13 +1551,14 @@ async def add_scholarship_testseries(request: Request, on_date: datetime = Form(
             opt_3=k['opt_3'],
             opt_4=k['opt_4'],
             answer=k['answer'],
+            solution=k['solution'],
 
             test_series=test_series_instance
         )
 
     return RedirectResponse(url='/admin/scholarship/testseries/', status_code=status.HTTP_303_SEE_OTHER)
-
-
+  except Exception as ex:
+    return str(ex)
 @router.get('/admin/orders/')
 async def get_orders(request: Request, user=Depends(get_current_user)):
     if user is None:
