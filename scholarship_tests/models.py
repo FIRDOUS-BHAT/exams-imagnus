@@ -61,7 +61,7 @@ class StudentScholarshipTestSeriesRecord(Model):
 
 Tortoise.init_models(["scholarship_tests.models",
                      "student.models", "admin_dashboard.models"], "models")
-ScholarshipTestSeries_Pydantic = pydantic_model_creator(ScholarshipTestSeries)
+ScholarshipTestSeries_Pydantic = pydantic_model_creator(ScholarshipTestSeries,exclude=["course"])
 ScholarshipTestSeriesQuestions_Pydantic = pydantic_model_creator(
     ScholarshipTestSeriesQuestions)
 StudentScholarshipTestSeriesRecord_Pydantic = pydantic_model_creator(
