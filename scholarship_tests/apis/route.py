@@ -175,7 +175,7 @@ async def get_students_rank(data: rankPydantic, _=Depends(get_current_user)):
                 {"ScholarshipTestSeries_student": result_obj})
 
             message = {
-                "rank": str(i)+'/'+str(len(rank_query)),
+                "rank": str(index_of_student)+'/'+str(len(rank_query)),
                 "top_ten": jsonable_encoder(top_ten),
 
                 # "correct_ans": result_obj.correct_ans,
