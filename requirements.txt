@@ -60,7 +60,7 @@ hiredis==2.0.0
 hpack==4.0.0
 httpcore==0.14.7
 httptools==0.2.0
-httpx==0.22.0
+httpx==0.23.0
 hypercorn==0.13.2
 hyperframe==6.0.1
 idna==3.3
