@@ -1490,7 +1490,8 @@ async def add_student_enquiries(request: Request):
 @router.get('/admin/scholarship/testseries/')
 async def scholarship_testseries_page(request: Request):
     courses = await Course.all()
-    test_series = await ScholarshipTestSeries_Pydantic.from_queryset(ScholarshipTestSeries.all())
+    test_series = await ScholarshipTestSeries.all().prefetch_related("course").order_by("-created_at")
+    # return test_series
     return templates.TemplateResponse('scholarship-testseries.html',
                                       context={
                                           'request': request,
