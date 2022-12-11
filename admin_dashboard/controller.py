@@ -1586,11 +1586,13 @@ async def get_orders(request: Request, page: int = Query(..., title="Page Number
                      ):
     if user is None:
         return RedirectResponse(url="/administrator/login/", status_code=status.HTTP_302_FOUND)
-    orders = await PaymentRecords_Pydantic.from_queryset(
-        PaymentRecords.all().order_by('-created_at')
-        .offset((page*perPage)-perPage)
-        .limit(perPage)
-    )
+    # orders = await PaymentRecords_Pydantic.from_queryset(
+    #     PaymentRecords.all().order_by('-created_at')
+    #     .offset((page*perPage)-perPage)
+    #     .limit(perPage)
+    # )
+    orders = await PaymentRecords.all().order_by('-created_at').offset((page*perPage)-perPage).limit(perPage).values("id", "order_id","payment_id", "payment_mode", "bill_amount", "payment_status", "source", "created_at", fullname="student__fullname", mobile="student__mobile", course_name="subscription__course__name")
+    
     data_count = await PaymentRecords.all().count()
     segments = data_count/perPage
     # return orders
@@ -1939,24 +1941,24 @@ async def get_students(request: Request, user=Depends(get_current_user)):
 @router.get('/update_expiry_date/')
 async def add_new_date():
     # stud_obj = await StudentChoices.filter(
-    #     course__id__in=[
-    #         'eaa1467e-3e01-423b-9bcd-36d7b2cdbe5e']
+    #     subscription__id__in=[
+    #         '23438cf5-c964-425a-bf9d-82ee3a280e3e']
     # )
 
     # i = 0
     # for each_obj in stud_obj:
     #     expiry = each_obj.expiry_date
-    # #     new_expiry_date = created + relativedelta(years=1)
-    # #     updated_at = datetime.now(tz)
-    # #     await StudentChoices.filter(id=each_obj.id).update(expiry_date=new_expiry_date, updated_at=updated_at)
-    # #     i = i + 1
-    # #     print(i)
-    #     # if (expiry.month == (11)) & (expiry.year == 2022):  # and exp_date.day <= 15
-    #     #     i = i + 1
-    #     # # #    new_expiry_date = exp_date + relativedelta(months=2)
-    #     #     new_expiry_date = parser.parse('2022-12-01T23:59:59.410158+05:30')
-    #     #     await StudentChoices.filter(id=each_obj.id).update(expiry_date=new_expiry_date)
-    #     #     print(i)
+    #     # new_expiry_date = created + relativedelta(years=1)
+    #     updated_at = datetime.now(tz)
+    #     # await StudentChoices.filter(id=each_obj.id).update(expiry_date=new_expiry_date, updated_at=updated_at)
+    #     # i = i + 1
+    #     # print(i)
+    #     if ((expiry.month == (10)) & (expiry.year == 2022)) | ((expiry.month == (11)) & (expiry.year == 2022)) | ((expiry.month == (12)) & (expiry.year == 2022)) | ((expiry.month == (1)) & (expiry.year == 2023)):  # and exp_date.day <= 15
+    #         i = i + 1
+    #         new_expiry_date = expiry + relativedelta(months=8)
+    #         # new_expiry_date = parser.parse('2022-12-01T23:59:59.410158+05:30')
+    #         await StudentChoices.filter(id=each_obj.id).update(expiry_date=new_expiry_date)
+    #         print(i)
     return {"done"}
 
 

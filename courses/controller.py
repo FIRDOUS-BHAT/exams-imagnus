@@ -240,7 +240,7 @@ async def my_account(request: Request, user: str = Depends(get_current_user)):
 
 @router.get('/student/new-dashboard/', responses={404: {"model": HTTPNotFoundError}})
 async def student_dashboard(request: Request, user=Depends(get_current_user)):
-    try:
+    # try:
         course_exist = await PaymentRecords.exists(student__id=user)
         course_count = 0
         std_m_count = 0
@@ -282,9 +282,10 @@ async def student_dashboard(request: Request, user=Depends(get_current_user)):
         test_series = await TestSeriesOrders.exists(student__id=user)
         if test_series:
             test_series_count = await TestSeriesOrders.filter(student__id=user).count()
-            testseries = await TestSeriesOrders_Pydantic.from_queryset(
-                TestSeriesOrders.filter(student__id=user)
-            )
+            # testseries = await TestSeriesOrders_Pydantic.from_queryset(
+            #     TestSeriesOrders.filter(student__id=user)
+            # )
+            testseries = None
         else:
             testseries = None
         total_order_count = course_count + std_m_count + test_series_count
@@ -308,8 +309,8 @@ async def student_dashboard(request: Request, user=Depends(get_current_user)):
                                                        'subscriptions': subscriptions,
                                                        'std_ms': std_m
                                                        })
-    except Exception as ex:
-        return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
+    # except Exception as ex:
+    #     return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
         # return RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
 
 
