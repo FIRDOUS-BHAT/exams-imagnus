@@ -47,10 +47,10 @@
      {% for order in orders %}
     <tr  class="text-center">
        <td>00{{ loop.index }} </td>
-       <td><b class="course_active">{{ order.student.fullname }} <br> {{ order.student.mobile }}</b></td>
+       <td><b class="course_active">{{ order.student_fullname }} <br> {{ order.student_mobile }}</b></td>
       
        <td>
-         {{ order.test_series.course.name }}
+         {{ order.test_series_course_name }}
          </td>
       
       <td>
