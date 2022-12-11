@@ -282,10 +282,9 @@ async def student_dashboard(request: Request, user=Depends(get_current_user)):
         test_series = await TestSeriesOrders.exists(student__id=user)
         if test_series:
             test_series_count = await TestSeriesOrders.filter(student__id=user).count()
-            # testseries = await TestSeriesOrders_Pydantic.from_queryset(
-            #     TestSeriesOrders.filter(student__id=user)
-            # )
-            testseries = None
+            testseries = await TestSeriesOrders.filter(student__id=user).values("razorpay_order_id", "razorpay_payment_id", "bill_amount", "created_at", student_fullname="student__fullname", student_mobile="student__mobile", test_series_course_preference_name="test_series__course__preference__name", test_series_course_name="test_series__course__name",test_series_web_icon="test_series__web_icon")
+            
+            
         else:
             testseries = None
         total_order_count = course_count + std_m_count + test_series_count

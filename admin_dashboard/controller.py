@@ -1490,7 +1490,7 @@ async def add_student_enquiries(request: Request):
 @router.get('/admin/scholarship/testseries/')
 async def scholarship_testseries_page(request: Request):
     courses = await Course.all()
-    test_series = await ScholarshipTestSeries.all().prefetch_related("course").order_by("-created_at")
+    test_series = await ScholarshipTestSeries.all().order_by("-created_at").values("total_marks","time_duration","on_date","end_date",course_name="course__name")
     # return test_series
     return templates.TemplateResponse('scholarship-testseries.html',
                                       context={
@@ -1637,11 +1637,8 @@ async def get_orders(request: Request, page: int = Query(..., title="Page Number
                      perPage: int = Query(...,
                                           title="Data limit per page", ge=0, le=50),
                      user=Depends(get_current_user)):
-    orders = await TestSeriesOrders_Pydantic.from_queryset(
-        TestSeriesOrders.all().order_by('-created_at')
-        .offset((page*perPage)-perPage)
-        .limit(perPage)
-    )
+    orders = await TestSeriesOrders.all().order_by('-created_at').limit(perPage).values("razorpay_order_id","razorpay_payment_id","bill_amount","created_at",student_fullname="student__fullname",student_mobile="student__mobile",test_series_course_name="test_series__course__name")
+    
     # orders =  await TestSeriesOrders.all().order_by('-created_at').offset((page*perPage)-perPage).limit(perPage)
     # return jsonable_encoder(orders)
     return templates.TemplateResponse('orders_testseries.html',
