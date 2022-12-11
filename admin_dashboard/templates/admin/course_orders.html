@@ -50,11 +50,11 @@
                 <td>00{{ loop.index }}</td>
                 <td>
                   <b class="course_active"
-                    >{{ order.student.fullname }} <br />
-                    {{ order.student.mobile }}</b
+                    >{{ order.fullname }} <br />
+                    {{ order.mobile }}</b
                   >
                 </td>
-                <td>{{ order.subscription.course.name }}</td>
+                <td>{{ order.course_name }}</td>
                 <td>{{ order.payment_mode }}</td>
                 <td class="text-success">
                   {{ order.order_id }} <br />
