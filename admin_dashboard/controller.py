@@ -1061,6 +1061,7 @@ async def add_category_lecture(request: Request, course_id: str = Form(...),
     category_obj = await Category.get(id=category_id)
     topic_obj = await Topics.get(id=topic_id)
     category_topic_obj = await CategoryTopics.get(id=course_topic_id)
+    print("YESSSSSSSSSSSSSSSS")
     try:
         video_duration = 0
         video_id = None
@@ -1075,16 +1076,20 @@ async def add_category_lecture(request: Request, course_id: str = Form(...),
             headers = {'Authorization': 'bearer REDACTED_TOKEN',
                        'Content-Type': 'application/json',
                        'Accept': 'application/vnd.vimeo.*+json;version=3.4'}
-
+            print(requested_url+"==================")
             async with httpx.AsyncClient(headers=headers) as client:
                 video_content_obj = await client.get(requested_url)
                 # video_obj = video_content_obj.json()
+                # print(video_content_obj.text)
                 resp = json.loads(video_content_obj.text)
-
+                
                 video_duration = resp['duration']
-        app_thumbnail = await upload_images(s3, folder='videothumbnails/' + category_obj.slug + '/' + topic_obj.slug,
-                                            image=video_thumbnail, mimetype=None)
-
+                # print(video_duration)
+        
+        # app_thumbnail = await upload_images(s3, folder='videothumbnails/' + category_obj.slug + '/' + topic_obj.slug,
+        #                                       image=video_thumbnail, mimetype=None)
+        app_thumbnail = "https://exams.imagnus.in/static/admin/images/logo.png"
+       
         n_url = app_thumbnail
         new_url = "https://ik.imagekit.io/imagnus/videothumbnails/" + \
             category_obj.slug+"/"+topic_obj.slug + \
