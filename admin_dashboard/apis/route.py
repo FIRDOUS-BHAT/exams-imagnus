@@ -174,7 +174,7 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
 
     async def execute_lectures_loop(subscription_initial_video_counter):
 
-        topics = await CourseCategoryLectures.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug).group_by("category_topic__topic__id").values(topic_id="category_topic__topic__id")
+        topics = await CourseCategoryLectures.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug).group_by("category_topic__topic__id","category_topic__order_seq").order_by("category_topic__order_seq").values(topic_id="category_topic__topic__id")
         topics = np.array(topics)
         lectures = []
 
