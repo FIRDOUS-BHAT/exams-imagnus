@@ -1086,9 +1086,9 @@ async def add_category_lecture(request: Request, course_id: str = Form(...),
                 video_duration = resp['duration']
                 # print(video_duration)
         
-        # app_thumbnail = await upload_images(s3, folder='videothumbnails/' + category_obj.slug + '/' + topic_obj.slug,
-        #                                       image=video_thumbnail, mimetype=None)
-        app_thumbnail = "https://exams.imagnus.in/static/admin/images/logo.png"
+        app_thumbnail = await upload_images(s3, folder='videothumbnails/' + category_obj.slug + '/' + topic_obj.slug,
+                                              image=video_thumbnail, mimetype=None)
+        # app_thumbnail = "https://exams.imagnus.in/static/admin/images/logo.png"
        
         n_url = app_thumbnail
         new_url = "https://ik.imagekit.io/imagnus/videothumbnails/" + \
