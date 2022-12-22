@@ -158,6 +158,7 @@ origins = [
     "https://localhost.tiangolo.com",
     "http://localhost",
     "http://localhost:8000",
+    "http://localhost:3000",
 ]
 
 # app.add_middleware(
@@ -171,7 +172,7 @@ app.add_middleware(SessionMiddleware, secret_key="secret",
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
