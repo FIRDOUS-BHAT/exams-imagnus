@@ -179,6 +179,19 @@ class CourseCategoryLectures(Model):
     created_at = fields.DatetimeField(auto_now_add=True)
 
 
+class CourseCategoryLecturesVideoURLS(Model):
+    video_link = fields.ForeignKeyField(
+        "models.CourseCategoryLectures", related_name="CourseCategoryLecturesVideoURLS", on_delete='CASCADE', index=True
+    )
+    video_360 = fields.TextField(null=True, blank=True)
+    video_540 = fields.TextField(null=True, blank=True)
+    video_720 = fields.TextField(null=True, blank=True)
+    updated_at = fields.DatetimeField(auto_now=True)
+    created_at = fields.DatetimeField(auto_now_add=True)
+     
+
+
+
 class CourseCategoryNotes(Model):
     id = fields.UUIDField(pk=True, index=True)
     title = fields.CharField(max_length=250, null=True, blank=True)

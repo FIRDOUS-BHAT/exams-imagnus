@@ -1,3 +1,5 @@
+import os
+import aiofiles
 import typing
 from starlette_context import context
 from dateutil import parser
@@ -1049,13 +1051,19 @@ async def send_repeated_notifications(course: str, category: str, topic: str, so
     return {'status': True}
 
 
+
+
 @router.post('/admin/add_category_lecture1/')
 async def add_category_lecture(request: Request, course_id: str = Form(...),
                                category_id: str = Form(...),
                                topic_id: str = Form(...), course_topic_id: str = Form(...),
-                               lecture_title: str = Form(...), mobile_video_url: str = Form(...),
-                               web_video_url: str = Form(...), video_description: str = Form(...),
-                               video_thumbnail=File(...), s3: BaseClient = Depends(s3_auth),
+                               lecture_title: str = Form(...),
+                            #    mobile_video_url: str = Form(...),
+                            #    web_video_url: str = Form(...),
+                               video_description: str = Form(...),
+                               video_thumbnail=File(...),
+                               video_file: UploadFile = File(...),
+                               s3: BaseClient = Depends(s3_auth),
                                ):
     course_obj = await Course.get(id=course_id)
     category_obj = await Category.get(id=category_id)
@@ -1063,28 +1071,52 @@ async def add_category_lecture(request: Request, course_id: str = Form(...),
     category_topic_obj = await CategoryTopics.get(id=course_topic_id)
     print("YESSSSSSSSSSSSSSSS")
     try:
+        print(video_file)
+        #  content = await video_file.file.read()
+        
+        try:
+            async with aiofiles.open(video_file.filename, 'wb') as f:
+                while contents := await video_file.read(1024 * 1024):
+                    await f.write(contents)
+        except Exception:
+            return {"message": "There was an error uploading the file"}
+        finally:
+            data = {'video_file':  open(video_file.filename, 'rb')}  
+            limits = httpx.Limits(
+                max_keepalive_connections=5, max_connections=10)
+            async with httpx.AsyncClient(limits=limits) as client:
+                r = await client.post(
+                'http://127.0.0.1:8081/transcode', files=data)
+               
+            await video_file.close()
+            os.remove(video_file.filename)
+        headers = {'Content-Type':'multipart/form-data','Accept': 'application/json'}
+            
+        
+       
+   
         video_duration = 0
         video_id = None
-        if 'vimeo' in mobile_video_url:
+        # if 'vimeo' in mobile_video_url:
 
-            video_id_query = mobile_video_url.split('/')[-1]
-            video_id = video_id_query.split('.')[0]
+        #     video_id_query = mobile_video_url.split('/')[-1]
+        #     video_id = video_id_query.split('.')[0]
 
-            # """Fetch a video details"""
-            requested_url = "https://api.vimeo.com/videos/" + video_id
+        #     # """Fetch a video details"""
+        #     requested_url = "https://api.vimeo.com/videos/" + video_id
 
-            headers = {'Authorization': 'bearer 07d29a422ae59fd14a17cbdd840b194b',
-                       'Content-Type': 'application/json',
-                       'Accept': 'application/vnd.vimeo.*+json;version=3.4'}
-            print(requested_url+"==================")
-            async with httpx.AsyncClient(headers=headers) as client:
-                video_content_obj = await client.get(requested_url)
-                # video_obj = video_content_obj.json()
-                # print(video_content_obj.text)
-                resp = json.loads(video_content_obj.text)
+        #     headers = {'Authorization': 'bearer 07d29a422ae59fd14a17cbdd840b194b',
+        #                'Content-Type': 'application/json',
+        #                'Accept': 'application/vnd.vimeo.*+json;version=3.4'}
+        #     print(requested_url+"==================")
+        #     async with httpx.AsyncClient(headers=headers) as client:
+        #         video_content_obj = await client.get(requested_url)
+        #         # video_obj = video_content_obj.json()
+        #         # print(video_content_obj.text)
+        #         resp = json.loads(video_content_obj.text)
                 
-                video_duration = resp['duration']
-                # print(video_duration)
+        #         video_duration = resp['duration']
+        #         # print(video_duration)
         
         app_thumbnail = await upload_images(s3, folder='videothumbnails/' + category_obj.slug + '/' + topic_obj.slug,
                                               image=video_thumbnail, mimetype=None)
@@ -1098,22 +1130,29 @@ async def add_category_lecture(request: Request, course_id: str = Form(...),
         saved_obj = await CourseCategoryLectures.create(
             title=lecture_title, slug=slugify(lecture_title),
             app_thumbnail=new_url,
-            mobile_video_url=mobile_video_url,
-            web_video_url=web_video_url,
+            # mobile_video_url=mobile_video_url,
+            # web_video_url=web_video_url,
             library_id=bunny_library_id,
             video_id=video_id,
             video_duration=video_duration,
             discription=video_description,
             category_topic=category_topic_obj,
-            updated_at=updated_at,
-            created_at=updated_at
+
         )
+        lecture_obj = await CourseCategoryLectures.get(id=saved_obj.id)
+        video_360 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/"+video_file.filename+"/"+str(360)+".mp4"
+        video_540 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/"+video_file.filename+"/"+str(540)+".mp4"
+        video_720 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
+            video_file.filename+"/"+str(720)+".mp4"
+        if await CourseCategoryLecturesVideoURLS.filter(video_link=lecture_obj).exists():
+              await CourseCategoryLecturesVideoURLS.filter(video_link=lecture_obj).delete()
+        await CourseCategoryLecturesVideoURLS.create(video_link=lecture_obj,video_360=video_360,video_540=video_540,video_720=video_720)
 
         '''send notifications on new upload of video'''
-        if saved_obj:
-            message = "video"
-            await fire_push_notification(course_obj, category_obj,
-                                         topic_obj, saved_obj.id, lecture_title, message)
+        # if saved_obj:
+        #     message = "video"
+            # await fire_push_notification(course_obj, category_obj,
+                                        #  topic_obj, saved_obj.id, lecture_title, message)
 
         # return response.text
         return RedirectResponse(
@@ -1122,7 +1161,7 @@ async def add_category_lecture(request: Request, course_id: str = Form(...),
             status_code=status.HTTP_303_SEE_OTHER)
 
     except Exception as ex:
-        raise HTTPException(status_code=208, detail=ex)
+        raise HTTPException(status_code=208, detail=str(ex))
         # return ex
         # return RedirectResponse(
         #     url='/admin/category_lectures/' + course_obj.slug +
@@ -2113,3 +2152,6 @@ async def update_video_id(request: Request, _=Depends(get_current_user)):
                     print(video_id_seg[0])
                     await CourseCategoryLectures.filter(id=x['id']).update(video_id=video_id_seg[0])
         return len(lectures)   
+    
+    
+    

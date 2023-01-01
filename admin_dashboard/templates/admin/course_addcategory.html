@@ -495,7 +495,7 @@
                            <input type="hidden">
                            <label>Lecture Title* </label>
                            <div class="ui left icon input swdh19">
-                              <input class="prompt srch_explore" type="text" placeholder="Enter lecture title." name="lecture_title" data-purpose="edit-course-title"  ">
+                              <input class="prompt srch_explore" type="text" placeholder="Enter lecture title." name="lecture_title" data-purpose="edit-course-title">
                            </div>
                         </div>
                      </div>
@@ -523,7 +523,7 @@
                      </div>
                       
                          </div>
-                         <div class="row">
+                      <!--   <div class="row">
                            <div class="col-lg-12 col-md-6 mt-10">
                               <div class="ui search focus lbel25">
                                  <input type="hidden" >
@@ -533,14 +533,25 @@
                                  </div>
                               </div>
                            </div>
-                           </div>
-                           <div class="row">
+                           </div> -->
+                          <!-- <div class="row">
                               <div class="col-lg-12 col-md-6 mt-10">
                                  <div class="ui search focus lbel25">
                                     <input type="hidden">
                                     <label>Web url * </label>
                                     <div class="ui left icon input swdh19">
                                        <input class="prompt srch_explore" type="text" placeholder="Enter web url." name="web_video_url" data-purpose="edit-course-title" required >
+                                    </div>
+                                 </div>
+                              </div>
+                              </div> -->
+                           <div class="row">
+                              <div class="col-lg-12 col-md-6 mt-10">
+                                 <div class="ui search focus lbel25">
+                                    <input type="hidden">
+                                    <label> Video File * </label>
+                                    <div class="ui left icon input swdh19">
+                                       <input class="prompt srch_explore" type="file" id="upload_video" placeholder="Enter web url." name="video_file" data-purpose="edit-course-title" required >
                                     </div>
                                  </div>
                               </div>
@@ -922,6 +933,12 @@
          </div>
 
 
+<script type="text/javascript">
+function showFileName() {
+   var fil = document.getElementById("upload_video");
+   alert(fil.value);
+}
+</script>
 
 
          {% endblock %}

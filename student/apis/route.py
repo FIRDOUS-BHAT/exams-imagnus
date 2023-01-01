@@ -1294,10 +1294,10 @@ async def get_video_details(data: VideoDetails, _=Depends(get_current_user)):
         return {"status": False, "message": str(ex)}
 
 
-@router.get('/download_video')
+@router.post('/download_video')
 async def download_videos(_=Depends(get_current_user)):
-
-    try:
+        print('HERE')
+        # try:
         conn = http.client.HTTPSConnection("api.vimeo.com")
         payload = ''
         headers = {
@@ -1343,7 +1343,7 @@ async def download_videos(_=Depends(get_current_user)):
                                     i=i+1
                                     # yield "data: {}\n\n".format(progress)"
             
-    except Exception as ex:
-        return str(ex)
+        # except Exception as ex:
+        #     return str(ex)
 
 
