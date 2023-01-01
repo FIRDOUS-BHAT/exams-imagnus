@@ -3,7 +3,7 @@
 <h4>Progress bar</h4>
 
 
-<script>
+{% comment %} <script>
     const authorizationToken = "REDACTED_JWT"
     const evtSource = new EventSource("/api/student/download_video",
        {
@@ -12,6 +12,6 @@
             }
         }
     );
-</script>
+</script> {% endcomment %}
 
 {% endblock %}
