@@ -21,7 +21,7 @@ boto3==1.26.29
 botocore==1.29.29
 broadcaster==0.2.0
 cachetools==5.0.0
-certifi==2021.10.8
+certifi==2022.12.7
 cffi==1.15.0
 charset-normalizer==2.0.12
 ciso8601==2.2.0
