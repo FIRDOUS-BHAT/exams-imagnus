@@ -1086,7 +1086,7 @@ async def add_category_lecture(request: Request, course_id: str = Form(...),
                 max_keepalive_connections=5, max_connections=10)
             async with httpx.AsyncClient(limits=limits) as client:
                 r = await client.post(
-                'http://127.0.0.1:8081/transcode', files=data)
+                    'http://192.168.1.5:8081/transcode', files=data)
                
             await video_file.close()
             os.remove(video_file.filename)
