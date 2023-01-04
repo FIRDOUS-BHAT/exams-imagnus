@@ -1056,7 +1056,7 @@ import boto3
 ACCESS_KEY = 'REDACTED_AWS_ACCESS_KEY_ID'
 SECRET_KEY = 'REDACTED_40_CHAR_SECRET'
 
-async def upload_to_aws(s3_file):
+def upload_to_aws(s3_file):
    try:
        s3 = boto3.client('s3', aws_access_key_id=ACCESS_KEY, aws_secret_access_key=SECRET_KEY)
 
@@ -1070,21 +1070,15 @@ async def upload_to_aws(s3_file):
    except Exception as e:
        return {"message": str(e)}
 
-async def read_upload_video_lecture(video_file):
-    # try:
-    #     async with aiofiles.open(video_file.filename, 'wb') as f:
-    #         while contents := await video_file.read(1024 * 1024):
-    #             await f.write(contents)
-    # except Exception:
-    #     return {"message": "There was an error uploading the file"}
-    # finally:
-    #     await video_file.close()
+def read_upload_video_lecture(video_file):
+      
         
         try:
+            
             print("REACHED HERE")
             aud = ffmpeg.input(video_file.filename).audio
 
-            async def make_variant(px):
+            def make_variant(px):
                 print("LOOP"+str(px))
                 # exit(0)
                 vid = ffmpeg.input(
@@ -1102,17 +1096,17 @@ async def read_upload_video_lecture(video_file):
                 out.run()
                 return "transcoded/"+video_file.filename+"/"+str(px)+".mp4"
 
-            file_360 = await make_variant(360)
-            file_540 = await make_variant(540)
-            file_720 = await make_variant(720)
+            file_360 =  make_variant(360)
+            file_540 =  make_variant(540)
+            file_720 =  make_variant(720)
 
-            await upload_to_aws(file_360)
+            upload_to_aws(file_360)
             print("360PX uploaded")
             os.remove(file_360)
-            await upload_to_aws(file_540)
+            upload_to_aws(file_540)
             print("540PX uploaded")
             os.remove(file_540)
-            await upload_to_aws(file_720)
+            upload_to_aws(file_720)
             print("720PX uploaded")
             os.remove(file_720)
             os.remove("transcoded/"+video_file.filename+"/")
@@ -1123,59 +1117,23 @@ async def read_upload_video_lecture(video_file):
             return {"error": str(e)}
 
 
+def write_notification(email: str, message=""):
+    with open("log.txt", mode="w") as email_file:
+        content = f"notification for {email}: {message}"
+        email_file.write(content)
 
 
 
-
-
-
-
-@router.post('/admin/add_category_lecture1/')
-async def add_category_lecture(background_tasks: BackgroundTasks, request: Request, course_id: str = Form(...),
-                               category_id: str = Form(...),
-                               topic_id: str = Form(...), course_topic_id: str = Form(...),
-                               lecture_title: str = Form(...),
-                            #    mobile_video_url: str = Form(...),
-                            #    web_video_url: str = Form(...),
-                               video_description: str = Form(...),
-                               video_thumbnail=File(...),
-                               video_file: UploadFile = File(...),
-                               s3: BaseClient = Depends(s3_auth),
-                               ):
-    course_obj = await Course.get(id=course_id)
-    category_obj = await Category.get(id=category_id)
-    topic_obj = await Topics.get(id=topic_id)
-    category_topic_obj = await CategoryTopics.get(id=course_topic_id)
-    print("YESSSSSSSSSSSSSSSS")
+async def add_lectures_in_background(s3,course_id,category_id,topic_id,course_topic_id,video_file,video_thumbnail,lecture_title,video_description):
     try:
-          
-        
-        #  content = await video_file.file.read()
-        
-        try:
-            async with aiofiles.open(video_file.filename, 'wb') as f:
+        course_obj = await Course.get(id=course_id)
+        category_obj = await Category.get(id=category_id)
+        topic_obj = await Topics.get(id=topic_id)
+        category_topic_obj = await CategoryTopics.get(id=course_topic_id)
+        print("YESSSSSSSSSSSSSSSS")
+        async with aiofiles.open(video_file.filename, 'wb') as f:
                 while contents := await video_file.read(1024 * 1024):
                     await f.write(contents)
-        except Exception:
-            return {"message": "There was an error uploading the file"}
-        finally:
-            
-            
-            # data = {'video_file':  open(video_file.filename, 'rb')}  
-            # limits = httpx.Limits(
-            #     max_keepalive_connections=5, max_connections=10)
-            # async with httpx.AsyncClient(limits=limits) as client:
-            #     r = await client.post(
-            #         'http://192.168.1.5:8081/transcode', files=data)
-               
-            await video_file.close()
-            # os.remove(video_file.filename)
-        # headers = {'Content-Type':'multipart/form-data','Accept': 'application/json'}
-            
-        
-        background_tasks.add_task(
-            read_upload_video_lecture, video_file)
-   
         video_duration = 0
         video_id = None
         # if 'vimeo' in mobile_video_url:
@@ -1239,6 +1197,80 @@ async def add_category_lecture(background_tasks: BackgroundTasks, request: Reque
             # await fire_push_notification(course_obj, category_obj,
                                  #  topic_obj, saved_obj.id, lecture_title, message)
        
+    except Exception as ex:    
+            return {str(ex)}
+
+
+@router.post('/admin/add_category_lecture1/')
+async def add_category_lecture(background_tasks: BackgroundTasks, request: Request, course_id: str = Form(...),
+                               category_id: str = Form(...),
+                               topic_id: str = Form(...), course_topic_id: str = Form(...),
+                               lecture_title: str = Form(...),
+                               video_description: str = Form(...),
+                               video_thumbnail=File(...),
+                               video_file: UploadFile = File(...),
+                               s3: BaseClient = Depends(s3_auth),
+                               ):
+    
+    try:
+        async with aiofiles.open(video_file.filename, 'wb') as f:
+                while contents := await video_file.read(1024 * 1024):
+                    await f.write(contents)
+        course_obj = await Course.get(id=course_id)
+        category_obj = await Category.get(id=category_id)
+        topic_obj = await Topics.get(id=topic_id)
+        category_topic_obj = await CategoryTopics.get(id=course_topic_id)
+        
+        
+        video_duration = 0
+        video_id = None
+        app_thumbnail = await upload_images(s3, folder='videothumbnails/' + category_obj.slug + '/' + topic_obj.slug,
+                                              image=video_thumbnail, mimetype=None)
+        # app_thumbnail = "https://exams.imagnus.in/static/admin/images/logo.png"
+       
+        n_url = app_thumbnail
+        new_url = "https://ik.imagekit.io/imagnus/videothumbnails/" + \
+            category_obj.slug+"/"+topic_obj.slug + \
+            "/tr:w-300,h-160,fo-auto/"+n_url.split('/')[-1]
+
+        saved_obj = await CourseCategoryLectures.create(
+            title=lecture_title, slug=slugify(lecture_title),
+            app_thumbnail=new_url,
+            # mobile_video_url=mobile_video_url,
+            # web_video_url=web_video_url,
+            video_360 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/"+video_file.filename+"/"+str(360)+".mp4",
+            video_540 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/"+video_file.filename+"/"+str(540)+".mp4",
+            video_720 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
+            video_file.filename+"/"+str(720)+".mp4",
+            library_id=bunny_library_id,
+            video_id=video_id,
+            video_duration=video_duration,
+            discription=video_description,
+            category_topic=category_topic_obj,
+
+        )
+        
+        #  content = await video_file.file.read()
+        
+        
+        # data = {'video_file':  open(video_file.filename, 'rb')}  
+        # limits = httpx.Limits(
+        #     max_keepalive_connections=5, max_connections=10)
+        # async with httpx.AsyncClient(limits=limits) as client:
+        #     r = await client.post(
+        #         'http://192.168.1.5:8081/transcode', files=data)
+               
+        # await video_file.close()    
+            
+            
+        # os.remove(video_file.filename)
+        # headers = {'Content-Type':'multipart/form-data','Accept': 'application/json'}
+            
+        
+        background_tasks.add_task(
+            read_upload_video_lecture, video_file)
+   
+        
         # return response.text
         return RedirectResponse(
             url='/admin/category_lectures/' + course_obj.slug +
