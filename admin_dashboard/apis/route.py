@@ -183,7 +183,7 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
             topic_obj = await Topics.get(id=topic["topic_id"]).values("id", "name", "slug")
 
             lectures_obj = await CourseCategoryLectures.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug, category_topic__topic__id=topic["topic_id"]).order_by("order_display").\
-             values("id", "title", "slug", "discription", "web_video_url", "app_thumbnail", "video_duration", "mobile_video_url", "video_id")
+             values("id", "title", "slug", "discription", "web_video_url", "app_thumbnail", "video_duration", "mobile_video_url", "video_id","video_360","video_540","video_720")
                 #  prefetch_related("video_studentVideoActivity","students_bookmarked_video","CourseCategoryLecturesVideoURLS")
 
                
