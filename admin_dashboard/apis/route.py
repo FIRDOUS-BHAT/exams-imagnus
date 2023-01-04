@@ -25,7 +25,7 @@ from admin_dashboard.models import CategoryTopics, CategoryTopics_Pydantic, Coup
     CourseCategories_Pydantic, Category, CourseCategoryTestSeries, CourseCategoryLectures, CourseCategoryNotes, \
     LiveClasses, InstructorIn_Pydantic, Instructor, Instructor_Pydantic, LiveClasses_Pydantic, \
     addAppStaticUrls, Topics, \
-    addAppStaticUrls_Pydantic, offerBanners, offerBanners_Pydantic, Scholarship2021, InterViewProgram
+    addAppStaticUrls_Pydantic, offerBanners, offerBanners_Pydantic, Scholarship2021, InterViewProgram,CourseCategoryLecturesVideoURLS
 from aws_services.deps import s3_auth
 from student.models import Student, StudentIn_Pydantic
 from student_choices.models import StudentChoices, activeSubscription, \
@@ -182,10 +182,13 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
             allowed_lectures = []
             topic_obj = await Topics.get(id=topic["topic_id"]).values("id", "name", "slug")
 
-            lectures_obj = await CourseCategoryLectures.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug, category_topic__topic__id=topic["topic_id"]).\
-                order_by("order_display").prefetch_related("video_studentVideoActivity",
-                                                           "students_bookmarked_video").values("id", "title", "slug", "discription", "web_video_url", "app_thumbnail", "video_duration", "mobile_video_url", "video_id")
-            # lectures_obj = np.array(lectures_obj)
+            lectures_obj = await CourseCategoryLectures.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug, category_topic__topic__id=topic["topic_id"]).order_by("order_display").\
+             values("id", "title", "slug", "discription", "web_video_url", "app_thumbnail", "video_duration", "mobile_video_url", "video_id")
+                #  prefetch_related("video_studentVideoActivity","students_bookmarked_video","CourseCategoryLecturesVideoURLS")
+
+               
+            # lectures_obj = np.array(lectures_obj) order_by("order_display").
+            
             each_topic_lectures_length = len(lectures_obj)
 
             

@@ -18,7 +18,7 @@ import requests
 from botocore.client import BaseClient
 from dateutil.relativedelta import relativedelta
 from fastapi import APIRouter, Depends, FastAPI, Request, Form, File, UploadFile, status, HTTPException, \
-    WebSocket, Query
+    WebSocket, Query, BackgroundTasks
 from fastapi.encoders import jsonable_encoder
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from fastapi.templating import Jinja2Templates
@@ -1049,12 +1049,86 @@ async def send_repeated_notifications(course: str, category: str, topic: str, so
                                  topic_obj, lec_id, title, message)
 
     return {'status': True}
+import pathlib
+import ffmpeg
+
+import boto3
+ACCESS_KEY = 'REDACTED_AWS_ACCESS_KEY_ID'
+SECRET_KEY = 'REDACTED_40_CHAR_SECRET'
+
+async def upload_to_aws(s3_file):
+   try:
+       s3 = boto3.client('s3', aws_access_key_id=ACCESS_KEY, aws_secret_access_key=SECRET_KEY)
+
+       file_name = os.path.join(pathlib.Path(
+           __file__).parent.resolve(), s3_file)
+       with open(file_name, "rb") as data:
+           s3.upload_fileobj(
+               data, "testing-bucket-s3-uploader",
+               s3_file
+           )
+   except Exception as e:
+       return {"message": str(e)}
+
+async def read_upload_video_lecture(video_file):
+    # try:
+    #     async with aiofiles.open(video_file.filename, 'wb') as f:
+    #         while contents := await video_file.read(1024 * 1024):
+    #             await f.write(contents)
+    # except Exception:
+    #     return {"message": "There was an error uploading the file"}
+    # finally:
+    #     await video_file.close()
+        
+        try:
+            print("REACHED HERE")
+            aud = ffmpeg.input(video_file.filename).audio
+
+            async def make_variant(px):
+                print("LOOP"+str(px))
+                # exit(0)
+                vid = ffmpeg.input(
+                    video_file.filename).video.filter('scale', -1, px)
+
+                if not os.path.exists("transcoded/"+video_file.filename):
+                    os.makedirs("transcoded/"+video_file.filename)
+
+                if os.path.exists("transcoded/"+video_file.filename+"/"+str(px)+".mp4"):
+                    os.remove("transcoded/"+video_file.filename +
+                              "/"+str(px)+".mp4")
+
+                out = ffmpeg.output(vid, aud, "transcoded/" +
+                                    video_file.filename+"/"+str(px)+".mp4")
+                out.run()
+                return "transcoded/"+video_file.filename+"/"+str(px)+".mp4"
+
+            file_360 = await make_variant(360)
+            file_540 = await make_variant(540)
+            file_720 = await make_variant(720)
+
+            await upload_to_aws(file_360)
+            print("360PX uploaded")
+            await upload_to_aws(file_540)
+            print("540PX uploaded")
+            await upload_to_aws(file_720)
+            print("720PX uploaded")
+
+            os.remove(video_file.filename)
+
+            return {'status': True, 'video_variants': {'360': file_360, '540': file_540, '720': file_720}}
+        except Exception as e:
+            return {"error": str(e)}
+
+
+
+
+
 
 
 
 
 @router.post('/admin/add_category_lecture1/')
-async def add_category_lecture(request: Request, course_id: str = Form(...),
+async def add_category_lecture(background_tasks: BackgroundTasks, request: Request, course_id: str = Form(...),
                                category_id: str = Form(...),
                                topic_id: str = Form(...), course_topic_id: str = Form(...),
                                lecture_title: str = Form(...),
@@ -1071,7 +1145,8 @@ async def add_category_lecture(request: Request, course_id: str = Form(...),
     category_topic_obj = await CategoryTopics.get(id=course_topic_id)
     print("YESSSSSSSSSSSSSSSS")
     try:
-        print(video_file)
+          
+        
         #  content = await video_file.file.read()
         
         try:
@@ -1081,19 +1156,22 @@ async def add_category_lecture(request: Request, course_id: str = Form(...),
         except Exception:
             return {"message": "There was an error uploading the file"}
         finally:
-            data = {'video_file':  open(video_file.filename, 'rb')}  
-            limits = httpx.Limits(
-                max_keepalive_connections=5, max_connections=10)
-            async with httpx.AsyncClient(limits=limits) as client:
-                r = await client.post(
-                    'http://192.168.1.5:8081/transcode', files=data)
+            
+            
+            # data = {'video_file':  open(video_file.filename, 'rb')}  
+            # limits = httpx.Limits(
+            #     max_keepalive_connections=5, max_connections=10)
+            # async with httpx.AsyncClient(limits=limits) as client:
+            #     r = await client.post(
+            #         'http://192.168.1.5:8081/transcode', files=data)
                
             await video_file.close()
-            os.remove(video_file.filename)
-        headers = {'Content-Type':'multipart/form-data','Accept': 'application/json'}
+            # os.remove(video_file.filename)
+        # headers = {'Content-Type':'multipart/form-data','Accept': 'application/json'}
             
         
-       
+        background_tasks.add_task(
+            read_upload_video_lecture, video_file)
    
         video_duration = 0
         video_id = None
@@ -1132,6 +1210,10 @@ async def add_category_lecture(request: Request, course_id: str = Form(...),
             app_thumbnail=new_url,
             # mobile_video_url=mobile_video_url,
             # web_video_url=web_video_url,
+            video_360 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/"+video_file.filename+"/"+str(360)+".mp4",
+            video_540 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/"+video_file.filename+"/"+str(540)+".mp4",
+            video_720 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
+            video_file.filename+"/"+str(720)+".mp4",
             library_id=bunny_library_id,
             video_id=video_id,
             video_duration=video_duration,
@@ -1139,21 +1221,21 @@ async def add_category_lecture(request: Request, course_id: str = Form(...),
             category_topic=category_topic_obj,
 
         )
-        lecture_obj = await CourseCategoryLectures.get(id=saved_obj.id)
-        video_360 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/"+video_file.filename+"/"+str(360)+".mp4"
-        video_540 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/"+video_file.filename+"/"+str(540)+".mp4"
-        video_720 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
-            video_file.filename+"/"+str(720)+".mp4"
-        if await CourseCategoryLecturesVideoURLS.filter(video_link=lecture_obj).exists():
-              await CourseCategoryLecturesVideoURLS.filter(video_link=lecture_obj).delete()
-        await CourseCategoryLecturesVideoURLS.create(video_link=lecture_obj,video_360=video_360,video_540=video_540,video_720=video_720)
+        # lecture_obj = await CourseCategoryLectures.get(id=saved_obj.id)
+        # video_360 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/"+video_file.filename+"/"+str(360)+".mp4"
+        # video_540 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/"+video_file.filename+"/"+str(540)+".mp4"
+        # video_720 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
+        #     video_file.filename+"/"+str(720)+".mp4"
+        # if await CourseCategoryLecturesVideoURLS.filter(video_link=lecture_obj).exists():
+        #       await CourseCategoryLecturesVideoURLS.filter(video_link=lecture_obj).delete()
+        # await CourseCategoryLecturesVideoURLS.create(video_link=lecture_obj,video_360=video_360,video_540=video_540,video_720=video_720)
 
         '''send notifications on new upload of video'''
         # if saved_obj:
         #     message = "video"
             # await fire_push_notification(course_obj, category_obj,
-                                        #  topic_obj, saved_obj.id, lecture_title, message)
-
+                                 #  topic_obj, saved_obj.id, lecture_title, message)
+       
         # return response.text
         return RedirectResponse(
             url='/admin/category_lectures/' + course_obj.slug +
