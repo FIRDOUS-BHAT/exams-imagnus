@@ -1108,12 +1108,15 @@ async def read_upload_video_lecture(video_file):
 
             await upload_to_aws(file_360)
             print("360PX uploaded")
+            os.remove(file_360)
             await upload_to_aws(file_540)
             print("540PX uploaded")
+            os.remove(file_540)
             await upload_to_aws(file_720)
             print("720PX uploaded")
-
-            os.remove(video_file.filename)
+            os.remove(file_720)
+            os.remove("transcoded/"+video_file.filename+"/")
+           
 
             return {'status': True, 'video_variants': {'360': file_360, '540': file_540, '720': file_720}}
         except Exception as e:
