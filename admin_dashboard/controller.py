@@ -1062,12 +1062,14 @@ def upload_to_aws(s3_file):
 
        file_name = os.path.join(pathlib.Path(
            __file__).parent.resolve(), s3_file)
+       file_name = s3_file
        with open(file_name, "rb") as data:
            s3.upload_fileobj(
                data, "testing-bucket-s3-uploader",
                s3_file
            )
    except Exception as e:
+       print(str(e))
        return {"message": str(e)}
 
 def read_upload_video_lecture(video_file):
