@@ -1116,23 +1116,26 @@ def read_upload_video_lecture(video_file,id):
             file_360 =  make_variant(360)
             file_540 =  make_variant(540)
             file_720 =  make_variant(720)
+            file_360_size = os.path.getsize(file_360)
+            file_540_size = os.path.getsize(file_540)
+            file_720_size = os.path.getsize(file_720)
+            
+            url = "https://testserver.imagnus.in/update/video/size"
+            headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
+            data = {
+                "id": jsonable_encoder(id),
+                "size_360": file_360_size,
+                "size_540": file_540_size,
+                "size_720": file_720_size
+            }
+            print(data)
+            response = requests.post(url, headers=headers, data=json.dumps(data))
+            print(response.status_code)
+            print(response.text)
 
             upload_to_aws(file_360)
             print("360PX uploaded")
-            json_data = {
-                'id': id,
-                'size_360': 2,
-                'size_540': 2,
-                'size_720': 2
-            }
-            url = 'http://127.0.0.1:8000/update/video/size'
-
-            # response = requests.post(url, json=json_data)
-            response = requests.get('https://jsonplaceholder.typicode.com/todos/1')
-            # Do something with the API response
-            print(response.json())
-            # print(response.status_code)
-            # print(response.text)
+            
             os.remove(file_360)
             upload_to_aws(file_540)
             print("540PX uploaded")
@@ -1365,17 +1368,7 @@ async def add_category_lecture(background_tasks: BackgroundTasks, request: Reque
                 'size_540': 2,
                 'size_720': 2
             }
-        url = "http://testserver.imagnus.in/update/video/size"
-        headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
-        data = {
-                "id": "3e8d83d2-66f2-4c35-804b-b41207345a01",
-                "size_360": 0,
-                "size_540": 0,
-                "size_720": 0
-            }
-        response = requests.post(url, headers=headers, data=json.dumps(data))
-        print(response.status_code)
-        print(response.text)
+       
         background_tasks.add_task(
             read_upload_video_lecture, video_file,saved_obj.id)
         
