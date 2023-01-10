@@ -1,3 +1,4 @@
+import re
 import os
 import aiofiles
 import typing
@@ -1029,6 +1030,20 @@ async def fire_push_notification(course_obj, category_obj, topic_obj, saved_obj,
             data_message=extra_notification_kwargs,
         )
         return True
+import asyncio
+
+@router.post("/call-async-func")
+async def call_async_func(background_tasks: BackgroundTasks):
+    # Add the async function to the background tasks queue
+    background_tasks.add_task(async_func)
+    return {"message": "Async function added to background tasks queue."}
+
+async def async_func():
+    # Asynchronous operation
+    await asyncio.sleep(1)
+    print("Async operation finished")
+
+
 
 
 @router.get('/send_repeated_notifications/{course}/{category}/{topic}/{source}/{lec_id}/{title}/')
@@ -1072,7 +1087,7 @@ def upload_to_aws(s3_file):
        print(str(e))
        return {"message": str(e)}
 
-def read_upload_video_lecture(video_file):
+def read_upload_video_lecture(video_file,id):
       
         
         try:
@@ -1104,6 +1119,20 @@ def read_upload_video_lecture(video_file):
 
             upload_to_aws(file_360)
             print("360PX uploaded")
+            json_data = {
+                'id': id,
+                'size_360': 2,
+                'size_540': 2,
+                'size_720': 2
+            }
+            url = 'http://127.0.0.1:8000/update/video/size'
+
+            # response = requests.post(url, json=json_data)
+            response = requests.get('https://jsonplaceholder.typicode.com/todos/1')
+            # Do something with the API response
+            print(response.json())
+            # print(response.status_code)
+            # print(response.text)
             os.remove(file_360)
             upload_to_aws(file_540)
             print("540PX uploaded")
@@ -1126,6 +1155,39 @@ def write_notification(email: str, message=""):
         email_file.write(content)
 
 
+import subprocess
+
+
+
+async def get_video_duration(input_video):
+    result = subprocess.run(['ffmpeg', '-i', input_video], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    output = result.stdout.decode()
+    duration = re.search(r'Duration: (\d{2}:\d{2}:\d{2}\.\d{2})', output).groups()[0]
+    time_in_seconds = time_to_seconds(duration)
+    return time_in_seconds
+    
+def time_to_seconds(time_string):
+    time_components = time_string.split(".")[0].split(":")
+    hours = int(time_components[0])
+    minutes = int(time_components[1])
+    seconds = int(time_components[2])
+    total_seconds = (hours * 3600) + (minutes * 60) + seconds
+    return total_seconds
+
+
+class VideoSizesPydantic(BaseModel):
+    id : str
+    size_360 : Optional[int] = None
+    size_540 : Optional[int] = None
+    size_720 : Optional[int] = None
+    
+    
+@router.post('/update/video/size')    
+async def update_video_sizes(data:VideoSizesPydantic):
+    print('API CALLED')
+    await CourseCategoryLectures.filter(id=data.id).update(size_360=2,size_540=2,size_720=2)
+    
+    return True
 
 async def add_lectures_in_background(s3,course_id,category_id,topic_id,course_topic_id,video_file,video_thumbnail,lecture_title,video_description):
     try:
@@ -1137,7 +1199,9 @@ async def add_lectures_in_background(s3,course_id,category_id,topic_id,course_to
         async with aiofiles.open(video_file.filename, 'wb') as f:
                 while contents := await video_file.read(1024 * 1024):
                     await f.write(contents)
-        video_duration = 0
+        res_video_duration = await get_video_duration(video_file)
+        print(res_video_duration,"============")
+        video_duration = res_video_duration
         video_id = None
         # if 'vimeo' in mobile_video_url:
 
@@ -1168,16 +1232,25 @@ async def add_lectures_in_background(s3,course_id,category_id,topic_id,course_to
         new_url = "https://ik.imagekit.io/imagnus/videothumbnails/" + \
             category_obj.slug+"/"+topic_obj.slug + \
             "/tr:w-300,h-160,fo-auto/"+n_url.split('/')[-1]
-
+        video_360 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/"+video_file.filename+"/"+str(360)+".mp4"
+           
+        video_540 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/"+video_file.filename+"/"+str(540)+".mp4"
+           
+        video_720 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" +  video_file.filename+"/"+str(720)+".mp4"
+          
+        video_540_data = {'link':video_540,'size':0}
+        video_720_data = {'link':video_720,'size':0}
+        video_360_data = {'link':video_360,'size':0}
+        
         saved_obj = await CourseCategoryLectures.create(
             title=lecture_title, slug=slugify(lecture_title),
             app_thumbnail=new_url,
             # mobile_video_url=mobile_video_url,
             # web_video_url=web_video_url,
-            video_360 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/"+video_file.filename+"/"+str(360)+".mp4",
-            video_540 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/"+video_file.filename+"/"+str(540)+".mp4",
-            video_720 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
-            video_file.filename+"/"+str(720)+".mp4",
+            video_360 = video_360_data,
+            video_540 = video_540_data,
+            video_720 = video_720_data,
+           
             library_id=bunny_library_id,
             video_id=video_id,
             video_duration=video_duration,
@@ -1203,6 +1276,11 @@ async def add_lectures_in_background(s3,course_id,category_id,topic_id,course_to
     except Exception as ex:    
             return {str(ex)}
 
+def call_api_task():
+    # Call the API
+    response = requests.get('https://jsonplaceholder.typicode.com/todos/1')
+    # Do something with the API response
+    print(response.json())
 
 @router.post('/admin/add_category_lecture1/')
 async def add_category_lecture(background_tasks: BackgroundTasks, request: Request, course_id: str = Form(...),
@@ -1224,8 +1302,10 @@ async def add_category_lecture(background_tasks: BackgroundTasks, request: Reque
         topic_obj = await Topics.get(id=topic_id)
         category_topic_obj = await CategoryTopics.get(id=course_topic_id)
         
+        res_video_duration = await get_video_duration(video_file.filename)
+        print(res_video_duration,"============")
         
-        video_duration = 0
+        video_duration = float(res_video_duration)
         video_id = None
         app_thumbnail = await upload_images(s3, folder='videothumbnails/' + category_obj.slug + '/' + topic_obj.slug,
                                               image=video_thumbnail, mimetype=None)
@@ -1236,15 +1316,24 @@ async def add_category_lecture(background_tasks: BackgroundTasks, request: Reque
             category_obj.slug+"/"+topic_obj.slug + \
             "/tr:w-300,h-160,fo-auto/"+n_url.split('/')[-1]
 
+        video_360 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/"+video_file.filename+"/"+str(360)+".mp4"
+           
+        video_540 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/"+video_file.filename+"/"+str(540)+".mp4"
+           
+        video_720 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" +  video_file.filename+"/"+str(720)+".mp4"
+          
+        # video_720_data = {'link':video_720,'size':0}
+        # video_540_data = {'link':video_540,'size':0}
+        # video_360_data = {'link':video_360,'size':0}
+        
         saved_obj = await CourseCategoryLectures.create(
             title=lecture_title, slug=slugify(lecture_title),
             app_thumbnail=new_url,
             # mobile_video_url=mobile_video_url,
             # web_video_url=web_video_url,
-            video_360 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/"+video_file.filename+"/"+str(360)+".mp4",
-            video_540 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/"+video_file.filename+"/"+str(540)+".mp4",
-            video_720 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
-            video_file.filename+"/"+str(720)+".mp4",
+            video_360 = video_360,
+            video_540 = video_540,
+            video_720 = video_720,
             library_id=bunny_library_id,
             video_id=video_id,
             video_duration=video_duration,
@@ -1269,10 +1358,26 @@ async def add_category_lecture(background_tasks: BackgroundTasks, request: Reque
         # os.remove(video_file.filename)
         # headers = {'Content-Type':'multipart/form-data','Accept': 'application/json'}
             
-        
+        # background_tasks.add_task(call_api_task)
+        json_data = {
+                'id': jsonable_encoder(saved_obj.id),
+                'size_360': 2,
+                'size_540': 2,
+                'size_720': 2
+            }
+        url = "http://testserver.imagnus.in/update/video/size"
+        headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
+        data = {
+                "id": "3e8d83d2-66f2-4c35-804b-b41207345a01",
+                "size_360": 0,
+                "size_540": 0,
+                "size_720": 0
+            }
+        response = requests.post(url, headers=headers, data=json.dumps(data))
+        print(response.status_code)
+        print(response.text)
         background_tasks.add_task(
-            read_upload_video_lecture, video_file)
-   
+            read_upload_video_lecture, video_file,saved_obj.id)
         
         # return response.text
         return RedirectResponse(
