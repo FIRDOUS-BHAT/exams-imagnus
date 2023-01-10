@@ -1188,7 +1188,7 @@ class VideoSizesPydantic(BaseModel):
 @router.post('/update/video/size')    
 async def update_video_sizes(data:VideoSizesPydantic):
     print('API CALLED')
-    await CourseCategoryLectures.filter(id=data.id).update(size_360=data.size_360,size_540=data.size_540,size_720=data.size_720)
+    await CourseCategoryLectures.filter(id=data.id).update(size_360=data.size_360, size_540=data.size_540, size_720=data.size_720)
     
     return True
 
