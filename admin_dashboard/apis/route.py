@@ -183,7 +183,7 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
             topic_obj = await Topics.get(id=topic["topic_id"]).values("id", "name", "slug")
 
             lectures_obj = await CourseCategoryLectures.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug, category_topic__topic__id=topic["topic_id"]).order_by("order_display").\
-             values("id", "title", "slug", "discription", "web_video_url", "app_thumbnail", "video_duration", "mobile_video_url", "video_id","video_360","video_540","video_720")
+             values("id", "title", "slug", "discription", "web_video_url", "app_thumbnail", "video_duration", "mobile_video_url", "video_id","video_360","video_540","video_720","video_size_360","video_size_540","video_size_720")
                 #  prefetch_related("video_studentVideoActivity","students_bookmarked_video","CourseCategoryLecturesVideoURLS")
 
                
@@ -204,6 +204,12 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
                         disallowed_dict.update({"mobile_video_url":None})
                         disallowed_dict.update({"web_video_url":None})
                         disallowed_dict.update({"video_id":None})
+                        disallowed_dict.update({"video_360":None})
+                        disallowed_dict.update({"video_540":None})
+                        disallowed_dict.update({"video_720":None})
+                        disallowed_dict.update({"video_size_360":None})
+                        disallowed_dict.update({"video_size_540":None})
+                        disallowed_dict.update({"video_size_720":None})
                         allowed_lectures.append(disallowed_dict)
                     subscription_initial_video_counter = 0    
             else:
