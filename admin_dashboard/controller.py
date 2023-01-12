@@ -1188,7 +1188,7 @@ class VideoSizesPydantic(BaseModel):
 @router.post('/update/video/size')    
 async def update_video_sizes(data:VideoSizesPydantic):
     print('API CALLED')
-    await CourseCategoryLectures.filter(id=data.id).update(size_360=data.size_360, size_540=data.size_540, size_720=data.size_720)
+    await CourseCategoryLectures.filter(id=data.id).update(video_size_360=data.size_360, video_size_540=data.size_540, video_size_720=data.size_720)
     
     return True
 
@@ -1241,18 +1241,16 @@ async def add_lectures_in_background(s3,course_id,category_id,topic_id,course_to
            
         video_720 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" +  video_file.filename+"/"+str(720)+".mp4"
           
-        video_540_data = {'link':video_540,'size':0}
-        video_720_data = {'link':video_720,'size':0}
-        video_360_data = {'link':video_360,'size':0}
+        
         
         saved_obj = await CourseCategoryLectures.create(
             title=lecture_title, slug=slugify(lecture_title),
             app_thumbnail=new_url,
             # mobile_video_url=mobile_video_url,
             # web_video_url=web_video_url,
-            video_360 = video_360_data,
-            video_540 = video_540_data,
-            video_720 = video_720_data,
+            video_360 = video_360,
+            video_540 = video_540,
+            video_720 = video_720,
            
             library_id=bunny_library_id,
             video_id=video_id,
@@ -1362,12 +1360,7 @@ async def add_category_lecture(background_tasks: BackgroundTasks, request: Reque
         # headers = {'Content-Type':'multipart/form-data','Accept': 'application/json'}
             
         # background_tasks.add_task(call_api_task)
-        json_data = {
-                'id': jsonable_encoder(saved_obj.id),
-                'size_360': 2,
-                'size_540': 2,
-                'size_720': 2
-            }
+        
        
         background_tasks.add_task(
             read_upload_video_lecture, video_file,saved_obj.id)
