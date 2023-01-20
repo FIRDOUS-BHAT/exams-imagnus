@@ -1068,88 +1068,10 @@ import pathlib
 import ffmpeg
 
 import boto3
+from worker import create_task, read_upload_video_lecture
+from celery.result import AsyncResult
 ACCESS_KEY = 'AKIAWSYDR36FQBPK43DS'
 SECRET_KEY = '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'
-
-def upload_to_aws(s3_file):
-   try:
-       s3 = boto3.client('s3', aws_access_key_id=ACCESS_KEY, aws_secret_access_key=SECRET_KEY)
-
-       file_name = os.path.join(pathlib.Path(
-           __file__).parent.resolve(), s3_file)
-       file_name = s3_file
-       with open(file_name, "rb") as data:
-           s3.upload_fileobj(
-               data, "testing-bucket-s3-uploader",
-               s3_file
-           )
-   except Exception as e:
-       print(str(e))
-       return {"message": str(e)}
-
-def read_upload_video_lecture(video_file,id):
-      
-        
-        try:
-            
-            print("REACHED HERE")
-            aud = ffmpeg.input(video_file.filename).audio
-
-            def make_variant(px):
-                print("LOOP"+str(px))
-                # exit(0)
-                vid = ffmpeg.input(
-                    video_file.filename).video.filter('scale', -1, px)
-
-                if not os.path.exists("transcoded/"+video_file.filename):
-                    os.makedirs("transcoded/"+video_file.filename)
-
-                if os.path.exists("transcoded/"+video_file.filename+"/"+str(px)+".mp4"):
-                    os.remove("transcoded/"+video_file.filename +
-                              "/"+str(px)+".mp4")
-
-                out = ffmpeg.output(vid, aud, "transcoded/" +
-                                    video_file.filename+"/"+str(px)+".mp4")
-                out.run()
-                return "transcoded/"+video_file.filename+"/"+str(px)+".mp4"
-
-            file_360 =  make_variant(360)
-            file_540 =  make_variant(540)
-            file_720 =  make_variant(720)
-            file_360_size = os.path.getsize(file_360)
-            file_540_size = os.path.getsize(file_540)
-            file_720_size = os.path.getsize(file_720)
-            
-            url = "https://testserver.imagnus.in/update/video/size"
-            headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
-            data = {
-                "id": jsonable_encoder(id),
-                "size_360": file_360_size,
-                "size_540": file_540_size,
-                "size_720": file_720_size
-            }
-            print(data)
-            response = requests.post(url, headers=headers, data=json.dumps(data))
-            print(response.status_code)
-            print(response.text)
-
-            upload_to_aws(file_360)
-            print("360PX uploaded")
-            
-            os.remove(file_360)
-            upload_to_aws(file_540)
-            print("540PX uploaded")
-            os.remove(file_540)
-            upload_to_aws(file_720)
-            print("720PX uploaded")
-            os.remove(file_720)
-            os.remove(video_file.filename)
-            os.remove("transcoded/"+video_file.filename+"/")
-            
-
-            return {'status': True, 'video_variants': {'360': file_360, '540': file_540, '720': file_720}}
-        except Exception as e:
-            return {"error": str(e)}
 
 
 def write_notification(email: str, message=""):
@@ -1282,7 +1204,7 @@ def call_api_task():
     response = requests.get('https://jsonplaceholder.typicode.com/todos/1')
     # Do something with the API response
     print(response.json())
-
+from worker import create_task
 @router.post('/admin/add_category_lecture1/')
 async def add_category_lecture(background_tasks: BackgroundTasks, request: Request, course_id: str = Form(...),
                                category_id: str = Form(...),
@@ -1294,29 +1216,31 @@ async def add_category_lecture(background_tasks: BackgroundTasks, request: Reque
                                s3: BaseClient = Depends(s3_auth),
                                ):
     
-    try:
-        async with aiofiles.open(video_file.filename, 'wb') as f:
-                while contents := await video_file.read(1024 * 1024):
-                    await f.write(contents)
+    # try:
+        # async with aiofiles.open(video_file.filename, 'wb') as f:
+        #         while contents := await video_file.read(1024 * 1024):
+        #             await f.write(contents)
+        await create_task.delay(video_file)
         course_obj = await Course.get(id=course_id)
         category_obj = await Category.get(id=category_id)
         topic_obj = await Topics.get(id=topic_id)
         category_topic_obj = await CategoryTopics.get(id=course_topic_id)
         
-        res_video_duration = await get_video_duration(video_file.filename)
-        print(res_video_duration,"============")
+        # res_video_duration = await get_video_duration(video_file.filename)
+        # print(res_video_duration,"============")
         
-        video_duration = float(res_video_duration)
+        # video_duration = float(res_video_duration)
+        video_duration = 0
         video_id = None
         app_thumbnail = await upload_images(s3, folder='videothumbnails/' + category_obj.slug + '/' + topic_obj.slug,
                                               image=video_thumbnail, mimetype=None)
         # app_thumbnail = "https://exams.imagnus.in/static/admin/images/logo.png"
-       
+        print(app_thumbnail)
         n_url = app_thumbnail
-        new_url = "https://ik.imagekit.io/imagnus/videothumbnails/" + \
-            category_obj.slug+"/"+topic_obj.slug + \
-            "/tr:w-300,h-160,fo-auto/"+n_url.split('/')[-1]
-
+        # new_url = "https://ik.imagekit.io/imagnus/videothumbnails/" + \
+        #     category_obj.slug+"/"+topic_obj.slug + \
+        #     "/tr:w-300,h-160,fo-auto/"+n_url.split('/')[-1]
+        new_url = None
         video_360 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/"+video_file.filename+"/"+str(360)+".mp4"
            
         video_540 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/"+video_file.filename+"/"+str(540)+".mp4"
@@ -1361,9 +1285,9 @@ async def add_category_lecture(background_tasks: BackgroundTasks, request: Reque
             
         # background_tasks.add_task(call_api_task)
         
-       
-        background_tasks.add_task(
-            read_upload_video_lecture, video_file,saved_obj.id)
+        # read_upload_video_lecture.apply_async(video_file, saved_obj.id)
+        # background_tasks.add_task(
+        #     read_upload_video_lecture, video_file,saved_obj.id)
         
         # return response.text
         return RedirectResponse(
@@ -1371,8 +1295,8 @@ async def add_category_lecture(background_tasks: BackgroundTasks, request: Reque
                 '/' + category_obj.slug + '/' + topic_obj.slug + '/',
             status_code=status.HTTP_303_SEE_OTHER)
 
-    except Exception as ex:
-        raise HTTPException(status_code=208, detail=str(ex))
+    # except Exception as ex:
+    #     raise HTTPException(status_code=208, detail=str(ex))
         # return ex
         # return RedirectResponse(
         #     url='/admin/category_lectures/' + course_obj.slug +
@@ -2350,11 +2274,12 @@ async def display_progress(request: Request, _=Depends(get_current_user)):
     })
 import numpy as np    
 @router.get('/update_video_id/')
-async def update_video_id(request: Request, _=Depends(get_current_user)):
+async def update_video_id():
         lectures = await CourseCategoryLectures.all().values('id','mobile_video_url','video_id')
+        print(lectures)
         new_lectures = np.array(lectures)
         i = 0
-        for x in new_lectures:
+        for x in lectures:
             if not x['video_id']:
                 if 'https://player.vimeo.com' in x['mobile_video_url']:
                     url_split = x['mobile_video_url'].split('/')

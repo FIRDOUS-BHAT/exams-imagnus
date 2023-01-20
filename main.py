@@ -2,12 +2,12 @@ import uvicorn
 from fastapi import Body, FastAPI, Request, Response
 from typing import Callable, List
 from fastapi.routing import APIRoute
-from fastapi_cache.backends.redis import RedisBackend
+# from fastapi_cache.backends.redis import RedisBackend
 from fastapi_cache import FastAPICache
 from fastapi_cache.decorator import cache
 from fastapi_limiter.depends import RateLimiter
 from fastapi_limiter import FastAPILimiter
-import aioredis
+# import aioredis
 from scholarship_tests.apis import route as scholarshipRoute
 import random
 import string
@@ -22,7 +22,9 @@ from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.config import Config
-from starlette_session import SessionMiddleware
+# from starlette_session import SessionMiddleware
+from starlette.middleware.sessions import SessionMiddleware
+
 from tortoise.contrib.fastapi import register_tortoise
 
 from admin_dashboard import controller as adminController
@@ -34,6 +36,7 @@ from courses import controller as courseController
 from scholarship_tests import controller as scholarshipController
 from send_mails import controller as mailController
 from student import controller as studentController
+from student.apis.route import download_videos
 from study_material import controller as studyMaterialController
 from starlette_context import middleware, plugins
 
@@ -76,6 +79,9 @@ else:
 #    while(True):
 #      print("infinite loop")
 config = Config(".env")
+
+app.add_middleware(SessionMiddleware, secret_key="secret",
+                   )
 
 
 class GzipRequest(Request):
@@ -167,8 +173,6 @@ origins = [
 # )
 
 
-app.add_middleware(SessionMiddleware, secret_key="secret",
-                   cookie_name="cookie22")
 
 app.add_middleware(
     CORSMiddleware,
@@ -210,9 +214,34 @@ async def get_cache():
     return 1
 
 
+
 @app.on_event("startup")
 async def startup():
-    global session
+    
+    await Tortoise.init(
+        db_url=db_url,
+        modules={'models': [
+            'admin_dashboard.models',
+            'student.models',
+            "student_choices.models",
+            "screen_banners.models",
+            "checkout.models",
+            "send_mails.models",
+            "study_material.models",
+            "scholarship_tests.models",
+            
+            ]}
+    )
+    await Tortoise.generate_schemas()
+
+     
+    
+    
+    
+    
+    await download_videos()
+    # await adminController.update_video_id()
+    # global session
     # session = aiohttp.ClientSession()
     # # redis_cache = FastApiRedisCache()
     # # redis_cache.init(
@@ -322,6 +351,8 @@ register_tortoise(
     generate_schemas=True,
     add_exception_handlers=True,
 )
+
+
 
 
 # if __name__ == "__main__":
