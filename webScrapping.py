@@ -23,7 +23,7 @@ all_products = []
 #     all_products.append({
 #         "name": name,
 #         "description": description,
-#         "price": price,
+#         "price": price,``
 #         "reviews": reviews,
 #         "image": image
 #     })
@@ -33,7 +33,7 @@ all_products = []
 # '''students = soup.select('tr.students_list')
 # for product in students:
 #     created_at = product.select('td.created_at')[0].text.strip()
-#     name = product.select('td.student_name')[0].text.strip()
+#     name = product.select('td.student_name')[0].text.strip()``
 #     mobile = product.select('td.student_mobile')[0].text.strip()
 #     email = product.select('td.student_email')[0].text.strip()
 #     city = product.select('td.student_city')[0].text.strip()

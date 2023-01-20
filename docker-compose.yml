@@ -1,17 +1,37 @@
 version: "3"
 
 services:
-  imagnus:
-    build: .
-    volumes:
-      - .:/code
-    image: imagnusimage
-    command:  uvicorn main:app --reload --workers 1 --host 0.0.0.0 --port 8000
+  web:
+    build: ./
+    image: imagnus_image
+    command:  uvicorn main:app --reload --workers 4 --host 0.0.0.0 --port 8000
+    
     ports:
       - 8000:8000
-#     networks:
-#       - imagnus_network
+    networks:
+      - imagnus_network
 
-# networks:
-#   imagnus_network:
-#     driver: bridge
+
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+  
+  worker:
+    build: ./
+    command: celery --app=worker.celery worker --loglevel=info
+    
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - web
+      - redis
+
+  redis:
+    image: redis:6-alpine
+
+networks:
+  imagnus_network:
+    driver: bridge

@@ -21,8 +21,7 @@ boto3==1.26.29
 botocore==1.29.29
 broadcaster==0.2.0
 cachetools==5.0.0
-certifi==2021.10.8
-cffi==1.15.0
+celery==5.2.7
 charset-normalizer==2.0.12
 ciso8601==2.2.0
 click==8.0.3
@@ -77,7 +76,6 @@ motor==2.5.1
 multidict==6.0.2
 numpy==1.22.1
 openpyxl==3.0.9
-orjson==3.6.7
 orm==0.3.1
 outcome==1.1.0
 packaging==21.3
@@ -139,7 +137,6 @@ typing_extensions==4.1.0
 ujson==5.4.0
 urllib3==1.26.8
 uvicorn==0.15.0
-uvloop==0.16.0
 vimeo-downloader @ git+https://github.com/yashrathi-git/vimeo_downloader@84b37cb36c2c894ba7df8284083cd13333d9e045
 watchgod==0.7
 websocket-client==1.2.3
