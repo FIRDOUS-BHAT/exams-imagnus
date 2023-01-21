@@ -239,7 +239,7 @@ async def startup():
     
     
     
-    # await download_videos()
+    await download_videos()
     # await adminController.update_video_id()
     # global session
     # session = aiohttp.ClientSession()
