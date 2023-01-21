@@ -1363,6 +1363,8 @@ async def each_vimeo_video(link, path, file_name):
             #         data, "testing-bucket-s3-uploader",
             #         path+file_name
             #     )
+from tortoise.expressions import Q
+
 
 @router.post('/download_video')
 async def download_videos(_=Depends(get_current_user)):
@@ -1371,7 +1373,7 @@ async def download_videos(_=Depends(get_current_user)):
            
             conn = http.client.HTTPSConnection("api.vimeo.com")
             payload = ''
-            lectures = await CourseCategoryLectures.all().values('id', 'mobile_video_url', 'video_id', 'video_720')
+            lectures = await CourseCategoryLectures.filter(Q(video_360__isnull=True) | Q(video_540__isnull=True) | Q(video_720__isnull=True)).values('id', 'mobile_video_url', 'video_id','video_360','video_540', 'video_720')
             # print(lectures)
             new_lectures = np.array(lectures)
             # return new_lectures
@@ -1382,6 +1384,7 @@ async def download_videos(_=Depends(get_current_user)):
             }
             i = 0
             for x in new_lectures:
+               if x['video_360'] is None:
                 if x['video_id']:
 
                     conn.request("GET", "/videos/"+x['video_id'], payload, headers)
@@ -1400,9 +1403,100 @@ async def download_videos(_=Depends(get_current_user)):
                             video_360 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
                                 file_name+"/"+str(360)+".mp4"
 
+                            
+                            # print(json_response['download'])
+                            async def check_if_object_exists(key):
+                                try:
+                                    s3.get_object(
+                                        Bucket="testing-bucket-s3-uploader",
+                                        Key=key,
+                                    )
+                                    return True
+                                except s3.exceptions.NoSuchKey:
+                                    return False
+                            await CourseCategoryLectures.filter(id=x['id']).update(
+                                video_duration=json_response['duration'])
+                            for d in json_response['download']:
+                            
+                              
+                            
+                                if d['rendition'] == '360p':
+                                    if not await check_if_object_exists("transcoded/"+file_name+"/360.mp4"):
+                                        # link_360 = json_response['download'][2]['link']
+                                        link_360 = d['link']
+                                        await each_vimeo_video(link_360, "transcoded/"+file_name+"/", "360.mp4")
+                                        await CourseCategoryLectures.filter(id=x['id']).update(
+                                            video_360=video_360,
+                                            video_size_360=d['size']
+                                        )
+               
+               if x['video_540'] is None:
+                if x['video_id']:
+    
+                    conn.request("GET", "/videos/"+x['video_id'], payload, headers)
+                    res = conn.getresponse()
+                    data = res.read()
+                    # print(json.loads(data))
+                    json_response = json.loads(data)
+                    
+
+                    # open('video.mp4', 'wb').write(r.content)
+                    if 'error' not in json_response:
+            
+                            
+                            file_name = slugify(json_response['name'])
+                            print(file_name,"FILENAME")
+                            
+
                             video_540 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
                                 file_name+"/"+str(540)+".mp4"
 
+                           
+                            # print(json_response['download'])
+                            async def check_if_object_exists(key):
+                                try:
+                                    s3.get_object(
+                                        Bucket="testing-bucket-s3-uploader",
+                                        Key=key,
+                                    )
+                                    return True
+                                except s3.exceptions.NoSuchKey:
+                                    return False
+                            await CourseCategoryLectures.filter(id=x['id']).update(
+                                video_duration=json_response['duration'])
+                            for d in json_response['download']:
+                            
+                               
+                                        
+                                if d['rendition'] == '540p':
+                                    if not await check_if_object_exists("transcoded/"+file_name+"/540.mp4"):
+                                        # link_540 = json_response['download'][3]['link']
+                                        link_540 = d['link']
+                                        await each_vimeo_video(link_540, "transcoded/"+file_name+"/", "540.mp4")
+                                        await CourseCategoryLectures.filter(id=x['id']).update(
+                                            video_540=video_540,
+                                            video_size_540=d['size']
+                                        )
+                            
+                               
+             
+               if x['video_720'] is None:
+                 if x['video_id']:
+    
+                    conn.request("GET", "/videos/"+x['video_id'], payload, headers)
+                    res = conn.getresponse()
+                    data = res.read()
+                    # print(json.loads(data))
+                    json_response = json.loads(data)
+                    
+
+                    # open('video.mp4', 'wb').write(r.content)
+                    if 'error' not in json_response:
+            
+                            
+                            file_name = slugify(json_response['name'])
+                            print(file_name,"FILENAME")
+                           
                             video_720 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
                                 file_name+"/"+str(720)+".mp4"
                             # print(json_response['download'])
@@ -1429,28 +1523,10 @@ async def download_videos(_=Depends(get_current_user)):
                                             video_size_720=d['size']
                                         )
                                         
-                                if d['rendition'] == '540p':
-                                    if not await check_if_object_exists("transcoded/"+file_name+"/540.mp4"):
-                                        # link_540 = json_response['download'][3]['link']
-                                        link_540 = d['link']
-                                        await each_vimeo_video(link_540, "transcoded/"+file_name+"/", "540.mp4")
-                                        await CourseCategoryLectures.filter(id=x['id']).update(
-                                            video_540=video_540,
-                                            video_size_540=d['size']
-                                        )
-                            
-                                if d['rendition'] == '360p':
-                                    if not await check_if_object_exists("transcoded/"+file_name+"/360.mp4"):
-                                        # link_360 = json_response['download'][2]['link']
-                                        link_360 = d['link']
-                                        await each_vimeo_video(link_360, "transcoded/"+file_name+"/", "360.mp4")
-                                        await CourseCategoryLectures.filter(id=x['id']).update(
-                                            video_360=video_360,
-                                            video_size_360=d['size']
-                                        )
-             
-
+                               
+              
     except Exception as ex:
+        print(str(ex))
         uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
         playsound('Sweet Ting Ting Ting.mp3')
         print(str(ex))
