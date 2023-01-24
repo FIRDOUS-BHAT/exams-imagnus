@@ -1320,17 +1320,16 @@ async def upload_to_s3(file_path, bucket_name, object_name):
 
 async def each_vimeo_video(link, path, file_name):
 
-            if not os.path.exists(path):
-                os.makedirs(path)
-       
-            # response = requests.get(link, stream=True)
+                        if not os.path.exists(path):
+                                os.makedirs(path)
+                                print("CREATED")
+        
+                        response = requests.get(link, stream=True)
             
-            async with aiohttp.ClientSession() as session:
+            
+                    
 
-                async with session.get(link) as response:
-                    if response.status == 200:
-
-                        subprocess.check_call(["attrib", "-r", path])
+                        # subprocess.check_call(["attrib", "-r", path])
 
                         with open(path+file_name, "wb") as f:
                             print("Downloading %s" % file_name)
@@ -1357,9 +1356,9 @@ async def each_vimeo_video(link, path, file_name):
                                         i = i+1
             
             
-            await upload_to_s3(path+file_name, "testing-bucket-s3-uploader",
-                                 path+file_name, )
-            os.remove(path+file_name)
+                            await upload_to_s3(path+file_name, "testing-bucket-s3-uploader",
+                                                path+file_name, )
+                            os.remove(path+file_name)
            
 
             # with open(path+file_name, "rb") as data:
@@ -1388,105 +1387,78 @@ async def download_videos():
             'Accept': 'application/vnd.vimeo.*+json;version=3.4'
         }
         i = 0
+        
+        async def check_if_object_exists(key):
+         try:
+            s3.get_object(
+                          Bucket="testing-bucket-s3-uploader",
+                          Key=key,
+
+                        )
+            return True                                                                              
+         except s3.exceptions.NoSuchKey:
+
+            return False                                         
+        
         for x in new_lectures:
             
-                if x['video_id'].isnumeric():
+                if  x['video_id'] and x['video_id'].isnumeric():
                     print(x['video_id'])
-                    # conn.request("GET", "/videos/" +
-                    #              x['video_id'], payload, headers)
-                    # res = conn.getresponse()
-                    # data = res.read()
-                    # # print(json.loads(data))
-                    # json_response = json.loads(data)
-                    
-                    async with aiohttp.ClientSession() as session:
-                        async with session.get("https://api.vimeo.com/videos/" + x['video_id'],headers=headers) as response:
-                            print(response)
-                            if response.status == 200:
-                                print(response)
+                    conn.request("GET", "/videos/" +
+                                 x['video_id'], payload, headers)
+                    res = conn.getresponse()
+                    data = res.read()
+                    json_response = json.loads(data)
+                
+                    if res.status == 200:
+                                
                                 # open('video.mp4', 'wb').write(r.content)
                                 if 'error' not in json_response:
+                                    
 
                                     file_name = slugify(json_response['name'])
                                     print(file_name, "FILENAME")
-                                    video_360 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
-                                        file_name+"/"+str(360)+".mp4"
-
-                                    # print(json_response['download'])
-
-                                    async def check_if_object_exists(key):
-                                        try:
-                                            s3.get_object(
-                                                Bucket="testing-bucket-s3-uploader",
-                                                Key=key,
-                                            )
-                                            return True
-                                        except s3.exceptions.NoSuchKey:
-                                            print("S3 OBJECT CREATED")
-                                            return False
+                                    
                                     await CourseCategoryLectures.filter(id=x['id']).update(
                                         video_duration=json_response['duration'])
+                                    
                                     for d in json_response['download']:
+                                        
+                                        if x['video_360'] is None:
+    
+                                            if d['rendition'] == '360p':
+                                                video_360 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
+                                                     file_name+"/"+str(360)+".mp4"
+                                                key = "transcoded/"+file_name+"/360.mp4"
+                                                if not await check_if_object_exists(key):
+                                                    s3.put_object(
+                                                        Bucket="testing-bucket-s3-uploader",
+                                                        Key=key,
+                                                        Body=''
+                                                    )
+                                               
+                                                    link_360 = d['link']
+                                                    await each_vimeo_video(link_360, "transcoded/"+file_name+"/", "360.mp4")
+                                                    await CourseCategoryLectures.filter(id=x['id']).update(
+                                                        video_360=video_360,
+                                                        video_size_360=d['size']
+                                                    )
+                                    
+                                    
+                                        
 
-                                        if d['rendition'] == '360p':
-                                            key = "transcoded/"+file_name+"/360.mp4"
-                                            if not await check_if_object_exists(key):
-                                                s3.put_object(
-                                                    Bucket="testing-bucket-s3-uploader",
-                                                    Key=key,
-                                                )
-                                            # link_360 = json_response['download'][2]['link']
-                                                link_360 = d['link']
-                                                await each_vimeo_video(link_360, key)
-                                                await CourseCategoryLectures.filter(id=x['id']).update(
-                                                    video_360=video_360,
-                                                    video_size_360=d['size']
-                                                )
-
-                                    if x['video_540'] is None:
-                                        if x['video_id']:
-
-                                            conn.request("GET", "/videos/" +
-                                                        x['video_id'], payload, headers)
-                                            res = conn.getresponse()
-                                            data = res.read()
-                                            # print(json.loads(data))
-                                            json_response = json.loads(data)
-
-                                            # open('video.mp4', 'wb').write(r.content)
-                                            if 'error' not in json_response:
-
-                                                file_name = slugify(json_response['name'])
-                                                print(file_name, "FILENAME")
-
-                                                video_540 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
-                                                    file_name+"/"+str(540)+".mp4"
-
-                                                # print(json_response['download'])
-
-                                                async def check_if_object_exists(key):
-                                                    try:
-                                                        s3.get_object(
-                                                            Bucket="testing-bucket-s3-uploader",
-                                                            Key=key,
-                                                        )
-                                                        return True
-                                                    except s3.exceptions.NoSuchKey:
-                                                        print("S3 OBJECT CREATED")
-
-                                                        return False
-                                                await CourseCategoryLectures.filter(id=x['id']).update(
-                                                    video_duration=json_response['duration'])
-                                                for d in json_response['download']:
-
-                                                    if d['rendition'] == '540p':
+                                        if x['video_540'] is None:
+                                                if d['rendition'] == '540p':
+                                                        video_540 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
+                                                        file_name+"/"+str(540)+".mp4"
                                                         key = "transcoded/"+file_name+"/540.mp4"
                                                         if not await check_if_object_exists(key):
                                                             s3.put_object(
                                                                 Bucket="testing-bucket-s3-uploader",
                                                                 Key=key,
+                                                                Body=''
                                                             )
-                                                            # link_540 = json_response['download'][3]['link']
+                                                           
                                                             link_540 = d['link']
                                                             await each_vimeo_video(link_540, "transcoded/"+file_name+"/", "540.mp4")
                                                             await CourseCategoryLectures.filter(id=x['id']).update(
@@ -1494,42 +1466,11 @@ async def download_videos():
                                                                 video_size_540=d['size']
                                                             )
 
-                                    if x['video_720'] is None:
-                                        if x['video_id']:
+                                        if x['video_720'] is None:
 
-                                            conn.request("GET", "/videos/" +
-                                                        x['video_id'], payload, headers)
-                                            res = conn.getresponse()
-                                            data = res.read()
-                                            # print(json.loads(data))
-                                            json_response = json.loads(data)
-
-                                            # open('video.mp4', 'wb').write(r.content)
-                                            if 'error' not in json_response:
-
-                                                file_name = slugify(json_response['name'])
-                                                print(file_name, "FILENAME")
-
-                                                video_720 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
-                                                    file_name+"/"+str(720)+".mp4"
-                                                # print(json_response['download'])
-
-                                                async def check_if_object_exists(key):
-                                                    try:
-                                                        s3.get_object(
-                                                            Bucket="testing-bucket-s3-uploader",
-                                                            Key=key,
-                                                        )
-                                                        return True
-                                                    except s3.exceptions.NoSuchKey:
-                                                        print("S3 OBJECT CREATED")
-
-                                                        return False
-                                                await CourseCategoryLectures.filter(id=x['id']).update(
-                                                    video_duration=json_response['duration'])
-                                                for d in json_response['download']:
-
-                                                    if d['rendition'] == '720p':
+                                                if d['rendition'] == '720p':
+                                                        video_720 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
+                                                                  file_name+"/"+str(720)+".mp4"
                                                         key = "transcoded/"+file_name+"/720.mp4"
 
                                                         if not await check_if_object_exists(key):
@@ -1537,6 +1478,7 @@ async def download_videos():
                                                             s3.put_object(
                                                                 Bucket="testing-bucket-s3-uploader",
                                                                 Key=key,
+                                                                Body=''
                                                             )
                                                             #  link_720 = json_response['download'][1]['link']
                                                             link_720 = d['link']
@@ -1545,8 +1487,10 @@ async def download_videos():
                                                                 video_720=video_720,
                                                                 video_size_720=d['size']
                                                             )
-
+                else:
+                    print("No")
     except Exception as ex:
-        uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
         print(str(ex))
+        uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+        
         return str(ex)
