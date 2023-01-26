@@ -1,5 +1,7 @@
 
 
+import aiohttp
+from tortoise.expressions import Q
 import uvicorn
 from playsound import playsound
 import os
@@ -1315,69 +1317,77 @@ async def upload_to_s3(file_path, bucket_name, object_name):
               desc='Uploading...', leave=True, miniters=1, ascii=True, disable=None) as pbar:
         # upload the file
         with open(file_path, "rb") as f:
-            s3.upload_fileobj(f, bucket_name, object_name, Callback=lambda x: pbar.update(x))
+            s3.upload_fileobj(f, bucket_name, object_name,
+                              Callback=lambda x: pbar.update(x))
 
 
 async def each_vimeo_video(link, path, file_name):
 
-                        if not os.path.exists(path):
-                                os.makedirs(path)
-                                print("CREATED")
-        
-                        response = requests.get(link, stream=True)
-            
-            
-                    
+    if not os.path.exists(path):
+        os.makedirs(path)
+        print("CREATED")
 
-                        # subprocess.check_call(["attrib", "-r", path])
+    response = requests.get(link, stream=True)
 
-                        with open(path+file_name, "wb") as f:
-                            print("Downloading %s" % file_name)
+    # subprocess.check_call(["attrib", "-r", path])
 
-                            # with httpx.stream("GET", link) as response:
+    with open(path+file_name, "wb") as f:
+        print("Downloading %s" % file_name)
 
-                            total = int(response.headers["Content-Length"])
-                            with rich.progress.Progress(
-                                "[progress.percentage]{task.percentage:>3.0f}%",
-                                rich.progress.BarColumn(bar_width=None),
-                                rich.progress.DownloadColumn(),
-                                rich.progress.TransferSpeedColumn(),
-                            ) as progress:
-                                download_task = progress.add_task(
-                                    "Download", total=total)
-                                i = 1
-                                for chunk in response.iter_content(chunk_size=1024):
-                                    if chunk:
+        # with httpx.stream("GET", link) as response:
 
-                                        f.write(chunk)
+        total = int(response.headers["Content-Length"])
+        with rich.progress.Progress(
+            "[progress.percentage]{task.percentage:>3.0f}%",
+            rich.progress.BarColumn(bar_width=None),
+            rich.progress.DownloadColumn(),
+            rich.progress.TransferSpeedColumn(),
+        ) as progress:
+            download_task = progress.add_task(
+                "Download", total=total)
+            i = 1
+            for chunk in response.iter_content(chunk_size=1024):
+                if chunk:
 
-                                        progress.update(
-                                            download_task, completed=i*1024)
-                                        i = i+1
-            
-            
-                            await upload_to_s3(path+file_name, "testing-bucket-s3-uploader",
-                                                path+file_name, )
-                            os.remove(path+file_name)
-           
+                    f.write(chunk)
 
-            # with open(path+file_name, "rb") as data:
-            #     # Create a progress bar
-            #     s3.upload_fileobj(
-            #         data, "testing-bucket-s3-uploader",
-            #         path+file_name
-            #     )
-from tortoise.expressions import Q
+                    progress.update(
+                        download_task, completed=i*1024)
+                    i = i+1
 
-import aiohttp
+        await upload_to_s3(path+file_name, "testing-bucket-s3-uploader",
+                           path+file_name, )
+        f.close()
+
+        return True
+        # with open(path+file_name, "rb") as data:
+        #     # Create a progress bar
+        #     s3.upload_fileobj(
+        #         data, "testing-bucket-s3-uploader",
+        #         path+file_name
+        #     )
+
+
 @router.post('/download_video')
 async def download_videos():
     print('HERE')
     try:
+        async def check_if_object_exists(key):
+            try:
+                s3.get_object(
+                    Bucket="testing-bucket-s3-uploader",
+                    Key=key,
+
+                )
+                return True
+            except s3.exceptions.NoSuchKey:
+
+                return False
+
 
         conn = http.client.HTTPSConnection("api.vimeo.com")
         payload = ''
-        lectures = await CourseCategoryLectures.filter(Q(video_360__isnull=True) | Q(video_540__isnull=True) | Q(video_720__isnull=True)).values('id', 'mobile_video_url', 'video_id', 'video_360', 'video_540', 'video_720')
+        lectures = await CourseCategoryLectures.filter(Q(video_360__isnull=True) | Q(video_540__isnull=True) | Q(video_720__isnull=True)).values('id', 'video_duration', 'mobile_video_url', 'video_id', 'video_360', 'video_540', 'video_720')
         # print(lectures)
         new_lectures = np.array(lectures)
         # return new_lectures
@@ -1387,110 +1397,171 @@ async def download_videos():
             'Accept': 'application/vnd.vimeo.*+json;version=3.4'
         }
         i = 0
-        
-        async def check_if_object_exists(key):
-         try:
-            s3.get_object(
-                          Bucket="testing-bucket-s3-uploader",
-                          Key=key,
 
-                        )
-            return True                                                                              
-         except s3.exceptions.NoSuchKey:
-
-            return False                                         
         
         for x in new_lectures:
-            
-                if  x['video_id'] and x['video_id'].isnumeric():
-                    print(x['video_id'])
+            # check if video duration is there
+            json_response = None
+            if x['video_duration'] is None:
+                await CourseCategoryLectures.filter(id=x['id']).update(
+                    video_duration=json_response['duration'])
+
+            if x['video_id'] and x['video_id'].isnumeric():
+                print(x['video_id'])
+                if x['video_360'] is None:
+                    print("IN 360")
                     conn.request("GET", "/videos/" +
                                  x['video_id'], payload, headers)
                     res = conn.getresponse()
                     data = res.read()
+                    print("DATA RECEIVED FROM VIMEO")
                     json_response = json.loads(data)
-                
+
                     if res.status == 200:
+
+                        # open('video.mp4', 'wb').write(r.content)
+                        if 'error' not in json_response:
+
+                            file_name = slugify(json_response['name'])
+                            print(file_name, "FILENAME")
+
+                            d = next((d for d in json_response['download'] if d.get(
+                                'rendition') == '360p'), None)
+                            if d:
+                                print("Yes 360 video")
+                                video_360 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
+                                    file_name + "/" + str(360) + ".mp4"
+                                key = "transcoded/" + file_name + "/360.mp4"
+                                link_360 = d.get('link')
+
                                 
-                                # open('video.mp4', 'wb').write(r.content)
-                                if 'error' not in json_response:
-                                    
+                                if not await check_if_object_exists(key):
+                                    s3.put_object(
+                                        Bucket="testing-bucket-s3-uploader",
+                                        Key=key,
+                                        Body=''
+                                    )
 
-                                    file_name = slugify(json_response['name'])
-                                    print(file_name, "FILENAME")
-                                    
+                                
+                                    await each_vimeo_video(link_360, "transcoded/"+file_name+"/", "360.mp4")
+                                    print("360 video MIGRATED")
+                                    os.remove(key)
                                     await CourseCategoryLectures.filter(id=x['id']).update(
-                                        video_duration=json_response['duration'])
-                                    
-                                    for d in json_response['download']:
+                                        video_360=video_360,
+                                        video_size_360=d.get('size')
+                                )
+
+                if x['video_540'] is None:
+                    print("IN 540")
+
+                    if json_response is not None:
+                        if '/videos/'+str(x['video_id']) == json_response['uri']:
+                            json_response = json_response
+                        else:
+
+                            conn.request("GET", "/videos/" +
+                                         x['video_id'], payload, headers)
+                            res = conn.getresponse()
+                            data = res.read()
+                            print("DATA RECEIVED FROM VIMEO")
+
+                            json_response = json.loads(data)
+                    else:
+                        conn.request("GET", "/videos/" +
+                                     x['video_id'], payload, headers)
+                        res = conn.getresponse()
+                        data = res.read()
+                        print("DATA RECEIVED FROM VIMEO")
+
+                        json_response = json.loads(data)
+                    if res.status == 200:
+
+                        # open('video.mp4', 'wb').write(r.content)
+                        if 'error' not in json_response:
+
+                            file_name = slugify(json_response['name'])
+                            print(file_name, "FILENAME")
+
+                            d = next((d for d in json_response['download'] if d.get(
+                                'rendition') == '540p'), None)
+                            if d:
+                                    video_540 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
+                                        file_name+"/"+str(540)+".mp4"
+                                    key = "transcoded/"+file_name+"/540.mp4"
+                                    if not await check_if_object_exists(key):
+                                        s3.put_object(
+                                            Bucket="testing-bucket-s3-uploader",
+                                            Key=key,
+                                            Body=''
+                                        )
+
+                                        link_540 = d['link']
+                                        await each_vimeo_video(link_540, "transcoded/"+file_name+"/", "540.mp4")
                                         
-                                        if x['video_360'] is None:
-    
-                                            if d['rendition'] == '360p':
-                                                video_360 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
-                                                     file_name+"/"+str(360)+".mp4"
-                                                key = "transcoded/"+file_name+"/360.mp4"
-                                                if not await check_if_object_exists(key):
-                                                    s3.put_object(
-                                                        Bucket="testing-bucket-s3-uploader",
-                                                        Key=key,
-                                                        Body=''
-                                                    )
-                                               
-                                                    link_360 = d['link']
-                                                    await each_vimeo_video(link_360, "transcoded/"+file_name+"/", "360.mp4")
-                                                    await CourseCategoryLectures.filter(id=x['id']).update(
-                                                        video_360=video_360,
-                                                        video_size_360=d['size']
-                                                    )
-                                    
-                                    
-                                        
+                                        print("540 video MIGRATED")
+                                        os.remove(key)
+                                        await CourseCategoryLectures.filter(id=x['id']).update(
+                                            video_540=video_540,
+                                            video_size_540=d['size']
+                                        )
 
-                                        if x['video_540'] is None:
-                                                if d['rendition'] == '540p':
-                                                        video_540 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
-                                                        file_name+"/"+str(540)+".mp4"
-                                                        key = "transcoded/"+file_name+"/540.mp4"
-                                                        if not await check_if_object_exists(key):
-                                                            s3.put_object(
-                                                                Bucket="testing-bucket-s3-uploader",
-                                                                Key=key,
-                                                                Body=''
-                                                            )
-                                                           
-                                                            link_540 = d['link']
-                                                            await each_vimeo_video(link_540, "transcoded/"+file_name+"/", "540.mp4")
-                                                            await CourseCategoryLectures.filter(id=x['id']).update(
-                                                                video_540=video_540,
-                                                                video_size_540=d['size']
-                                                            )
+                if x['video_720'] is None:
+                    print("IN 720")
 
-                                        if x['video_720'] is None:
+                    if json_response is not None:
+                        if '/videos/'+str(x['video_id']) == json_response['uri']:
+                            json_response = json_response
+                        else:
 
-                                                if d['rendition'] == '720p':
-                                                        video_720 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
-                                                                  file_name+"/"+str(720)+".mp4"
-                                                        key = "transcoded/"+file_name+"/720.mp4"
+                            conn.request("GET", "/videos/" +
+                                         x['video_id'], payload, headers)
+                            res = conn.getresponse()
+                            print("DATA RECEIVED FROM VIMEO")
 
-                                                        if not await check_if_object_exists(key):
+                            data = res.read()
+                            json_response = json.loads(data)
+                    else:
+                        conn.request("GET", "/videos/" +
+                                     x['video_id'], payload, headers)
+                        res = conn.getresponse()
+                        data = res.read()
+                        print("DATA RECEIVED FROM VIMEO")
+                        json_response = json.loads(data)
+                        if res.status == 200:
 
-                                                            s3.put_object(
-                                                                Bucket="testing-bucket-s3-uploader",
-                                                                Key=key,
-                                                                Body=''
-                                                            )
-                                                            #  link_720 = json_response['download'][1]['link']
-                                                            link_720 = d['link']
-                                                            await each_vimeo_video(link_720, "transcoded/"+file_name+"/", "720.mp4")
-                                                            await CourseCategoryLectures.filter(id=x['id']).update(
-                                                                video_720=video_720,
-                                                                video_size_720=d['size']
-                                                            )
-                else:
-                    print("No")
+                            # open('video.mp4', 'wb').write(r.content)
+                            if 'error' not in json_response:
+
+                                file_name = slugify(
+                                    json_response['name'])
+                                print(file_name, "FILENAME")
+
+                                d = next((d for d in json_response['download'] if d.get('rendition') == '720p'), None)
+                                if d:
+                                        video_720 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
+                                            file_name+"/"+str(720)+".mp4"
+                                        key = "transcoded/"+file_name+"/720.mp4"
+
+                                        if not await check_if_object_exists(key):
+
+                                            s3.put_object(
+                                                Bucket="testing-bucket-s3-uploader",
+                                                Key=key,
+                                                Body=''
+                                            )
+                                            #  link_720 = json_response['download'][1]['link']
+                                            link_720 = d['link']
+                                            await each_vimeo_video(link_720, "transcoded/"+file_name+"/", "720.mp4")
+                                            print("720 video MIGRATED")
+                                            os.remove(key)
+                                            await CourseCategoryLectures.filter(id=x['id']).update(
+                                                video_720=video_720,
+                                                video_size_720=d['size']
+                                            )
+            else:
+                print("INVALID VIDEO ID")
     except Exception as ex:
         print(str(ex))
         uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
-        
+
         return str(ex)
