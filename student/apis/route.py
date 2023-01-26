@@ -1527,7 +1527,7 @@ async def download_videos():
                         data = res.read()
                         print("DATA RECEIVED FROM VIMEO")
                         json_response = json.loads(data)
-                        if res.status == 200:
+                    if res.status == 200:
 
                             # open('video.mp4', 'wb').write(r.content)
                             if 'error' not in json_response:
