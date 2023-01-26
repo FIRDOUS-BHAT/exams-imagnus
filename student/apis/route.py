@@ -1,5 +1,6 @@
 
 
+import shutil
 import aiohttp
 from tortoise.expressions import Q
 import uvicorn
@@ -1401,7 +1402,7 @@ async def download_videos():
         
         for x in new_lectures:
             if os.path.exists("transcoded"):
-                 os.remove('transcoded')
+                shutil.rmtree("transcoded")
             # check if video duration is there
             json_response = None
             if x['video_duration'] is None:
