@@ -1402,8 +1402,7 @@ async def download_videos():
 
         
         for x in new_lectures:
-            if os.path.exists("transcoded"):
-                shutil.rmtree("transcoded")
+            
             # check if video duration is there
             json_response = None
             if x['video_duration'] is None:
@@ -1449,7 +1448,7 @@ async def download_videos():
                                 
                                     await each_vimeo_video(link_360, "transcoded/"+file_name+"/", "360.mp4")
                                     print("360 video MIGRATED")
-                                    os.remove(key)
+                                    shutil.rmtree(key)
                                     await CourseCategoryLectures.filter(id=x['id']).update(
                                         video_360=video_360,
                                         video_size_360=d.get('size')
@@ -1503,7 +1502,8 @@ async def download_videos():
                                         await each_vimeo_video(link_540, "transcoded/"+file_name+"/", "540.mp4")
                                         
                                         print("540 video MIGRATED")
-                                        os.remove(key)
+                                        shutil.rmtree(key)
+
                                         await CourseCategoryLectures.filter(id=x['id']).update(
                                             video_540=video_540,
                                             video_size_540=d['size']
@@ -1557,7 +1557,8 @@ async def download_videos():
                                             link_720 = d['link']
                                             await each_vimeo_video(link_720, "transcoded/"+file_name+"/", "720.mp4")
                                             print("720 video MIGRATED")
-                                            os.remove(key)
+                                            shutil.rmtree(key)
+
                                             await CourseCategoryLectures.filter(id=x['id']).update(
                                                 video_720=video_720,
                                                 video_size_720=d['size']
