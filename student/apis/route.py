@@ -1361,10 +1361,10 @@ async def each_vimeo_video(link, path, file_name):
                                             download_task, completed=i*1024)
                                         i = i+1
 
-                            await upload_to_s3(path+file_name, "testing-bucket-s3-uploader",
-                                               path+file_name, )
+                        await upload_to_s3(path+file_name, "testing-bucket-s3-uploader",
+                                               path+file_name)
 
-
+                        shutil.rmtree("transcoded")
             # with open(path+file_name, "rb") as data:
             #     # Create a progress bar
             #     s3.upload_fileobj(
@@ -1416,7 +1416,7 @@ async def download_videos():
 
         lecturesToDownload = len(new_lectures)
         for x in new_lectures:
-            shutil.rmtree("transcoded")
+            
             print(f"Status = {i} / {lecturesToDownload}")
             # check if video duration is there
             json_response = None
