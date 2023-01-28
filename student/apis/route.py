@@ -1377,6 +1377,8 @@ async def each_vimeo_video(link, path, file_name):
         uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
 
 
+from dateutil.parser import parse
+from dateutil.relativedelta import relativedelta
 
 
 @router.post('/download_video')
@@ -1397,7 +1399,7 @@ async def download_videos():
 
         conn = http.client.HTTPSConnection("api.vimeo.com")
         payload = ''
-        start_date = parse("2022-04-01")
+        start_date = parse("2022-08-01")
         end_date = start_date + relativedelta(months=1)
         print(f"{start_date}   --   {end_date}")
 
