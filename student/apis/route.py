@@ -1416,6 +1416,7 @@ async def download_videos():
 
         lecturesToDownload = len(new_lectures)
         for x in new_lectures:
+            shutil.rmtree("transcoded")
             print(f"Status = {i} / {lecturesToDownload}")
             # check if video duration is there
             json_response = None
@@ -1459,7 +1460,7 @@ async def download_videos():
                                 #     )
 
                                 await each_vimeo_video(link_360, "transcoded/"+file_name+"/", "360.mp4")
-                                shutil.rmtree("transcoded")
+                                
 
                                 await CourseCategoryLectures.filter(id=x['id']).update(
                                     video_360=video_360,
@@ -1514,7 +1515,7 @@ async def download_videos():
                                     link_540 = d['link']
                                     await each_vimeo_video(link_540, "transcoded/"+file_name+"/", "540.mp4")
 
-                                    shutil.rmtree("transcoded")
+                                    
 
                                     await CourseCategoryLectures.filter(id=x['id']).update(
                                         video_540=video_540,
@@ -1571,7 +1572,7 @@ async def download_videos():
                                         link_720 = d['link']
                                         await each_vimeo_video(link_720, "transcoded/"+file_name+"/", "720.mp4")
                                         print("720 video MIGRATED")
-                                        shutil.rmtree("transcoded")
+                                        
 
                                         await CourseCategoryLectures.filter(id=x['id']).update(
                                             video_720=video_720,
