@@ -1328,9 +1328,9 @@ async def upload_to_s3(file_path, bucket_name, object_name):
 
 async def each_vimeo_video(link, path, file_name):
     try:
-                       if not os.path.exists(path):
+                        if not os.path.exists(path):
                                os.makedirs(path)
-                                print("CREATED")
+                               print("CREATED")
 
                         response = requests.get(link, stream=True)
 
