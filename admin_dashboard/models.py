@@ -171,11 +171,11 @@ class CourseCategoryLectures(Model):
     video_id = fields.TextField(null=True, blank=True)
     video_duration = fields.FloatField(blank=True, null=True)
     video_360 = fields.TextField(null=True, blank=True) 
-    video_size_360 = fields.IntField(null=True, blank=True)
+    video_size_360 = fields.BigIntField(null=True, blank=True)
     video_540 = fields.TextField(null=True, blank=True)
-    video_size_540 = fields.IntField(null=True, blank=True)
+    video_size_540 = fields.BigIntField(null=True, blank=True)
     video_720 = fields.TextField(null=True, blank=True)
-    video_size_720 = fields.IntField(null=True, blank=True)
+    video_size_720 = fields.BigIntField(null=True, blank=True)
     category_topic = fields.ForeignKeyField(
         "models.CategoryTopics", related_name="CategoryLectures", on_delete='CASCADE', index=True
     )
