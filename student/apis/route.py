@@ -1405,10 +1405,13 @@ async def download_videos():
         # start_date = parse("2022-08-01")
         end_date = start_date + relativedelta(months=1)
         print(f"{start_date}   --   {end_date}")
-
-        lectures = await CourseCategoryLectures.filter(Q(video_360__isnull=True) | Q(video_540__isnull=True) | Q(video_720__isnull=True), created_at__range=(start_date,end_date)).values('id', 'video_duration', 'mobile_video_url', 'video_id', 'video_360', 'video_540', 'video_720')
+        global new_lectures
+        async def refresh_lectures():
+            lectures = await CourseCategoryLectures.filter(Q(video_360__isnull=True) | Q(video_540__isnull=True) | Q(video_720__isnull=True), created_at__range=(start_date,end_date)).values('id', 'video_duration', 'mobile_video_url', 'video_id', 'video_360', 'video_540', 'video_720')
+            new_lectures = np.array(lectures)
+            
+            return new_lectures
         # print(lectures)
-        new_lectures = np.array(lectures)
         # return new_lectures
         headers = {
             'Authorization': 'bearer REDACTED_TOKEN',
@@ -1416,7 +1419,7 @@ async def download_videos():
             'Accept': 'application/vnd.vimeo.*+json;version=3.4'
         }
         i = 0
-
+        new_lectures = await refresh_lectures()
         lecturesToDownload = len(new_lectures)
         for x in new_lectures:
             if os.path.exists("transcoded"):
@@ -1598,7 +1601,8 @@ async def download_videos():
                                         
 
                 i = i+1
-        
+                new_lectures = await refresh_lectures()
+
             else:
                 print("INVALID VIDEO ID")
         print(f"finished = {lecturesToDownload}")
