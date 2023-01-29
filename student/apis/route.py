@@ -1399,7 +1399,10 @@ async def download_videos():
 
         conn = http.client.HTTPSConnection("api.vimeo.com")
         payload = ''
-        start_date = parse("2022-09-01")
+        with open('migration_month.txt') as f:
+            start_date = parse(f.read())
+            f.close()
+        # start_date = parse("2022-08-01")
         end_date = start_date + relativedelta(months=1)
         print(f"{start_date}   --   {end_date}")
 
@@ -1468,6 +1471,7 @@ async def download_videos():
                                     video_size_360=d.get('size')
                                 )
                                 print("360 video MIGRATED")
+                                print(datetime.now())
                                 if os.path.exists("transcoded"):
                                     os.remove(key)
 
@@ -1524,7 +1528,10 @@ async def download_videos():
                                         video_540=video_540,
                                         video_size_540=d['size']
                                     )
+                                    
+                                    
                                     print("540 video MIGRATED")
+                                    print(datetime.now())
                                     if os.path.exists("transcoded"):
                                         os.remove(key)
 
@@ -1584,6 +1591,8 @@ async def download_videos():
                                             video_size_720=d['size']
                                         )
                                         print("720 video MIGRATED")
+                                        print(datetime.now())
+                                        
                                         if os.path.exists("transcoded"):
                                             os.remove(key)
                                         
