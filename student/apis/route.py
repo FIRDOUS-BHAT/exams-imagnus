@@ -1469,7 +1469,7 @@ async def download_videos():
                                 )
                                 print("360 video MIGRATED")
                                 if os.path.exists("transcoded"):
-                                    shutil.rmtree("transcoded")
+                                    os.remove(key)
 
                 if x['video_540'] is None:
                     print("IN 540")
@@ -1526,7 +1526,7 @@ async def download_videos():
                                     )
                                     print("540 video MIGRATED")
                                     if os.path.exists("transcoded"):
-                                        shutil.rmtree("transcoded")
+                                        os.remove(key)
 
                 if x['video_720'] is None:
                     print("IN 720")
@@ -1576,7 +1576,7 @@ async def download_videos():
                                            #  link_720 = json_response['download'][1]['link']
                                         link_720 = d['link']
                                         await each_vimeo_video(link_720, "transcoded/"+file_name+"/", "720.mp4")
-                                        print("720 video MIGRATED")
+                                        
                                         
 
                                         await CourseCategoryLectures.filter(id=x['id']).update(
@@ -1585,7 +1585,7 @@ async def download_videos():
                                         )
                                         print("720 video MIGRATED")
                                         if os.path.exists("transcoded"):
-                                            shutil.rmtree("transcoded")
+                                            os.remove(key)
                                         
 
                 i = i+1
