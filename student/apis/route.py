@@ -1407,7 +1407,7 @@ async def download_videos():
         print(f"{start_date}   --   {end_date}")
         global new_lectures
         async def refresh_lectures():
-            lectures = await CourseCategoryLectures.filter(Q(video_360__isnull=True) | Q(video_540__isnull=True) | Q(video_720__isnull=True), created_at__range=(start_date,end_date)).order_by('-created_at').values('id', 'video_duration', 'mobile_video_url', 'video_id', 'video_360', 'video_540', 'video_720')
+            lectures = await CourseCategoryLectures.filter(Q(video_360__isnull=True) | Q(video_540__isnull=True) | Q(video_720__isnull=True), created_at__range=(start_date,end_date)).order_by('created_at').values('id', 'video_duration', 'mobile_video_url', 'video_id', 'video_360', 'video_540', 'video_720')
             new_lectures = np.array(lectures)
             
             return new_lectures
