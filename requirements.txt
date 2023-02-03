@@ -149,7 +149,7 @@ ujson==5.4.0
 urllib3==1.26.8
 uvicorn==0.15.0
 uvloop==0.16.0
-vimeo-downloader @ git+https://github.com/yashrathi-git/vimeo_downloader@84b37cb36c2c894ba7df8284083cd13333d9e045
+# vimeo-downloader @ git+https://github.com/yashrathi-git/vimeo_downloader@84b37cb36c2c894ba7df8284083cd13333d9e045
 vine==5.0.0
 watchgod==0.7
 wcwidth==0.2.5
