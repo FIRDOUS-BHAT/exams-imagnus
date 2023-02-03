@@ -206,3 +206,4 @@ vishwas_academy_all_student_data.csv
 JsonToExcel.py
 auth/__pycache__
 .env
+query.sql
