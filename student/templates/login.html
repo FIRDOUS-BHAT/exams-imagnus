@@ -1,89 +1,173 @@
- {% extends "base.html" %}
-         {% block content %}
- 
- <div class="page_loader"></div>
-        <a href="https://www.imagnus.in/"><img src="/static/credential_assets/img/back.png" class="back mt-20"></a>
- <!-- Login 14 start -->
- <div class="login-14">
-		 
-     <div class="container">
-         <div class="row login-box">
-             <div class="col-lg-8 col-md-12 bg-img align-self-center">
-                 <div class="info">
-                     
-                     <div class="btn-section clearfix">
-                         <a href="#" class="link-btn active btn-1 default-bg">Student Login </a>
-                         <div class="clearfix"></div>
-                         <a href="/student/registration/?returnURL={{returnURL}}" class="link-btn btn-1">Register </a>
-						 <div class="clearfix"></div>
-                     </div>
-                    
-                 </div>
-             </div>
-             <div class="col-lg-4 col-md-12 bg-color-16 align-self-center">
-                 <div class="form-section">
-             
-                     <h3  id="login_title">Login </h3>
-                     <div class="login-inner-form">
-                    <form id="login_form" action="/student/secure_login/" method="POST">
-                             <div class="form-group form-box">
-                                 <input type="tel" maxlength="10" id="login_mobile" name="username" class="input-text" placeholder="+91 | Phone Number" required/>
-                                 <i class="fa fa-mobile"></i>
-                             </div>
-                             <input type="hidden" name="return_url" value="{{ returnURL }}" >
-                             <div class="form-group form-box">
-                                 <input type="password" name="password" id="login_password" class="input-text" placeholder="Enter Password" required/>
-                                 <i class="flaticon-password"></i>
-                             </div>
-                             <div class="checkbox clearfix">
-                                 <!-- <div class="form-check checkbox-theme">
+{% extends "base.html" %} {% block content %}
+
+<div class="page_loader"></div>
+<a href="https://imagnus.in/"
+  ><img src="/static/credential_assets/img/back.png" class="back mt-20"
+/></a>
+<!-- Login 14 start -->
+<div class="login-14">
+  <div class="container">
+    <div class="row login-box">
+      <div class="col-lg-8 col-md-12 bg-img align-self-center">
+        <div class="info">
+          <div class="btn-section clearfix">
+            <a href="#" class="link-btn active btn-1 default-bg"
+              >Student Login
+            </a>
+            <div class="clearfix"></div>
+            <a
+              href="/student/registration/?returnURL={{returnURL}}"
+              class="link-btn btn-1"
+              >Register
+            </a>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-12 bg-color-16 align-self-center">
+        <div class="form-section">
+          <h3 id="login_title">Login</h3>
+          <div class="login-inner-form">
+            <form id="login_form" action="/student/secure_login/" method="POST">
+              <div class="form-group form-box">
+                <input
+                  type="tel"
+                  maxlength="10"
+                  id="login_mobile"
+                  name="username"
+                  class="input-text"
+                  placeholder="+91 | Phone Number"
+                  required
+                />
+                <i class="fa fa-mobile"></i>
+              </div>
+              <input type="hidden" name="return_url" value="{{ returnURL }}" />
+              <div class="form-group form-box">
+                <input
+                  type="password"
+                  name="password"
+                  id="login_password"
+                  class="input-text"
+                  placeholder="Enter Password"
+                  required
+                />
+                <i class="flaticon-password"></i>
+              </div>
+              <div class="checkbox clearfix">
+                <!-- <div class="form-check checkbox-theme">
                                      <input class="form-check-input" type="checkbox" value="" id="rememberMe" />
                                      <label class="form-check-label" for="rememberMe">
                                         Remember me
                                      </label>
                                  </div> -->
-                                 <a id="forgot_password" style="cursor: pointer">Forgot Password </a>
-                             </div>
-                             <div class="form-group mb-20">
-                                 <button type="submit" class="btn-md btn-theme btn-block">Login
-								 <i class="fa fa-arrow-circle-right float-right" aria-hidden="true" style="margin-top: 2px;"></i></button>
-                             </div>
-                             <!-- <span>Or  <a>login with </a><br>
+                <a id="forgot_password" style="cursor: pointer"
+                  >Forgot Password
+                </a>
+              </div>
+              <div class="form-group mb-20">
+                <button type="submit" class="btn-md btn-theme btn-block">
+                  Login
+                  <i
+                    class="fa fa-arrow-circle-right float-right"
+                    aria-hidden="true"
+                    style="margin-top: 2px"
+                  ></i>
+                </button>
+              </div>
+              <!-- <span>Or  <a>login with </a><br>
 					             <a href=""><img src="{{ app_url }}/static/credential_assets/img/g.png" alt=""></a>
 					             <a href=""><img src="{{ app_url }}/static/credential_assets/img/fb.png" alt=""></a>
 							 </span> -->
-                         </form>
-                    <form id="otp_form" style="display: none;visibility: hidden;" autocomplete="off">
-                            <div class="form-group form-box">
-                                <input type="tel" maxlength="10" id="otp_mobile" class="input-text" placeholder="Enter 10 digit registered phone number" value="" required />
-                                <i class="fa fa-mobile"></i>
-                            </div>
-                            <div class="form-group form-box" id="otp_div" style="display: none;visibility: hidden;">
-                                <input type="password" id="login_otp" name="login_otp" class="input-text" placeholder="Enter OTP" />
-                                <i class="flaticon-password"></i>
-                            </div>
-                            <div class="form-group ">
-                                <button type="button" id="send_otp" class="btn-md btn-theme btn-block"><span id="resend_otp_text">Send OTP</span>
-                                    <i class="fa fa float-right" aria-hidden="true" style="margin-top: 2px;"><span id="myTimer" style="font-weight: 600;font-family: inherit;color:#ed2a26;"></span></i></button>
-                            </div>
-                    </form>
-                    <form id="new_password_form" style="display: none;visibility: hidden;" autocomplete="off">
-                        <div class="form-group form-box">
-                            <input type="password" id="new_password" name="new_password" class="input-text" placeholder="Enter New Password" />
-                            <i class="flaticon-password"></i>
-                           
-                        </div>
-                        <div class="form-group ">
-                            <button type="button" id="submit_password" class="btn-md btn-theme btn-block">Reset Password
-                                <i class="fa fa-arrow-circle-right float-right" aria-hidden="true" style="margin-top: 8px;"></i></button>
-                        </div>
-                        
-                    </form>
-                    </div>
-                 </div>
-             </div>
-         </div>
-     </div>
- </div>
- <!-- Login 14 end -->
- {% endblock %}
+            </form>
+            <form
+              id="otp_form"
+              style="display: none; visibility: hidden"
+              autocomplete="off"
+            >
+              <div class="form-group form-box">
+                <input
+                  type="tel"
+                  maxlength="10"
+                  id="otp_mobile"
+                  class="input-text"
+                  placeholder="Enter 10 digit registered phone number"
+                  value=""
+                  required
+                />
+                <i class="fa fa-mobile"></i>
+              </div>
+              <div
+                class="form-group form-box"
+                id="otp_div"
+                style="display: none; visibility: hidden"
+              >
+                <input
+                  type="password"
+                  id="login_otp"
+                  name="login_otp"
+                  class="input-text"
+                  placeholder="Enter OTP"
+                />
+                <i class="flaticon-password"></i>
+              </div>
+              <div class="form-group">
+                <button
+                  type="button"
+                  id="send_otp"
+                  class="btn-md btn-theme btn-block"
+                >
+                  <span id="resend_otp_text">Send OTP</span>
+                  <i
+                    class="fa fa float-right"
+                    aria-hidden="true"
+                    style="margin-top: 2px"
+                    ><span
+                      id="myTimer"
+                      style="
+                        font-weight: 600;
+                        font-family: inherit;
+                        color: #ed2a26;
+                      "
+                    ></span
+                  ></i>
+                </button>
+              </div>
+            </form>
+            <form
+              id="new_password_form"
+              style="display: none; visibility: hidden"
+              autocomplete="off"
+            >
+              <div class="form-group form-box">
+                <input
+                  type="password"
+                  id="new_password"
+                  name="new_password"
+                  class="input-text"
+                  placeholder="Enter New Password"
+                />
+                <i class="flaticon-password"></i>
+              </div>
+              <div class="form-group">
+                <button
+                  type="button"
+                  id="submit_password"
+                  class="btn-md btn-theme btn-block"
+                >
+                  Reset Password
+                  <i
+                    class="fa fa-arrow-circle-right float-right"
+                    aria-hidden="true"
+                    style="margin-top: 8px"
+                  ></i>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Login 14 end -->
+{% endblock %}
