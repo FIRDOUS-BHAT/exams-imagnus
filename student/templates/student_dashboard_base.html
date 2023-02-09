@@ -1,221 +1,346 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-     <title>Student Login || I-Magnus </title>
-     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-     <meta charset="UTF-8" />
-     <!-- External CSS libraries -->
-     <link type="text/css" rel="stylesheet" href="/static/student_assets/css/bootstrap.min.css" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Student Login || I-Magnus</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8" />
+    <!-- External CSS libraries -->
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="/static/student_assets/css/bootstrap.min.css"
+    />
 
-     <!-- Favicon icon -->
-     <link rel="shortcut icon" href="/static/student_assets/images/fav.png" type="image/x-icon" />
-     
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-     <!-- Google fonts -->
+    <!-- Favicon icon -->
+    <link
+      rel="shortcut icon"
+      href="/static/student_assets/images/fav.png"
+      type="image/x-icon"
+    />
 
-     <!-- Custom Stylesheet -->
-<!--     <link type="text/css" rel="stylesheet" href="/static/student_assets/css/style.css" />-->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <!-- Google fonts -->
 
-     <link rel="icon" type="image/png" href="/static/admin/images/fav.png" />
-      <link href="/static/admin/vendor/unicons-2.0.1/css/unicons.css" rel='preload' as="style"/>
-      <link href="/static/admin/css/vertical-responsive-menu1.min.css" rel="preload" as="style"/>
-      <link href="/static/student_assets/css/instructor-dashboard.css" rel="preload" as="style"/>
-      <link href="/static/admin/css/instructor-responsive.css" rel="preload" as="style"/>
-      <link href="/static/admin/css/night-mode.css" rel="preload" as="style"/>
-      <link href="/static/admin/css/jquery-steps.css" rel="preload" as="style"/>
-      <link href="/static/admin/vendor/fontawesome-free/css/all.min.css" rel="preload" as="style"/>
-      <link href="/static/admin/vendor/OwlCarousel/assets/owl.carousel.css" rel="preload" as="style"/>
-      <link href="/static/admin/vendor/OwlCarousel/assets/owl.theme.default.min.css" rel="preload" as="style"/>
-      <link href="/static/admin/vendor/bootstrap/css/bootstrap.min.css" rel="preload" as="style"/>
-      <link rel="preload" type="text/css" href="/static/admin/vendor/semantic/semantic.min.css" as="style"/>
-      <link rel="stylesheet" type="text/css" href="/static/admin/css/js-snackbar.css?v=1.3" />
+    <!-- Custom Stylesheet -->
+    <!--     <link type="text/css" rel="stylesheet" href="/static/student_assets/css/style.css" />-->
 
+    <link rel="icon" type="image/png" href="/static/admin/images/fav.png" />
+    <link
+      href="/static/admin/vendor/unicons-2.0.1/css/unicons.css"
+      rel="preload"
+      as="style"
+    />
+    <link
+      href="/static/admin/css/vertical-responsive-menu1.min.css"
+      rel="preload"
+      as="style"
+    />
+    <link
+      href="/static/student_assets/css/instructor-dashboard.css"
+      rel="preload"
+      as="style"
+    />
+    <link
+      href="/static/admin/css/instructor-responsive.css"
+      rel="preload"
+      as="style"
+    />
+    <link href="/static/admin/css/night-mode.css" rel="preload" as="style" />
+    <link href="/static/admin/css/jquery-steps.css" rel="preload" as="style" />
+    <link
+      href="/static/admin/vendor/fontawesome-free/css/all.min.css"
+      rel="preload"
+      as="style"
+    />
+    <link
+      href="/static/admin/vendor/OwlCarousel/assets/owl.carousel.css"
+      rel="preload"
+      as="style"
+    />
+    <link
+      href="/static/admin/vendor/OwlCarousel/assets/owl.theme.default.min.css"
+      rel="preload"
+      as="style"
+    />
+    <link
+      href="/static/admin/vendor/bootstrap/css/bootstrap.min.css"
+      rel="preload"
+      as="style"
+    />
+    <link
+      rel="preload"
+      type="text/css"
+      href="/static/admin/vendor/semantic/semantic.min.css"
+      as="style"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/static/admin/css/js-snackbar.css?v=1.3"
+    />
 
-      <link href="/static/admin/vendor/unicons-2.0.1/css/unicons.css" rel='stylesheet' />
-      <link href="/static/admin/css/vertical-responsive-menu1.min.css" rel="stylesheet" />
-      <link href="/static/student_assets/css/instructor-dashboard.css" rel="stylesheet" />
-      <link href="/static/admin/css/instructor-responsive.css" rel="stylesheet" />
-      <link href="/static/admin/css/night-mode.css" rel="stylesheet" />
-      <link href="/static/admin/css/jquery-steps.css" rel="stylesheet" />
-      <link href="/static/admin/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" />
-      <link href="/static/admin/vendor/OwlCarousel/assets/owl.carousel.css" rel="stylesheet" />
-      <link href="/static/admin/vendor/OwlCarousel/assets/owl.theme.default.min.css" rel="stylesheet"/>
-      <link href="/static/admin/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-      <link rel="stylesheet" type="text/css" href="/static/admin/vendor/semantic/semantic.min.css" />
-      <link href="/static/student_assets/css/test.css" rel="stylesheet" />
+    <link
+      href="/static/admin/vendor/unicons-2.0.1/css/unicons.css"
+      rel="stylesheet"
+    />
+    <link
+      href="/static/admin/css/vertical-responsive-menu1.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="/static/student_assets/css/instructor-dashboard.css"
+      rel="stylesheet"
+    />
+    <link href="/static/admin/css/instructor-responsive.css" rel="stylesheet" />
+    <link href="/static/admin/css/night-mode.css" rel="stylesheet" />
+    <link href="/static/admin/css/jquery-steps.css" rel="stylesheet" />
+    <link
+      href="/static/admin/vendor/fontawesome-free/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="/static/admin/vendor/OwlCarousel/assets/owl.carousel.css"
+      rel="stylesheet"
+    />
+    <link
+      href="/static/admin/vendor/OwlCarousel/assets/owl.theme.default.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="/static/admin/vendor/bootstrap/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/static/admin/vendor/semantic/semantic.min.css"
+    />
+    <link href="/static/student_assets/css/test.css" rel="stylesheet" />
     <script src="/static/courses_assets/js/jquery.min.js"></script>
-</head>
-<body>
-<header class="header clearfix">
-         <div class="main_logo" id="logo">
-            <a href="/student/dashboard/{{cid}}/"><img src="https://www.imagnus.in/images/logo.png" class="logo" alt=""></a>
-            <a href="/student/dashboard/{{cid}}/"><img class="logo-inverse logo" src="https://www.imagnus.in/images/logo.png" alt="" /></a>
-         </div>
-         <button type="button" id="toggleMenu" class="toggle_menu">
-         <i class='uil uil-bars'></i></button>
-         <button id="collapse_menu" class="collapse_menu">
-         <i class="uil uil-bars collapse_menu--icon "></i>
-         <span class="collapse_menu--label"></span>
-         </button>
-         <div class="header_right">
-            <ul>
-               <li class="ui dropdown">
-                  <a href="#" class="option_links" title="Notifications"><i class='uil uil-bell'></i><span class="noti_count">0 </span></a>
-         
-               </li>
-               <li class="ui dropdown">
-                  <a href="#" class="opts_account" title="Account">
-                  <img src="https://icon-library.com/images/student-icon-transparent/student-icon-transparent-27.jpg" alt="" />
-                  </a>
-                  <div class="menu dropdown_account">
-                     <div class="channel_my">
-                        <div class="profile_link">
-                           <img src="https://icon-library.com/images/student-icon-transparent/student-icon-transparent-27.jpg" alt="" />
-                           <div class="pd_content">
-                              <div class="rhte85">
-                                 <h6>{{student.fullname}} </h6>
-                                 <div class="mef78" title="Verify">
-                                    <i class='uil uil-check-circle'></i>
-                                 </div>
-                              </div>
-                              <span><a href="../../cdn-cgi/l/email-protection.html" class="__cf_email__" data-cfemail="2e494f434c4142171a1d6e49434f4742004d4143">[{{student.email}}] </a></span>
-                           </div>
-                        </div>
-                        <!-- <a href="my_instructor_profile_view.html" class="dp_link_12">View Instructor Profile </a> -->
-                     </div>
-                     <div class="night_mode_switch__btn">
-                        <a href="#" id="night-mode" class="btn-night-mode">
-                        <i class="uil uil-moon"></i> Night mode
-                        <span class="btn-night-mode-switch">
-                        <span class="uk-switch-button"></span>
-                        </span>
-                        </a>
-                     </div>
-                     <!-- <a href="setting.html" class="item channel_item">Setting </a> -->
-
-                     <a ><form id="logout_form" action="/logout/" method="post" >
-											 <span onclick="document.getElementById('logout_form').submit();">Logout </span></form></a>
+  </head>
+  <body>
+    <header class="header clearfix">
+      <div class="main_logo" id="logo">
+        <a href="/student/dashboard/{{cid}}/"
+          ><img src="https://imagnus.in/images/logo.png" class="logo" alt=""
+        /></a>
+        <a href="/student/dashboard/{{cid}}/"
+          ><img
+            class="logo-inverse logo"
+            src="https://imagnus.in/images/logo.png"
+            alt=""
+        /></a>
+      </div>
+      <button type="button" id="toggleMenu" class="toggle_menu">
+        <i class="uil uil-bars"></i>
+      </button>
+      <button id="collapse_menu" class="collapse_menu">
+        <i class="uil uil-bars collapse_menu--icon"></i>
+        <span class="collapse_menu--label"></span>
+      </button>
+      <div class="header_right">
+        <ul>
+          <li class="ui dropdown">
+            <a href="#" class="option_links" title="Notifications"
+              ><i class="uil uil-bell"></i><span class="noti_count">0 </span></a
+            >
+          </li>
+          <li class="ui dropdown">
+            <a href="#" class="opts_account" title="Account">
+              <img
+                src="https://icon-library.com/images/student-icon-transparent/student-icon-transparent-27.jpg"
+                alt=""
+              />
+            </a>
+            <div class="menu dropdown_account">
+              <div class="channel_my">
+                <div class="profile_link">
+                  <img
+                    src="https://icon-library.com/images/student-icon-transparent/student-icon-transparent-27.jpg"
+                    alt=""
+                  />
+                  <div class="pd_content">
+                    <div class="rhte85">
+                      <h6>{{student.fullname}}</h6>
+                      <div class="mef78" title="Verify">
+                        <i class="uil uil-check-circle"></i>
+                      </div>
+                    </div>
+                    <span
+                      ><a
+                        href="../../cdn-cgi/l/email-protection.html"
+                        class="__cf_email__"
+                        data-cfemail="2e494f434c4142171a1d6e49434f4742004d4143"
+                        >[{{student.email}}]
+                      </a></span
+                    >
                   </div>
-               </li>
-            </ul>
-         </div>
-      </header>
-      <nav class="vertical_nav">
-         <div class="left_section menu_left" id="js-menu">
-            <div class="left_section">
-               <ul>
-                  <li class="menu--item ">
-                     <a href="/student/dashboard/{{cid}}/" class="menu--link {{'active' if home_active else ''}}" title="Dashboard">
-                     <i class="uil uil-apps menu--icon"></i>
-                     <span class="menu--label">Dashboard </span>
-                     </a>
-                  </li>
+                </div>
+                <!-- <a href="my_instructor_profile_view.html" class="dp_link_12">View Instructor Profile </a> -->
+              </div>
+              <div class="night_mode_switch__btn">
+                <a href="#" id="night-mode" class="btn-night-mode">
+                  <i class="uil uil-moon"></i> Night mode
+                  <span class="btn-night-mode-switch">
+                    <span class="uk-switch-button"></span>
+                  </span>
+                </a>
+              </div>
+              <!-- <a href="setting.html" class="item channel_item">Setting </a> -->
 
-                  <li class="menu--item">
-                     <a href="/student/live_classes/{{cid}}/" class="menu--link {{'active' if live_classes_active else ''}}" title="Courses">
-                     <i class='uil uil-kayak menu--icon'></i>
-                     <span class="menu--label">Live Classes</span>
-                     </a>
-                  </li>
-                  <li class="menu--item">
-                     <a href="/student/video_lectures/{{cid}}/" class="menu--link {{'active' if video_lectures else ''}}" title="Video Lectures">
-                     <i class="uil uil-play menu--icon"></i>
-                     <span class="menu--label">Video Lectures </span>
-                     </a>
-                  </li>
-                  <li class="menu--item">
-                     <a href="/student/test_series/{{cid}}/" class="menu--link {{'active' if test_series_active else ''}}" title="Courses">
-                     <i class='uil-clipboard-alt menu--icon'></i>
-                     <span class="menu--label">Test Series</span>
-                     </a>
-                  </li>
-                  <li class="menu--item">
-                     <a href="/student/pdf_notes/{{cid}}/" class="menu--link {{'active' if pdf_notes_active else ''}}" title="Courses">
-                     <i class='uil uil-book-alt menu--icon'></i>
-                     <span class="menu--label">PDF Notes</span>
-                     </a>
-                  </li>
-                  <!-- <li class="menu--item">
+              <a
+                ><form id="logout_form" action="/logout/" method="post">
+                  <span
+                    onclick="document.getElementById('logout_form').submit();"
+                    >Logout
+                  </span>
+                </form></a
+              >
+            </div>
+          </li>
+        </ul>
+      </div>
+    </header>
+    <nav class="vertical_nav">
+      <div class="left_section menu_left" id="js-menu">
+        <div class="left_section">
+          <ul>
+            <li class="menu--item">
+              <a
+                href="/student/dashboard/{{cid}}/"
+                class="menu--link {{'active' if home_active else ''}}"
+                title="Dashboard"
+              >
+                <i class="uil uil-apps menu--icon"></i>
+                <span class="menu--label">Dashboard </span>
+              </a>
+            </li>
+
+            <li class="menu--item">
+              <a
+                href="/student/live_classes/{{cid}}/"
+                class="menu--link {{'active' if live_classes_active else ''}}"
+                title="Courses"
+              >
+                <i class="uil uil-kayak menu--icon"></i>
+                <span class="menu--label">Live Classes</span>
+              </a>
+            </li>
+            <li class="menu--item">
+              <a
+                href="/student/video_lectures/{{cid}}/"
+                class="menu--link {{'active' if video_lectures else ''}}"
+                title="Video Lectures"
+              >
+                <i class="uil uil-play menu--icon"></i>
+                <span class="menu--label">Video Lectures </span>
+              </a>
+            </li>
+            <li class="menu--item">
+              <a
+                href="/student/test_series/{{cid}}/"
+                class="menu--link {{'active' if test_series_active else ''}}"
+                title="Courses"
+              >
+                <i class="uil-clipboard-alt menu--icon"></i>
+                <span class="menu--label">Test Series</span>
+              </a>
+            </li>
+            <li class="menu--item">
+              <a
+                href="/student/pdf_notes/{{cid}}/"
+                class="menu--link {{'active' if pdf_notes_active else ''}}"
+                title="Courses"
+              >
+                <i class="uil uil-book-alt menu--icon"></i>
+                <span class="menu--label">PDF Notes</span>
+              </a>
+            </li>
+            <!-- <li class="menu--item">
                      <a href="instructor_notifications.html" class="menu--link {{'active' if active else ''}}" title="Notifications">
                      <i class='uil uil-bell menu--icon'></i>
                      <span class="menu--label">Notifications </span>
                      </a>
                   </li> -->
-               </ul>
-            </div>
-            <div class="left_section pt-2">
-               <ul>
-                  <li class="menu--item">
-                     <a href="/student/new-dashboard/" class="menu--link {{'active' if active else ''}}" title="Switch Course">
-                     <i class='uil uil-cog menu--icon'></i>
-                     <span class="menu--label">Switch Course </span>
-                     </a>
-                  </li>
-                  <!-- <li class="menu--item">
+          </ul>
+        </div>
+        <div class="left_section pt-2">
+          <ul>
+            <li class="menu--item">
+              <a
+                href="/student/new-dashboard/"
+                class="menu--link {{'active' if active else ''}}"
+                title="Switch Course"
+              >
+                <i class="uil uil-cog menu--icon"></i>
+                <span class="menu--label">Switch Course </span>
+              </a>
+            </li>
+            <!-- <li class="menu--item">
                      <a href="feedback.html" class="menu--link" title="Send Feedback">
                      <i class='uil uil-comment-alt-exclamation menu--icon'></i>
                      <span class="menu--label">Send Feedback </span>
                      </a>
                   </li> -->
-               </ul>
-            </div>
-         </div>
-      </nav>
-       <div class="wrapper">
-
-        {% block content %}{% endblock %}
-
-
- <footer class="footer mt-40">
-            <div class="container-fluid">
-               <div class="row">
-                  <div class="col-lg-12">
-                     <div class="footer_bottm">
-                        <div class="row">
-                           <div class="col-md-6">
-                              <ul class="fotb_left">
-                                 <li>
-                                    <a href="index.html">
-                                       <div class="footer_logo">
-                                          <img src="images/fav.png" alt="" />
-                                       </div>
-                                    </a>
-                                 </li>
-                                 <li>
-                                    <p>© 2021  <strong>Imagnus </strong>. All Rights Reserved. </p>
-                                 </li>
-                              </ul>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </footer>
+          </ul>
+        </div>
       </div>
+    </nav>
+    <div class="wrapper">
+      {% block content %}{% endblock %}
 
- <!-- External JS libraries -->
- 
+      <footer class="footer mt-40">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="footer_bottm">
+                <div class="row">
+                  <div class="col-md-6">
+                    <ul class="fotb_left">
+                      <li>
+                        <a href="index.html">
+                          <div class="footer_logo">
+                            <img src="images/fav.png" alt="" />
+                          </div>
+                        </a>
+                      </li>
+                      <li>
+                        <p>
+                          © 2021 <strong>Imagnus </strong>. All Rights Reserved.
+                        </p>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
 
- <script src="/static/courses_assets/js/bootstrap.min.js"></script>
-<script src="https://unpkg.com/@popperjs/core@2"></script> <!-- <script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script> -->
- <script src="js/vertical-responsive-menu.min.js"></script>
-<script src="/static/student_assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="/static/student_assets/vendor/OwlCarousel/owl.carousel.js"></script>
-<script src="/static/student_assets/vendor/semantic/semantic.min.js"></script>
-<script src="/static/student_assets/js/custom1.js"></script>
-<script src="/static/student_assets/js/night-mode.js"></script>
-<script src="/static/admin/js/js-snackbar.js"></script>
-   <script src="/static/student_assets/js/core.js"></script>
-   <script src="/static/student_assets/js/cipher-core.js"></script>
-<script src="/static/student_assets/js/aes.js"></script>
-<script src="/static/student_assets/js/tripledes.js"></script>
-<script src="/static/student_assets/js/main-script.js"></script>
-<script src="/static/student_assets/js/enc-base64.js"></script>
+    <!-- External JS libraries -->
 
-
-
-</body>
+    <script src="/static/courses_assets/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <!-- <script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script> -->
+    <script src="js/vertical-responsive-menu.min.js"></script>
+    <script src="/static/student_assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/student_assets/vendor/OwlCarousel/owl.carousel.js"></script>
+    <script src="/static/student_assets/vendor/semantic/semantic.min.js"></script>
+    <script src="/static/student_assets/js/custom1.js"></script>
+    <script src="/static/student_assets/js/night-mode.js"></script>
+    <script src="/static/admin/js/js-snackbar.js"></script>
+    <script src="/static/student_assets/js/core.js"></script>
+    <script src="/static/student_assets/js/cipher-core.js"></script>
+    <script src="/static/student_assets/js/aes.js"></script>
+    <script src="/static/student_assets/js/tripledes.js"></script>
+    <script src="/static/student_assets/js/main-script.js"></script>
+    <script src="/static/student_assets/js/enc-base64.js"></script>
+  </body>
 </html>
