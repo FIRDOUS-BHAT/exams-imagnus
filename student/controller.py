@@ -1115,7 +1115,8 @@ async def live_classes(request: Request, cid: str, class_id: str, user=Depends(g
 
             live_classes = await LiveClasses_Pydantic.from_queryset_single(
                 LiveClasses.get(id=class_id))
-            web_url = live_classes.url.split('/')[3]
+            web_url = live_classes.url.split('=')[-1]
+           
 
             return templates.TemplateResponse('view_live_class.html',
                                               context={'request': request,
