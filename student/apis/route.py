@@ -1465,13 +1465,14 @@ async def download_videos():
                                 #         Body=''
                                 #     )
 
-                                await each_vimeo_video(link_360, "transcoded/"+file_name+"/", "360.mp4")
-                                
-
                                 await CourseCategoryLectures.filter(id=x['id']).update(
                                     video_360=video_360,
                                     video_size_360=d.get('size')
                                 )
+                                await each_vimeo_video(link_360, "transcoded/"+file_name+"/", "360.mp4")
+                                
+
+                                
                                 print("360 video MIGRATED")
                                 print(datetime.now())
                                 if os.path.exists("transcoded"):
@@ -1522,14 +1523,13 @@ async def download_videos():
                                     #     )
 
                                     link_540 = d['link']
+                                    
+                                    await CourseCategoryLectures.filter(id=x['id']).update(
+                                    video_360=video_360,
+                                    video_size_360=d.get('size')
+                                    )
                                     await each_vimeo_video(link_540, "transcoded/"+file_name+"/", "540.mp4")
 
-                                    
-
-                                    await CourseCategoryLectures.filter(id=x['id']).update(
-                                        video_540=video_540,
-                                        video_size_540=d['size']
-                                    )
                                     
                                     
                                     print("540 video MIGRATED")
@@ -1584,14 +1584,12 @@ async def download_videos():
                                         #     )
                                            #  link_720 = json_response['download'][1]['link']
                                         link_720 = d['link']
-                                        await each_vimeo_video(link_720, "transcoded/"+file_name+"/", "720.mp4")
-                                        
-                                        
-
                                         await CourseCategoryLectures.filter(id=x['id']).update(
                                             video_720=video_720,
                                             video_size_720=d['size']
                                         )
+                                        await each_vimeo_video(link_720, "transcoded/"+file_name+"/", "720.mp4")
+                                        
                                         print("720 video MIGRATED")
                                         print(datetime.now())
                                         
