@@ -1,5 +1,3 @@
-
-
 import shutil
 import aiohttp
 from tortoise.expressions import Q
@@ -1407,7 +1405,8 @@ async def download_videos():
         print(f"{start_date}   --   {end_date}")
         global new_lectures
         async def refresh_lectures():
-            lectures = await CourseCategoryLectures.filter(Q(video_360__isnull=True) | Q(video_540__isnull=True) | Q(video_720__isnull=True), created_at__range=(start_date,end_date)).order_by('created_at').values('id', 'video_duration', 'mobile_video_url', 'video_id', 'video_360', 'video_540', 'video_720')
+            # , created_at__range=(start_date, end_date)
+            lectures = await CourseCategoryLectures.filter(Q(video_id__gte=1) & (Q(video_360__isnull=True) | Q(video_540__isnull=True) | Q(video_720__isnull=True))).order_by('created_at').values('id', 'video_duration', 'mobile_video_url', 'video_id', 'video_360', 'video_540', 'video_720')
             new_lectures = np.array(lectures)
             
             return new_lectures
@@ -1422,8 +1421,8 @@ async def download_videos():
         new_lectures = await refresh_lectures()
         lecturesToDownload = len(new_lectures)
         for x in new_lectures:
-            if os.path.exists("transcoded"):
-                shutil.rmtree("transcoded")
+            # if os.path.exists("transcoded"):
+            #     shutil.rmtree("transcoded")
             print(f"Status = {i} / {lecturesToDownload}")
             # check if video duration is there
             json_response = None
