@@ -27,7 +27,7 @@ ciso8601==2.2.0
 click==8.0.3
 commonmark==0.9.1
 cPython==0.0.6
-cryptography==36.0.1
+cryptography==39.0.1
 databases==0.5.5
 ddlparse==1.10.0
 decorator==5.1.1
