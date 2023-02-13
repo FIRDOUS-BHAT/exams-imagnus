@@ -34,7 +34,7 @@ click-plugins==1.1.1
 click-repl==0.2.0
 commonmark==0.9.1
 cPython==0.0.6
-cryptography==36.0.1
+cryptography==39.0.1
 databases==0.5.5
 ddlparse==1.10.0
 decorator==5.1.1
