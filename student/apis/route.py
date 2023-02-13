@@ -1421,8 +1421,8 @@ async def download_videos():
         new_lectures = await refresh_lectures()
         lecturesToDownload = len(new_lectures)
         for x in new_lectures:
-            # if os.path.exists("transcoded"):
-            #     shutil.rmtree("transcoded")
+            if os.path.exists("transcoded"):
+                shutil.rmtree("transcoded")
             print(f"Status = {i} / {lecturesToDownload}")
             # check if video duration is there
             json_response = None
