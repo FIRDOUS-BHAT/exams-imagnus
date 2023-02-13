@@ -1525,7 +1525,7 @@ async def download_videos():
                                     link_540 = d['link']
                                     
                                     await CourseCategoryLectures.filter(id=x['id']).update(
-                                    video_360=video_360,
+                                        video_540=video_540,
                                     video_size_360=d.get('size')
                                     )
                                     await each_vimeo_video(link_540, "transcoded/"+file_name+"/", "540.mp4")
