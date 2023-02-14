@@ -131,7 +131,7 @@ soupsieve==2.3.1
 SQLAlchemy==1.4.29
 SQLAlchemy-Utils==0.38.2
 sqlparse==0.4.2
-starlette==0.20.4
+starlette==0.25.0
 starlette-context==0.3.3
 starlette-session==0.4.2
 testtools==2.5.0
