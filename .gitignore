@@ -207,3 +207,4 @@ JsonToExcel.py
 auth/__pycache__
 .env
 query.sql
+/.env
