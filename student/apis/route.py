@@ -1406,9 +1406,10 @@ async def download_videos():
         global new_lectures
         async def refresh_lectures():
             # , created_at__range=(start_date, end_date)
-            lectures = await CourseCategoryLectures.filter(Q(video_id__gte=1) & (Q(video_360__isnull=True) | Q(video_540__isnull=True) | Q(video_720__isnull=True))).order_by('created_at').values('id', 'video_duration', 'mobile_video_url', 'video_id', 'video_360', 'video_540', 'video_720')
+            # lectures = await CourseCategoryLectures.filter(Q(video_id__gte=1) & (Q(video_360__isnull=True) | Q(video_540__isnull=True) | Q(video_720__isnull=True))).order_by('created_at').values('id', 'video_duration', 'mobile_video_url', 'video_id', 'video_360', 'video_540', 'video_720')
+            lectures = await CourseCategoryLectures.filter(video_id__in=[714452565, 714881575, 715612239, 715895468]).values('id', 'video_duration', 'mobile_video_url', 'video_id', 'video_360', 'video_540', 'video_720')
             new_lectures = np.array(lectures)
-            
+            print(new_lectures)
             return new_lectures
         # print(lectures)
         # return new_lectures
@@ -1421,8 +1422,8 @@ async def download_videos():
         new_lectures = await refresh_lectures()
         lecturesToDownload = len(new_lectures)
         for x in new_lectures:
-            if os.path.exists("transcoded"):
-                shutil.rmtree("transcoded")
+            # if os.path.exists("transcoded"):
+            #     shutil.rmtree("transcoded")
             print(f"Status = {i} / {lecturesToDownload}")
             # check if video duration is there
             json_response = None
@@ -1465,12 +1466,12 @@ async def download_videos():
                                 #         Body=''
                                 #     )
 
+                                
+                                await each_vimeo_video(link_360, "transcoded/"+file_name+"/", "360.mp4")
                                 await CourseCategoryLectures.filter(id=x['id']).update(
                                     video_360=video_360,
                                     video_size_360=d.get('size')
                                 )
-                                await each_vimeo_video(link_360, "transcoded/"+file_name+"/", "360.mp4")
-                                
 
                                 
                                 print("360 video MIGRATED")
@@ -1524,12 +1525,12 @@ async def download_videos():
 
                                     link_540 = d['link']
                                     
+                                    
+                                    await each_vimeo_video(link_540, "transcoded/"+file_name+"/", "540.mp4")
                                     await CourseCategoryLectures.filter(id=x['id']).update(
                                         video_540=video_540,
-                                    video_size_360=d.get('size')
+                                        video_size_360=d.get('size')
                                     )
-                                    await each_vimeo_video(link_540, "transcoded/"+file_name+"/", "540.mp4")
-
                                     
                                     
                                     print("540 video MIGRATED")
@@ -1584,12 +1585,12 @@ async def download_videos():
                                         #     )
                                            #  link_720 = json_response['download'][1]['link']
                                         link_720 = d['link']
+                                        
+                                        await each_vimeo_video(link_720, "transcoded/"+file_name+"/", "720.mp4")
                                         await CourseCategoryLectures.filter(id=x['id']).update(
                                             video_720=video_720,
                                             video_size_720=d['size']
                                         )
-                                        await each_vimeo_video(link_720, "transcoded/"+file_name+"/", "720.mp4")
-                                        
                                         print("720 video MIGRATED")
                                         print(datetime.now())
                                         

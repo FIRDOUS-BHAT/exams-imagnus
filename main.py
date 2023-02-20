@@ -218,28 +218,28 @@ async def get_cache():
 @app.on_event("startup")
 async def startup():
     
-    await Tortoise.init(
-        db_url=db_url,
-        modules={'models': [
-            'admin_dashboard.models',
-            'student.models',
-            "student_choices.models",
-            "screen_banners.models",
-            "checkout.models",
-            "send_mails.models",
-            "study_material.models",
-            "scholarship_tests.models",
+    # await Tortoise.init(
+    #     db_url=db_url,
+    #     modules={'models': [
+    #         'admin_dashboard.models',
+    #         'student.models',
+    #         "student_choices.models",
+    #         "screen_banners.models",
+    #         "checkout.models",
+    #         "send_mails.models",
+    #         "study_material.models",
+    #         "scholarship_tests.models",
             
-            ]}
-    )
-    await Tortoise.generate_schemas()
+    #         ]}
+    # )
+    # await Tortoise.generate_schemas()
 
      
     
     
     
     
-    await download_videos()
+    # await download_videos()
     # await adminController.update_video_id()
     # global session
     # session = aiohttp.ClientSession()
