@@ -20,7 +20,7 @@ import botocore.vendored.requests.packages.urllib3 as urllib3
 import boto3
 from FCM.route import push_service
 from email_validator import validate_email, EmailNotValidError
-from fastapi_cache.decorator import cache
+# from fastapi_cache.decorator import cache
 import uuid
 from datetime import datetime
 from typing import List, Optional
@@ -1407,9 +1407,10 @@ async def download_videos():
         async def refresh_lectures():
             # , created_at__range=(start_date, end_date)
             # lectures = await CourseCategoryLectures.filter(Q(video_id__gte=1) & (Q(video_360__isnull=True) | Q(video_540__isnull=True) | Q(video_720__isnull=True))).order_by('created_at').values('id', 'video_duration', 'mobile_video_url', 'video_id', 'video_360', 'video_540', 'video_720')
-            lectures = await CourseCategoryLectures.filter(video_id__in=[714452565, 714881575, 715612239, 715895468]).values('id', 'video_duration', 'mobile_video_url', 'video_id', 'video_360', 'video_540', 'video_720')
+            lectures = await CourseCategoryLectures.filter(Q(video_id__gte=1) & Q(video_size_540__isnull=True)).order_by('created_at').values('id', 'video_duration', 'mobile_video_url', 'video_id', 'video_360', 'video_540', 'video_720', 'video_size_540')
+            # lectures = await CourseCategoryLectures.filter(video_id__in=[714452565, 714881575, 715612239, 715895468]).values('id', 'video_duration', 'mobile_video_url', 'video_id', 'video_360', 'video_540', 'video_720')
             new_lectures = np.array(lectures)
-            print(new_lectures)
+            # print(new_lectures)
             return new_lectures
         # print(lectures)
         # return new_lectures
@@ -1420,13 +1421,15 @@ async def download_videos():
         }
         i = 0
         new_lectures = await refresh_lectures()
-        lecturesToDownload = len(new_lectures)
+        lecturesToDownload = len(new_lectures) 
+        json_response = None
+        
         for x in new_lectures:
             # if os.path.exists("transcoded"):
             #     shutil.rmtree("transcoded")
             print(f"Status = {i} / {lecturesToDownload}")
             # check if video duration is there
-            json_response = None
+           
             if x['video_duration'] is None:
                 await CourseCategoryLectures.filter(id=x['id']).update(
                     video_duration=json_response['duration'])
@@ -1467,7 +1470,7 @@ async def download_videos():
                                 #     )
 
                                 
-                                await each_vimeo_video(link_360, "transcoded/"+file_name+"/", "360.mp4")
+                                # await each_vimeo_video(link_360, "transcoded/"+file_name+"/", "360.mp4")
                                 await CourseCategoryLectures.filter(id=x['id']).update(
                                     video_360=video_360,
                                     video_size_360=d.get('size')
@@ -1476,10 +1479,10 @@ async def download_videos():
                                 
                                 print("360 video MIGRATED")
                                 print(datetime.now())
-                                if os.path.exists("transcoded"):
+                                if os.path.exists(key):
                                     os.remove(key)
 
-                if x['video_540'] is None:
+                if x['video_540'] is not None and x['video_size_540'] is None:
                     print("IN 540")
 
                     if json_response is not None:
@@ -1526,16 +1529,16 @@ async def download_videos():
                                     link_540 = d['link']
                                     
                                     
-                                    await each_vimeo_video(link_540, "transcoded/"+file_name+"/", "540.mp4")
+                                    # await each_vimeo_video(link_540, "transcoded/"+file_name+"/", "540.mp4")
                                     await CourseCategoryLectures.filter(id=x['id']).update(
                                         video_540=video_540,
-                                        video_size_360=d.get('size')
+                                        video_size_540=d.get('size')
                                     )
                                     
                                     
                                     print("540 video MIGRATED")
                                     print(datetime.now())
-                                    if os.path.exists("transcoded"):
+                                    if os.path.exists(key):
                                         os.remove(key)
 
                 if x['video_720'] is None:
@@ -1586,7 +1589,7 @@ async def download_videos():
                                            #  link_720 = json_response['download'][1]['link']
                                         link_720 = d['link']
                                         
-                                        await each_vimeo_video(link_720, "transcoded/"+file_name+"/", "720.mp4")
+                                        # await each_vimeo_video(link_720, "transcoded/"+file_name+"/", "720.mp4")
                                         await CourseCategoryLectures.filter(id=x['id']).update(
                                             video_720=video_720,
                                             video_size_720=d['size']
@@ -1594,12 +1597,12 @@ async def download_videos():
                                         print("720 video MIGRATED")
                                         print(datetime.now())
                                         
-                                        if os.path.exists("transcoded"):
+                                        if os.path.exists(key):
                                             os.remove(key)
                                         
 
                 i = i+1
-                new_lectures = await refresh_lectures()
+                # new_lectures = await refresh_lectures()
 
             else:
                 print("INVALID VIDEO ID")

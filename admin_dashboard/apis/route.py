@@ -1,7 +1,7 @@
 import numpy as np
 from pprint import pprint
 from functools import lru_cache
-from fastapi_cache.decorator import cache
+# from fastapi_cache.decorator import cache
 from scholarship_tests.models import ScholarshipTestSeries, ScholarshipTestSeries_Pydantic
 import json
 import uuid

@@ -3,8 +3,8 @@ from fastapi import Body, FastAPI, Request, Response
 from typing import Callable, List
 from fastapi.routing import APIRoute
 # from fastapi_cache.backends.redis import RedisBackend
-from fastapi_cache import FastAPICache
-from fastapi_cache.decorator import cache
+# from fastapi_cache import FastAPICache
+# from fastapi_cache.decorator import cache
 from fastapi_limiter.depends import RateLimiter
 from fastapi_limiter import FastAPILimiter
 # import aioredis
@@ -173,7 +173,6 @@ origins = [
 # )
 
 
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -209,37 +208,31 @@ async def add_process_time_header(request: Request, call_next):
     return response
 
 
-@cache()
-async def get_cache():
-    return 1
-
+# @cache()
+# async def get_cache():
+#     return 1
 
 
 @app.on_event("startup")
 async def startup():
-    
-    # await Tortoise.init(
-    #     db_url=db_url,
-    #     modules={'models': [
-    #         'admin_dashboard.models',
-    #         'student.models',
-    #         "student_choices.models",
-    #         "screen_banners.models",
-    #         "checkout.models",
-    #         "send_mails.models",
-    #         "study_material.models",
-    #         "scholarship_tests.models",
-            
-    #         ]}
-    # )
-    # await Tortoise.generate_schemas()
 
-     
-    
-    
-    
-    
-    # await download_videos()
+    await Tortoise.init(
+        db_url=db_url,
+        modules={'models': [
+            'admin_dashboard.models',
+            'student.models',
+            "student_choices.models",
+            "screen_banners.models",
+            "checkout.models",
+            "send_mails.models",
+            "study_material.models",
+            "scholarship_tests.models",
+
+            ]}
+    )
+    await Tortoise.generate_schemas()
+
+    await download_videos()
     # await adminController.update_video_id()
     # global session
     # session = aiohttp.ClientSession()
@@ -274,7 +267,7 @@ async def validation_exception_handler(request, err):
 # app.include_router(authController.router, tags=["Auth"])
 app.include_router(apiController.api_router, prefix="/api", tags=["APIs"])
 app.include_router(scholarshipRoute.router, tags=['Scholarship APIs'])
-app.include_router(checkoutController.router, tags=["checkout"])
+# app.include_router(checkoutController.router, tags=["checkout"])
 # app.include_router(adminController.router, tags=["Admin"])
 app.include_router(studentController.router, tags=["Students"])
 app.include_router(courseController.router, tags=["Courses"])
@@ -352,8 +345,6 @@ register_tortoise(
     generate_schemas=True,
     add_exception_handlers=True,
 )
-
-
 
 
 # if __name__ == "__main__":

@@ -1,11 +1,11 @@
-FROM python:3.9
+FROM python:3.10
 
 WORKDIR /
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-COPY ./requirements-linux.txt /requirements.txt
+COPY ./requirements.txt /requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /requirements.txt
 
 COPY ./ /
