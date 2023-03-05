@@ -244,7 +244,7 @@ async def validation_exception_handler(request, err):
 app.include_router(apiController.api_router, prefix="/api", tags=["APIs"])
 app.include_router(scholarshipRoute.router, tags=['Scholarship APIs'])
 app.include_router(checkoutController.router, tags=["checkout"])
-# app.include_router(adminController.router, tags=["Admin"])
+app.include_router(adminController.router, tags=["Admin"])
 app.include_router(studentController.router, tags=["Students"])
 app.include_router(courseController.router, tags=["Courses"])
 app.include_router(mailController.router, tags=["Mailer"])
