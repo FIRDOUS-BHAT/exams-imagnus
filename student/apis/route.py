@@ -1309,7 +1309,7 @@ async def download_videos( _=Depends(get_current_user)):
 
             s3=boto3.client('s3')
             # http1=urllib3.PoolManager()
-            s3.upload_fileobj(request('GET', url,preload_content=False), bucket, key)
+            s3.upload_fileobj(requests('GET', url,preload_content=False), bucket, key)
             # return json_response['download'][2]['link']
             # return FileResponse(path=json_response['download'][2]['link'], filename="file_path", media_type='text/mp4')
 
