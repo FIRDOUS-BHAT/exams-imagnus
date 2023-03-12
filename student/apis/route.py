@@ -1377,6 +1377,7 @@ async def each_vimeo_video(link, path, file_name):
 
 from dateutil.parser import parse
 from dateutil.relativedelta import relativedelta
+import pandas as pd
 
 
 @router.post('/download_video')
@@ -1404,121 +1405,77 @@ async def download_videos():
         end_date = start_date + relativedelta(months=1)
         print(f"{start_date}   --   {end_date}")
         global new_lectures
-        async def refresh_lectures():
+       
+       
+        async def refresh_lectures(title):
             # , created_at__range=(start_date, end_date)
             # lectures = await CourseCategoryLectures.filter(Q(video_id__gte=1) & (Q(video_360__isnull=True) | Q(video_540__isnull=True) | Q(video_720__isnull=True))).order_by('created_at').values('id', 'video_duration', 'mobile_video_url', 'video_id', 'video_360', 'video_540', 'video_720')
-            lectures = await CourseCategoryLectures.filter(Q(video_id__gte=1) & Q(video_size_540__isnull=True)).order_by('created_at').values('id', 'video_duration', 'mobile_video_url', 'video_id', 'video_360', 'video_540', 'video_720', 'video_size_540')
-            # lectures = await CourseCategoryLectures.filter(video_id__in=[714452565, 714881575, 715612239, 715895468]).values('id', 'video_duration', 'mobile_video_url', 'video_id', 'video_360', 'video_540', 'video_720')
+            # lectures = await CourseCategoryLectures.filter(Q(video_id__gte=1) & Q(video_size_540__isnull=True)).order_by('created_at').values('id', 'video_duration', 'mobile_video_url', 'video_id', 'video_360', 'video_540', 'video_720', 'video_size_540')
+            # lectures = await CourseCategoryLectures.filter(title__contains=title).order_by('created_at').values('id', 'title','video_duration', 'mobile_video_url', 'video_id', 'video_360', 'video_540', 'video_720', 'video_size_540')
+            lectures = await CourseCategoryLectures.all().values('id', 'video_duration', 'mobile_video_url', 'video_id', 'video_360', 'video_540', 'video_720')
             new_lectures = np.array(lectures)
             # print(new_lectures)
             return new_lectures
         # print(lectures)
         # return new_lectures
+        
+       
+        
+        
         headers = {
             'Authorization': 'bearer 07d29a422ae59fd14a17cbdd840b194b',
             'Content-Type': 'application/json',
             'Accept': 'application/vnd.vimeo.*+json;version=3.4'
         }
         i = 0
-        new_lectures = await refresh_lectures()
-        lecturesToDownload = len(new_lectures) 
-        json_response = None
+        df = pd.read_excel('./not-play-video.xlsx', sheet_name='Sheet1')
+        for i in df.index:
+             title = df['Video Title'][i].split('||')[-1]
+             print(title)
+             new_lectures = await refresh_lectures(title)
+             
+             lecturesToDownload = len(new_lectures) 
+             json_response = None
         
-        for x in new_lectures:
-            # if os.path.exists("transcoded"):
-            #     shutil.rmtree("transcoded")
-            print(f"Status = {i} / {lecturesToDownload}")
-            # check if video duration is there
-           
-            if x['video_duration'] is None:
-                await CourseCategoryLectures.filter(id=x['id']).update(
-                    video_duration=json_response['duration'])
+        
+             for x in new_lectures:
+                # if os.path.exists("transcoded"):
+                #     shutil.rmtree("transcoded")
+                print(f"Status = {i} / {lecturesToDownload}")
+                # check if video duration is there
+            
+                if x['video_duration'] is None:
+                    await CourseCategoryLectures.filter(id=x['id']).update(
+                        video_duration=json_response['duration'])
 
-            if x['video_id'] and x['video_id'].isnumeric():
-                # print(x['video_id'])
-                if x['video_360'] is None:
-                    print("IN 360")
-                    conn.request("GET", "/videos/" +
-                                 x['video_id'], payload, headers)
-                    res = conn.getresponse()
-                    data = res.read()
-                    print("DATA RECEIVED FROM VIMEO")
-                    json_response = json.loads(data)
-
-                    if res.status == 200:
-
-                        # open('video.mp4', 'wb').write(r.content)
-                        if 'error' not in json_response:
-
-                            file_name = slugify(json_response['name'])
-                            print(file_name, "FILENAME")
-
-                            d = next((d for d in json_response['download'] if d.get(
-                                'rendition') == '360p'), None)
-                            if d:
-                                print("Yes 360 video")
-                                video_360 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
-                                    file_name + "/" + str(360) + ".mp4"
-                                key = "transcoded/" + file_name + "/360.mp4"
-                                link_360 = d.get('link')
-
-                                # if not await check_if_object_exists(key):
-                                #     s3.put_object(
-                                #         Bucket="testing-bucket-s3-uploader",
-                                #         Key=key,
-                                #         Body=''
-                                #     )
-
-                                
-                                # await each_vimeo_video(link_360, "transcoded/"+file_name+"/", "360.mp4")
-                                await CourseCategoryLectures.filter(id=x['id']).update(
-                                    video_360=video_360,
-                                    video_size_360=d.get('size')
-                                )
-
-                                
-                                print("360 video MIGRATED")
-                                print(datetime.now())
-                                if os.path.exists(key):
-                                    os.remove(key)
-
-                if x['video_540'] is not None and x['video_size_540'] is None:
-                    print("IN 540")
-
-                    if json_response is not None:
-                        if '/videos/'+str(x['video_id']) == json_response['uri']:
-                            json_response = json_response
-                        else:
-
-                            conn.request("GET", "/videos/" +
-                                         x['video_id'], payload, headers)
-                            res = conn.getresponse()
-                            data = res.read()
-                            print("DATA RECEIVED FROM VIMEO")
-
-                            json_response = json.loads(data)
-                    else:
+                if x['video_id'] and x['video_id'].isnumeric():
+                    # print(x['video_id'])
+                    if x['video_360'] is None:
+                        print("IN 360")
                         conn.request("GET", "/videos/" +
-                                     x['video_id'], payload, headers)
+                                    x['video_id'], payload, headers)
                         res = conn.getresponse()
                         data = res.read()
                         print("DATA RECEIVED FROM VIMEO")
-
                         json_response = json.loads(data)
-                    if res.status == 200:
 
-                        # open('video.mp4', 'wb').write(r.content)
-                        if 'error' not in json_response:
+                        if res.status == 200:
 
-                            file_name = slugify(json_response['name'])
-                            print(file_name, "FILENAME")
+                            # open('video.mp4', 'wb').write(r.content)
+                            if 'error' not in json_response:
 
-                            d = next((d for d in json_response['download'] if d.get(
-                                'rendition') == '540p'), None)
-                            if d:
-                                    video_540 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
-                                        file_name+"/"+str(540)+".mp4"
-                                    key = "transcoded/"+file_name+"/540.mp4"
+                                file_name = slugify(json_response['name'])
+                                print(file_name, "FILENAME")
+
+                                d = next((d for d in json_response['download'] if d.get(
+                                    'rendition') == '360p'), None)
+                                if d:
+                                    print("Yes 360 video")
+                                    video_360 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
+                                        file_name + "/" + str(360) + ".mp4"
+                                    key = "transcoded/" + file_name + "/360.mp4"
+                                    link_360 = d.get('link')
+
                                     # if not await check_if_object_exists(key):
                                     #     s3.put_object(
                                     #         Bucket="testing-bucket-s3-uploader",
@@ -1526,87 +1483,144 @@ async def download_videos():
                                     #         Body=''
                                     #     )
 
-                                    link_540 = d['link']
                                     
-                                    
-                                    # await each_vimeo_video(link_540, "transcoded/"+file_name+"/", "540.mp4")
+                                    await each_vimeo_video(link_360, "transcoded/"+file_name+"/", "360.mp4")
                                     await CourseCategoryLectures.filter(id=x['id']).update(
-                                        video_540=video_540,
-                                        video_size_540=d.get('size')
+                                        video_360=video_360,
+                                        video_size_360=d.get('size')
                                     )
+
                                     
-                                    
-                                    print("540 video MIGRATED")
+                                    print("360 video MIGRATED")
                                     print(datetime.now())
                                     if os.path.exists(key):
                                         os.remove(key)
 
-                if x['video_720'] is None:
-                    print("IN 720")
+                    if x['video_540'] is None:
+                        print("IN 540")
 
-                    if json_response is not None:
-                        if '/videos/'+str(x['video_id']) == json_response['uri']:
-                            json_response = json_response
+                        if json_response is not None:
+                            if '/videos/'+str(x['video_id']) == json_response['uri']:
+                                json_response = json_response
+                            else:
+
+                                conn.request("GET", "/videos/" +
+                                            x['video_id'], payload, headers)
+                                res = conn.getresponse()
+                                data = res.read()
+                                print("DATA RECEIVED FROM VIMEO")
+
+                                json_response = json.loads(data)
                         else:
-
                             conn.request("GET", "/videos/" +
-                                         x['video_id'], payload, headers)
+                                        x['video_id'], payload, headers)
                             res = conn.getresponse()
+                            data = res.read()
                             print("DATA RECEIVED FROM VIMEO")
 
-                            data = res.read()
                             json_response = json.loads(data)
-                    else:
-                        conn.request("GET", "/videos/" +
-                                     x['video_id'], payload, headers)
-                        res = conn.getresponse()
-                        data = res.read()
-                        print("DATA RECEIVED FROM VIMEO")
-                        json_response = json.loads(data)
-                    if res.status == 200:
+                        if res.status == 200:
 
-                           # open('video.mp4', 'wb').write(r.content)
-                           if 'error' not in json_response:
+                            # open('video.mp4', 'wb').write(r.content)
+                            if 'error' not in json_response:
 
-                                file_name = slugify(
-                                    json_response['name'])
+                                file_name = slugify(json_response['name'])
                                 print(file_name, "FILENAME")
 
                                 d = next((d for d in json_response['download'] if d.get(
-                                    'rendition') == '720p'), None)
+                                    'rendition') == '540p'), None)
                                 if d:
-                                        video_720 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
-                                            file_name+"/"+str(720)+".mp4"
-                                        key = "transcoded/"+file_name+"/720.mp4"
-
+                                        video_540 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
+                                            file_name+"/"+str(540)+".mp4"
+                                        key = "transcoded/"+file_name+"/540.mp4"
                                         # if not await check_if_object_exists(key):
-
                                         #     s3.put_object(
                                         #         Bucket="testing-bucket-s3-uploader",
                                         #         Key=key,
                                         #         Body=''
                                         #     )
-                                           #  link_720 = json_response['download'][1]['link']
-                                        link_720 = d['link']
+
+                                        link_540 = d['link']
                                         
-                                        # await each_vimeo_video(link_720, "transcoded/"+file_name+"/", "720.mp4")
+                                        
+                                        await each_vimeo_video(link_540, "transcoded/"+file_name+"/", "540.mp4")
                                         await CourseCategoryLectures.filter(id=x['id']).update(
-                                            video_720=video_720,
-                                            video_size_720=d['size']
+                                            video_540=video_540,
+                                            video_size_540=d.get('size')
                                         )
-                                        print("720 video MIGRATED")
-                                        print(datetime.now())
                                         
+                                        
+                                        print("540 video MIGRATED")
+                                        print(datetime.now())
                                         if os.path.exists(key):
                                             os.remove(key)
-                                        
 
-                i = i+1
-                # new_lectures = await refresh_lectures()
+                    if x['video_720'] is None:
+                        print("IN 720")
 
-            else:
-                print("INVALID VIDEO ID")
-        print(f"finished = {lecturesToDownload}")
+                        if json_response is not None:
+                            if '/videos/'+str(x['video_id']) == json_response['uri']:
+                                json_response = json_response
+                            else:
+
+                                conn.request("GET", "/videos/" +
+                                            x['video_id'], payload, headers)
+                                res = conn.getresponse()
+                                print("DATA RECEIVED FROM VIMEO")
+
+                                data = res.read()
+                                json_response = json.loads(data)
+                        else:
+                            conn.request("GET", "/videos/" +
+                                        x['video_id'], payload, headers)
+                            res = conn.getresponse()
+                            data = res.read()
+                            print("DATA RECEIVED FROM VIMEO")
+                            json_response = json.loads(data)
+                        if res.status == 200:
+
+                            # open('video.mp4', 'wb').write(r.content)
+                            if 'error' not in json_response:
+
+                                    file_name = slugify(
+                                        json_response['name'])
+                                    print(file_name, "FILENAME")
+
+                                    d = next((d for d in json_response['download'] if d.get(
+                                        'rendition') == '720p'), None)
+                                    if d:
+                                            video_720 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
+                                                file_name+"/"+str(720)+".mp4"
+                                            key = "transcoded/"+file_name+"/720.mp4"
+
+                                            # if not await check_if_object_exists(key):
+
+                                            #     s3.put_object(
+                                            #         Bucket="testing-bucket-s3-uploader",
+                                            #         Key=key,
+                                            #         Body=''
+                                            #     )
+                                            #  link_720 = json_response['download'][1]['link']
+                                            link_720 = d['link']
+                                            
+                                            await each_vimeo_video(link_720, "transcoded/"+file_name+"/", "720.mp4")
+                                            await CourseCategoryLectures.filter(id=x['id']).update(
+                                                video_720=video_720,
+                                                video_size_720=d['size']
+                                            )
+                                            print("720 video MIGRATED")
+                                            print(datetime.now())
+                                            
+                                            if os.path.exists(key):
+                                                os.remove(key)
+                                            
+
+                    i = i+1
+                    # new_lectures = await refresh_lectures()
+
+                else:
+                    print("INVALID VIDEO ID")
+             print(f"finished = {lecturesToDownload}")
     except Exception as ex:
         print(str(ex))
         uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
