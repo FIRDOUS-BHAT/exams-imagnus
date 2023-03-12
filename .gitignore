@@ -210,3 +210,4 @@ query.sql
 /.env
 /.env copy
 linuxvenv
+./not-play-video.xlsx

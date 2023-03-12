@@ -39,6 +39,7 @@ from student import controller as studentController
 from student.apis.route import download_videos
 from study_material import controller as studyMaterialController
 from starlette_context import middleware, plugins
+# from mangum import Mangum
 
 session = None
 # redis_client = Redis(host="localhost", port=6379)
@@ -353,3 +354,6 @@ register_tortoise(
 
 # if __name__ == "__main__":
 #     uvicorn.run(app, host="0.0.0.0", port=8000)
+
+
+# handler = Mangum(app)
