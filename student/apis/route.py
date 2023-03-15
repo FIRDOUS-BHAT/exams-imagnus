@@ -1326,49 +1326,47 @@ async def upload_to_s3(file_path, bucket_name, object_name):
 
 async def each_vimeo_video(link, path, file_name):
     try:
-                        if not os.path.exists(path):
-                               os.makedirs(path)
-                               print("CREATED")
+        if not os.path.exists(path):
+            os.makedirs(path)
+            print("CREATED")
 
-                        response = requests.get(link, stream=True)
+        response = requests.get(link, stream=True)
 
+        # subprocess.check_call(["attrib", "-r", path])
 
-                        # subprocess.check_call(["attrib", "-r", path])
+        with open(path+file_name, "wb") as f:
+            print("Downloading %s " % file_name)
 
-                        with open(path+file_name, "wb") as f:
-                            print("Downloading %s " % file_name)
+            # with httpx.stream("GET", link) as response:
 
-                            # with httpx.stream("GET", link) as response:
+            total = int(response.headers["Content-Length"])
+            with rich.progress.Progress(
+                "[progress.percentage]{task.percentage:>3.0f}%",
+                rich.progress.BarColumn(bar_width=None),
+                rich.progress.DownloadColumn(),
+                rich.progress.TransferSpeedColumn(),
+            ) as progress:
+                download_task = progress.add_task(
+                    "Download", total=total)
+                i = 1
+                for chunk in response.iter_content(chunk_size=1024):
+                    if chunk:
 
-                            total = int(response.headers["Content-Length"])
-                            with rich.progress.Progress(
-                                "[progress.percentage]{task.percentage:>3.0f}%",
-                                rich.progress.BarColumn(bar_width=None),
-                                rich.progress.DownloadColumn(),
-                                rich.progress.TransferSpeedColumn(),
-                            ) as progress:
-                                download_task = progress.add_task(
-                                    "Download", total=total)
-                                i = 1
-                                for chunk in response.iter_content(chunk_size=1024):
-                                    if chunk:
+                        f.write(chunk)
 
-                                        f.write(chunk)
+                        progress.update(
+                            download_task, completed=i*1024)
+                        i = i+1
 
-                                        progress.update(
-                                            download_task, completed=i*1024)
-                                        i = i+1
+        await upload_to_s3(path+file_name, "testing-bucket-s3-uploader",
+                           path+file_name)
 
-                        await upload_to_s3(path+file_name, "testing-bucket-s3-uploader",
-                                               path+file_name)
-
-                        
-            # with open(path+file_name, "rb") as data:
-            #     # Create a progress bar
-            #     s3.upload_fileobj(
-            #         data, "testing-bucket-s3-uploader",
-            #         path+file_name
-            #     )
+        # with open(path+file_name, "rb") as data:
+        #     # Create a progress bar
+        #     s3.upload_fileobj(
+        #         data, "testing-bucket-s3-uploader",
+        #         path+file_name
+        #     )
 
     except Exception as ex:
         print(str(ex))
