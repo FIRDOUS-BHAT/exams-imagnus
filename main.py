@@ -213,7 +213,6 @@ async def add_process_time_header(request: Request, call_next):
 # async def get_cache():
 #     return 1
 
-
 @app.on_event("startup")
 async def startup():
 
