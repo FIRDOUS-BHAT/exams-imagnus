@@ -1493,6 +1493,12 @@ async def download_videos():
 
                 if x['video_540'] is None:
                     print("IN 540")
+                    conn.request("GET", "/videos/" +
+                             x['video_id'], payload, headers)
+                    res = conn.getresponse()
+                    data = res.read()
+                    print("DATA RECEIVED FROM VIMEO")
+                    json_response = json.loads(data)
 
                     if json_response is not None:
                         if '/videos/'+str(x['video_id']) == json_response['uri']:
@@ -1550,6 +1556,12 @@ async def download_videos():
 
                 if x['video_720'] is None:
                     print("IN 720")
+                    conn.request("GET", "/videos/" +
+                             x['video_id'], payload, headers)
+                    res = conn.getresponse()
+                    data = res.read()
+                    print("DATA RECEIVED FROM VIMEO")
+                    json_response = json.loads(data)
 
                     if json_response is not None:
                         if '/videos/'+str(x['video_id']) == json_response['uri']:
