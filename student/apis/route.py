@@ -1500,26 +1500,26 @@ async def download_videos():
                     print("DATA RECEIVED FROM VIMEO")
                     json_response = json.loads(data)
 
-                    if json_response is not None:
-                        if '/videos/'+str(x['video_id']) == json_response['uri']:
-                            json_response = json_response
-                        else:
+                    # if json_response is not None:
+                    #     if '/videos/'+str(x['video_id']) == json_response['uri']:
+                    #         json_response = json_response
+                    #     else:
 
-                            conn.request("GET", "/videos/" +
-                                         x['video_id'], payload, headers)
-                            res = conn.getresponse()
-                            data = res.read()
-                            print("DATA RECEIVED FROM VIMEO")
+                    #         conn.request("GET", "/videos/" +
+                    #                      x['video_id'], payload, headers)
+                    #         res = conn.getresponse()
+                    #         data = res.read()
+                    #         print("DATA RECEIVED FROM VIMEO")
 
-                            json_response = json.loads(data)
-                    else:
-                        conn.request("GET", "/videos/" +
-                                     x['video_id'], payload, headers)
-                        res = conn.getresponse()
-                        data = res.read()
-                        print("DATA RECEIVED FROM VIMEO")
+                    #         json_response = json.loads(data)
+                    # else:
+                    #     conn.request("GET", "/videos/" +
+                    #                  x['video_id'], payload, headers)
+                    #     res = conn.getresponse()
+                    #     data = res.read()
+                    #     print("DATA RECEIVED FROM VIMEO")
 
-                        json_response = json.loads(data)
+                    #     json_response = json.loads(data)
                     if res.status == 200:
 
                         # open('video.mp4', 'wb').write(r.content)
@@ -1563,25 +1563,7 @@ async def download_videos():
                     print("DATA RECEIVED FROM VIMEO")
                     json_response = json.loads(data)
 
-                    if json_response is not None:
-                        if '/videos/'+str(x['video_id']) == json_response['uri']:
-                            json_response = json_response
-                        else:
-
-                            conn.request("GET", "/videos/" +
-                                         x['video_id'], payload, headers)
-                            res = conn.getresponse()
-                            print("DATA RECEIVED FROM VIMEO")
-
-                            data = res.read()
-                            json_response = json.loads(data)
-                    else:
-                        conn.request("GET", "/videos/" +
-                                     x['video_id'], payload, headers)
-                        res = conn.getresponse()
-                        data = res.read()
-                        print("DATA RECEIVED FROM VIMEO")
-                        json_response = json.loads(data)
+                   
                     if res.status == 200:
 
                         # open('video.mp4', 'wb').write(r.content)
