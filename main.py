@@ -7,7 +7,7 @@ from fastapi_cache import FastAPICache
 from fastapi_cache.decorator import cache
 from fastapi_limiter.depends import RateLimiter
 from fastapi_limiter import FastAPILimiter
-import aioredis
+# import aioredis
 from scholarship_tests.apis import route as scholarshipRoute
 import random
 import string
@@ -27,7 +27,7 @@ from tortoise.contrib.fastapi import register_tortoise
 
 from admin_dashboard import controller as adminController
 from apis import routes as apiController
-from checkout import controller as checkoutController
+# from checkout import controller as checkoutController
 from configs import appinfo
 from configs.connection import DATABASE_URL, database
 from courses import controller as courseController
@@ -36,6 +36,7 @@ from send_mails import controller as mailController
 from student import controller as studentController
 from study_material import controller as studyMaterialController
 from starlette_context import middleware, plugins
+
 
 session = None
 # redis_client = Redis(host="localhost", port=6379)
@@ -243,7 +244,7 @@ async def validation_exception_handler(request, err):
 # app.include_router(authController.router, tags=["Auth"])
 app.include_router(apiController.api_router, prefix="/api", tags=["APIs"])
 app.include_router(scholarshipRoute.router, tags=['Scholarship APIs'])
-app.include_router(checkoutController.router, tags=["checkout"])
+# app.include_router(checkoutController.router, tags=["checkout"])
 app.include_router(adminController.router, tags=["Admin"])
 app.include_router(studentController.router, tags=["Students"])
 app.include_router(courseController.router, tags=["Courses"])
