@@ -199,7 +199,7 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 .env_11
-.env
+# .env
 VishwasAcademyUserData.json
 vishwas_academy_all_student_data.xlsx
 vishwas_academy_all_student_data.csv
