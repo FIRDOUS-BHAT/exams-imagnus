@@ -1,25 +1,4 @@
 
-
-from dateutil.relativedelta import relativedelta
-from dateutil.parser import parse
-import shutil
-import aiohttp
-from tortoise.expressions import Q
-import uvicorn
-from playsound import playsound
-import os
-from tqdm import tqdm
-import subprocess
-import numpy as np
-from slugify import slugify
-import json
-import rich.progress
-import requests
-import httpx
-from fastapi.responses import FileResponse
-import http.client
-import sys
-import tempfile
 import botocore.vendored.requests.packages.urllib3 as urllib3
 import boto3
 from FCM.route import push_service
@@ -44,7 +23,7 @@ from admin_dashboard.apis.pydantic_models import CourseCategoryTestSeriesOut
 from admin_dashboard.controller import upload_images
 from admin_dashboard.models import Coupons, Course, Category, CourseCategoryLectures, CourseCategoryNotes, \
     CourseCategoryTestSeries_Pydantic, CourseCategoryTestSeries, CourseSubscriptionPlans, \
-    CourseCategoryLectures_Pydantic, CourseCategories, SubscriptionPlans, CourseCategoryTestSeriesQuestions
+    CourseCategoryLectures_Pydantic, CourseCategories, SubscriptionPlans
 from aws_services.deps import s3_auth
 from checkout.models import PaymentRecords, PaymentRecords_Pydantic
 from configs import appinfo
@@ -196,9 +175,8 @@ class StudentRegisterPydantic(BaseModel):
     email: str
     fcm_token: str
     password: str
-    course_pref_id: Optional[str] = None
-
-
+    course_pref_id: Optional[str]=None
+    
 @router.post('/v1/register', status_code=201, response_model=loginResponsePydantic)
 async def register_student(user: StudentRegisterPydantic, _=Depends(get_current_user)):
     try:
@@ -229,7 +207,7 @@ async def register_student(user: StudentRegisterPydantic, _=Depends(get_current_
             return JSONResponse(
                 {"detail": "Email Id already exists"}, status_code=208)
         else:
-
+            
             # obj = await Student.create(**user.dict(exclude_unset=True))
             obj = await Student.create(
                 fullname=user.fullname,
@@ -239,12 +217,12 @@ async def register_student(user: StudentRegisterPydantic, _=Depends(get_current_
                 fcm_token=user.fcm_token,
                 password=util.get_password_hash(user.password),
                 status="1"
-
+               
             )
             if user.course_pref_id:
                 course = await Course.get(id=user.course_pref_id)
                 await StudentCoursePreferences.create(course=course, student=obj)
-
+            
             new_payment_records = []
             user = await Student_Pydantic.from_queryset_single(Student.get(mobile=user.mobile))
             result = jsonable_encoder(user.dict(exclude={'password'}))
@@ -261,6 +239,8 @@ async def register_student(user: StudentRegisterPydantic, _=Depends(get_current_
         # return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
         return JSONResponse(
             {"detail": str(ex)}, status_code=208)
+
+
 
 
 @router.post("/login",
@@ -522,8 +502,7 @@ async def mobile_check(data: mobileIn, _=Depends(get_current_user)):
                     course_obj = {
                         "id": course.id,
                         "name": course.name,
-                        "slug": course.slug,
-                        "telegram_link": course.telegram_link
+                        "slug": course.slug
                     }
                     time_left = exp_date - datetime_1
                     new_dict.update({'subscription': subscription})
@@ -592,8 +571,7 @@ async def student_details(uid: str, _=Depends(get_current_user)):
                 course_obj = {
                     "id": course.id,
                     "name": course.name,
-                    "slug": course.slug,
-                    "telegram_link": course.telegram_link
+                    "slug": course.slug
                 }
                 time_left = exp_date - datetime_1
                 new_dict.update({'subscription': subscription})
@@ -970,19 +948,15 @@ async def active_subscription(student_id: str, c_slug: str, subscription_id: str
 
 
 @router.get('/test_series/{test_series_id}/',
-            # response_model=List[CourseCategoryTestSeriesOut],
+            response_model=List[CourseCategoryTestSeriesOut],
             )
 async def each_test_series(test_series_id: str, _=Depends(get_current_user)):
     try:
         # series_obj = await CourseCategoryTestSeries.get(id=test_series_id)
-        # test_series = await CourseCategoryTestSeries_Pydantic.from_queryset(
-        #     CourseCategoryTestSeries.filter(id=test_series_id))
-        test_series = await CourseCategoryTestSeries.filter(id=test_series_id).values("series_no", "marks", "no_of_qstns", "title", "time_duration", "description", "thumbnail")
-        questions = await CourseCategoryTestSeriesQuestions.filter(test_series__id=test_series_id).values("id", "question", "opt_1", "opt_2", "opt_3", "opt_4", "answer", "solution")
+        test_series = await CourseCategoryTestSeries_Pydantic.from_queryset(
+            CourseCategoryTestSeries.filter(id=test_series_id))
         # test_series = await CourseCategoryTestSeriesQuestions_Pydantic.from_queryset(
         #     CourseCategoryTestSeriesQuestions.filter(test_series=series_obj))
-
-        test_series[0].update({"CategoryTestSeriesQuestions": questions})
         return test_series
     except Exception as ex:
         return JSONResponse(
@@ -1032,8 +1006,11 @@ async def bookmark_video(student_id: str, video_id: str, _=Depends(get_current_u
     try:
         student_instance = await Student.get(id=student_id)
         video_instance = await CourseCategoryLectures.get(id=video_id)
+        category_values = await CourseCategoryLectures.get(id=video_id).values("category_topic__category__category__id")
+        category_id = category_values["category_topic__category__category__id"]
+        category_instance = await Category.get(id=category_id)
         if not await BookMarkedVideos.exists(student=student_instance, video=video_instance):
-            await BookMarkedVideos.create(student=student_instance, video=video_instance)
+            await BookMarkedVideos.create(student=student_instance, category=category_instance, video=video_instance)
             return JSONResponse({"status": True, "message": "bookmarked"}, status_code=201)
         else:
             await BookMarkedVideos.filter(student=student_instance, video=video_instance).delete()
@@ -1249,7 +1226,7 @@ async def apply_coupon(data: applyCouponPydantic, _=Depends(get_current_user)):
                 if coupon_type == 1:
                     coupon_discount = plan_price * (discount / 100)
                     discounted_price = plan_price * (1 - (discount / 100))
-                elif (coupon_type == 2):
+                elif(coupon_type == 2):
                     coupon_discount = discount
                 return JSONResponse({'status': True,
                                      'message': 'Coupon applied successfully',
@@ -1279,146 +1256,56 @@ async def student_coupons(data: StudentCouponListing, _=Depends(get_current_user
     except Exception as ex:
         return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
-
+import http.client
 class VideoDetails(BaseModel):
     src: str
     video_id: str
-
-
 @router.post('/get_video_details/')
-async def get_video_details(data: VideoDetails, _=Depends(get_current_user)):
-    try:
-        if (data.src == 'vimeo'):
-            if data.video_id is not None:
+async def get_video_details(data:VideoDetails, _=Depends(get_current_user)):
+   try:
+    if(data.src == 'vimeo'):
+        if data.video_id is not None:
+           
 
-                conn = http.client.HTTPSConnection("api.vimeo.com")
-                payload = ''
-                headers = {
-                    'Authorization': 'bearer REDACTED_TOKEN',
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/vnd.vimeo.*+json;version=3.4'
-                }
-                conn.request("GET", "/videos/"+data.video_id, payload, headers)
-                res = conn.getresponse()
-                data = res.read()
-                # print(data.decode("utf-8"))
-                return {"status": True, "message": jsonable_encoder(data)}
-    except Exception as ex:
-        return {"status": False, "message": str(ex)}
-ACCESS_KEY = 'REDACTED_AWS_ACCESS_KEY_ID'
-SECRET_KEY = 'REDACTED_40_CHAR_SECRET'
-
-s3 = boto3.client('s3', aws_access_key_id=ACCESS_KEY,
-                  aws_secret_access_key=SECRET_KEY)
-
-
-async def upload_to_s3(file_path, bucket_name, object_name):
-    # get the file size
-    try:
-        file_size = os.path.getsize(file_path)
-        # create a progress bar
-        with tqdm(total=file_size, unit='B', unit_scale=True, unit_divisor=1024,
-                  desc='Uploading...', leave=True, miniters=1, ascii=True, disable=None) as pbar:
-            # upload the file
-            with open(file_path, "rb") as f:
-                s3.upload_fileobj(f, bucket_name, object_name,
-                                  Callback=lambda x: pbar.update(x))
-    except Exception as ex:
-        print(str(ex))
-        uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
-
-
-async def each_vimeo_video(link, path, file_name):
-    try:
-        if not os.path.exists(path):
-            os.makedirs(path)
-            print("CREATED")
-
-        response = requests.get(link, stream=True)
-
-        # subprocess.check_call(["attrib", "-r", path])
-
-        with open(path+file_name, "wb") as f:
-            print("Downloading %s " % file_name)
-
-            # with httpx.stream("GET", link) as response:
-
-            total = int(response.headers["Content-Length"])
-            with rich.progress.Progress(
-                "[progress.percentage]{task.percentage:>3.0f}%",
-                rich.progress.BarColumn(bar_width=None),
-                rich.progress.DownloadColumn(),
-                rich.progress.TransferSpeedColumn(),
-            ) as progress:
-                download_task = progress.add_task(
-                    "Download", total=total)
-                i = 1
-                for chunk in response.iter_content(chunk_size=1024):
-                    if chunk:
-
-                        f.write(chunk)
-
-                        progress.update(
-                            download_task, completed=i*1024)
-                        i = i+1
-
-        await upload_to_s3(path+file_name, "testing-bucket-s3-uploader",
-                           path+file_name)
-
-        # with open(path+file_name, "rb") as data:
-        #     # Create a progress bar
-        #     s3.upload_fileobj(
-        #         data, "testing-bucket-s3-uploader",
-        #         path+file_name
-        #     )
-
-    except Exception as ex:
-        print(str(ex))
-        uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
-
-
-@router.post('/download_video')
-async def download_videos():
-    print('HERE')
-    try:
-        async def check_if_object_exists(key):
-            try:
-                s3.get_object(
-                    Bucket="testing-bucket-s3-uploader",
-                    Key=key,
-
-                )
-                return True
-            except s3.exceptions.NoSuchKey:
-
-                return False
-
-        conn = http.client.HTTPSConnection("api.vimeo.com")
-        payload = ''
-        with open('migration_month.txt') as f:
-            start_date = parse(f.read())
-            f.close()
-        # start_date = parse("2022-08-01")
-        end_date = start_date + relativedelta(months=1)
-        print(f"{start_date}   --   {end_date}")
-        global new_lectures
-
-        async def refresh_lectures():
-            # lectures = await CourseCategoryLectures.filter(Q(video_360__isnull=True) | Q(video_540__isnull=True) | Q(video_720__isnull=True), created_at__range=(start_date,end_date)).order_by('created_at').values('id', 'video_duration', 'mobile_video_url', 'video_id', 'video_360', 'video_540', 'video_720')
-            lectures = await CourseCategoryLectures.filter(Q(video_360=None) | Q(video_540=None) | Q(video_720=None)).order_by('created_at').values('id', 'video_duration', 'mobile_video_url', 'video_id', 'video_360', 'video_540', 'video_720')
-            new_lectures = np.array(lectures)
-
-            return new_lectures
-        # print(lectures)
-        # return new_lectures
-        headers = {
+            conn = http.client.HTTPSConnection("api.vimeo.com")
+            payload = ''
+            headers = {
             'Authorization': 'bearer REDACTED_TOKEN',
             'Content-Type': 'application/json',
             'Accept': 'application/vnd.vimeo.*+json;version=3.4'
-        }
-        i = 0
-        new_lectures = await refresh_lectures()
-        lecturesToDownload = len(new_lectures)
+            }
+            conn.request("GET", "/videos/"+data.video_id, payload, headers)
+            res = conn.getresponse()
+            data = res.read()
+            # print(data.decode("utf-8"))
+            return {"status": True, "message": jsonable_encoder(data)}
+   except Exception as ex:
+       return {"status": False, "message": str(ex)}        
+   
+from fastapi.responses import FileResponse
+   
+import httpx
+import json  
+import requests
+@router.post('/download_video') 
+async def download_videos( _=Depends(get_current_user)):
+       
+        try:
+            conn = http.client.HTTPSConnection("api.vimeo.com")
+            payload = ''
+            headers = {
+            'Authorization': 'bearer REDACTED_TOKEN',
+            'Content-Type': 'application/json',
+            'Accept': 'application/vnd.vimeo.*+json;version=3.4'
+            }
+            conn.request("GET", "/videos/684172967", payload, headers)
+            res = conn.getresponse()
+            data = res.read()
+            # print(json.loads(data))
+            json_response = json.loads(data)
+            url = json_response['download'][2]['link']  # put your url here
+            bucket = 'testing-bucket-s3-uploader' #your s3 bucket
+            key = 'vimeo/test' #your desired s3 path or filename
 
             s3=boto3.client('s3')
             # http1=urllib3.PoolManager()
@@ -1426,170 +1313,11 @@ async def download_videos():
             # return json_response['download'][2]['link']
             # return FileResponse(path=json_response['download'][2]['link'], filename="file_path", media_type='text/mp4')
 
-            if x['video_id'] and x['video_id'].isnumeric():
-                # print(x['video_id'])
-                if x['video_360'] is None:
-                    print("IN 360")
-                    conn.request("GET", "/videos/" +
-                                 x['video_id'], payload, headers)
-                    res = conn.getresponse()
-                    data = res.read()
-                    print("DATA RECEIVED FROM VIMEO")
-                    json_response = json.loads(data)
-
-                    if res.status == 200:
-
-                        # open('video.mp4', 'wb').write(r.content)
-                        if 'error' not in json_response:
-
-                            file_name = slugify(json_response['name'])
-                            print(file_name, "FILENAME")
-
-                            d = next((d for d in json_response['download'] if d.get(
-                                'rendition') == '360p'), None)
-                            if d:
-                                print("Yes 360 video")
-                                video_360 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
-                                    file_name + "/" + str(360) + ".mp4"
-                                key = "transcoded/" + file_name + "/360.mp4"
-                                link_360 = d.get('link')
-
-                                # if not await check_if_object_exists(key):
-                                #     s3.put_object(
-                                #         Bucket="testing-bucket-s3-uploader",
-                                #         Key=key,
-                                #         Body=''
-                                #     )
-
-                                await each_vimeo_video(link_360, "transcoded/"+file_name+"/", "360.mp4")
-
-                                await CourseCategoryLectures.filter(id=x['id']).update(
-                                    video_360=video_360,
-                                    video_size_360=d.get('size')
-                                )
-                                print("360 video MIGRATED")
-                                print(datetime.now())
-                                if os.path.exists("transcoded"):
-                                    os.remove(key)
-
-                if x['video_540'] is None:
-                    print("IN 540")
-                    conn.request("GET", "/videos/" +
-                             x['video_id'], payload, headers)
-                    res = conn.getresponse()
-                    data = res.read()
-                    print("DATA RECEIVED FROM VIMEO")
-                    json_response = json.loads(data)
-
-                    # if json_response is not None:
-                    #     if '/videos/'+str(x['video_id']) == json_response['uri']:
-                    #         json_response = json_response
-                    #     else:
-
-                    #         conn.request("GET", "/videos/" +
-                    #                      x['video_id'], payload, headers)
-                    #         res = conn.getresponse()
-                    #         data = res.read()
-                    #         print("DATA RECEIVED FROM VIMEO")
-
-                    #         json_response = json.loads(data)
-                    # else:
-                    #     conn.request("GET", "/videos/" +
-                    #                  x['video_id'], payload, headers)
-                    #     res = conn.getresponse()
-                    #     data = res.read()
-                    #     print("DATA RECEIVED FROM VIMEO")
-
-                    #     json_response = json.loads(data)
-                    if res.status == 200:
-
-                        # open('video.mp4', 'wb').write(r.content)
-                        if 'error' not in json_response:
-
-                            file_name = slugify(json_response['name'])
-                            print(file_name, "FILENAME")
-
-                            d = next((d for d in json_response['download'] if d.get(
-                                'rendition') == '540p'), None)
-                            if d:
-                                video_540 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
-                                    file_name+"/"+str(540)+".mp4"
-                                key = "transcoded/"+file_name+"/540.mp4"
-                                # if not await check_if_object_exists(key):
-                                #     s3.put_object(
-                                #         Bucket="testing-bucket-s3-uploader",
-                                #         Key=key,
-                                #         Body=''
-                                #     )
-
-                                link_540 = d['link']
-                                await each_vimeo_video(link_540, "transcoded/"+file_name+"/", "540.mp4")
-
-                                await CourseCategoryLectures.filter(id=x['id']).update(
-                                    video_540=video_540,
-                                    video_size_540=d['size']
-                                )
-
-                                print("540 video MIGRATED")
-                                print(datetime.now())
-                                if os.path.exists("transcoded"):
-                                    os.remove(key)
-
-                if x['video_720'] is None:
-                    print("IN 720")
-                    conn.request("GET", "/videos/" +
-                             x['video_id'], payload, headers)
-                    res = conn.getresponse()
-                    data = res.read()
-                    print("DATA RECEIVED FROM VIMEO")
-                    json_response = json.loads(data)
-
-                   
-                    if res.status == 200:
-
-                        # open('video.mp4', 'wb').write(r.content)
-                        if 'error' not in json_response:
-
-                            file_name = slugify(
-                                json_response['name'])
-                            print(file_name, "FILENAME")
-
-                            d = next((d for d in json_response['download'] if d.get(
-                                'rendition') == '720p'), None)
-                            if d:
-                                video_720 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
-                                    file_name+"/"+str(720)+".mp4"
-                                key = "transcoded/"+file_name+"/720.mp4"
-
-                                # if not await check_if_object_exists(key):
-
-                                #     s3.put_object(
-                                #         Bucket="testing-bucket-s3-uploader",
-                                #         Key=key,
-                                #         Body=''
-                                #     )
-                                #  link_720 = json_response['download'][1]['link']
-                                link_720 = d['link']
-                                await each_vimeo_video(link_720, "transcoded/"+file_name+"/", "720.mp4")
-
-                                await CourseCategoryLectures.filter(id=x['id']).update(
-                                    video_720=video_720,
-                                    video_size_720=d['size']
-                                )
-                                print("720 video MIGRATED")
-                                print(datetime.now())
-
-                                if os.path.exists("transcoded"):
-                                    os.remove(key)
-
-                i = i+1
-                new_lectures = await refresh_lectures()
-
-            else:
-                print("INVALID VIDEO ID")
-        print(f"finished = {lecturesToDownload}")
-    except Exception as ex:
-        print(str(ex))
-        uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
-
-        return str(ex)
+            # async with httpx.AsyncClient() as client:
+            #     print(json_response['download'][2]['link'])
+            #     content_obj = await client.get(json_response['download'][2]['link'])
+            #     print(content_obj)
+            #     if content_obj.status_code == 200:
+            #         return content_obj.json()   
+        except Exception as ex:
+            return str(ex)
