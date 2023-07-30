@@ -1420,30 +1420,11 @@ async def download_videos():
         new_lectures = await refresh_lectures()
         lecturesToDownload = len(new_lectures)
 
-        # /** check if video 360 is null **/
-        j = 0
-        # for c in new_lectures:
-        #     if c['video_id'] and c['video_id'].isnumeric() and c['video_360'] is None:
-        #         print(c['video_id'])
-        #         print(c['mobile_video_url'])
-        #         j = j+1
-        # print(j)
-        # return j
-        for x in new_lectures:
-            if os.path.exists("transcoded"):
-                shutil.rmtree("transcoded")
-            print(f"Status = {i} / {lecturesToDownload}")
-            # check if video duration is there
-            # json_response = None
-            if x['video_duration'] is None:
-                conn.request("GET", "/videos/" +
-                             x['video_id'], payload, headers)
-                res = conn.getresponse()
-                data = res.read()
-                print("DATA RECEIVED FROM VIMEO")
-                json_response = json.loads(data)
-                await CourseCategoryLectures.filter(id=x['id']).update(
-                    video_duration=json_response['duration'])
+            s3=boto3.client('s3')
+            # http1=urllib3.PoolManager()
+            s3.upload_fileobj(requests('GET', url,preload_content=False), bucket, key)
+            # return json_response['download'][2]['link']
+            # return FileResponse(path=json_response['download'][2]['link'], filename="file_path", media_type='text/mp4')
 
             if x['video_id'] and x['video_id'].isnumeric():
                 # print(x['video_id'])

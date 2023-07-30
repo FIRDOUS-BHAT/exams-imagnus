@@ -29,7 +29,7 @@ from tortoise.contrib.fastapi import register_tortoise
 
 from admin_dashboard import controller as adminController
 from apis import routes as apiController
-from checkout import controller as checkoutController
+# from checkout import controller as checkoutController
 from configs import appinfo
 from configs.connection import DATABASE_URL, database
 from courses import controller as courseController
@@ -40,6 +40,7 @@ from student.apis.route import download_videos
 from study_material import controller as studyMaterialController
 from starlette_context import middleware, plugins
 # from mangum import Mangum
+
 
 session = None
 # redis_client = Redis(host="localhost", port=6379)
@@ -268,7 +269,7 @@ async def validation_exception_handler(request, err):
 app.include_router(apiController.api_router, prefix="/api", tags=["APIs"])
 app.include_router(scholarshipRoute.router, tags=['Scholarship APIs'])
 # app.include_router(checkoutController.router, tags=["checkout"])
-# app.include_router(adminController.router, tags=["Admin"])
+app.include_router(adminController.router, tags=["Admin"])
 app.include_router(studentController.router, tags=["Students"])
 app.include_router(courseController.router, tags=["Courses"])
 app.include_router(mailController.router, tags=["Mailer"])
@@ -351,8 +352,5 @@ register_tortoise(
 #     run_async(run())
 
 
-# if __name__ == "__main__":
-#     uvicorn.run(app, host="0.0.0.0", port=8000)
-
-
-# handler = Mangum(app)
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)

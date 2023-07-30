@@ -25,12 +25,12 @@
 # app = FastAPI()
 # templates = Jinja2Templates(directory="checkout/templates/")
 
-# payu_config = Config(".env")
-# merchant_key = payu_config('merchant_key')
-# merchant_salt = payu_config('merchant_salt')
-# surl = payu_config('success_url')
-# furl = payu_config('failure_url')
-# mode = payu_config('mode', cast=str)
+payu_config = Config(".env")
+merchant_key = payu_config('merchant_key')
+merchant_salt = payu_config('merchant_salt')
+surl = payu_config('success_url')
+furl = payu_config('failure_url')
+mode = payu_config('mode', cast=str)
 # payu = Payu(merchant_key, merchant_salt, surl, furl, mode)
 
 
