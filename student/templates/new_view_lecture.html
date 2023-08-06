@@ -26,11 +26,11 @@
                                        <!-- {{ cc_lectures[0].video_360 }} -->
                                       
                                        <!-- <iframe id="new_url" src="{{ cc_lectures[0].video_360 }}" loading="lazy" style="border: none; position: absolute; top: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; encrypted-media; picture-in-picture;" allowfullscreen="true"></iframe> -->
-                                    <video id="videoPlayer"  controls>
-                                       <!-- <source id="720pSrc" src="path-to-your-720p-video.mp4" type="video/mp4" label="720p">-->
-                                       <source id="540pSrc" src="{{ cc_lectures[0].video_540 }}" type="video/mp4" label="540p"> 
-                                       <source id="new_url" src="{{ cc_lectures[0].video_360 }}" type="video/mp4" label="360p">
-                                       Your browser does not support the video tag.
+                                     <video id="videoPlayer" controls>
+                                        <!-- <source id="720pSrc" src="path-to-your-720p-video.mp4" type="video/mp4" label="720p">--> -->
+                                       <!-- <source id="540pSrc" src="{{ cc_lectures[0].video_540 }}" type="video/mp4" label="540p">  -->
+                                       <source id="videoSrc" src="{{ cc_lectures[0].video_360 }}" type="video/mp4" label="360p">
+                                     
                                        </video>
 
 
@@ -53,37 +53,37 @@
                               <div class="simplebar-content-wrapper">
                                  <div class="group_messages">
 
-                                    <div class="chat__message__dt active" data-url="{{ cc_lectures[0].web_video_url }}"
+                                    <div class="chat__message__dt active" data-url="{{ cc_lectures[0].video_360 }}"
                                          data-title="{{ cc_lectures[0].title }}">
-                                       <div class="user-status" data-url="{{ cc_lectures[0].web_video_url }}"
+                                       <div class="user-status" data-url="{{ cc_lectures[0].video_360 }}"
                                          data-title="{{ cc_lectures[0].title }}">
-                                          <div class="user-avatar" data-url="{{ cc_lectures[0].web_video_url }}"
+                                          <div class="user-avatar" data-url="{{ cc_lectures[0].video_360 }}"
                                          data-title="{{ cc_lectures[0].title }}">
                                              <img src="{{ cc_lectures[0].app_thumbnail }}"  alt="">
-                                             <div class="msg__badge" data-url="{{ cc_lectures[0].web_video_url }}"
+                                             <div class="msg__badge" data-url="{{ cc_lectures[0].video_360 }}"
                                          data-title="{{ cc_lectures[0].title }}"> 1 </div>
                                           </div>
-                                          <p class="user-status-title" data-url="{{ cc_lectures[0].web_video_url }}"
-                                         data-title="{{ cc_lectures[0].title }}"><span class="bold" data-url="{{ cc_lectures[0].web_video_url }}"
+                                          <p class="user-status-title" data-url="{{ cc_lectures[0].video_360 }}"
+                                         data-title="{{ cc_lectures[0].title }}"><span class="bold" data-url="{{ cc_lectures[0].video_360 }}"
                                          data-title="{{ cc_lectures[0].title }}">{{ cc_lectures[0].title }}</span></p>
 
                                        </div>
                                     </div>
 
                                     {% for n in range(1,(cc_lectures|length)) %}
-                                    <div class="chat__message__dt" data-url="{{ cc_lectures[n].web_video_url }}"
+                                    <div class="chat__message__dt" data-url="{{ cc_lectures[n].video_360 }}"
                                          data-title="{{ cc_lectures[n].title }}">
-                                       <div class="user-status" data-url="{{ cc_lectures[n].web_video_url }}"
+                                       <div class="user-status" data-url="{{ cc_lectures[n].video_360 }}"
                                          data-title="{{ cc_lectures[n].title }}">
-                                          <div class="user-avatar" data-url="{{ cc_lectures[n].web_video_url }}"
+                                          <div class="user-avatar" data-url="{{ cc_lectures[n].video_360 }}"
                                          data-title="{{ cc_lectures[n].title }}">
-                                             <img src="{{ cc_lectures[n].app_thumbnail }}" alt="" data-url="{{ cc_lectures[n].web_video_url }}"
+                                             <img src="{{ cc_lectures[n].app_thumbnail }}" alt="" data-url="{{ cc_lectures[n].video_360 }}"
                                          data-title="{{ cc_lectures[n].title }}">
-                                             <div class="msg__badge" data-url="{{ cc_lectures[n].web_video_url }}"
+                                             <div class="msg__badge" data-url="{{ cc_lectures[n].video_360 }}"
                                          data-title="{{ cc_lectures[n].title }}"> {{n+1}}  </div>
                                           </div>
-                                          <p class="user-status-title" data-url="{{ cc_lectures[n].web_video_url }}"
-                                         data-title="{{ cc_lectures[n].title }}"><span class="bold" data-url="{{ cc_lectures[n].web_video_url }}"
+                                          <p class="user-status-title" data-url="{{ cc_lectures[n].video_360 }}"
+                                         data-title="{{ cc_lectures[n].title }}"><span class="bold" data-url="{{ cc_lectures[n].video_360 }}"
                                          data-title="{{ cc_lectures[n].title }}">{{ cc_lectures[n].title }}  </span></p>
                                        </div>
                                     </div>

@@ -218,6 +218,24 @@ $('#new_title').text(title)
 
 })
 
+document.addEventListener('DOMContentLoaded', function() {
+    let videoCards = document.querySelectorAll('.chat__message__dt');
+
+    videoCards.forEach(card => {
+        card.addEventListener('click', function() {
+           let videoPath = this.getAttribute('data-url');
+         //   alert(videoPath)
+            let videoPlayer = document.getElementById('videoPlayer');
+            let videoSrc = document.getElementById('videoSrc');
+            
+            videoSrc.src = videoPath;
+            videoPlayer.load();
+            videoPlayer.play();
+        });
+    });
+});
+
+
 
    $('.chat__message__dt').click(function () {
       $('.chat__message__dt').removeClass('active');

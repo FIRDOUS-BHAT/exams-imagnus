@@ -1069,7 +1069,7 @@ async def student_view_lecture(request: Request, cid: str, tid: str, cat_slug: s
         )
         cat_instance = await Category.get(slug=cat_slug)
         # return cc_lectures
-        return templates.TemplateResponse('new_view_lecture.html',
+        return templates.TemplateResponse('view_lecture.html',
                                           context={'request': request,
                                                    'student': student_instance,
                                                    'cc_lectures': cc_lectures,
