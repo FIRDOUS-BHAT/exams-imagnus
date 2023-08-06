@@ -32,21 +32,39 @@
                   <div style="position: relative; padding-top: 56.25%">
                     {% set video_url = cc_lectures[0].web_video_url if
                     cc_lectures[0].web_video_url else cc_lectures[0].video_360
-                    %}
-
-                    <video
+                    %} {% if cc_lectures[0].web_video_url %}
+                    <!-- If web_video_url exists, use the iframe -->
+                    <iframe
                       id="new_url"
-                      src="{{ video_url }}"
-                      controls
+                      src="{{ cc_lectures[0].web_video_url }}"
+                      loading="lazy"
                       style="
-                       
+                        border: none;
                         position: absolute;
                         top: 0;
-                        height: 70%;
+                        height: 100%;
+                        width: 100%;
+                      "
+                      allow="accelerometer; gyroscope; encrypted-media; picture-in-picture;"
+                      allowfullscreen="true"
+                    >
+                    </iframe>
+                    {% else %}
+                    <!-- If web_video_url does not exist, use the video tag with video_360 -->
+                    <video
+                      id="new_url"
+                      src="{{ cc_lectures[0].video_360 }}"
+                      controls
+                      style="
+                        border: none;
+                        position: absolute;
+                        top: 0;
+                        height: 100%;
                         width: 100%;
                       "
                       allowfullscreen
                     ></video>
+                    {% endif %}
                   </div>
                 </div>
               </div>
