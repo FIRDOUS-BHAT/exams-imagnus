@@ -26,9 +26,9 @@
                                        <!-- {{ cc_lectures[0].video_360 }} -->
                                       
                                        <!-- <iframe id="new_url" src="{{ cc_lectures[0].video_360 }}" loading="lazy" style="border: none; position: absolute; top: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; encrypted-media; picture-in-picture;" allowfullscreen="true"></iframe> -->
-                                    <video id="videoPlayer" width="640" height="360" controls>
-                                       <!-- <source id="720pSrc" src="path-to-your-720p-video.mp4" type="video/mp4" label="720p">
-                                       <source id="540pSrc" src="path-to-your-540p-video.mp4" type="video/mp4" label="540p"> -->
+                                    <video id="videoPlayer"  controls>
+                                       <!-- <source id="720pSrc" src="path-to-your-720p-video.mp4" type="video/mp4" label="720p">-->
+                                       <source id="540pSrc" src="{{ cc_lectures[0].video_540 }}" type="video/mp4" label="540p"> 
                                        <source id="360pSrc" src="{{ cc_lectures[0].video_360 }}" type="video/mp4" label="360p">
                                        Your browser does not support the video tag.
                                        </video>
