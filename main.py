@@ -40,6 +40,7 @@ from student.apis.route import download_videos
 from study_material import controller as studyMaterialController
 from starlette_context import middleware, plugins
 # from mangum import Mangum
+import logging
 
 
 session = None
@@ -109,6 +110,12 @@ class GzipRoute(APIRoute):
 
 app.router.route_class = GzipRoute
 
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    logging.info(f"Incoming request: {request.method} {request.url.path}")
+    response = await call_next(request)
+    logging.info(f"Outgoing response: {response.status_code}")
+    return response
 
 app.add_middleware(
     middleware.ContextMiddleware,
