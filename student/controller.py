@@ -301,7 +301,7 @@ async def login(request: Request, response: Response, data: OAuth2PasswordReques
     password = data.password
 
     user = await authenticate_user(username, password)
-    print(user)
+    # print(user)
     if not user:
         request.session["data"] = "Mobile number not found" if not await Student.exists(mobile=username) else "Incorrect password"
         # dd(request.session["data"])
@@ -454,89 +454,68 @@ async def student_dashboard(request: Request, user=Depends(get_current_user)):
 async def student_dashboard(request: Request, cid: str, user=Depends(get_current_user)):
     try:
         check = await authenticate_student_subscription(cid=cid, user=user)
-        if check:
-            if await Course.exists(id=cid):
-                student_instance = await Student.get(id=user)
-                c_instance = await Course.get(id=cid)
-                live_class_count = await LiveClasses.filter(course=c_instance).count()
-                today_live_class_count = await LiveClasses.filter(course=c_instance, ).count()
-                lectures_count = await CourseCategoryLectures.filter(
-                    category_topic__category__course=c_instance
-                ).count()
-                today_lectures_count = await CourseCategoryLectures.filter(
-                    category_topic__category__course=c_instance,
-                ).count()
-                test_series_count = await CourseCategoryTestSeries.filter(
-                    category_topic__category__course=c_instance
-                ).count()
-                today_test_series_count = await CourseCategoryTestSeries.filter(
-                    category_topic__category__course=c_instance,
-                ).count()
-                notes_count = await CourseCategoryNotes.filter(
-                    category_topic__category__course=c_instance
-                ).count()
-                today_notes_count = await CourseCategoryNotes.filter(
-                    category_topic__category__course=c_instance,
-                ).count()
-                # records = await CourseCategories_Pydantic.from_queryset(
-                #     CourseCategories.filter(course=c_instance)
-                # )
-
-                live_classes = await LiveClasses_Pydantic.from_queryset(
-                    LiveClasses.filter(course__id=cid))
-
-                course_cat_obj = await CourseCategories_Pydantic.from_queryset(
-                    CourseCategories.filter(course__id=cid))
-
-                new_arr = []
-
-                for category in course_cat_obj:
-                    cat_id = category.category.id
-                    cat_lecture_count = await CourseCategoryLectures.filter(
-                        category_topic__category__course__id=cid, category_topic__category__category__id=cat_id
-                    ).count()
-
-                    cat_notes_count = await CourseCategoryNotes.filter(
-                        category_topic__category__course__id=cid, category_topic__category__category__id=cat_id
-                    ).count()
-
-                    cat_test_series_count = await CourseCategoryTestSeries.filter(
-                        category_topic__category__course__id=cid, category_topic__category__category__id=cat_id
-                    ).count()
-                    new_dict = category.dict()
-                    new_dict.update({'lectures': cat_lecture_count})
-                    new_dict.update({'notes': cat_notes_count})
-                    new_dict.update({'test_series': cat_test_series_count})
-
-                    new_arr.append(new_dict)
-
-                # return new_arr
-                return templates.TemplateResponse('dashboard.html',
-                                                  context={'request': request,
-                                                           'student': student_instance,
-                                                           'records': new_arr,
-                                                           'cid': cid,
-                                                           'cname': c_instance.name,
-                                                           'live_class_count': live_class_count,
-                                                           'today_live_class_count': today_live_class_count,
-                                                           'lectures_count': lectures_count,
-                                                           'today_lectures_count': today_lectures_count,
-                                                           'test_series_count': test_series_count,
-                                                           'today_test_series_count': today_test_series_count,
-                                                           'notes_count': notes_count,
-                                                           'today_notes_count': today_notes_count,
-                                                           'live_classes': live_classes,
-                                                           'home_active': 'active',
-                                                           })
-            else:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND, detail="Not Found"
-                )
-        else:
+        if not check:
             return RedirectResponse(url="student/new-dashboard/", status_code=status.HTTP_302_FOUND)
+
+        if not await Course.exists(id=cid):
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
+
+        student_instance = await Student.get(id=user)
+        c_instance = await Course.get(id=cid)
+
+        # Group queries
+        live_classes_query = LiveClasses.filter(course=c_instance)
+        lectures_query = CourseCategoryLectures.filter(category_topic__category__course=c_instance)
+        test_series_query = CourseCategoryTestSeries.filter(category_topic__category__course=c_instance)
+        notes_query = CourseCategoryNotes.filter(category_topic__category__course=c_instance)
+
+        # Counts
+        live_class_count = await live_classes_query.count()
+        today_live_class_count = await live_classes_query.count()  # Modify this query if necessary
+        lectures_count = await lectures_query.count()
+        today_lectures_count = await lectures_query.count()  # Modify this query if necessary
+        test_series_count = await test_series_query.count()
+        today_test_series_count = await test_series_query.count()  # Modify this query if necessary
+        notes_count = await notes_query.count()
+        today_notes_count = await notes_query.count()  # Modify this query if necessary
+
+        live_classes = await LiveClasses_Pydantic.from_queryset(live_classes_query)
+        course_cat_obj = await CourseCategories_Pydantic.from_queryset(CourseCategories.filter(course__id=cid))
+
+        new_arr = []
+        for category in course_cat_obj:
+            cat_id = category.category.id
+            cat_lecture_count = await lectures_query.filter(category_topic__category__category__id=cat_id).count()
+            cat_notes_count = await notes_query.filter(category_topic__category__category__id=cat_id).count()
+            cat_test_series_count = await test_series_query.filter(category_topic__category__category__id=cat_id).count()
+            
+            category.dict().update({
+                'lectures': cat_lecture_count,
+                'notes': cat_notes_count,
+                'test_series': cat_test_series_count
+            })
+            new_arr.append(category)
+
+        return templates.TemplateResponse('dashboard.html', context={
+            'request': request,
+            'student': student_instance,
+            'records': new_arr,
+            'cid': cid,
+            'cname': c_instance.name,
+            'live_class_count': live_class_count,
+            'today_live_class_count': today_live_class_count,
+            'lectures_count': lectures_count,
+            'today_lectures_count': today_lectures_count,
+            'test_series_count': test_series_count,
+            'today_test_series_count': today_test_series_count,
+            'notes_count': notes_count,
+            'today_notes_count': today_notes_count,
+            'live_classes': live_classes,
+            'home_active': 'active',
+        })
     except Exception as e:
-        # raise HTTPException(detail=str(e), status_code=208)
         return RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
+
 
 
 '''
@@ -1066,6 +1045,7 @@ async def student_view_lecture(request: Request, cid: str, tid: str, cat_slug: s
                                user: str = Depends(get_current_user)):
     # try:
     check = await authenticate_student_subscription(cid=cid, user=user)
+    dd(check)
     if check:
         student_instance = await Student.get(id=user)
         t_instance = await Topics.get(id=tid)
