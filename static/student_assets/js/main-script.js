@@ -204,6 +204,8 @@ $(document).on('click','#view_test',function(e) {
 
 })
 
+
+
 $(document).on('click','.chat__message__dt', function(e) {
   let url = e.target.getAttribute('data-url');
   let title = e.target.getAttribute('data-title');
