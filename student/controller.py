@@ -1045,7 +1045,7 @@ async def student_view_lecture(request: Request, cid: str, tid: str, cat_slug: s
                                user: str = Depends(get_current_user)):
     # try:
     check = await authenticate_student_subscription(cid=cid, user=user)
-    dd(check)
+    # dd(check)
     if check:
         student_instance = await Student.get(id=user)
         t_instance = await Topics.get(id=tid)
