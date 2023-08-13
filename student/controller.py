@@ -304,7 +304,7 @@ async def login(request: Request, response: Response, data: OAuth2PasswordReques
     print(user)
     if not user:
         request.session["data"] = "Mobile number not found" if not await Student.exists(mobile=username) else "Incorrect password"
-        dd(request.session["data"])
+        # dd(request.session["data"])
         
         return RedirectResponse(url="/student/login/?returnURL=" + return_url, status_code=status.HTTP_302_FOUND)
 
