@@ -1,5 +1,7 @@
 import uvicorn
-from fastapi import Body, FastAPI, Request, Response
+from fastapi import status, FastAPI, Request, Response
+from starlette.responses import JSONResponse, Response, RedirectResponse
+
 from typing import Callable, List
 from fastapi.routing import APIRoute
 # from fastapi_cache.backends.redis import RedisBackend
@@ -37,10 +39,13 @@ from scholarship_tests import controller as scholarshipController
 from send_mails import controller as mailController
 from student import controller as studentController
 from student.apis.route import download_videos
+from student.models import UserToken
 from study_material import controller as studyMaterialController
 from starlette_context import middleware, plugins
 # from mangum import Mangum
 import logging
+from starlette.middleware.base import BaseHTTPMiddleware
+from jose import JWTError, jwt
 
 
 session = None
@@ -86,6 +91,7 @@ config = Config(".env")
 app.add_middleware(SessionMiddleware, secret_key="secret",
                    )
 
+secret_key = settings.secret_key
 
 class GzipRequest(Request):
     async def body(self) -> bytes:
@@ -108,6 +114,32 @@ class GzipRoute(APIRoute):
         return custom_route_handler
 
 
+
+
+class TokenVerificationMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        token = request.cookies.get(settings.cookie_name)
+
+        if token:
+            payload = jwt.decode(token, secret_key,
+                             algorithms=[settings.algorithm])
+            # payload = decode_token(token)  # Your existing token decoding logic
+            user_id = (payload.get("sub"))
+            
+            stored_token_obj = await UserToken.get(user_id=user_id)
+
+            if stored_token_obj and stored_token_obj.token != token:
+                
+                # return JSONResponse(status_code=401, content={"detail": "Token does not match the current token for this user"})
+                resp = RedirectResponse(url='/student/login/',
+                            status_code=status.HTTP_302_FOUND)
+                resp.delete_cookie(key=settings.cookie_name)
+                
+                return resp
+        response = await call_next(request)
+        return response
+
+
 app.router.route_class = GzipRoute
 
 @app.middleware("http")
@@ -116,6 +148,8 @@ async def log_requests(request: Request, call_next):
     response = await call_next(request)
     logging.info(f"Outgoing response: {response.status_code}")
     return response
+
+app.add_middleware(TokenVerificationMiddleware)
 
 app.add_middleware(
     middleware.ContextMiddleware,

@@ -40,6 +40,13 @@ class Student(Model):
     is_active = fields.BooleanField(default=True)
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
+    
+    
+class UserToken(Model):
+    user_id = fields.UUIDField(pk=True)
+    token = fields.TextField()
+    updated_at = fields.DatetimeField(auto_now=True)
+    created_at = fields.DatetimeField(auto_now_add=True)    
 
 
 class StudentCoursePreferences(Model):
