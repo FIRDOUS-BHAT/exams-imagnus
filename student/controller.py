@@ -1051,10 +1051,12 @@ async def student_view_lecture(request: Request, cid: str, tid: str, cat_slug: s
         t_instance = await Topics.get(id=tid)
         cc_instance = await CourseCategories.get(course__id=cid, category__slug=cat_slug)
         cc_t_instance = await CategoryTopics.get(topic=t_instance, category=cc_instance)
-        cc_lectures = await CourseCategoryLectures_Pydantic.from_queryset(
-            CourseCategoryLectures.filter(
+        # cc_lectures = await CourseCategoryLectures_Pydantic.from_queryset(
+        #     CourseCategoryLectures.filter(
+        #         category_topic=cc_t_instance).order_by('order_display')
+        # )
+        cc_lectures = CourseCategoryLectures.filter(
                 category_topic=cc_t_instance).order_by('order_display')
-        )
         cat_instance = await Category.get(slug=cat_slug)
         # return cc_lectures
         return templates.TemplateResponse('new_view_lecture.html',
