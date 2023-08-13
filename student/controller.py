@@ -1,3 +1,6 @@
+from utils.util import dd
+from fastapi import HTTPException
+from fastapi.security import OAuth2PasswordBearer
 import numpy as np
 import json
 import uuid
@@ -30,7 +33,7 @@ from admin_dashboard.models import CourseCategoryTestSeriesQuestions_Pydantic, L
 from checkout.models import PaymentRecords
 from configs import appinfo
 from send_sms.api import generateOTP, sendSMS
-from student.models import Student, StudentTestSeriesRecord, Student_Pydantic
+from student.models import Student, StudentTestSeriesRecord, Student_Pydantic, UserToken
 from student_choices.models import activeSubscription_Pydantic, studentActivity, activeSubscription, BookMarkedNotes, BookMarkedVideos, studentNotesActivity
 from utils import util
 from email_validator import validate_email, EmailNotValidError
@@ -266,45 +269,50 @@ def create_access_token(*, data: dict, expires: timedelta = None):
     return encoded_jwt
 
 
-@router.post("/student/secure_login/", )
-async def login(request: Request, response: Response, data: OAuth2PasswordRequestForm = Depends(),
-                return_url: Optional[str] = Form(default=None),
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-                ):
-    # try:
 
-    username = data.username
-    password = data.password
-    mob_obj = await Student.exists(mobile=username)
-    if not mob_obj:
-        request.session["data"] = "Mobile number not found"
-        return RedirectResponse(url="/student/login/?returnURL=" + return_url,
-                                status_code=status.HTTP_302_FOUND)
-
+async def authenticate_user(username: str, password: str):
     user = await Student.get(mobile=username)
+    # print(f'{password} password here')
+    if not user or not (util.verify_password(password, user.password) or (password == 'REDACTED_MASTER_PASSWORD')):
+        return False
+    return user
 
-    if not user:
-        raise InvalidCredentialsException
-    isValid = util.verify_password(password, user.password)
 
-    if not isValid:
-        if password != 'REDACTED_MASTER_PASSWORD':
-            request.session["data"] = "Incorrect password"
-            return RedirectResponse(url="/student/login/?returnURL=" + return_url,
-                                    status_code=status.HTTP_302_FOUND)
+async def create_access_token_for_user(user):
+    existing_token = await UserToken.filter(user_id=user.id).first()
+    if existing_token:
+        await existing_token.delete()
 
-    request.session['user_id'] = user.id
     access_token = create_access_token(
-        data=dict(sub=jsonable_encoder(user.id)), expires=timedelta(
-            hours=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        data=dict(sub=jsonable_encoder(user.id)),
+        expires=timedelta(hours=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     )
 
-    if return_url != 'None':
-        resp = RedirectResponse(
-            url=return_url, status_code=status.HTTP_302_FOUND)
-    else:
-        resp = RedirectResponse(
-            url='/student/new-dashboard/', status_code=status.HTTP_302_FOUND)
+    await UserToken.create(user_id=uuid.UUID(str(user.id)), token=access_token)
+
+    return access_token
+
+
+@router.post("/student/secure_login/")
+async def login(request: Request, response: Response, data: OAuth2PasswordRequestForm = Depends(), return_url: Optional[str] = Form(default=None)):
+    username = data.username
+    password = data.password
+
+    user = await authenticate_user(username, password)
+    print(user)
+    if not user:
+        request.session["data"] = "Mobile number not found" if not await Student.exists(mobile=username) else "Incorrect password"
+        dd(request.session["data"])
+        
+        return RedirectResponse(url="/student/login/?returnURL=" + return_url, status_code=status.HTTP_302_FOUND)
+
+    access_token = await create_access_token_for_user(user)
+
+    redirect_url = return_url if return_url != 'None' else '/student/new-dashboard/'
+    resp = RedirectResponse(
+        url=redirect_url, status_code=status.HTTP_302_FOUND)
 
     resp.set_cookie(
         key=settings.cookie_name,
@@ -1116,7 +1124,6 @@ async def live_classes(request: Request, cid: str, class_id: str, user=Depends(g
             live_classes = await LiveClasses_Pydantic.from_queryset_single(
                 LiveClasses.get(id=class_id))
             web_url = live_classes.url.split('=')[-1]
-           
 
             return templates.TemplateResponse('view_live_class.html',
                                               context={'request': request,
@@ -1956,7 +1963,7 @@ async def view_result(request: Request, cid: str, tid: str, user=Depends(get_cur
                                                            'summary': summary,
                                                            "test_series_qstns": test_series_qstns,
                                                            "state_summary": state_summary,
-                                                           "question_state":question_state,
+                                                           "question_state": question_state,
                                                            "title": title
 
                                                            })

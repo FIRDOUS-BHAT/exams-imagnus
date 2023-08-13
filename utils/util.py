@@ -11,7 +11,11 @@ from auth import model
 from pydantic import ValidationError
 
 from functools import lru_cache
+import sys
 
+def dd(data):
+    print(data)
+    sys.exit()
 
 @lru_cache()
 def app_setting():
