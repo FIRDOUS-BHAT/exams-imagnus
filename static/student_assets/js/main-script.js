@@ -223,6 +223,16 @@ $(document).on('click','.chat__message__dt', function(e) {
   }
 });
 
+    setInterval(async function() {
+        const response = await fetch('/student/verify-token/');
+        const data = await response.json();
+
+        if (!data.valid) {
+            // Log the user out or redirect to the login page
+            window.location.href = '/student/login/';
+        }
+    }, 60000); // Check every 60 seconds
+
 
 document.addEventListener('DOMContentLoaded', function() {
     let videoCards = document.querySelectorAll('.chat__message__dt');
@@ -274,3 +284,12 @@ $('.submit_question').on('click', function (e) {
 
 //  document.addEventListener('contextmenu',
 //                         event => event.preventDefault());
+
+// const ws = new WebSocket(`ws://127.0.0.1:8000/student/ws/verify-token/`);
+
+// ws.onmessage = function(event) {
+//   if (event.data === "logout") {
+//     // Redirect to login or perform logout logic
+//     window.location.href = '/student/login/';
+//   }
+// };
