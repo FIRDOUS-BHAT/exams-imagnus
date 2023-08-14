@@ -250,19 +250,19 @@ async def add_process_time_header(request: Request, call_next):
     # logger.info(f"rid={idem} completed_in={formatted_process_time}ms status_code={response.status_code}")
     
     
-    try:
-        response = await call_next(request)
-    except Exception as e:
-        # You may wish to add more specific error handling logic here
-        if "invalid input syntax for type uuid" in str(e):
-            # Log the error for debugging purposes
-            traceback.print_exc()
+    # try:
+    #     response = await call_next(request)
+    # except Exception as e:
+    #     # You may wish to add more specific error handling logic here
+    #     if "invalid input syntax for type uuid" in str(e):
+    #         # Log the error for debugging purposes
+    #         traceback.print_exc()
             
-            # Redirect to login page
-            response = RedirectResponse(url="/student/login/")
-        else:
-            # You can raise the exception again if it's not the error you're looking for
-            raise e
+    #         # Redirect to login page
+    #         response = RedirectResponse(url="/student/login/")
+    #     else:
+    #         # You can raise the exception again if it's not the error you're looking for
+    #         raise e
     
     return response
 
