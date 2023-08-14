@@ -110,6 +110,72 @@ async def get_current_user(session: str = Depends(get_cookie)):
     # )
 
 
+@router.get("/student/verify-token/")
+async def verify_token(request: Request):
+    token = request.cookies.get(settings.cookie_name)
+    if token:
+        # payload = decode_token(token)
+        payload = jwt.decode(token, secret_key,
+                             algorithms=[settings.algorithm])
+        user_id = payload.get("sub")
+        stored_token_obj = await UserToken.get(user_id=user_id)
+
+        if stored_token_obj and stored_token_obj.token == token:
+            return {"valid": True}
+
+    return {"valid": False}
+
+
+
+
+
+from fastapi import WebSocket, HTTPException
+from collections import defaultdict
+
+# Dictionary to store WebSocket connections by user_id
+user_connections = defaultdict(list)
+
+@router.websocket("/student/ws/verify-token")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    token = websocket.cookies.get(settings.cookie_name)
+    
+    if token:
+        # payload = decode_token(token)  # Your existing token decoding logic
+        payload = jwt.decode(token, secret_key,
+                             algorithms=[settings.algorithm])
+        user_id = payload.get("sub")
+
+        stored_token_obj = await UserToken.get(user_id=user_id)
+
+        if stored_token_obj and stored_token_obj.token != token:
+            raise HTTPException(status_code=401, detail="Token does not match the current token for this user")
+        
+        # Save this connection
+        user_connections[user_id].append(websocket)
+
+        try:
+            while True:
+                # You can listen for messages from the client if needed
+                data = await websocket.receive_text()
+                # Handle the received data as needed
+        except:
+            # Remove the connection if it's closed
+            user_connections[user_id].remove(websocket)
+
+    else:
+        raise HTTPException(status_code=401, detail="Token is missing")
+
+# Function to notify other sessions for the user
+async def notify_other_sessions(user_id: uuid.UUID, new_token: str):
+    connections = user_connections[user_id]
+    for connection in connections:
+        current_token = connection.cookies.get(settings.cookie_name)
+        if current_token != new_token:
+            await connection.send_text("logout")
+
+
+
 @router.get('/')
 async def login_page(request: Request, returnURL: Optional[str] = None, ):
     try:
