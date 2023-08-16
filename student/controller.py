@@ -1744,7 +1744,7 @@ async def student_pdf_notes(request: Request, cid: str, cat_id: str, user: str =
 
 
 @router.get('/student/view_notes/{cid}/{tid}/{category_slug}/{topic_slug}/', )
-async def view_notes(request: Request, cid: str, tid: str, user=Depends(get_current_user), ):
+async def view_notes(request: Request, cid: str, tid: str, category_slug:str, user=Depends(get_current_user), ):
     try:
         check = await authenticate_student_subscription(cid=cid, user=user)
         if check:
@@ -1753,6 +1753,7 @@ async def view_notes(request: Request, cid: str, tid: str, user=Depends(get_curr
                 topic_obj = await Topics.get(id=tid).values("name", "category__name", "category__icon_image")
 
                 notes_instance = await CourseCategoryNotes.filter(
+                    category_topic__category__category__slug = category_slug,
                     category_topic__topic__id=tid)
                 # return notes_instance
                 return templates.TemplateResponse('view_pdfnotes.html',
