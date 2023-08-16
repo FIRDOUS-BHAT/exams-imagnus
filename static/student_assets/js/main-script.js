@@ -215,7 +215,7 @@ $(document).on('click','.chat__message__dt', function(e) {
     if (url.endsWith('.mp4')) {
       // Use the video tag
       $('#new_url').replaceWith('<video id="new_url" src="' + url + '" controls style="border: none; position: absolute; top: 0; height: 80%; width: 100%;" allowfullscreen controlsList="nodownload"></video>');
-    } else if (url.endsWith('.m3u8')) {
+    } else if (url.includes('iframe.mediadelivery.net')) {
       // Use the iframe
       $('#new_url').replaceWith('<iframe id="new_url" src="' + url + '" loading="lazy" style="border: none; position: absolute; top: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; encrypted-media; picture-in-picture;" allowfullscreen="true"></iframe>');
     }
