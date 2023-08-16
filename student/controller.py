@@ -1753,8 +1753,8 @@ async def view_notes(request: Request, cid: str, tid: str, category_slug:str, us
                 topic_obj = await Topics.get(id=tid).values("name", "category__name", "category__icon_image")
 
                 notes_instance = await CourseCategoryNotes.filter(
-                    category_topic__category__course__id = cid).filter(
-                    category_topic__category__category__slug = category_slug).filter(
+                    category_topic__category__course__id = cid,
+                    category_topic__category__category__slug = category_slug,
                     category_topic__topic__id=tid)
                 # return notes_instance
                 return templates.TemplateResponse('view_pdfnotes.html',
