@@ -206,7 +206,7 @@ $(document).on('click','#view_test',function(e) {
 
 
 
-$(document).on('click','.chat__message__dt', function(e) {
+$(document).on('click','.video_list', function(e) {
   let url = e.target.getAttribute('data-url');
   let title = e.target.getAttribute('data-title');
 
@@ -223,6 +223,21 @@ $(document).on('click','.chat__message__dt', function(e) {
   }
 });
 
+
+$(document).on('click','.pdf_list', function(e) {
+  let url = e.target.getAttribute('data-url');
+  let title = e.target.getAttribute('data-title');
+
+  if (url && title) {
+    // Check if the URL ends with .mp4
+   
+        // Use the video tag
+        $('#new_url').attr('src',url);
+     
+    $('#new_title').text(title);
+  }
+});
+
     setInterval(async function() {
         const response = await fetch('/student/verify-token/');
         const data = await response.json();
@@ -234,22 +249,22 @@ $(document).on('click','.chat__message__dt', function(e) {
     }, 60000); // Check every 60 seconds
 
 
-document.addEventListener('DOMContentLoaded', function() {
-    let videoCards = document.querySelectorAll('.chat__message__dt');
+// document.addEventListener('DOMContentLoaded', function() {
+//     let videoCards = document.querySelectorAll('.chat__message__dt');
 
-    videoCards.forEach(card => {
-        card.addEventListener('click', function() {
-           let videoPath = this.getAttribute('data-url');
-         //   alert(videoPath)
-            let videoPlayer = document.getElementById('videoPlayer');
-            let videoSrc = document.getElementById('videoSrc');
+//     videoCards.forEach(card => {
+//         card.addEventListener('click', function() {
+//            let videoPath = this.getAttribute('data-url');
+//          //   alert(videoPath)
+//             let videoPlayer = document.getElementById('videoPlayer');
+//             let videoSrc = document.getElementById('videoSrc');
             
-            videoSrc.src = videoPath;
-            videoPlayer.load();
-            videoPlayer.play();
-        });
-    });
-});
+//             videoSrc.src = videoPath;
+//             videoPlayer.load();
+//             videoPlayer.play();
+//         });
+//     });
+// });
 
 
 
