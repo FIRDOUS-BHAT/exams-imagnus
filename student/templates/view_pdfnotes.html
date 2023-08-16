@@ -45,7 +45,7 @@
                               </div>
                               <div class="simplebar-content-wrapper">
                                  <div class="group_messages">
-                                    <div class="chat__message__dt active" data-url="{{ notes_list[0].notes_url }}"
+                                    <div class="chat__message__dt pdf_list active" data-url="{{ notes_list[0].notes_url }}"
                                          data-title="{{ notes_list[0].title }}">
                                        <div class="user-status" data-url="{{ notes_list[0].notes_url }}"
                                          data-title="{{ notes_list[0].title }}">
@@ -66,7 +66,7 @@
                                     </div>
 
                                     {% for n in range(1, notes_list|length) %}
-                                    <div class="chat__message__dt" data-url="{{ notes_list[n].notes_url }}"
+                                    <div class="chat__message__dt pdf_list" data-url="{{ notes_list[n].notes_url }}"
                                          data-title="{{ notes_list[n].title }}">
                                        <div class="user-status" data-url="{{ notes_list[n].notes_url }}"
                                          data-title="{{ notes_list[n].title }}">
