@@ -527,33 +527,45 @@ async def student_dashboard(request: Request, cid: str, user=Depends(get_current
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
 
         student_instance = await Student.get(id=user)
+        
         c_instance = await Course.get(id=cid)
+        
 
         # Group queries
-        live_classes_query = LiveClasses.filter(course=c_instance)
-        lectures_query = CourseCategoryLectures.filter(category_topic__category__course=c_instance)
-        test_series_query = CourseCategoryTestSeries.filter(category_topic__category__course=c_instance)
-        notes_query = CourseCategoryNotes.filter(category_topic__category__course=c_instance)
+      
+        live_classes_query = await LiveClasses.filter(course__id=cid)
+        # return live_classes_query
+        
+       
+        
+        lectures_query = await CourseCategoryLectures.filter(category_topic__category__course__id=cid)
+        # return lectures_query
+        test_series_query = await CourseCategoryTestSeries.filter(category_topic__category__course__id=cid)
+        notes_query = await CourseCategoryNotes.filter(category_topic__category__course__id=cid)
 
-        # Counts
-        live_class_count = await live_classes_query.count()
-        today_live_class_count = await live_classes_query.count()  # Modify this query if necessary
-        lectures_count = await lectures_query.count()
-        today_lectures_count = await lectures_query.count()  # Modify this query if necessary
-        test_series_count = await test_series_query.count()
-        today_test_series_count = await test_series_query.count()  # Modify this query if necessary
-        notes_count = await notes_query.count()
-        today_notes_count = await notes_query.count()  # Modify this query if necessary
+      # Execute queries first
 
-        live_classes = await LiveClasses_Pydantic.from_queryset(live_classes_query)
+        # Now call count on the query results
+        live_class_count = len(live_classes_query)  
+        today_live_class_count = len(live_classes_query)
+
+        lectures_count = len(lectures_query)
+        today_lectures_count = len(lectures_query) 
+
+        test_series_count = len(test_series_query)
+        today_test_series_count = len(test_series_query)
+
+        notes_count = len(notes_query)
+        today_notes_count = len(notes_query)
+        live_classes = await LiveClasses_Pydantic.from_queryset(LiveClasses.filter(course__id=cid))
         course_cat_obj = await CourseCategories_Pydantic.from_queryset(CourseCategories.filter(course__id=cid))
 
         new_arr = []
         for category in course_cat_obj:
             cat_id = category.category.id
-            cat_lecture_count = await lectures_query.filter(category_topic__category__category__id=cat_id).count()
-            cat_notes_count = await notes_query.filter(category_topic__category__category__id=cat_id).count()
-            cat_test_series_count = await test_series_query.filter(category_topic__category__category__id=cat_id).count()
+            cat_lecture_count = await CourseCategoryLectures.filter(category_topic__category__category__id=cat_id).count()
+            cat_notes_count = await CourseCategoryNotes.filter(category_topic__category__category__id=cat_id).count()
+            cat_test_series_count = await CourseCategoryTestSeries.filter(category_topic__category__category__id=cat_id).count()
             
             category.dict().update({
                 'lectures': cat_lecture_count,
@@ -580,7 +592,8 @@ async def student_dashboard(request: Request, cid: str, user=Depends(get_current
             'home_active': 'active',
         })
     except Exception as e:
-        return RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
+        raise HTTPException(status_code=208, detail=str(e))
+        # return RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
 
 
 
