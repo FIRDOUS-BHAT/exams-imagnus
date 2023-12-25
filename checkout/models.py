@@ -40,8 +40,6 @@ class PaymentRecords(Model):
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(default=datetime.utcnow)
 
-    # class PydanticMeta:
-    #     exclude = ["student", "payment_id", "gateway_name"]
 
 
 class paymentSession(Model):

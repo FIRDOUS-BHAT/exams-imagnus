@@ -1,3 +1,5 @@
+from collections import defaultdict
+from fastapi import WebSocket, HTTPException
 from utils.util import dd
 from fastapi import HTTPException
 from fastapi.security import OAuth2PasswordBearer
@@ -52,7 +54,7 @@ app = FastAPI()
 
 cookie_sec = APIKeyCookie(name=settings.cookie_name)
 
-secret_key = settings.secret_key
+secret_key = settings.secret_key.encode('utf-8')
 
 templates = Jinja2Templates(directory="student/templates")
 
@@ -63,7 +65,7 @@ class Status(BaseModel):
     message: str
 
 
-SECRET = settings.secret_key
+SECRET = secret_key
 # SECRET = "secret-key"
 # To obtain a suitable secret key you can run | import os; print(os.urandom(24).hex())
 
@@ -126,20 +128,15 @@ async def verify_token(request: Request):
     return {"valid": False}
 
 
-
-
-
-from fastapi import WebSocket, HTTPException
-from collections import defaultdict
-
 # Dictionary to store WebSocket connections by user_id
 user_connections = defaultdict(list)
+
 
 @router.websocket("/student/ws/verify-token")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     token = websocket.cookies.get(settings.cookie_name)
-    
+
     if token:
         # payload = decode_token(token)  # Your existing token decoding logic
         payload = jwt.decode(token, secret_key,
@@ -149,8 +146,9 @@ async def websocket_endpoint(websocket: WebSocket):
         stored_token_obj = await UserToken.get(user_id=user_id)
 
         if stored_token_obj and stored_token_obj.token != token:
-            raise HTTPException(status_code=401, detail="Token does not match the current token for this user")
-        
+            raise HTTPException(
+                status_code=401, detail="Token does not match the current token for this user")
+
         # Save this connection
         user_connections[user_id].append(websocket)
 
@@ -167,13 +165,14 @@ async def websocket_endpoint(websocket: WebSocket):
         raise HTTPException(status_code=401, detail="Token is missing")
 
 # Function to notify other sessions for the user
+
+
 async def notify_other_sessions(user_id: uuid.UUID, new_token: str):
     connections = user_connections[user_id]
     for connection in connections:
         current_token = connection.cookies.get(settings.cookie_name)
         if current_token != new_token:
             await connection.send_text("logout")
-
 
 
 @router.get('/')
@@ -371,7 +370,7 @@ async def login(request: Request, response: Response, data: OAuth2PasswordReques
     if not user:
         request.session["data"] = "Mobile number not found" if not await Student.exists(mobile=username) else "Incorrect password"
         # dd(request.session["data"])
-        
+
         return RedirectResponse(url="/student/login/?returnURL=" + return_url, status_code=status.HTTP_302_FOUND)
 
     access_token = await create_access_token_for_user(user)
@@ -408,7 +407,7 @@ async def send_otp(request: Request):
     mobile = data['mobile']
     if await Student.exists(mobile=mobile):
         otp = await generateOTP()
-        message = otp + " is your verification code for registration at i-Magnus."
+        message = otp + " is your one time verification code for registration at i-Magnus."
         resp = await sendSMS('ODg1YjEyMDg5YWVkNGI3MGY5ZDhhODA4ZDMxNzIwNWQ=', '91' + mobile,
                              'IMGNUS', message)
         resp = json.loads(resp)
@@ -524,20 +523,18 @@ async def student_dashboard(request: Request, cid: str, user=Depends(get_current
             return RedirectResponse(url="student/new-dashboard/", status_code=status.HTTP_302_FOUND)
 
         if not await Course.exists(id=cid):
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
 
         student_instance = await Student.get(id=user)
-        
+
         c_instance = await Course.get(id=cid)
-        
 
         # Group queries
-      
+
         live_classes_query = await LiveClasses.filter(course__id=cid)
         # return live_classes_query
-        
-       
-        
+
         lectures_query = await CourseCategoryLectures.filter(category_topic__category__course__id=cid)
         # return lectures_query
         test_series_query = await CourseCategoryTestSeries.filter(category_topic__category__course__id=cid)
@@ -546,11 +543,11 @@ async def student_dashboard(request: Request, cid: str, user=Depends(get_current
       # Execute queries first
 
         # Now call count on the query results
-        live_class_count = len(live_classes_query)  
+        live_class_count = len(live_classes_query)
         today_live_class_count = len(live_classes_query)
 
         lectures_count = len(lectures_query)
-        today_lectures_count = len(lectures_query) 
+        today_lectures_count = len(lectures_query)
 
         test_series_count = len(test_series_query)
         today_test_series_count = len(test_series_query)
@@ -566,7 +563,7 @@ async def student_dashboard(request: Request, cid: str, user=Depends(get_current
             cat_lecture_count = await CourseCategoryLectures.filter(category_topic__category__category__id=cat_id).count()
             cat_notes_count = await CourseCategoryNotes.filter(category_topic__category__category__id=cat_id).count()
             cat_test_series_count = await CourseCategoryTestSeries.filter(category_topic__category__category__id=cat_id).count()
-            
+
             category.dict().update({
                 'lectures': cat_lecture_count,
                 'notes': cat_notes_count,
@@ -594,7 +591,6 @@ async def student_dashboard(request: Request, cid: str, user=Depends(get_current
     except Exception as e:
         raise HTTPException(status_code=208, detail=str(e))
         # return RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
-
 
 
 '''
@@ -1227,14 +1223,14 @@ class categoryPydantic(BaseModel):
     topics: List[topicsPydantic]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class CategoryTopicsPydantic(BaseModel):
     category: categoryPydantic
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 @router.get('/student/test_series/{cid}/',
@@ -1757,7 +1753,7 @@ async def student_pdf_notes(request: Request, cid: str, cat_id: str, user: str =
 
 
 @router.get('/student/view_notes/{cid}/{tid}/{category_slug}/{topic_slug}/', )
-async def view_notes(request: Request, cid: str, tid: str, category_slug:str, user=Depends(get_current_user), ):
+async def view_notes(request: Request, cid: str, tid: str, category_slug: str, user=Depends(get_current_user), ):
     try:
         check = await authenticate_student_subscription(cid=cid, user=user)
         if check:
@@ -1766,8 +1762,8 @@ async def view_notes(request: Request, cid: str, tid: str, category_slug:str, us
                 topic_obj = await Topics.get(id=tid).values("name", "category__name", "category__icon_image")
 
                 notes_instance = await CourseCategoryNotes.filter(
-                    category_topic__category__course__id = cid,
-                    category_topic__category__category__slug = category_slug,
+                    category_topic__category__course__id=cid,
+                    category_topic__category__category__slug=category_slug,
                     category_topic__topic__id=tid)
                 # return notes_instance
                 return templates.TemplateResponse('view_pdfnotes.html',

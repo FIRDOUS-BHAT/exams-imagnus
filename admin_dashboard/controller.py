@@ -1,3 +1,12 @@
+from worker import create_task
+import numpy as np
+import subprocess
+from celery.result import AsyncResult
+from worker import create_task, read_upload_video_lecture
+import boto3
+import ffmpeg
+import pathlib
+import asyncio
 import re
 import os
 import aiofiles
@@ -83,7 +92,7 @@ class Status(BaseModel):
     message: str
 
 
-secret_key = settings.secret_key
+secret_key = settings.secret_key.encode('utf-8')
 
 
 def get_cookie(request: Request):
@@ -449,8 +458,8 @@ async def add_category(s3: BaseClient = Depends(s3_auth), cat_name: str = Form(.
 async def edit_course(s3: BaseClient = Depends(s3_auth), edit_name: str = Form(default=None),
                       edit_icon_image: UploadFile = File(default=None),
                       edit_web_icon: UploadFile = File(default=None),
-                      edit_course_id: str = Form(...), 
-                      edit_telegram_link: str = Form(default=None), 
+                      edit_course_id: str = Form(...),
+                      edit_telegram_link: str = Form(default=None),
                       user=Depends(get_current_user)):
     if user is None:
         return RedirectResponse(url="/administrator/login/", status_code=status.HTTP_302_FOUND)
@@ -468,7 +477,7 @@ async def edit_course(s3: BaseClient = Depends(s3_auth), edit_name: str = Form(d
         if edit_web_icon.filename:
             web_image_url = await upload_images(s3, folder='course_icons/web_icons', image=edit_web_icon, mimetype=None)
             c_instance.web_icon = web_image_url
-        
+
         if edit_telegram_link:
             c_instance.telegram_link = edit_telegram_link
     c_instance.updated_at = updated_at
@@ -602,7 +611,7 @@ async def add_category(topic_cat_id: str = Form(...), cat_topic_title: str = For
     category = await Category.get(id=topic_cat_id)
     titles = cat_topic_title.split('|')
     for title in titles:
-        slug=slugify(title)
+        slug = slugify(title)
         if not await Topics.exists(category=category, slug=slug):
             obj = await Topics.create(
                 category=category, name=title, slug=slugify(title),
@@ -782,7 +791,7 @@ class CourseCategoriesPydantic(BaseModel):
     category: CategoryPydantic
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 '''fetch the existing topics of the courses'''
@@ -1030,7 +1039,7 @@ async def fire_push_notification(course_obj, category_obj, topic_obj, saved_obj,
             data_message=extra_notification_kwargs,
         )
         return True
-import asyncio
+
 
 @router.post("/call-async-func")
 async def call_async_func(background_tasks: BackgroundTasks):
@@ -1038,12 +1047,11 @@ async def call_async_func(background_tasks: BackgroundTasks):
     background_tasks.add_task(async_func)
     return {"message": "Async function added to background tasks queue."}
 
+
 async def async_func():
     # Asynchronous operation
     await asyncio.sleep(1)
     print("Async operation finished")
-
-
 
 
 @router.get('/send_repeated_notifications/{course}/{category}/{topic}/{source}/{lec_id}/{title}/')
@@ -1064,12 +1072,7 @@ async def send_repeated_notifications(course: str, category: str, topic: str, so
                                  topic_obj, lec_id, title, message)
 
     return {'status': True}
-import pathlib
-import ffmpeg
 
-import boto3
-from worker import create_task, read_upload_video_lecture
-from celery.result import AsyncResult
 ACCESS_KEY = 'AKIAWSYDR36FQBPK43DS'
 SECRET_KEY = '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'
 
@@ -1080,17 +1083,16 @@ def write_notification(email: str, message=""):
         email_file.write(content)
 
 
-import subprocess
-
-
-
 async def get_video_duration(input_video):
-    result = subprocess.run(['ffmpeg', '-i', input_video], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    result = subprocess.run(['ffmpeg', '-i', input_video],
+                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     output = result.stdout.decode()
-    duration = re.search(r'Duration: (\d{2}:\d{2}:\d{2}\.\d{2})', output).groups()[0]
+    duration = re.search(
+        r'Duration: (\d{2}:\d{2}:\d{2}\.\d{2})', output).groups()[0]
     time_in_seconds = time_to_seconds(duration)
     return time_in_seconds
-    
+
+
 def time_to_seconds(time_string):
     time_components = time_string.split(".")[0].split(":")
     hours = int(time_components[0])
@@ -1101,20 +1103,21 @@ def time_to_seconds(time_string):
 
 
 class VideoSizesPydantic(BaseModel):
-    id : str
-    size_360 : Optional[int] = None
-    size_540 : Optional[int] = None
-    size_720 : Optional[int] = None
-    
-    
-@router.post('/update/video/size')    
-async def update_video_sizes(data:VideoSizesPydantic):
+    id: str
+    size_360: Optional[int] = None
+    size_540: Optional[int] = None
+    size_720: Optional[int] = None
+
+
+@router.post('/update/video/size')
+async def update_video_sizes(data: VideoSizesPydantic):
     print('API CALLED')
     await CourseCategoryLectures.filter(id=data.id).update(video_size_360=data.size_360, video_size_540=data.size_540, video_size_720=data.size_720)
-    
+
     return True
 
-async def add_lectures_in_background(s3,course_id,category_id,topic_id,course_topic_id,video_file,video_thumbnail,lecture_title,video_description):
+
+async def add_lectures_in_background(s3, course_id, category_id, topic_id, course_topic_id, video_file, video_thumbnail, lecture_title, video_description):
     try:
         course_obj = await Course.get(id=course_id)
         category_obj = await Category.get(id=category_id)
@@ -1122,10 +1125,10 @@ async def add_lectures_in_background(s3,course_id,category_id,topic_id,course_to
         category_topic_obj = await CategoryTopics.get(id=course_topic_id)
         print("YESSSSSSSSSSSSSSSS")
         async with aiofiles.open(video_file.filename, 'wb') as f:
-                while contents := await video_file.read(1024 * 1024):
-                    await f.write(contents)
+            while contents := await video_file.read(1024 * 1024):
+                await f.write(contents)
         res_video_duration = await get_video_duration(video_file)
-        print(res_video_duration,"============")
+        print(res_video_duration, "============")
         video_duration = res_video_duration
         video_id = None
         # if 'vimeo' in mobile_video_url:
@@ -1145,35 +1148,36 @@ async def add_lectures_in_background(s3,course_id,category_id,topic_id,course_to
         #         # video_obj = video_content_obj.json()
         #         # print(video_content_obj.text)
         #         resp = json.loads(video_content_obj.text)
-                
+
         #         video_duration = resp['duration']
         #         # print(video_duration)
-        
+
         app_thumbnail = await upload_images(s3, folder='videothumbnails/' + category_obj.slug + '/' + topic_obj.slug,
-                                              image=video_thumbnail, mimetype=None)
+                                            image=video_thumbnail, mimetype=None)
         # app_thumbnail = "https://exams.imagnus.in/static/admin/images/logo.png"
-       
+
         n_url = app_thumbnail
         new_url = "https://ik.imagekit.io/imagnus/videothumbnails/" + \
             category_obj.slug+"/"+topic_obj.slug + \
             "/tr:w-300,h-160,fo-auto/"+n_url.split('/')[-1]
-        video_360 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/"+video_file.filename+"/"+str(360)+".mp4"
-           
-        video_540 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/"+video_file.filename+"/"+str(540)+".mp4"
-           
-        video_720 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" +  video_file.filename+"/"+str(720)+".mp4"
-          
-        
-        
+        video_360 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
+            video_file.filename+"/"+str(360)+".mp4"
+
+        video_540 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
+            video_file.filename+"/"+str(540)+".mp4"
+
+        video_720 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
+            video_file.filename+"/"+str(720)+".mp4"
+
         saved_obj = await CourseCategoryLectures.create(
             title=lecture_title, slug=slugify(lecture_title),
             app_thumbnail=new_url,
             # mobile_video_url=mobile_video_url,
             # web_video_url=web_video_url,
-            video_360 = video_360,
-            video_540 = video_540,
-            video_720 = video_720,
-           
+            video_360=video_360,
+            video_540=video_540,
+            video_720=video_720,
+
             library_id=bunny_library_id,
             video_id=video_id,
             video_duration=video_duration,
@@ -1193,18 +1197,20 @@ async def add_lectures_in_background(s3,course_id,category_id,topic_id,course_to
         '''send notifications on new upload of video'''
         # if saved_obj:
         #     message = "video"
-            # await fire_push_notification(course_obj, category_obj,
-                                 #  topic_obj, saved_obj.id, lecture_title, message)
-       
-    except Exception as ex:    
-            return {str(ex)}
+        # await fire_push_notification(course_obj, category_obj,
+        #  topic_obj, saved_obj.id, lecture_title, message)
+
+    except Exception as ex:
+        return {str(ex)}
+
 
 def call_api_task():
     # Call the API
     response = requests.get('https://jsonplaceholder.typicode.com/todos/1')
     # Do something with the API response
     print(response.json())
-from worker import create_task
+
+
 @router.post('/admin/add_category_lecture1/')
 async def add_category_lecture(background_tasks: BackgroundTasks, request: Request, course_id: str = Form(...),
                                category_id: str = Form(...),
@@ -1215,93 +1221,94 @@ async def add_category_lecture(background_tasks: BackgroundTasks, request: Reque
                                video_file: UploadFile = File(...),
                                s3: BaseClient = Depends(s3_auth),
                                ):
-    
-    # try:
-        # async with aiofiles.open(video_file.filename, 'wb') as f:
-        #         while contents := await video_file.read(1024 * 1024):
-        #             await f.write(contents)
-        await create_task.delay(video_file)
-        course_obj = await Course.get(id=course_id)
-        category_obj = await Category.get(id=category_id)
-        topic_obj = await Topics.get(id=topic_id)
-        category_topic_obj = await CategoryTopics.get(id=course_topic_id)
-        
-        # res_video_duration = await get_video_duration(video_file.filename)
-        # print(res_video_duration,"============")
-        
-        # video_duration = float(res_video_duration)
-        video_duration = 0
-        video_id = None
-        app_thumbnail = await upload_images(s3, folder='videothumbnails/' + category_obj.slug + '/' + topic_obj.slug,
-                                              image=video_thumbnail, mimetype=None)
-        # app_thumbnail = "https://exams.imagnus.in/static/admin/images/logo.png"
-        print(app_thumbnail)
-        n_url = app_thumbnail
-        # new_url = "https://ik.imagekit.io/imagnus/videothumbnails/" + \
-        #     category_obj.slug+"/"+topic_obj.slug + \
-        #     "/tr:w-300,h-160,fo-auto/"+n_url.split('/')[-1]
-        new_url = None
-        video_360 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/"+video_file.filename+"/"+str(360)+".mp4"
-           
-        video_540 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/"+video_file.filename+"/"+str(540)+".mp4"
-           
-        video_720 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" +  video_file.filename+"/"+str(720)+".mp4"
-          
-        # video_720_data = {'link':video_720,'size':0}
-        # video_540_data = {'link':video_540,'size':0}
-        # video_360_data = {'link':video_360,'size':0}
-        
-        saved_obj = await CourseCategoryLectures.create(
-            title=lecture_title, slug=slugify(lecture_title),
-            app_thumbnail=new_url,
-            # mobile_video_url=mobile_video_url,
-            # web_video_url=web_video_url,
-            video_360 = video_360,
-            video_540 = video_540,
-            video_720 = video_720,
-            library_id=bunny_library_id,
-            video_id=video_id,
-            video_duration=video_duration,
-            discription=video_description,
-            category_topic=category_topic_obj,
 
-        )
-        
-        #  content = await video_file.file.read()
-        
-        
-        # data = {'video_file':  open(video_file.filename, 'rb')}  
-        # limits = httpx.Limits(
-        #     max_keepalive_connections=5, max_connections=10)
-        # async with httpx.AsyncClient(limits=limits) as client:
-        #     r = await client.post(
-        #         'http://192.168.1.5:8081/transcode', files=data)
-               
-        # await video_file.close()    
-            
-            
-        # os.remove(video_file.filename)
-        # headers = {'Content-Type':'multipart/form-data','Accept': 'application/json'}
-            
-        # background_tasks.add_task(call_api_task)
-        
-        # read_upload_video_lecture.apply_async(video_file, saved_obj.id)
-        # background_tasks.add_task(
-        #     read_upload_video_lecture, video_file,saved_obj.id)
-        
-        # return response.text
-        return RedirectResponse(
-            url='/admin/category_lectures/' + course_obj.slug +
-                '/' + category_obj.slug + '/' + topic_obj.slug + '/',
-            status_code=status.HTTP_303_SEE_OTHER)
+    # try:
+    # async with aiofiles.open(video_file.filename, 'wb') as f:
+    #         while contents := await video_file.read(1024 * 1024):
+    #             await f.write(contents)
+    await create_task.delay(video_file)
+    course_obj = await Course.get(id=course_id)
+    category_obj = await Category.get(id=category_id)
+    topic_obj = await Topics.get(id=topic_id)
+    category_topic_obj = await CategoryTopics.get(id=course_topic_id)
+
+    # res_video_duration = await get_video_duration(video_file.filename)
+    # print(res_video_duration,"============")
+
+    # video_duration = float(res_video_duration)
+    video_duration = 0
+    video_id = None
+    app_thumbnail = await upload_images(s3, folder='videothumbnails/' + category_obj.slug + '/' + topic_obj.slug,
+                                        image=video_thumbnail, mimetype=None)
+    # app_thumbnail = "https://exams.imagnus.in/static/admin/images/logo.png"
+    print(app_thumbnail)
+    n_url = app_thumbnail
+    # new_url = "https://ik.imagekit.io/imagnus/videothumbnails/" + \
+    #     category_obj.slug+"/"+topic_obj.slug + \
+    #     "/tr:w-300,h-160,fo-auto/"+n_url.split('/')[-1]
+    new_url = None
+    video_360 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
+        video_file.filename+"/"+str(360)+".mp4"
+
+    video_540 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
+        video_file.filename+"/"+str(540)+".mp4"
+
+    video_720 = "https://d11qyj7iojumc4.cloudfront.net/transcoded/" + \
+        video_file.filename+"/"+str(720)+".mp4"
+
+    # video_720_data = {'link':video_720,'size':0}
+    # video_540_data = {'link':video_540,'size':0}
+    # video_360_data = {'link':video_360,'size':0}
+
+    saved_obj = await CourseCategoryLectures.create(
+        title=lecture_title, slug=slugify(lecture_title),
+        app_thumbnail=new_url,
+        # mobile_video_url=mobile_video_url,
+        # web_video_url=web_video_url,
+        video_360=video_360,
+        video_540=video_540,
+        video_720=video_720,
+        library_id=bunny_library_id,
+        video_id=video_id,
+        video_duration=video_duration,
+        discription=video_description,
+        category_topic=category_topic_obj,
+
+    )
+
+    #  content = await video_file.file.read()
+
+    # data = {'video_file':  open(video_file.filename, 'rb')}
+    # limits = httpx.Limits(
+    #     max_keepalive_connections=5, max_connections=10)
+    # async with httpx.AsyncClient(limits=limits) as client:
+    #     r = await client.post(
+    #         'http://192.168.1.5:8081/transcode', files=data)
+
+    # await video_file.close()
+
+    # os.remove(video_file.filename)
+    # headers = {'Content-Type':'multipart/form-data','Accept': 'application/json'}
+
+    # background_tasks.add_task(call_api_task)
+
+    # read_upload_video_lecture.apply_async(video_file, saved_obj.id)
+    # background_tasks.add_task(
+    #     read_upload_video_lecture, video_file,saved_obj.id)
+
+    # return response.text
+    return RedirectResponse(
+        url='/admin/category_lectures/' + course_obj.slug +
+            '/' + category_obj.slug + '/' + topic_obj.slug + '/',
+        status_code=status.HTTP_303_SEE_OTHER)
 
     # except Exception as ex:
     #     raise HTTPException(status_code=208, detail=str(ex))
-        # return ex
-        # return RedirectResponse(
-        #     url='/admin/category_lectures/' + course_obj.slug +
-        #         '/' + category_obj.slug + '/' + topic_obj.slug + '/',
-        #     status_code=status.HTTP_303_SEE_OTHER)
+    # return ex
+    # return RedirectResponse(
+    #     url='/admin/category_lectures/' + course_obj.slug +
+    #         '/' + category_obj.slug + '/' + topic_obj.slug + '/',
+    #     status_code=status.HTTP_303_SEE_OTHER)
 
 
 @router.post('/admin/edit_category_lecture/')
@@ -1669,7 +1676,7 @@ async def add_student_enquiries(request: Request):
 @router.get('/admin/scholarship/testseries/')
 async def scholarship_testseries_page(request: Request):
     courses = await Course.all()
-    test_series = await ScholarshipTestSeries.all().order_by("-created_at").values("total_marks","time_duration","on_date","end_date",course_name="course__name")
+    test_series = await ScholarshipTestSeries.all().order_by("-created_at").values("total_marks", "time_duration", "on_date", "end_date", course_name="course__name")
     # return test_series
     return templates.TemplateResponse('scholarship-testseries.html',
                                       context={
@@ -1695,50 +1702,51 @@ async def add_scholarship_testseries(request: Request, on_date: datetime = Form(
                                      description: str = Form(...),
                                      s3: BaseClient = Depends(s3_auth),
                                      ):
-  try:
-    async def get_localtimezone(dt_params):
-        lc_datetime = tz.localize(dt_params)
-        new_datetime = lc_datetime.isoformat()
+    try:
+        async def get_localtimezone(dt_params):
+            lc_datetime = tz.localize(dt_params)
+            new_datetime = lc_datetime.isoformat()
 
-        return new_datetime
+            return new_datetime
 
-    
-    data = pd.read_excel(
-        testseries_file.file.read())
-    
-    course = await Course.get(id=course_id)
-    
-    await ScholarshipTestSeries.filter(lang=lang,course=course).delete()
-    folder = 'scholarship/2022/banner_images'
-    image_url = await upload_pdf_notes(s3, folder=folder, image=image, mimetype=None)
-    test_series_instance = await ScholarshipTestSeries.create(
-        course=course,
-        on_date=on_date,
-        end_date=end_date,
-        result_announcement_date=announce_date,
-        image=image_url,
-        description=description,
-        time_duration=time_duration,
-        total_marks=total_marks, no_of_qstns=len(data),
-        lang=lang, title=title,
-    )
-    
-    for i, k in data.iterrows():
-        await ScholarshipTestSeriesQuestions.create(
-            question=k['questions'],
-            opt_1=k['opt_1'],
-            opt_2=k['opt_2'],
-            opt_3=k['opt_3'],
-            opt_4=k['opt_4'],
-            answer=k['answer'],
-            solution=k['solution'],
+        data = pd.read_excel(
+            testseries_file.file.read())
 
-            test_series=test_series_instance
+        course = await Course.get(id=course_id)
+
+        await ScholarshipTestSeries.filter(lang=lang, course=course).delete()
+        folder = 'scholarship/2022/banner_images'
+        image_url = await upload_pdf_notes(s3, folder=folder, image=image, mimetype=None)
+        test_series_instance = await ScholarshipTestSeries.create(
+            course=course,
+            on_date=on_date,
+            end_date=end_date,
+            result_announcement_date=announce_date,
+            image=image_url,
+            description=description,
+            time_duration=time_duration,
+            total_marks=total_marks, no_of_qstns=len(data),
+            lang=lang, title=title,
         )
 
-    return RedirectResponse(url='/admin/scholarship/testseries/', status_code=status.HTTP_303_SEE_OTHER)
-  except Exception as ex:
-    return str(ex)
+        for i, k in data.iterrows():
+            await ScholarshipTestSeriesQuestions.create(
+                question=k['questions'],
+                opt_1=k['opt_1'],
+                opt_2=k['opt_2'],
+                opt_3=k['opt_3'],
+                opt_4=k['opt_4'],
+                answer=k['answer'],
+                solution=k['solution'],
+
+                test_series=test_series_instance
+            )
+
+        return RedirectResponse(url='/admin/scholarship/testseries/', status_code=status.HTTP_303_SEE_OTHER)
+    except Exception as ex:
+        return str(ex)
+
+
 @router.get('/admin/orders/')
 async def get_orders(request: Request, user=Depends(get_current_user)):
     if user is None:
@@ -1770,8 +1778,8 @@ async def get_orders(request: Request, page: int = Query(..., title="Page Number
     #     .offset((page*perPage)-perPage)
     #     .limit(perPage)
     # )
-    orders = await PaymentRecords.all().order_by('-created_at').offset((page*perPage)-perPage).limit(perPage).values("id", "order_id","payment_id", "payment_mode", "bill_amount", "payment_status", "source", "created_at", fullname="student__fullname", mobile="student__mobile", course_name="subscription__course__name")
-    
+    orders = await PaymentRecords.all().order_by('-created_at').offset((page*perPage)-perPage).limit(perPage).values("id", "order_id", "payment_id", "payment_mode", "bill_amount", "payment_status", "source", "created_at", fullname="student__fullname", mobile="student__mobile", course_name="subscription__course__name")
+
     data_count = await PaymentRecords.all().count()
     segments = data_count/perPage
     # return orders
@@ -1797,7 +1805,7 @@ async def get_orders(request: Request, page: int = Query(..., title="Page Number
                                           title="Data limit per page", ge=0, le=50),
                      user=Depends(get_current_user)):
     orders = await StudyMaterialOrderInstance_Pydantic.from_queryset(
-        StudyMaterialOrderInstance.all().order_by('-created_at')
+        StudyMaterialOrderInstance.all()
         .offset((page*perPage)-perPage)
         .limit(perPage)
     )
@@ -1816,8 +1824,8 @@ async def get_orders(request: Request, page: int = Query(..., title="Page Number
                      perPage: int = Query(...,
                                           title="Data limit per page", ge=0, le=50),
                      user=Depends(get_current_user)):
-    orders = await TestSeriesOrders.all().order_by('-created_at').limit(perPage).values("razorpay_order_id","razorpay_payment_id","bill_amount","created_at",student_fullname="student__fullname",student_mobile="student__mobile",test_series_course_name="test_series__course__name")
-    
+    orders = await TestSeriesOrders.all().order_by('-created_at').limit(perPage).values("razorpay_order_id", "razorpay_payment_id", "bill_amount", "created_at", student_fullname="student__fullname", student_mobile="student__mobile", test_series_course_name="test_series__course__name")
+
     # orders =  await TestSeriesOrders.all().order_by('-created_at').offset((page*perPage)-perPage).limit(perPage)
     # return jsonable_encoder(orders)
     return templates.TemplateResponse('orders_testseries.html',
@@ -1845,58 +1853,56 @@ async def get_live_classes(request: Request, user=Depends(get_current_user)):
 
 
 @router.post('/admin/add_live_class/')
-async def add_live_class(request:Request,course_id: List[str] = Form(...), instructor_id: str = Form(...), mode: str = Form(...),
+async def add_live_class(request: Request, course_id: List[str] = Form(...), instructor_id: str = Form(...), mode: str = Form(...),
                          stream_time: datetime = Form(...),
                          title: str = Form(...), thumbnail: UploadFile = File(default=None), url: Optional[str] = Form(default=None),
                          s3: BaseClient = Depends(s3_auth), user=Depends(get_current_user)):
-  try:
-    for cid in course_id:
-        course = await Course.get(id=cid)
-        instructor = await Instructor.get(id=instructor_id)
-        image_url = None
-        if thumbnail.filename:
-            image_url = await upload_images(s3, folder='live_classes/thumbnails', image=thumbnail, mimetype=None)
-        if mode == '1':
-            is_paid = True
-        else:
-            is_paid = False
-        if app_url == 'https://exams.imagnus.in':
-            lecture_id = 'da9f64de-95cb-4349-91b1-f5c78c7abfe1'
-        elif app_url == 'https://testserver.imagnus.in':
-            lecture_id = '1302e05b-46b3-4a19-ac31-5f1ea279a7d9'
-        elif app_url == 'http://127.0.0.1:8000':
-            lecture_id = '3645de71-2140-4a43-9005-3cb0141004ed'
-        lecture = await CourseCategoryLectures.get(id=lecture_id)
-        saved_obj = await LiveClasses.create(title=title, course=course, streaming_time=stream_time, lecture=lecture,
-                                             instructor=instructor, thumbnail=image_url, url=url, is_paid=is_paid, )
+    try:
+        for cid in course_id:
+            course = await Course.get(id=cid)
+            instructor = await Instructor.get(id=instructor_id)
+            image_url = None
+            if thumbnail.filename:
+                image_url = await upload_images(s3, folder='live_classes/thumbnails', image=thumbnail, mimetype=None)
+            if mode == '1':
+                is_paid = True
+            else:
+                is_paid = False
+            if app_url == 'https://exams.imagnus.in':
+                lecture_id = 'da9f64de-95cb-4349-91b1-f5c78c7abfe1'
+            elif app_url == 'https://testserver.imagnus.in':
+                lecture_id = '1302e05b-46b3-4a19-ac31-5f1ea279a7d9'
+            elif app_url == 'http://127.0.0.1:8000':
+                lecture_id = '3645de71-2140-4a43-9005-3cb0141004ed'
+            lecture = await CourseCategoryLectures.get(id=lecture_id)
+            saved_obj = await LiveClasses.create(title=title, course=course, streaming_time=stream_time, lecture=lecture,
+                                                 instructor=instructor, thumbnail=image_url, url=url, is_paid=is_paid, )
 
-        if saved_obj:
-            message = "live"
-            category_obj = ""
-            topic_obj = ""
-            await fire_push_notification(course, category_obj,
-                                         topic_obj, saved_obj.id, title, message)
+            if saved_obj:
+                message = "live"
+                category_obj = ""
+                topic_obj = ""
+                await fire_push_notification(course, category_obj,
+                                             topic_obj, saved_obj.id, title, message)
 
-    return RedirectResponse(url='/admin/live_classes/', status_code=status.HTTP_303_SEE_OTHER)
+        return RedirectResponse(url='/admin/live_classes/', status_code=status.HTTP_303_SEE_OTHER)
 
+    except Exception as ex:
+        flash(request, str(ex), "danger")
+        return RedirectResponse(url='/admin/live_classes/', status_code=status.HTTP_303_SEE_OTHER)
 
-  except Exception as ex:
-          flash(request, str(ex), "danger")
-          return RedirectResponse(url='/admin/live_classes/', status_code=status.HTTP_303_SEE_OTHER)
-
-    #    return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
+        #    return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
 @router.post('/admin/edit_live_classes')
-async def edit_live_classes(request: Request,edit_live_class_id:str=Form(...),
+async def edit_live_classes(request: Request, edit_live_class_id: str = Form(...),
                             s3: BaseClient = Depends(s3_auth),
-                            edit_icon_image:UploadFile = File(default=None), 
-                            link_class:str = Form(default=None)):
+                            edit_icon_image: UploadFile = File(default=None),
+                            link_class: str = Form(default=None)):
     if link_class:
         if await LiveClasses.get(id=edit_live_class_id):
-             live_class = await LiveClasses.get(id=edit_live_class_id).update(url=link_class)
-             
-        
+            live_class = await LiveClasses.get(id=edit_live_class_id).update(url=link_class)
+
     if edit_icon_image.filename:
         image_url = await upload_images(s3, folder='live_classes/thumbnails', image=edit_icon_image, mimetype=None)
         if await LiveClasses.get(id=edit_live_class_id):
@@ -1904,6 +1910,7 @@ async def edit_live_classes(request: Request,edit_live_class_id:str=Form(...),
     flash(request, "Edit successful", "success")
 
     return RedirectResponse(url='/admin/live_classes/', status_code=status.HTTP_303_SEE_OTHER)
+
 
 @router.post('/admin/delete_live_classs/')
 async def delete_class(live_class_id: str = Form(...)):
@@ -2072,16 +2079,16 @@ async def search_order(request: Request):
     mobile = data["mobile"]
 
     if await Student.exists(mobile=mobile):
-        
+
         student = await Student.get(mobile=mobile)
-        pay_objs=None
+        pay_objs = None
         if data["source"] == 'course_orders':
 
             student_id = student.id
             if await PaymentRecords.exists(student=student):
                 pay_objs = await PaymentRecords.filter(
                     student=student
-                ).values("id","student__fullname", "student__mobile",
+                ).values("id", "student__fullname", "student__mobile",
                          "subscription__course__name",
                          "order_id", "payment_id", "bill_amount",
                          "payment_mode",
@@ -2224,70 +2231,72 @@ async def get_live_class_schedules(request: Request, _=Depends(get_current_user)
 
 
 @router.delete('/admin/delete_subscription')
-async def delete_subscription(request: Request,_=Depends(get_current_user)):
+async def delete_subscription(request: Request, _=Depends(get_current_user)):
     data = await request.json()
     if await PaymentRecords.exists(id=data['sid']):
         await PaymentRecords.get(id=data['sid']).delete()
-        return JSONResponse({'status': True, 'message':'deletion successful'})
+        return JSONResponse({'status': True, 'message': 'deletion successful'})
     else:
-        return JSONResponse({'status': False, 'message':'something went wrong'})
-        
-        
-@router.get('/admin/current/affairs/') 
+        return JSONResponse({'status': False, 'message': 'something went wrong'})
+
+
+@router.get('/admin/current/affairs/')
 async def current_affairs(request: Request, _=Depends(get_current_user)):
     current_affairs = await CurrentAffairs.all().order_by("-created_at")
-    
+
     return templates.TemplateResponse('current_affairs.html',
                                       context={'request': request,
                                                'current_affairs': current_affairs,
                                                })
+
+
 @router.post('/admin/add/current/affairs/')
-async def add_current_affairs(request:Request,day:str = Form(...),month_year:str=Form(...),file: UploadFile = File(...),
+async def add_current_affairs(request: Request, day: str = Form(...), month_year: str = Form(...), file: UploadFile = File(...),
                               s3: BaseClient = Depends(s3_auth), user=Depends(get_current_user)):
-    if not await CurrentAffairs.exists(day=day,month_year=month_year):
+    if not await CurrentAffairs.exists(day=day, month_year=month_year):
         file_url = await upload_images(s3, folder='current_affairs', image=file, mimetype=None)
 
-        res = await CurrentAffairs.create(day=day,month_year=month_year,file_url=file_url)
+        res = await CurrentAffairs.create(day=day, month_year=month_year, file_url=file_url)
         if res:
             flash(request, "Added Successfully.", "success")
-            
+
             return RedirectResponse(url='/admin/current/affairs/', status_code=status.HTTP_303_SEE_OTHER)
         else:
             flash(request, "error occured.", "danger")
-            
+
             return RedirectResponse(url='/admin/current/affairs/', status_code=status.HTTP_303_SEE_OTHER)
-        
-@router.delete('/admin/delete_current_affairs/',name="delete-current-affairs") 
-async def  delete_current_affairs(request:Request, _=Depends(get_current_user)):
+
+
+@router.delete('/admin/delete_current_affairs/', name="delete-current-affairs")
+async def delete_current_affairs(request: Request, _=Depends(get_current_user)):
     try:
         data = await request.json()
         await CurrentAffairs.get(id=data['sid']).delete()
-        return {"status":True,"message": "Record deleted successfully"}      
+        return {"status": True, "message": "Record deleted successfully"}
     except Exception as ex:
-        return {"status":False,"message": str(ex)}
-    
-@router.get('/admin/display-download-video')    
+        return {"status": False, "message": str(ex)}
+
+
+@router.get('/admin/display-download-video')
 async def display_progress(request: Request, _=Depends(get_current_user)):
     return templates.TemplateResponse('video_download_progress.html', context={
         'request': request,
         'app_url': app_url
     })
-import numpy as np    
+
+
 @router.get('/update_video_id/')
 async def update_video_id():
-        lectures = await CourseCategoryLectures.all().values('id','mobile_video_url','video_id')
-        print(lectures)
-        new_lectures = np.array(lectures)
-        i = 0
-        for x in lectures:
-            if not x['video_id']:
-                if 'https://player.vimeo.com' in x['mobile_video_url']:
-                    url_split = x['mobile_video_url'].split('/')
-                    print(x)
-                    video_id_seg = url_split[4].split('.')
-                    print(video_id_seg[0])
-                    await CourseCategoryLectures.filter(id=x['id']).update(video_id=video_id_seg[0])
-        return len(lectures)   
-    
-    
-    
+    lectures = await CourseCategoryLectures.all().values('id', 'mobile_video_url', 'video_id')
+    print(lectures)
+    new_lectures = np.array(lectures)
+    i = 0
+    for x in lectures:
+        if not x['video_id']:
+            if 'https://player.vimeo.com' in x['mobile_video_url']:
+                url_split = x['mobile_video_url'].split('/')
+                print(x)
+                video_id_seg = url_split[4].split('.')
+                print(video_id_seg[0])
+                await CourseCategoryLectures.filter(id=x['id']).update(video_id=video_id_seg[0])
+    return len(lectures)
