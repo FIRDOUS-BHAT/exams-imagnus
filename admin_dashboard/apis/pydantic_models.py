@@ -15,7 +15,7 @@ class CourseCategoryTestSeriesQuestionsOut(BaseModel):
     solution: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class CourseCategoryTestSeriesOut(BaseModel):
@@ -29,7 +29,7 @@ class CourseCategoryTestSeriesOut(BaseModel):
     CategoryTestSeriesQuestions: List[CourseCategoryTestSeriesQuestionsOut]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class topicPydantic(BaseModel):
@@ -38,7 +38,7 @@ class topicPydantic(BaseModel):
     slug: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class categoryPydantic(BaseModel):
@@ -50,7 +50,7 @@ class categoryPydantic(BaseModel):
     # topics: List[topicPydantic]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class CourseOverview(BaseModel):
@@ -60,7 +60,7 @@ class CourseOverview(BaseModel):
     syllabus: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class CategoryLecturesPydantic(BaseModel):
@@ -115,7 +115,7 @@ class CategoriesPydantic(BaseModel):
     categories_topics: List[categories_topicsPydantic]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class CourseCategoriesCount(BaseModel):
@@ -147,7 +147,7 @@ class CourseSubscriptionPlans_course(BaseModel):
     is_subscribed: Optional[bool] = False
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class CoursePydantic(BaseModel):
@@ -160,7 +160,7 @@ class CoursePydantic(BaseModel):
     CourseSubscriptionPlans_course: List[CourseSubscriptionPlans_course]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class CourseCategoriesPydantic(BaseModel):
@@ -168,7 +168,7 @@ class CourseCategoriesPydantic(BaseModel):
     category: Optional[CategoriesPydantic]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class EachCategoryPydantic(BaseModel):
@@ -177,7 +177,7 @@ class EachCategoryPydantic(BaseModel):
     categories_topics: List[categories_topicsPydantic]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class LecturesPydantic(BaseModel):
@@ -185,7 +185,7 @@ class LecturesPydantic(BaseModel):
     CategoryLectures: List[CategoryLecturesPydantic]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class NotesPydantic(BaseModel):
@@ -193,7 +193,7 @@ class NotesPydantic(BaseModel):
     CategoryNotes: List[CategoryNotesPydantic]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class TestSeriesPydantic(BaseModel):
@@ -201,7 +201,7 @@ class TestSeriesPydantic(BaseModel):
     CategoryTestSeries: List[CategoryTestSeriesPydantic]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class CourseCategoryPydantic(BaseModel):
@@ -210,4 +210,4 @@ class CourseCategoryPydantic(BaseModel):
     TestSeries: List[TestSeriesPydantic]
 
     class Config:
-        orm_mode = True
+        from_attributes = True

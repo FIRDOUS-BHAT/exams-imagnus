@@ -1,3 +1,10 @@
+from datetime import datetime, timedelta
+from aiohttp import ClientSession
+from urllib.parse import urlparse
+import aiohttp
+from tortoise.expressions import Q
+import logging
+import re
 import numpy as np
 from pprint import pprint
 from functools import lru_cache
@@ -25,7 +32,7 @@ from admin_dashboard.models import CategoryTopics, CategoryTopics_Pydantic, Coup
     CourseCategories_Pydantic, Category, CourseCategoryTestSeries, CourseCategoryLectures, CourseCategoryNotes, \
     LiveClasses, InstructorIn_Pydantic, Instructor, Instructor_Pydantic, LiveClasses_Pydantic, \
     addAppStaticUrls, Topics, \
-    addAppStaticUrls_Pydantic, offerBanners, offerBanners_Pydantic, Scholarship2021, InterViewProgram,CourseCategoryLecturesVideoURLS
+    addAppStaticUrls_Pydantic, offerBanners, offerBanners_Pydantic, Scholarship2021, InterViewProgram, CourseCategoryLecturesVideoURLS
 from aws_services.deps import s3_auth
 from student.models import Student, StudentIn_Pydantic
 from student_choices.models import StudentChoices, activeSubscription, \
@@ -95,9 +102,9 @@ async def get_each_preference_courses(preference_slug: str,
 @router.post('/course_details/{c_slug}/', response_model=List[CategoriesPydantic])
 async def course_details(c_slug: str, _=Depends(get_current_user), ):
     try:
-        course = await Course.get(slug=c_slug)
+        # course = await Course.get(slug=c_slug)
         course_cat_obj = await CourseCategories_Pydantic.from_queryset(
-            CourseCategories.filter(course=course))
+            CourseCategories.filter(course__slug=c_slug).order_by('category__created_at'))
         return course_cat_obj
     except Exception as ex:
         return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
@@ -138,6 +145,126 @@ async def course_details(c_slug: str, _=Depends(get_current_user), ):
 '''API UNDER TEST'''
 
 
+# Utility function to get the size of a video given its URL
+
+async def get_video_size(url):
+    async with aiohttp.ClientSession() as session:
+        async with session.head(url) as response:
+            if response.status == 200:
+                return int(response.headers.get('Content-Length', 0))
+            else:
+                return None
+
+# Utility function to extract video ID from URL
+
+
+def extract_video_id(url: str) -> str:
+    # Use regular expression to match the video ID in the URL
+    match = re.search(r'([a-f0-9\-]{36})', url)
+    return match.group(1) if match else None
+
+
+# Utility function to extract the base URL
+
+
+def extract_base_url(url):
+    parsed_url = urlparse(url)
+    return f"{parsed_url.scheme}://{parsed_url.netloc}"
+
+
+# Utility function to update video URLs
+
+def is_multiple_of_100(n):
+    return n % 10 == 0
+
+
+async def update_video_urls():
+    # Fetch rows where mobile_video_url contains the specific string, reducing the number of rows fetched.
+    # query = Q(mobile_video_url__contains=".b-cdn.net/")
+    query = Q(video_360__contains=".b-cdn.net/")
+    # Add condition to check that video_360 is not null
+    query &= Q(video_size_360__isnull=True)
+    # query = Q(video_size_360__isnull=True)
+    # Calculate the date 30 days ago from today
+    date_30_days_ago = datetime.today() - timedelta(days=30)
+
+    # lectures = await CourseCategoryLectures.filter(query, created_at__gte=date_30_days_ago)
+    lectures = await CourseCategoryLectures.filter(query)
+    # print(f"No. of lectures: {lectures}")
+
+    # lectures = await CourseCategoryLectures.all()
+
+    i = 1
+    # for lecture in lectures:
+    #     lecture.mobile_video_url = None
+    #     await lecture.save()
+    #     print(f'done:{i}')
+    #     i = i + 1
+    # return True
+    # List to hold objects that need to be updated
+    lectures_to_update = []
+
+    # Iterate over each filtered row
+    i = 0
+    j = 100
+    for lecture in lectures:
+        # video_id = extract_video_id(lecture.mobile_video_url)
+        video_id = extract_video_id(lecture.video_360)
+
+        print(video_id)
+
+        # return True
+
+        # If video ID is found, construct the new URLs
+        if video_id:
+
+            # base_url = extract_base_url(lecture.mobile_video_url)
+            base_url = extract_base_url(lecture.video_360)
+            new_video_360 = f"{base_url}/{video_id}/play_360p.mp4"
+            new_video_480 = f"{base_url}/{video_id}/play_480p.mp4"
+
+            m3u8_url = f"{base_url}/{video_id}/playlist.m3u8"
+
+            # Get video sizes
+            video_size_360 = await get_video_size(new_video_360)
+            video_size_480 = await get_video_size(new_video_480)
+
+            print(i)
+            print(f"video_size_360++{video_size_360}")
+            print(f"video_size_480++{video_size_480}")
+
+            # Update fields in the object
+            lecture.video_360 = new_video_360
+            lecture.video_540 = new_video_480
+            # lecture.video_360 = None
+            # lecture.video_540 = None
+            # lecture.mobile_video_url = m3u8_url
+            # lecture.mobile_video_url = None
+            # lecture.video_size_360 = None
+            # lecture.video_size_540 = None
+
+            if video_size_360 is not None:
+                lecture.video_size_360 = video_size_360
+            if video_size_480 is not None:
+                lecture.video_size_540 = video_size_480
+
+            # Append object to the list
+            lectures_to_update.append(lecture)
+            print(f'done:{i}')
+            i = i + 1
+    await CourseCategoryLectures.bulk_update(lectures_to_update, fields=["video_360", "video_540", "mobile_video_url", "video_size_360", "video_size_540"])
+
+    if is_multiple_of_100(i):
+        # await CourseCategoryLectures.bulk_update(lectures_to_update, fields=["video_360", "video_540", "video_size_360", "video_size_540"])
+        lectures_to_update = []
+        i = i+1
+
+    # print(lectures_to_update)
+    # Perform bulk update
+    # if lectures_to_update:
+    #     await CourseCategoryLectures.bulk_update(lectures_to_update, fields=["video_360", "video_540", "video_size_360", "video_size_540"])
+
+
 async def getBookMarkedVideos(student_id):
     if await BookMarkedVideos.exists(
             student__id=student_id):
@@ -164,6 +291,14 @@ async def getBookMarkedNotes(student_id):
         return None
 
 
+@router.post('/update_video_links')
+async def update_video_links(_=Depends(get_current_user)):
+    await update_video_urls()
+    # logging.basicConfig(level=logging.DEBUG)
+
+    return {"status": "Video links updated"}
+
+
 @router.post('/course_category/{course_slug}/{category_slug}/{student_id}/',
              #  response_model=CourseCategoryPydantic
              )
@@ -174,7 +309,7 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
 
     async def execute_lectures_loop(subscription_initial_video_counter):
 
-        topics = await CourseCategoryLectures.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug).group_by("category_topic__topic__id","category_topic__order_seq").order_by("category_topic__order_seq").values(topic_id="category_topic__topic__id")
+        topics = await CourseCategoryLectures.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug).group_by("category_topic__topic__id", "category_topic__order_seq").order_by("category_topic__order_seq").values(topic_id="category_topic__topic__id")
         topics = np.array(topics)
         lectures = []
 
@@ -183,41 +318,44 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
             topic_obj = await Topics.get(id=topic["topic_id"]).values("id", "name", "slug")
 
             lectures_obj = await CourseCategoryLectures.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug, category_topic__topic__id=topic["topic_id"]).order_by("order_display").\
-             values("id", "title", "slug", "discription", "web_video_url", "app_thumbnail", "video_duration", "mobile_video_url", "video_id","video_360","video_540","video_720","video_size_360","video_size_540","video_size_720")
-                #  prefetch_related("video_studentVideoActivity","students_bookmarked_video","CourseCategoryLecturesVideoURLS")
+                values("id", "title", "slug", "discription", "web_video_url", "app_thumbnail", "video_duration", "mobile_video_url",
+                       "video_id", "video_360", "video_540", "video_720", "video_size_360", "video_size_540", "video_size_720")
+            #  prefetch_related("video_studentVideoActivity","students_bookmarked_video","CourseCategoryLecturesVideoURLS")
 
-               
             # lectures_obj = np.array(lectures_obj) order_by("order_display").
-            
+
             each_topic_lectures_length = len(lectures_obj)
 
-            
             if subscription_initial_video_counter <= each_topic_lectures_length:
-                    print("LECTURES:subscription_initial_video_counter <= each_topic_lectures_length")
-                    for i in range(subscription_initial_video_counter):
-                        allowed_lectures.append(lectures_obj[i])
-                        
-                    not_allowed_lectures_length = each_topic_lectures_length - subscription_initial_video_counter
+                print(
+                    "LECTURES:subscription_initial_video_counter <= each_topic_lectures_length")
+                for i in range(subscription_initial_video_counter):
+                    allowed_lectures.append(lectures_obj[i])
 
-                    for j in range(not_allowed_lectures_length):
-                        disallowed_dict = lectures_obj[subscription_initial_video_counter + j]
-                        disallowed_dict.update({"mobile_video_url":None})
-                        disallowed_dict.update({"web_video_url":None})
-                        disallowed_dict.update({"video_id":None})
-                        disallowed_dict.update({"video_360":None})
-                        disallowed_dict.update({"video_540":None})
-                        disallowed_dict.update({"video_720":None})
-                        disallowed_dict.update({"video_size_360":None})
-                        disallowed_dict.update({"video_size_540":None})
-                        disallowed_dict.update({"video_size_720":None})
-                        allowed_lectures.append(disallowed_dict)
-                    subscription_initial_video_counter = 0    
+                not_allowed_lectures_length = each_topic_lectures_length - \
+                    subscription_initial_video_counter
+
+                for j in range(not_allowed_lectures_length):
+                    disallowed_dict = lectures_obj[subscription_initial_video_counter + j]
+                    disallowed_dict.update({"mobile_video_url": None})
+                    disallowed_dict.update({"web_video_url": None})
+                    disallowed_dict.update({"video_id": None})
+                    disallowed_dict.update({"video_360": None})
+                    disallowed_dict.update({"video_540": None})
+                    disallowed_dict.update({"video_720": None})
+                    disallowed_dict.update({"video_size_360": None})
+                    disallowed_dict.update({"video_size_540": None})
+                    disallowed_dict.update({"video_size_720": None})
+                    allowed_lectures.append(disallowed_dict)
+                subscription_initial_video_counter = 0
             else:
-                    print("LECTURES:subscription_initial_video_counter > each_topic_lectures_length")
-    
-                    allowed_lectures = lectures_obj
-                    
-                    subscription_initial_video_counter = subscription_initial_video_counter - each_topic_lectures_length
+                print(
+                    "LECTURES:subscription_initial_video_counter > each_topic_lectures_length")
+
+                allowed_lectures = lectures_obj
+
+                subscription_initial_video_counter = subscription_initial_video_counter - \
+                    each_topic_lectures_length
 
             lectures.append(
                 {"topic": topic_obj, "CategoryLectures": allowed_lectures})
@@ -231,32 +369,31 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
             allowed_notes = []
             topic_obj = await Topics.get(id=topic["topic_id"]).values("id", "name", "slug")
 
-            notes_obj = await CourseCategoryNotes.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug,category_topic__topic__id=topic["topic_id"]).\
+            notes_obj = await CourseCategoryNotes.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug, category_topic__topic__id=topic["topic_id"]).\
                 prefetch_related("notes_studentNotesActivity",
                                  "students_bookmarked_notes").values("id", "title", "slug", "thumbnail", "notes_url")
-            
+
             each_topic_notes_length = len(notes_obj)
 
             if each_topic_notes_length <= total_length_of_notes:
                 if initial_notes_counter <= each_topic_notes_length:
                     for i in range(initial_notes_counter):
                         allowed_notes.append(notes_obj[i])
-                        
+
                     not_allowed_notes_length = each_topic_notes_length - initial_notes_counter
 
                     for j in range(not_allowed_notes_length):
                         disallowed_dict = notes_obj[initial_notes_counter + j]
-                        disallowed_dict.update({"notes_url":None})
+                        disallowed_dict.update({"notes_url": None})
                         allowed_notes.append(disallowed_dict)
-                    initial_notes_counter = 0    
+                    initial_notes_counter = 0
                 else:
                     allowed_notes = notes_obj
-                    
+
                     initial_notes_counter = initial_notes_counter - each_topic_notes_length
 
-            
             notes.append({"topic": topic_obj, "CategoryNotes": allowed_notes})
-            
+
         return notes
 
     async def execute_test_series_loop(subscription_test_series_counter):
@@ -270,38 +407,41 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
             test_series_obj = await CourseCategoryTestSeries.filter(category_topic__category__course__slug=course_slug, category_topic__category__category__slug=category_slug, category_topic__topic__id=topic["topic_id"]).\
                 prefetch_related("test_series_studentTestSeriesActivity",
                                  "students_bookmarked_testseries").values("id", "title", "thumbnail", "no_of_qstns", "time_duration", "marks", "description")
-           
+
             each_topic_test_series_length = len(test_series_obj)
 
             print(test_series_obj)
             if subscription_test_series_counter <= each_topic_test_series_length:
-                    print("TestSeries:subscription_test_series_counter <= each_topic_lectures_length")
+                print(
+                    "TestSeries:subscription_test_series_counter <= each_topic_lectures_length")
 
-                    for i in range(subscription_test_series_counter):
-                        test_series_obj[i].update({"isBookmarked":False})
-                        allowed_test_series.append(test_series_obj[i])
-                        
-                    not_allowed_test_series_length = each_topic_test_series_length - subscription_test_series_counter
+                for i in range(subscription_test_series_counter):
+                    test_series_obj[i].update({"isBookmarked": False})
+                    allowed_test_series.append(test_series_obj[i])
 
-                    for j in range(not_allowed_test_series_length):
-                        disallowed_dict = test_series_obj[subscription_test_series_counter + j]
-                        disallowed_dict.update({"id":None})
-                        disallowed_dict.update({"attempted":False})
-                        disallowed_dict.update({"isBookmarked":False})
-                        allowed_test_series.append(disallowed_dict)
-                    subscription_test_series_counter = 0    
+                not_allowed_test_series_length = each_topic_test_series_length - \
+                    subscription_test_series_counter
+
+                for j in range(not_allowed_test_series_length):
+                    disallowed_dict = test_series_obj[subscription_test_series_counter + j]
+                    disallowed_dict.update({"id": None})
+                    disallowed_dict.update({"attempted": False})
+                    disallowed_dict.update({"isBookmarked": False})
+                    allowed_test_series.append(disallowed_dict)
+                subscription_test_series_counter = 0
             else:
-                    print("TestSeries:subscription_test_series_counter > each_topic_lectures_length")
- 
-                    add_bookmark = []
-                    for x in test_series_obj:
-                       x.update({"isBookmarked":False})
-                       add_bookmark.append(x)
-                    allowed_test_series = add_bookmark
-                    
-                    subscription_test_series_counter = subscription_test_series_counter - each_topic_test_series_length
+                print(
+                    "TestSeries:subscription_test_series_counter > each_topic_lectures_length")
 
-           
+                add_bookmark = []
+                for x in test_series_obj:
+                    x.update({"isBookmarked": False})
+                    add_bookmark.append(x)
+                allowed_test_series = add_bookmark
+
+                subscription_test_series_counter = subscription_test_series_counter - \
+                    each_topic_test_series_length
+
             test_series.append(
                 {"topic": topic_obj, "CategoryTestSeries": allowed_test_series})
         return test_series
@@ -311,7 +451,7 @@ async def get_course_category(course_slug: str, category_slug: str, student_id: 
     now = datetime.now(tz)
 
     if not category_course_ins.is_free:
-       
+
         if await activeSubscription.exists(student__id=student_id, course__slug=course_slug):
 
             active_subscription = await activeSubscription.get(student__id=student_id, course__slug=course_slug).values(
@@ -1844,7 +1984,7 @@ async def course_overview(course_slug: str, _=Depends(get_current_user)):
 @router.post('/add_instructor')
 async def add_instructor(data: InstructorIn_Pydantic, _=Depends(get_current_user)):
     # if await Instructor.create(**data.dict(exclude_unset=True)):
-    if await Instructor.create(name=data.name,slug=slugify(data.name)):
+    if await Instructor.create(name=data.name, slug=slugify(data.name)):
         return {"added successfully"}
     else:
         return {"An error occurred"}

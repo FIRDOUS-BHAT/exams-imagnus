@@ -237,6 +237,11 @@ async def my_account(request: Request, user: str = Depends(get_current_user)):
         #   return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
         return RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
 
+import pytz
+import logging
+
+
+
 
 @router.get('/student/new-dashboard/', responses={404: {"model": HTTPNotFoundError}})
 async def student_dashboard(request: Request, user=Depends(get_current_user)):
@@ -245,11 +250,10 @@ async def student_dashboard(request: Request, user=Depends(get_current_user)):
         course_count = 0
         std_m_count = 0
         test_series_count = 0
-        import pytz
         tz = pytz.timezone('Asia/Kolkata')
         now = datetime.now(tz)
 
-        if course_exist:
+        if course_existtx:
             course_count = await PaymentRecords.filter(student__id=user).count()
             # subscriptions = await StudentChoice_Pydantic.from_queryset(
             #     StudentChoices.filter(student__id=user, expiry_date__gte=now)
@@ -309,7 +313,8 @@ async def student_dashboard(request: Request, user=Depends(get_current_user)):
                                                        'std_ms': std_m
                                                        })
     # except Exception as ex:
-    #     return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
+        
+    #     return JSONResponse({'status': False, 'message': str(ex)}, status_code=500)
         # return RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
 
 
