@@ -1,1 +1,1 @@
-web: hypercorn main:app --config hypercorn_config.py
+web: hypercorn main:app
