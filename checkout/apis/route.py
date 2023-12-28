@@ -566,7 +566,7 @@ class OrderHistoryPydantic(BaseModel):
     id: uuid.UUID
     subscription: SubscriptionPydantic
     payment_id: Optional[str]
-    created_at: datetime = None
+    created_at: Optional[datetime]
 
     @validator('created_at', pre=True, always=True)
     def set_ts_now(cls, v):
