@@ -111,7 +111,7 @@ async def lifespan(app: FastAPI):
 
 if debug_mode == 'True':
     print('yes')
-    app = FastAPI(debug=True)
+    app = FastAPI()
     LOCAL_REDIS_URL = "redis://localhost"
 
 
