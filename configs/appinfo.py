@@ -28,6 +28,8 @@ class Setting(BaseSettings):
     
 
     class Config:
-        env_file = ".env"
-        extra = "ignore"
-        config_class = SettingsConfigDict
+        # env_file = ".env"
+        # extra = "ignore"
+        # config_class = SettingsConfigDict
+        env_prefix = ""  # Optional: use a prefix like 'MYAPP_' for all environment variables
+        case_sensitive = True 
