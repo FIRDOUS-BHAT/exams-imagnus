@@ -253,7 +253,7 @@ async def student_dashboard(request: Request, user=Depends(get_current_user)):
         tz = pytz.timezone('Asia/Kolkata')
         now = datetime.now(tz)
 
-        if course_existtx:
+        if course_exist:
             course_count = await PaymentRecords.filter(student__id=user).count()
             # subscriptions = await StudentChoice_Pydantic.from_queryset(
             #     StudentChoices.filter(student__id=user, expiry_date__gte=now)
