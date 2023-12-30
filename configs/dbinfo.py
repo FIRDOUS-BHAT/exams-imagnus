@@ -12,7 +12,9 @@ class Setting(BaseSettings):
     slack_webhook_url: str
 
     class Config:
-        env_file = '.env'
-        extra = "ignore"
-        config_class = SettingsConfigDict
-        env_file_encoding = 'utf-8'
+        # env_file = '.env'
+        # extra = "ignore"
+        # config_class = SettingsConfigDict
+        # env_file_encoding = 'utf-8'
+        env_prefix = ""  # Optional: use a prefix like 'MYAPP_' for all environment variables
+        case_sensitive = True 
