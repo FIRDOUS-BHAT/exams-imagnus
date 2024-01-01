@@ -82,7 +82,7 @@ class StudentSubscriptionPydantic(BaseModel):
     subscription: subscriptionPydantic
     expiry_date: str
     course: CoursePydantic
-    time_left: float
+    time_left: str
 
     class Config:
         from_attributes = True
