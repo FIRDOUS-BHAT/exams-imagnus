@@ -587,10 +587,14 @@ async def student_details(uid: str, _=Depends(get_current_user)):
 
 
                 }
-                time_left = exp_date - datetime_1
+                if exp_date > datetime_1:
+                    time_left = exp_date - datetime_1
+                else:
+                        # Set time_left to 0 if exp_date has already passed
+                    time_left = timedelta(days=0)
                 new_dict.update({'subscription': subscription})
                 new_dict.update({'course': course_obj})
-                new_dict.update({'time_left': time_left})
+                new_dict.update({'time_left': str(time_left)})
                 # new_list.append(new_dict)
                 new_payment_records.append(jsonable_encoder(new_dict))
         else:
