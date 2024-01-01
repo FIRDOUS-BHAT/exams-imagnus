@@ -10,7 +10,7 @@ from FCM.route import push_service
 from email_validator import validate_email, EmailNotValidError
 from fastapi_cache.decorator import cache
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List, Optional
 
 import pytz
@@ -509,10 +509,16 @@ async def mobile_check(data: mobileIn, _=Depends(get_current_user)):
                         "slug": course.slug,
                         "telegram_link": course.telegram_link
                     }
-                    time_left = exp_date - datetime_1
+                    if exp_date > datetime_1:
+                        time_left = exp_date - datetime_1
+                    else:
+                        # Set time_left to 0 if exp_date has already passed
+                        time_left = timedelta(days=0)
+
+                   
                     new_dict.update({'subscription': subscription})
                     new_dict.update({'course': course_obj})
-                    new_dict.update({'time_left': time_left})
+                    new_dict.update({'time_left': str(time_left)})
 
                     new_payment_records.append(jsonable_encoder(new_dict))
 
@@ -578,8 +584,8 @@ async def student_details(uid: str, _=Depends(get_current_user)):
                     "name": course.name,
                     "slug": course.slug,
                     "telegram_link": course.telegram_link
-                    
-                    
+
+
                 }
                 time_left = exp_date - datetime_1
                 new_dict.update({'subscription': subscription})
