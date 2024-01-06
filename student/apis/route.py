@@ -1148,7 +1148,7 @@ async def get_queries_by_student(student_id: str, _=Depends(get_current_user)):
 
 
 @router.get('/recommended_lectures/{course_slug}/{student_id}/',
-            # response_model=List[List[RecommendedLecturesPydantic]]
+            response_model=List[List[RecommendedLecturesPydantic]]
             )
 async def recommended_lectures(course_slug: str, student_id: str, _=Depends(get_current_user)):
     try:
