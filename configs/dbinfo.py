@@ -1,4 +1,4 @@
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Setting(BaseSettings):
@@ -9,6 +9,10 @@ class Setting(BaseSettings):
     db_username: str
     db_password: str
     app_url: str
+    slack_webhook_url: str
 
     class Config:
-        env_file = ".env"
+        env_file = '.env'
+        extra = "ignore"
+        config_class = SettingsConfigDict
+        env_file_encoding = 'utf-8'

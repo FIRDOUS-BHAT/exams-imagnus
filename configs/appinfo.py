@@ -1,4 +1,4 @@
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Setting(BaseSettings):
@@ -24,6 +24,10 @@ class Setting(BaseSettings):
     admin_login: str
     ws_url: str
     cache_time: int
+    slack_webhook_url: str
+    
 
     class Config:
         env_file = ".env"
+        extra = "ignore"
+        config_class = SettingsConfigDict

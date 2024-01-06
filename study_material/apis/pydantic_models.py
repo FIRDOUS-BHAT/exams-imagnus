@@ -62,7 +62,7 @@ class StudyMaterialScreen(BaseModel):
     recommendedNotes: List[StudyMaterialNotes]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class recommendedTestSeriesPydantic(BaseModel):
@@ -84,7 +84,7 @@ class StudyMaterialScreenV1(BaseModel):
     recommendedTestSeries: List[recommendedTestSeriesPydantic]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class orderItems(BaseModel):
@@ -116,7 +116,7 @@ class orderHistoryPydactic(BaseModel):
     order_StudyMaterialOrderInstance: List[ordersPydantic]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class TestSeriesBundleInputParams(BaseModel):

@@ -204,19 +204,68 @@ $(document).on('click','#view_test',function(e) {
 
 })
 
-$(document).on('click','.chat__message__dt', function(e){
-
-let url = e.target.getAttribute('data-url')
-let title = e.target.getAttribute('data-title')
 
 
-if(url && title){
-$('#new_url').attr('src', url)
-$('#new_title').text(title)
+$(document).on('click','.video_list', function(e) {
+  let url = e.target.getAttribute('data-url');
+  let title = e.target.getAttribute('data-title');
 
-}
+  if (url && title) {
+    // Check if the URL ends with .mp4
+    if (url.endsWith('.mp4')) {
+      // Use the video tag
+      $('#new_url').replaceWith('<video id="new_url" src="' + url + '" controls style="border: none; position: absolute; top: 0; height: 80%; width: 100%;" allowfullscreen controlsList="nodownload"></video>');
+    } else if (url.includes('iframe.mediadelivery.net')) {
+      // Use the iframe
+      $('#new_url').replaceWith('<iframe id="new_url" src="' + url + '" loading="lazy" style="border: none; position: absolute; top: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; encrypted-media; picture-in-picture;" allowfullscreen="true"></iframe>');
+    }
+    $('#new_title').text(title);
+  }
+});
 
-})
+
+$(document).on('click','.pdf_list', function(e) {
+  let url = e.target.getAttribute('data-url');
+  let title = e.target.getAttribute('data-title');
+
+  if (url && title) {
+    // Check if the URL ends with .mp4
+   
+        // Use the video tag
+        $('#new_url').attr('src',url);
+     
+    $('#new_title').text(title);
+  }
+});
+
+    setInterval(async function() {
+        const response = await fetch('/student/verify-token/');
+        const data = await response.json();
+
+        if (!data.valid) {
+            // Log the user out or redirect to the login page
+            window.location.href = '/student/login/';
+        }
+    }, 60000); // Check every 60 seconds
+
+
+// document.addEventListener('DOMContentLoaded', function() {
+//     let videoCards = document.querySelectorAll('.chat__message__dt');
+
+//     videoCards.forEach(card => {
+//         card.addEventListener('click', function() {
+//            let videoPath = this.getAttribute('data-url');
+//          //   alert(videoPath)
+//             let videoPlayer = document.getElementById('videoPlayer');
+//             let videoSrc = document.getElementById('videoSrc');
+            
+//             videoSrc.src = videoPath;
+//             videoPlayer.load();
+//             videoPlayer.play();
+//         });
+//     });
+// });
+
 
 
    $('.chat__message__dt').click(function () {
@@ -248,5 +297,14 @@ $('.submit_question').on('click', function (e) {
   $('#submit_question').trigger('click')
 })
 
- document.addEventListener('contextmenu',
-                        event => event.preventDefault());
+//  document.addEventListener('contextmenu',
+//                         event => event.preventDefault());
+
+// const ws = new WebSocket(`ws://127.0.0.1:8000/student/ws/verify-token/`);
+
+// ws.onmessage = function(event) {
+//   if (event.data === "logout") {
+//     // Redirect to login or perform logout logic
+//     window.location.href = '/student/login/';
+//   }
+// };

@@ -1,3 +1,5 @@
+import logging
+from collections import namedtuple
 from functools import lru_cache
 import json
 from aiohttp import RequestInfo
@@ -159,8 +161,14 @@ async def place_manual_order(data: manualOrderPydantic, _=Depends(get_current_us
             {"status": False, "message": str(ex)}, status_code=208)
 
 
-@router.post('/place_order', )
-async def place_order(data: PaymentRecordsIn_Pydantic, _=Depends(get_current_user)):
+# Define the namedtuple for order parameters
+OrderParams = namedtuple('OrderParams', [
+    'payment_mode', 'payment_status', 'payment_id', 'order_id', 'gateway_name',
+    'coupon', 'coupon_discount', 'notes', 'source', 'bill_amount', 'student_id', 'subscription_id'
+])
+
+
+async def create_order(data):
     try:
         updated_at = datetime.now(tz)
         now = datetime.now(tz)
@@ -168,13 +176,13 @@ async def place_order(data: PaymentRecordsIn_Pydantic, _=Depends(get_current_use
         uid = data.student_id
         payment_id = data.payment_id
         payment_status = 1
-        if payment_id:
-            razorpay_resp = client.payment.fetch(data.payment_id)
+        # if payment_id:
+        #     razorpay_resp = client.payment.fetch(data.payment_id)
 
-            # print(razorpay_resp)
+        #     # print(razorpay_resp)
 
-            if razorpay_resp and (not await PaymentRecords.exists(payment_id=payment_id)):
-                payment_status = 2
+        #     if razorpay_resp and (not await PaymentRecords.exists(payment_id=payment_id)):
+        #         payment_status = 2
         if data.source == "adm":
             payment_status = 2
         if await Student.exists(id=uid):
@@ -294,6 +302,8 @@ async def place_order(data: PaymentRecordsIn_Pydantic, _=Depends(get_current_use
                             #     await client.post(app_url+'/send-email/backgroundtasks?email_to='+user_obj.email,
                             #                       json=jsonable_encoder(email_body))
 
+                            # Check if the provided subscription_id is in the list of special IDs
+
                             return JSONResponse(
                                 {"status": True, "message": "order placed successfully"}, status_code=200)
                         else:
@@ -307,6 +317,62 @@ async def place_order(data: PaymentRecordsIn_Pydantic, _=Depends(get_current_use
                          "message": "you're already registered with this plan"},
                         status_code=208
                     )
+
+    except Exception as ex:
+        return JSONResponse(
+            {"status": False, "message": str(ex)}, status_code=208)
+
+ # List of special subscription IDs
+SPECIAL_SUBSCRIPTION_IDS = [
+    "13aa5fdc-a5c1-43a9-ac90-5b65e036e914",
+    "f229d152-fd20-4191-9b6b-2a2fa70723b7",
+    "a73cd6b9-8eee-4f60-8edb-ffa059e10cf7",
+    "45757747-3212-4b71-9928-3f588684fa9a"
+]
+
+
+logger = logging.getLogger(__name__)
+
+
+@router.post('/place_order', )
+async def place_order(data: PaymentRecordsIn_Pydantic, _=Depends(get_current_user)):
+    # Check and process the regular order
+    try:
+        result_response = await create_order(data)
+
+        # Extract and decode the body from the JSONResponse
+        result_content = result_response.body.decode('utf-8')
+        # Convert string content to dictionary for processing
+        result_dict = json.loads(result_content)
+
+        if result_dict.get("status"):
+            str_subscription_id = str(data.subscription_id).lower()
+
+            if str_subscription_id in [uuid.lower() for uuid in SPECIAL_SUBSCRIPTION_IDS]:
+
+                logger.info(
+                    "Special subscription ID matched. Creating special order.")
+                # If it is, set the order parameters to the provided values
+
+                order_params = OrderParams(
+                    payment_mode=1,
+                    payment_status=1,
+                    payment_id="",
+                    order_id="",
+                    gateway_name="",
+                    coupon="",
+                    coupon_discount=0,
+                    notes="Free offer",
+                    source="adm",
+                    bill_amount=0,
+                    student_id=data.student_id,  # Assuming student_id is also passed in the request
+                    subscription_id='f9d1f72e-249e-4a5a-9823-789100ebbd77'
+                )
+
+                # Call the place_order function with the set parameters
+                res = await place_order(order_params)
+
+        return result_response
 
     except Exception as ex:
         return JSONResponse(
@@ -500,7 +566,7 @@ class OrderHistoryPydantic(BaseModel):
     id: uuid.UUID
     subscription: SubscriptionPydantic
     payment_id: Optional[str]
-    created_at: datetime = None
+    created_at: Optional[datetime]
 
     @validator('created_at', pre=True, always=True)
     def set_ts_now(cls, v):
@@ -786,7 +852,7 @@ async def webhook(request: Request):
     try:
         c_ins = None
         data = await request.json()
-        
+
         # print("============================================")
         payment_id = data['payload']['payment']['entity']['id']
         order_id = data['payload']['payment']['entity']['order_id']

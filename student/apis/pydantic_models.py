@@ -1,7 +1,6 @@
 import uuid
 from datetime import datetime
 from typing import List, Optional
-
 from pydantic import BaseModel, validator
 
 
@@ -13,7 +12,7 @@ class SubscriptionPlanPydantic(BaseModel):
     name: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class subscriptionPydantic(BaseModel):
@@ -24,7 +23,7 @@ class subscriptionPydantic(BaseModel):
     created_at: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class categoryPydantic(BaseModel):
@@ -34,7 +33,7 @@ class categoryPydantic(BaseModel):
     icon_image: Optional[str]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class CoursePydantic(BaseModel):
@@ -49,7 +48,7 @@ class categoryobjPydantic(BaseModel):
     category: categoryPydantic
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class PNcategoryobjPydantic(BaseModel):
@@ -58,7 +57,7 @@ class PNcategoryobjPydantic(BaseModel):
     course: CoursePydantic
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class categorytopicPydantic(BaseModel):
@@ -66,10 +65,8 @@ class categorytopicPydantic(BaseModel):
     category: categoryobjPydantic
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
-
-    orm_mode = True
 
 
 class PNcategorytopicPydantic(BaseModel):
@@ -77,7 +74,7 @@ class PNcategorytopicPydantic(BaseModel):
     category: PNcategoryobjPydantic
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class StudentSubscriptionPydantic(BaseModel):
@@ -87,7 +84,7 @@ class StudentSubscriptionPydantic(BaseModel):
     time_left: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class studentPydantic(BaseModel):
@@ -100,7 +97,7 @@ class studentPydantic(BaseModel):
     subscriptions: List[StudentSubscriptionPydantic]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class loginResponsePydantic(BaseModel):
@@ -108,7 +105,7 @@ class loginResponsePydantic(BaseModel):
     message: studentPydantic
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class StudentChoices_Pydantic:
@@ -147,7 +144,7 @@ class coursePydantic(BaseModel):
     slug: Optional[str] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class eachNewtestSeriesPydantic(BaseModel):
@@ -184,7 +181,7 @@ class newtestSeriesPydantic(BaseModel):
         return v or datetime.now()
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class eachNotePydantic(BaseModel):
@@ -214,7 +211,7 @@ class notePydantic(BaseModel):
         return v or datetime.now()
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class videoPydantic(BaseModel):
@@ -240,7 +237,7 @@ class videoPydantic(BaseModel):
         return v or datetime.now()
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class studentTestSeriesActivityPydantic(BaseModel):
@@ -259,7 +256,7 @@ class studentTestSeriesActivityPydantic(BaseModel):
         return v or datetime.now()
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class studentNotesActivityPydantic(BaseModel):
@@ -279,7 +276,7 @@ class studentNotesActivityPydantic(BaseModel):
         return v or datetime.now()
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class studentVideoActivityPydantic(BaseModel):
@@ -299,7 +296,7 @@ class studentVideoActivityPydantic(BaseModel):
         return v or datetime.now()
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class ActivityPydantic(BaseModel):
@@ -310,7 +307,7 @@ class ActivityPydantic(BaseModel):
     studentTestSeriesActivity: Optional[List[studentTestSeriesActivityPydantic]] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class test_seriesPydantic(BaseModel):
@@ -335,7 +332,7 @@ class test_seriesPydantic(BaseModel):
         return v or datetime.now()
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class testSeriesPydantic(BaseModel):
@@ -343,7 +340,7 @@ class testSeriesPydantic(BaseModel):
     category: categoryPydantic
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class notesPydantic(BaseModel):
@@ -351,7 +348,7 @@ class notesPydantic(BaseModel):
     category: categoryPydantic
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class videosPydantic(BaseModel):
@@ -359,7 +356,7 @@ class videosPydantic(BaseModel):
     category: categoryPydantic
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class GetBookmarksPydantic(BaseModel):
@@ -368,14 +365,14 @@ class GetBookmarksPydantic(BaseModel):
     test_series: Optional[List[testSeriesPydantic]] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class RecommendedLecturesPydantic(BaseModel):
     id: uuid.UUID
     title: str
     slug: str
-    mobile_video_url: str
+    mobile_video_url: Optional[str] = None
     app_thumbnail: str
     web_video_url: Optional[str] = None
     app_thumbnail: Optional[str] = None
@@ -387,8 +384,14 @@ class RecommendedLecturesPydantic(BaseModel):
     created_at: datetime = None
     category_topic: categorytopicPydantic
 
+    @validator('video_duration', pre=True)
+    def convert_duration_to_str(cls, v):
+        if isinstance(v, float):
+            return str(v)
+        return v
+
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class PNeachNewtestSeriesPydantic(BaseModel):
@@ -403,7 +406,8 @@ class PNeachNewtestSeriesPydantic(BaseModel):
     category_topic: PNcategorytopicPydantic
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+
 
 class PNeachNotePydantic(BaseModel):
     id: uuid.UUID
@@ -414,7 +418,8 @@ class PNeachNotePydantic(BaseModel):
     category_topic: PNcategorytopicPydantic
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+
 
 class PushNotificationsLecturesPydantic(BaseModel):
     id: uuid.UUID
@@ -433,7 +438,7 @@ class PushNotificationsLecturesPydantic(BaseModel):
     category_topic: PNcategorytopicPydantic
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class queryPydantic(BaseModel):

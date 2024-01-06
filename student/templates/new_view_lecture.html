@@ -1,0 +1,188 @@
+{% extends "student_dashboard_base.html" %} {% block content %}
+
+<div class="sa4d25">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="all_msg_bg">
+          <div class="row no-gutters">
+            <div class="col-xl-8 col-lg-7 col-md-12">
+              <div class="chatbox_right">
+                <div class="chat_header">
+                  <div class="user-status">
+                    <div class="user">
+                      <img src="{{icon_image}}" class="catg" alt="" />
+                    </div>
+                    <p class="user-status-title">
+                      <span class="bold"
+                        >{{c_name}}:
+                        <span id="new_title"
+                          >{{ cc_lectures[0].title }}</span
+                        ></span
+                      >
+                    </p>
+                    <p class="user-status-tag online">Lecture :</p>
+                    <p class="user-status-tag online">{{c_name}}</p>
+                    <p class="user-status-tag online">{{t_name}}</p>
+                  </div>
+                </div>
+                <div
+                  class="messages-line simplebar-content-wrapper2 scrollstyle_4"
+                >
+                  <div style="position: relative; padding-top: 56.25%">
+                    {% set video_url = cc_lectures[0].web_video_url if
+                    cc_lectures[0].web_video_url else cc_lectures[0].video_360
+                    %} {% if cc_lectures[0].web_video_url %}
+                    <!-- If web_video_url exists, use the iframe -->
+                    <iframe
+                      id="new_url"
+                      src="{{ cc_lectures[0].web_video_url }}"
+                      loading="lazy"
+                      style="
+                        border: none;
+                        position: absolute;
+                        top: 0;
+                        height: 100%;
+                        width: 100%;
+                      "
+                      allow="accelerometer; gyroscope; encrypted-media; picture-in-picture;"
+                      allowfullscreen="true"
+                    >
+                    </iframe>
+                    {% else %}
+                    <!-- If web_video_url does not exist, use the video tag with video_360 -->
+                    <video
+                      id="new_url"
+                      src="{{ cc_lectures[0].video_360 }}"
+                      controls
+                      style="
+                        border: none;
+                        position: absolute;
+                        top: 0;
+                        height: 80%;
+                        width: 100%;
+                      "
+                      allowfullscreen
+                      controlsList="nodownload"
+                    ></video>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-4 col-lg-5 col-md-12">
+              <div class="msg_search">
+                <div class="ui search focus">
+                  <div class="ui left icon input swdh11 swdh15">
+                    <input
+                      class="prompt srch_explore"
+                      type="text"
+                      placeholder="Search Lectures..."
+                    />
+                    <i class="uil uil-search-alt icon icon8"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="simplebar-content-wrapper">
+                <div class="group_messages">
+                  {% set video_url = cc_lectures[0].web_video_url if
+                  cc_lectures[0].web_video_url else cc_lectures[0].video_360 %}
+
+                  <div
+                    class="chat__message__dt video_list active"
+                    data-url="{{ video_url }}"
+                    data-title="{{ cc_lectures[0].title }}"
+                  >
+                    <div
+                      class="user-status"
+                      data-url="{{ video_url }}"
+                      data-title="{{ cc_lectures[0].title }}"
+                    >
+                      <div
+                        class="user-avatar"
+                        data-url="{{ video_url }}"
+                        data-title="{{ cc_lectures[0].title }}"
+                      >
+                        <img src="{{ cc_lectures[0].app_thumbnail }}" alt="" />
+                        <div
+                          class="msg__badge"
+                          data-url="{{ video_url }}"
+                          data-title="{{ cc_lectures[0].title }}"
+                        >
+                          1
+                        </div>
+                      </div>
+                      <p
+                        class="user-status-title"
+                        data-url="{{ video_url }}"
+                        data-title="{{ cc_lectures[0].title }}"
+                      >
+                        <span
+                          class="bold"
+                          data-url="{{ video_url }}"
+                          data-title="{{ cc_lectures[0].title }}"
+                          >{{ cc_lectures[0].title }}</span
+                        >
+                      </p>
+                    </div>
+                  </div>
+
+                  {% for n in range(1, (cc_lectures|length)) %} {% with
+                  video_url=cc_lectures[n].web_video_url if
+                  cc_lectures[n].web_video_url else cc_lectures[n].video_360 %}
+                  <div
+                    class="chat__message__dt video_list"
+                    data-url="{{ video_url }}"
+                    data-title="{{ cc_lectures[n].title }}"
+                  >
+                    <div
+                      class="user-status"
+                      data-url="{{ video_url }}"
+                      data-title="{{ cc_lectures[n].title }}"
+                    >
+                      <div
+                        class="user-avatar"
+                        data-url="{{ video_url }}"
+                        data-title="{{ cc_lectures[n].title }}"
+                      >
+                        <img
+                          src="{{ cc_lectures[n].app_thumbnail }}"
+                          alt=""
+                          data-url="{{ video_url }}"
+                          data-title="{{ cc_lectures[n].title }}"
+                        />
+                        <div
+                          class="msg__badge"
+                          data-url="{{ video_url }}"
+                          data-title="{{ cc_lectures[n].title }}"
+                        >
+                          {{n+1}}
+                        </div>
+                      </div>
+                      <p
+                        class="user-status-title"
+                        data-url="{{ video_url }}"
+                        data-title="{{ cc_lectures[n].title }}"
+                      >
+                        <span
+                          class="bold"
+                          data-url="{{ video_url }}"
+                          data-title="{{ cc_lectures[n].title }}"
+                          >{{ cc_lectures[n].title }}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                  {% endwith %} {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
