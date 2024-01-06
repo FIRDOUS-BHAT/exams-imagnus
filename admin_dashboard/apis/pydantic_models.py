@@ -14,6 +14,10 @@ class CourseCategoryTestSeriesQuestionsOut(BaseModel):
     answer: str
     solution: str
 
+    @validator('answer', pre=True)
+    def strip_spaces_from_answer(cls, v):
+        return v.strip() if isinstance(v, str) else v
+
     class Config:
         from_attributes = True
 
