@@ -247,7 +247,7 @@ async def download_videos():
     except Exception as ex:
         print(str(ex))
         uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
-        playsound('Sweet Ting Ting Ting.mp3')
+       
         print(str(ex))
 
         return str(ex)
