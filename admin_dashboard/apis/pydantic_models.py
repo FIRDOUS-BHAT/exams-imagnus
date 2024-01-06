@@ -1,7 +1,7 @@
 import uuid
 from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel,validator
 
 
 class CourseCategoryTestSeriesQuestionsOut(BaseModel):
@@ -27,6 +27,12 @@ class CourseCategoryTestSeriesOut(BaseModel):
     description: Optional[str] = None
     thumbnail: Optional[str] = None
     CategoryTestSeriesQuestions: List[CourseCategoryTestSeriesQuestionsOut]
+
+    @validator('time_duration', pre=True)
+    def convert_duration_to_str(cls, v):
+        if isinstance(v, int):
+            return str(v)
+        return v
 
     class Config:
         from_attributes = True
