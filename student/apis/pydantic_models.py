@@ -373,7 +373,7 @@ class RecommendedLecturesPydantic(BaseModel):
     id: uuid.UUID
     title: str
     slug: str
-    mobile_video_url: str
+    mobile_video_url: Optional[str] = None
     app_thumbnail: str
     web_video_url: Optional[str] = None
     app_thumbnail: Optional[str] = None
@@ -384,6 +384,12 @@ class RecommendedLecturesPydantic(BaseModel):
     updated_at: datetime = None
     created_at: datetime = None
     category_topic: categorytopicPydantic
+
+    @validator('video_duration', pre=True)
+    def convert_duration_to_str(cls, v):
+        if isinstance(v, float):
+            return str(v)
+        return v
 
     class Config:
         from_attributes = True
