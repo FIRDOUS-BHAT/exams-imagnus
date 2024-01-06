@@ -126,12 +126,17 @@ app.lifespan = lifespan  # Assign the lifespan function
 async def global_exception_handler(request, exc):
     # Log the error
     print('error occured')
-   
-    logger.error(f"An error occurred: {exc}")
+
+    # Retrieve the API endpoint from the request object
+    api_endpoint = request.url.path
+
+    logger.error(f"An error occurred in API '{api_endpoint}': {exc}")
     return JSONResponse(
         status_code=500,
         content={"message": "Internal Server Error"},
     )
+
+    
   
 
 
