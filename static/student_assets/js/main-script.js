@@ -244,7 +244,7 @@ $(document).on('click','.pdf_list', function(e) {
 
         if (!data.valid) {
             // Log the user out or redirect to the login page
-            window.location.href = '/student/login/';
+            // window.location.href = '/student/login/';
         }
     }, 60000); // Check every 60 seconds
 
