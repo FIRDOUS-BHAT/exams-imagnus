@@ -59,6 +59,16 @@ import json
 
 limiter = Limiter(key_func=get_remote_address, default_limits=["10/minute"])
 
+@lru_cache()
+def app_setting():
+    return appinfo.Setting()
+
+
+settings = app_setting()
+
+debug_mode = settings.debug
+
+SLACK_WEBHOOK_URL = settings.slack_webhook_url
 
 class SlackHandler(logging.Handler):
      def emit(self, record):
@@ -75,16 +85,7 @@ class SlackHandler(logging.Handler):
 session = None
 
 
-@lru_cache()
-def app_setting():
-    return appinfo.Setting()
 
-
-settings = app_setting()
-
-debug_mode = settings.debug
-
-SLACK_WEBHOOK_URL = settings.slack_webhook_url
 
 
 allowed_host = settings.allowed_host
@@ -129,6 +130,7 @@ async def global_exception_handler(request, exc):
     log_entry = {
         "timestamp": datetime.now().isoformat(),
         "level": "ERROR",
+        "APP_TYPE": "TEST",
         "message": "An error occurred",
         "api_endpoint": request.url.path,
         "http_method": request.method,
