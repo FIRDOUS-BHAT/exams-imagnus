@@ -210,3 +210,4 @@ linuxvenv
 venvOld
 # .env
 .env copy
+venvTest
