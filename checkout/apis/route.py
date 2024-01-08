@@ -573,9 +573,7 @@ class OrderHistoryPydantic(BaseModel):
         return v or datetime.now()
 
 
-@router.post('/get_student_order_payment/',
-             response_model=List[OrderHistoryPydantic]
-             )
+@router.post('/get_student_order_payment/', response_model=List[OrderHistoryPydantic])
 async def get_order_history(data: PaymentHistoryPydantic, _=Depends(get_current_user)):
     try:
         uid = data.uid
@@ -585,10 +583,13 @@ async def get_order_history(data: PaymentHistoryPydantic, _=Depends(get_current_
                 resp = await PaymentRecords_Pydantic.from_queryset(
                     PaymentRecords.filter(student=student_instance))
                 return resp
-
+            else:
+                return []  
+        else:
+            return [] 
     except Exception as ex:
-        raise HTTPException(status_code=208, detail=str(ex))
-
+       
+        return [] 
 
 @router.post('/add_pre_target_batch_to_mains_students')
 async def add_pre_target_batch_to_mains_students(_=Depends(get_current_user)):
