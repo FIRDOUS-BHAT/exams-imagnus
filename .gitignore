@@ -209,3 +209,4 @@ auth/__pycache__
 linuxvenv
 venvOld
 .env
+.env copy
