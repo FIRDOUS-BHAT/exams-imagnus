@@ -57,7 +57,7 @@ import json
 
 
 
-limiter = Limiter(key_func=get_remote_address, default_limits=["10/minute"])
+limiter = Limiter(key_func=get_remote_address, default_limits=["500/minute"])
 
 @lru_cache()
 def app_setting():
