@@ -28,6 +28,6 @@ class Setting(BaseSettings):
     
 
     class Config:
-        env_file = ".env"
+        # env_file = ".env"
         extra = "ignore"
         config_class = SettingsConfigDict
