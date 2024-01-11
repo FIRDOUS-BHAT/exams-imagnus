@@ -211,3 +211,4 @@ venvOld
 # .env
 .env copy
 venvTest
+.env

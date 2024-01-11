@@ -25,6 +25,7 @@ class Setting(BaseSettings):
     ws_url: str
     cache_time: int
     slack_webhook_url: str
+    app_type: str
     
 
     class Config:
