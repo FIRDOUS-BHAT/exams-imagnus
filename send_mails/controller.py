@@ -16,18 +16,31 @@ from typing import List
 from dotenv import load_dotenv
 from fastapi.encoders import jsonable_encoder
 from send_mails.models import StudentEnquiry, StudentEnquiryIn_Pydantic
+import smtplib
+from email.message import EmailMessage
+from functools import lru_cache
+import threading
 
-load_dotenv('.env')
+from configs import mailinfo
+
+
+@lru_cache()
+def app_setting():
+    return mailinfo.Setting()
+
+
+settings = app_setting()
+
 tz = pytz.timezone('Asia/Kolkata')
 
 
 class Envs:
-    MAIL_USERNAME = os.getenv('MAIL_USERNAME')
-    MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
-    MAIL_FROM = os.getenv('MAIL_FROM')
-    MAIL_PORT = int(os.getenv('MAIL_PORT'))
-    MAIL_SERVER = os.getenv('MAIL_SERVER')
-    MAIL_FROM_NAME = os.getenv('MAIN_FROM_NAME')
+    MAIL_USERNAME = settings.mail_username
+    MAIL_PASSWORD = settings.mail_password
+    MAIL_FROM = settings.mail_from
+    MAIL_PORT = settings.mail_port
+    MAIL_SERVER = settings.mail_server
+    MAIL_FROM_NAME = settings.mail_from_name
 
 
 app = FastAPI()
@@ -50,6 +63,27 @@ conf = ConnectionConfig(
     USE_CREDENTIALS=True,
     TEMPLATE_FOLDER='send_mails/templates/'
 )
+
+
+
+def send_email(recipient: str,email_content: str, ):
+    msg = EmailMessage()
+    msg.set_content(email_content)
+    msg['Subject'] = 'Imagnus verification code'
+    msg['From'] = settings.mail_from
+    msg['To'] = recipient
+   
+    with smtplib.SMTP(settings.mail_server , 587) as server:
+        server.starttls()
+        server.login(settings.mail_username , settings.mail_password)
+        server.send_message(msg)
+
+
+async def send_email_in_background(recipient: str, email_content: str):
+    # background_tasks.add_task(send_email, email_content, recipient)
+    email_thread = threading.Thread(target=send_email, args=(recipient, email_content))
+    email_thread.start()
+    return True
 
 
 @router.post("/send_mail")
