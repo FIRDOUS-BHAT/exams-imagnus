@@ -2089,16 +2089,17 @@ async def get_live_classes(course_slug: str, student_id: str, _=Depends(get_curr
 @router.get('/get_filtered_live_classes/{course_slug}/{student_id}/{d}',
             response_model=List[LiveClassesPydantic]
             )
-async def get_live_classes(course_slug: str, student_id: str, d: date, _=Depends(get_current_user)):
+async def get_live_classes(course_slug: str, student_id: str, d:str, _=Depends(get_current_user)):
     try:
+        #parse d as date
+        d = datetime.strptime(d, '%Y-%m-%d').date()
         tradeDate = datetime.combine(d, datetime.min.time())
 
         dt = tz.localize(tradeDate, is_dst=True)
         # tradeDay=dt.astimezone(pytz.utc)
         dt1 = (dt+relativedelta(hours=23, minutes=59, seconds=59))
-        course = await Course.get(slug=course_slug)
-        student = await Student.get(id=student_id)
-        subscription = await activeSubscription.exists(course=course, student=student)
+       
+        subscription = await activeSubscription.exists(course__slug=course_slug, student__id=student_id)
         if subscription:
             obj = await LiveClasses_Pydantic.from_queryset(
                 LiveClasses.filter(course__slug=course_slug).filter(streaming_time__range=[dt, dt1]))
