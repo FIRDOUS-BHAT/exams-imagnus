@@ -146,19 +146,21 @@ async def update_announcement_date(test_series_id: str, announcement_time: datet
 @router.post('/get_students_rank/')
 async def get_students_rank(data: rankPydantic, _=Depends(get_current_user)):
     student_id = data.student_id
-    test_series_id = data.test_series_id
-    if await StudentScholarshipTestSeriesRecord.exists(
-        student__id=student_id, test_series__id=test_series_id, is_attempted=True
-    ):
+     
+    if await StudentScholarshipTestSeriesRecord.exists(student__id=student_id, is_attempted=True):
+        
+        test_obj = await StudentScholarshipTestSeriesRecord.get(
+        student__id=student_id, is_attempted=True
+         )
         updated_at = datetime.now(tz)
-        if await ScholarshipTestSeries.exists(id=test_series_id, result_announcement_date__lte=updated_at):
-            test_series_obj = await ScholarshipTestSeries.get(id=test_series_id)
-            test_series_questions = await ScholarshipTestSeriesQuestions.filter(test_series__id=test_series_id)
+        if await ScholarshipTestSeries.exists(id=test_obj.test_series_id, result_announcement_date__lte=updated_at):
+            test_series_obj = await ScholarshipTestSeries.get(id=test_obj.test_series_id)
+            test_series_questions = await ScholarshipTestSeriesQuestions.filter(test_series__id=test_obj.test_series_id)
 
             result_obj = await StudentScholarshipTestSeriesRecord.get(
-                student__id=student_id, test_series__id=test_series_id)
-            rank_query = await StudentScholarshipTestSeriesRecord.filter(test_series__id=test_series_id).order_by('-marks', 'time_taken')
-            top_ten = await StudentScholarshipTestSeriesRecord.filter(test_series__id=test_series_id).order_by('-marks', 'time_taken').limit(10).values("id", "marks", "time_taken", "student_id", "test_series_id", student_name="student__fullname")
+                student__id=student_id, test_series__id=test_obj.test_series_id)
+            rank_query = await StudentScholarshipTestSeriesRecord.filter(test_series__id=test_obj.test_series_id).order_by('-marks', 'time_taken')
+            top_ten = await StudentScholarshipTestSeriesRecord.filter(test_series__id=test_obj.test_series_id).order_by('-marks', 'time_taken').limit(10).values("id", "marks", "time_taken", "student_id", "test_series_id", student_name="student__fullname")
             np_arr = np.array(rank_query)
             index_of_student = 0
             for i in range(np_arr.size):
@@ -189,4 +191,4 @@ async def get_students_rank(data: rankPydantic, _=Depends(get_current_user)):
         else:
             return JSONResponse({"status": True, "message": "No data Found"}, status_code=208)
     else:
-        return JSONResponse({"status": False, "message": "No data Found"}, status_code=208)
+        return JSONResponse({"status": False, "message": "No student data Found"}, status_code=208)
