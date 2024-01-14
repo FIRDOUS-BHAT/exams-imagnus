@@ -24,4 +24,3 @@ class testRecordIn_Pydantic(BaseModel):
 
 class rankPydantic(BaseModel):
     student_id: str
-    test_series_id: str

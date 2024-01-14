@@ -1,5 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
+import os
 
 class Setting(BaseSettings):
     app_url: str
@@ -29,6 +29,7 @@ class Setting(BaseSettings):
     
 
     class Config:
-        # env_file = ".env"
+        if os.path.exists('.env'):
+            env_file = '.env'
         extra = "ignore"
         config_class = SettingsConfigDict

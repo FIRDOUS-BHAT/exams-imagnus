@@ -1,5 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
+import os
 
 class Setting(BaseSettings):
     db_connection: str
@@ -12,7 +12,8 @@ class Setting(BaseSettings):
     slack_webhook_url: str
 
     class Config:
-        # env_file = '.env'
+        if os.path.exists('.env'):
+            env_file = '.env'
         extra = "ignore"
         config_class = SettingsConfigDict
         env_file_encoding = 'utf-8'
