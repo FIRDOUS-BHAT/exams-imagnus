@@ -4,10 +4,12 @@ import pytz
 from fastapi import APIRouter, Depends, UploadFile, File
 from datetime import datetime
 from utils.util import get_current_user
+from cache_config import cache
+from aiocache import cached
 
 from starlette.responses import JSONResponse
 from scholarship_tests.models import ScholarshipTestSeries, ScholarshipTestSeries_Pydantic, ScholarshipTestSeriesQuestions, StudentScholarshipTestSeriesRecord
-from scholarship_tests.pydantic_models import rankPydantic, studentIdPydanctic, testRecordIn_Pydantic
+from scholarship_tests.pydantic_models import rankPydantic, rankResponsePydantic, studentIdPydanctic, testRecordIn_Pydantic
 from student.models import Student
 '''Scholarship testseries here'''
 
@@ -143,7 +145,19 @@ async def update_announcement_date(test_series_id: str, announcement_time: datet
     return {"date modified"}
 
 
-@router.post('/get_students_rank/')
+def custom_key_builder(func, *args, **kwargs):
+    # Extract student_id from kwargs
+    student_id = 'default'
+    if 'data' in kwargs and hasattr(kwargs['data'], 'student_id'):
+        student_id = kwargs['data'].student_id
+        
+    return f"{func.__module__}:{func.__name__}:{student_id}"
+
+
+                           
+@router.post('/get_students_rank/', response_model=rankResponsePydantic)
+@cached(key_builder=custom_key_builder)
+
 async def get_students_rank(data: rankPydantic, _=Depends(get_current_user)):
     student_id = data.student_id
      
