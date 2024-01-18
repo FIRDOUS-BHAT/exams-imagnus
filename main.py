@@ -134,6 +134,8 @@ app.lifespan = lifespan  # Assign the lifespan function
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
+    client_ip = request.client.host
+
     log_entry = {
         "timestamp": datetime.now().isoformat(),
         "level": "ERROR",
@@ -141,7 +143,8 @@ async def global_exception_handler(request: Request, exc: Exception):
         "message": "An error occurred",
         "api_endpoint": request.url.path,
         "http_method": request.method,
-        "error": str(exc)
+        "error": str(exc),
+        "client_ip": client_ip
     }
     formatted_log = json.dumps(log_entry, indent=2)
     logger.error(formatted_log)
