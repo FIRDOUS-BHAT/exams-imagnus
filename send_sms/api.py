@@ -52,10 +52,10 @@ async def send_otp(mobile: str, _=Depends(get_current_user)):
         student_email = await Student.get(mobile=mobile).values('email')
         student_email = student_email['email']
 
-        message = otp + " is your one time verification code at i-Magnus."
+        message1 = otp + " is your one time verification code at i-Magnus."
 
         
-        await send_email_in_background(email_content=message,recipient=student_email)
+        await send_email_in_background(email_content=message1,recipient=student_email)
 
 
     resp = await sendSMS('ODg1YjEyMDg5YWVkNGI3MGY5ZDhhODA4ZDMxNzIwNWQ=', '91' + mobile,
