@@ -44,6 +44,13 @@ async def sendSMS(apikey, numbers, sender, message):
 
 @router.post('/send_otp/')
 async def send_otp(mobile: str, _=Depends(get_current_user)):
+
+
+    # Remove '+91' or '91' prefix if present
+    if mobile.startswith('+91'):
+        mobile = mobile[3:]
+    elif mobile.startswith('91'):
+        mobile = mobile[2:]
     otp = await generateOTP()
     # message = otp + " is your verification code for registration at i-Magnus."
     message = otp + " is your one time verification code for registration at i-Magnus."
