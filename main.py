@@ -219,6 +219,8 @@ app.add_middleware(
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
     response = await call_next(request)
+    client_ip = request.client.host
+
     if response.status_code != 200:
         # Construct log entry
         log_entry = {
@@ -228,7 +230,9 @@ async def log_requests(request: Request, call_next):
             "message": "Non-200 status code",
             "api_endpoint": request.url.path,
             "http_method": request.method,
-            "status_code": response.status_code
+            "status_code": response.status_code,
+            "client_ip": client_ip
+
         }
         # Log the error
         formatted_log = json.dumps(log_entry, indent=2)
