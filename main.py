@@ -224,7 +224,7 @@ async def log_requests(request: Request, call_next):
         log_entry = {
             "timestamp": datetime.now().isoformat(),
             "level": "ERROR",
-            "APP_TYPE": "YourAppType",  # Replace with your app type
+            "APP_TYPE": settings.app_type,  # Replace with your app type
             "message": "Non-200 status code",
             "api_endpoint": request.url.path,
             "http_method": request.method,
