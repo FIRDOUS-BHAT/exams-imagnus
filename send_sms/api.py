@@ -45,6 +45,7 @@ async def sendSMS(apikey, numbers, sender, message):
 @router.post('/send_otp/')
 async def send_otp(mobile: str, _=Depends(get_current_user)):
 
+    mobile = mobile.strip()
 
     # Remove '+91' or '91' prefix if present
     if mobile.startswith('+91'):
