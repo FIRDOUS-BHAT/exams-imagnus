@@ -113,8 +113,16 @@ def generate_token_new_api(form_data: OAuth2PasswordRequestForm = Depends()):
     return results
 
 
+
+class registerPydantic(BaseModel):
+    fullname: str
+    mobile: str
+    email: str
+    password: str
+    is_active: bool
+
 @router.post('/register', status_code=201, response_model=loginResponsePydantic)
-async def register_student(user: StudentIn_Pydantic, _=Depends(get_current_user)):
+async def register_student(user: registerPydantic, _=Depends(get_current_user)):
     try:
         updated_at = datetime.now(tz)
         try:
