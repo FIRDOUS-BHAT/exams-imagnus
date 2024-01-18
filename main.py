@@ -137,7 +137,7 @@ async def global_exception_handler(request: Request, exc: Exception):
     log_entry = {
         "timestamp": datetime.now().isoformat(),
         "level": "ERROR",
-        "APP_TYPE": "YourAppType",  # Replace with your app type
+        "APP_TYPE": settings.app_type,  # Replace with your app type
         "message": "An error occurred",
         "api_endpoint": request.url.path,
         "http_method": request.method,
