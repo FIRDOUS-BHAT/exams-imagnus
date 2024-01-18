@@ -51,6 +51,9 @@ async def send_otp(mobile: str, _=Depends(get_current_user)):
     if await Student.exists(mobile=mobile):
         student_email = await Student.get(mobile=mobile).values('email')
         student_email = student_email['email']
+
+        message = otp + " is your one time verification code at i-Magnus."
+
         
         await send_email_in_background(email_content=message,recipient=student_email)
 
