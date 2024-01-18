@@ -180,8 +180,8 @@ def is_multiple_of_100(n):
 
 async def update_video_urls():
     # Fetch rows where mobile_video_url contains the specific string, reducing the number of rows fetched.
-    # query = Q(mobile_video_url__contains=".b-cdn.net/")
-    query = Q(video_360__contains=".b-cdn.net/")
+    query = Q(mobile_video_url__contains=".b-cdn.net/")
+    # query = Q(video_360__contains=".b-cdn.net/")
     # Add condition to check that video_360 is not null
     # query &= Q(video_size_360__isnull=True)
     # query = Q(video_size_360__isnull=True)
@@ -209,21 +209,34 @@ async def update_video_urls():
     j = 100
     for lecture in lectures:
         # video_id = extract_video_id(lecture.mobile_video_url)
-        video_id = extract_video_id(lecture.video_360)
+        # video_id = extract_video_id(lecture.video_360)
 
-        print(video_id)
+        # print(video_id)
 
         # return True
 
+        lecture.video_360 = None
+        lecture.video_540 = None
+
+            # if video_size_360 is not None:
+            #     lecture.video_size_360 = video_size_360
+            # if video_size_480 is not None:
+            #     lecture.video_size_540 = video_size_480
+
+            # Append object to the list
+        lectures_to_update.append(lecture)
+        print(f'done:{i}')
+        i = i + 1
+
         # If video ID is found, construct the new URLs
-        if video_id:
+        # if video_id:
 
             # base_url = extract_base_url(lecture.mobile_video_url)
-            base_url = extract_base_url(lecture.video_360)
+            # base_url = extract_base_url(lecture.video_360)
             # new_video_360 = f"{base_url}/{video_id}/play_360p.mp4"
             # new_video_480 = f"{base_url}/{video_id}/play_480p.mp4"
 
-            m3u8_url = f"{base_url}/{video_id}/playlist.m3u8"
+            # m3u8_url = f"{base_url}/{video_id}/playlist.m3u8"
 
             # Get video sizes
             # video_size_360 = await get_video_size(new_video_360)
@@ -238,22 +251,22 @@ async def update_video_urls():
             # lecture.video_540 = new_video_480
             # lecture.video_360 = None
             # lecture.video_540 = None
-            lecture.mobile_video_url = m3u8_url
+            # lecture.mobile_video_url = m3u8_url
             # lecture.mobile_video_url = None
             # lecture.video_size_360 = None
             # lecture.video_size_540 = None
 
-            # if video_size_360 is not None:
-            #     lecture.video_size_360 = video_size_360
-            # if video_size_480 is not None:
-            #     lecture.video_size_540 = video_size_480
+            # # if video_size_360 is not None:
+            # #     lecture.video_size_360 = video_size_360
+            # # if video_size_480 is not None:
+            # #     lecture.video_size_540 = video_size_480
 
-            # Append object to the list
-            lectures_to_update.append(lecture)
-            print(f'done:{i}')
-            i = i + 1
+            # # Append object to the list
+            # lectures_to_update.append(lecture)
+            # print(f'done:{i}')
+            # i = i + 1
     # await CourseCategoryLectures.bulk_update(lectures_to_update, fields=["video_360", "video_540", "mobile_video_url", "video_size_360", "video_size_540"])
-    await CourseCategoryLectures.bulk_update(lectures_to_update, fields=["mobile_video_url"])
+    await CourseCategoryLectures.bulk_update(lectures_to_update, fields=["video_360", "video_540"])
 
     # if is_multiple_of_100(i):
     #     # await CourseCategoryLectures.bulk_update(lectures_to_update, fields=["video_360", "video_540", "video_size_360", "video_size_540"])
