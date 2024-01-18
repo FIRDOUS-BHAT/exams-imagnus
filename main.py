@@ -10,6 +10,7 @@ from fastapi.routing import APIRoute
 from fastapi_limiter.depends import RateLimiter
 from fastapi_limiter import FastAPILimiter
 from admin_dashboard.apis.route import update_video_links
+from fastapi.encoders import jsonable_encoder
 # import aioredis
 from scholarship_tests.apis import route as scholarshipRoute
 import random
@@ -56,6 +57,9 @@ from slowapi.middleware import SlowAPIMiddleware
 import json
 from aiocache import Cache
 from aiocache.serializers import JsonSerializer
+from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
+from starlette.middleware.base import BaseHTTPMiddleware
+
 
 
 
@@ -116,7 +120,7 @@ async def lifespan(app: FastAPI):
 
 
 if debug_mode == 'True':
-    print('yes')
+   
     app = FastAPI()
     LOCAL_REDIS_URL = "redis://localhost"
 
@@ -129,30 +133,25 @@ else:
 app.lifespan = lifespan  # Assign the lifespan function
 
 @app.exception_handler(Exception)
-async def global_exception_handler(request, exc):
-    # Construct a log entry as a dictionary
+async def global_exception_handler(request: Request, exc: Exception):
     log_entry = {
         "timestamp": datetime.now().isoformat(),
         "level": "ERROR",
-        "APP_TYPE": settings.app_type,
+        "APP_TYPE": "YourAppType",  # Replace with your app type
         "message": "An error occurred",
         "api_endpoint": request.url.path,
         "http_method": request.method,
-        "error": str(exc),
+        "error": str(exc)
     }
-
-    # Log the structured error message with pretty print
     formatted_log = json.dumps(log_entry, indent=2)
     logger.error(formatted_log)
-
-    # Print the error for debugging (optional)
-    # print(formatted_log)
-
     return JSONResponse(
         status_code=500,
-        content={"message": "Internal Server Error"},
+        content={"message": "Internal Server Error"}
     )
-  
+
+
+
 
 
 
@@ -186,8 +185,6 @@ async def add_process_time_header(request: Request, call_next):
 
 
 
-# app.add_middleware(TokenValidationMiddleware)
-
 
 @app.get("/error")
 async def raise_error():    
@@ -217,6 +214,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+# Middleware for logging non-200 response bodies
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    response = await call_next(request)
+    if response.status_code != 200:
+        # Construct log entry
+        log_entry = {
+            "timestamp": datetime.now().isoformat(),
+            "level": "ERROR",
+            "APP_TYPE": "YourAppType",  # Replace with your app type
+            "message": "Non-200 status code",
+            "api_endpoint": request.url.path,
+            "http_method": request.method,
+            "status_code": response.status_code
+        }
+        # Log the error
+        formatted_log = json.dumps(log_entry, indent=2)
+        logger.error(formatted_log)
+    return response
 
 # app.include_router(authController.router, tags=["Auth"])
 app.include_router(apiController.api_router, prefix="/api", tags=["APIs"])
