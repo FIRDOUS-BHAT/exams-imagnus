@@ -260,33 +260,33 @@ app.add_middleware(SlowAPIMiddleware)
 
 
 # Middleware for logging request body
-class RequestLoggingMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next):
-        body = await request.body()
+# class RequestLoggingMiddleware(BaseHTTPMiddleware):
+    # async def dispatch(self, request: Request, call_next):
+    #     body = await request.body()
         
-        # Clone the request with the in-memory body so it can be accessed again later
-        request._body = body  # temporarily store original body
-        async def receive():
-            return {"type": "http.request", "body": request._body}
+    #     # Clone the request with the in-memory body so it can be accessed again later
+    #     request._body = body  # temporarily store original body
+    #     async def receive():
+    #         return {"type": "http.request", "body": request._body}
 
-        # Log the request details
-        request_log_entry = {
-            "timestamp": datetime.now().isoformat(),
-            "level": "INFO",
-            "message": "Request received",
-            "api_endpoint": request.url.path,
-            "http_method": request.method,
-            "request_body": body.decode("utf-8")  # Assuming body is in UTF-8
-        }
-        logger.info(json.dumps(request_log_entry, indent=2))
+    #     # Log the request details
+    #     request_log_entry = {
+    #         "timestamp": datetime.now().isoformat(),
+    #         "level": "INFO",
+    #         "message": "Request received",
+    #         "api_endpoint": request.url.path,
+    #         "http_method": request.method,
+    #         "request_body": body.decode("utf-8")  # Assuming body is in UTF-8
+    #     }
+    #     logger.info(json.dumps(request_log_entry, indent=2))
 
-        # Create a new request object with the cloned body for the endpoint to use
-        request = Request(request.scope, receive=receive)
-        response = await call_next(request)
+    #     # Create a new request object with the cloned body for the endpoint to use
+    #     request = Request(request.scope, receive=receive)
+    #     response = await call_next(request)
 
-        return response
+    #     return response
 
-app.add_middleware(RequestLoggingMiddleware)
+# app.add_middleware(RequestLoggingMiddleware)
   
 
 db_url = DATABASE_URL()
