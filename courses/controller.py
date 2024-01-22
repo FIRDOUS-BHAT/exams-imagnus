@@ -1,6 +1,6 @@
 import logging
 import uuid
-from datetime import datetime
+from datetime import datetime,timedelta
 from functools import lru_cache
 from typing import Optional
 import boto3
@@ -400,6 +400,64 @@ async def get_signed_url(request: Request, user: str = Depends(get_current_user)
             return JSONResponse({'status': False, 'message': 'Wrong Input'})
     except Exception as ex:
         return JSONResponse({'status': False, 'message': str(ex)})
+
+
+@router.post('/delete_old_s3_objects')
+async def delete_old_s3_objects():
+    try:
+        # Define the threshold (60 days in this case)
+        threshold = datetime.now() - timedelta(days=60)
+
+        s3 = boto3.client(
+                's3',
+                aws_access_key_id=aws_access_key_id,
+                aws_secret_access_key=aws_secret_access_key,
+                config=Config(signature_version='s3v4'),
+                region_name=aws_region,
+            )
+        
+        folder_name = 'transcoded/'
+
+
+        # List and check each object in the bucket
+        print('S3 RESPONSE')
+        
+
+        continuation_token = None
+        while True:
+            list_params = {
+                'Bucket': 'testing-bucket-s3-uploader',
+                'Prefix': folder_name
+            }
+
+            if continuation_token:
+                list_params['ContinuationToken'] = continuation_token
+
+            response = s3.list_objects_v2(**list_params)
+
+            # print(response)
+
+            if 'Contents' in response:
+                print('===========RESPONSE CONTENTS==============')
+                print(response['Contents'])
+                for item in response['Contents']:
+                    print(f'========{item["Key"]}========')
+                    last_accessed = item['LastAccessedTime']
+                    if last_accessed < threshold:
+                        print(f"Deleting {item['Key']}...")
+
+                        # s3.delete_object(Bucket='testing-bucket-s3-uploader', Key=item['Key'])
+            else:
+                print("No objects in bucket.")
+
+            if response.get('IsTruncated'):  # True if there are more results available
+                continuation_token = response.get('NextContinuationToken')
+            else:
+                break    
+    except Exception as ex:
+        print(str(ex))
+        return str(ex)
+
 
 
 ''''Sample progress bar file here'''

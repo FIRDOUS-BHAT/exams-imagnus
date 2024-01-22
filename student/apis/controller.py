@@ -10,8 +10,7 @@ from fastapi import Body, FastAPI, Request, Response
 import http.client
 from models import Coupons, Course, Category, CourseCategoryLectures,
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form
-
-
+from datetime import datetime
 
 router = APIRouter()
 
@@ -20,6 +19,9 @@ SECRET_KEY = 'TUEebmCCFMMQrc3Ik9pDpklg52zkbz/YXxhMB39D'
 
 s3 = boto3.client('s3', aws_access_key_id=ACCESS_KEY,
                   aws_secret_access_key=SECRET_KEY)
+
+
+
 
 
 async def upload_to_s3(file_path, bucket_name, object_name):
