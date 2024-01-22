@@ -40,6 +40,7 @@ class Preference(Model):
     is_active = fields.BooleanField(default=True)
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
+    display_order = fields.IntField(default=0)
 
     class Meta:
         table = "preference"
@@ -62,6 +63,7 @@ class Course(Model):
     is_active = fields.BooleanField(default=True)
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
+    display_order = fields.IntField(default=0)
     preference = fields.ForeignKeyField(
         "models.Preference", related_name="courses", on_delete='CASCADE',
     )

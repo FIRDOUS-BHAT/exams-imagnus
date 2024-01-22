@@ -78,7 +78,7 @@ cache_time = settings.cache_time
 # @cache(expire=3600)
 async def get_all_preferences(current_user: Preference_Pydantic = Depends(get_current_user)):
     try:
-        obj = await Preference_Pydantic.from_queryset(Preference.all())
+        obj = await Preference_Pydantic.from_queryset(Preference.all().order_by('display_order') )
         return jsonable_encoder(obj)
     except Exception as ex:
         return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
@@ -89,7 +89,21 @@ async def get_all_preferences(current_user: Preference_Pydantic = Depends(get_cu
 async def get_each_preference_courses(preference_slug: str,
                                       _=Depends(get_current_user)):
     try:
-        return await Preference_Pydantic.from_queryset_single(Preference.get(slug=preference_slug))
+        return await Preference_Pydantic.from_queryset_single(Preference.get(slug=preference_slug)
+    )
+        
+        # Fetch the Preference
+        preference = await Preference.get(slug=preference_slug)
+
+        # Fetch and sort related courses
+        courses = await Course.filter(preference_id=preference.id).order_by('name').all()
+
+        # Combine data (manually map courses to preference if necessary)
+        preference_data = await Preference_Pydantic.from_tortoise_orm(preference)
+        preference_data.courses = courses  # Assuming you have a structure to hold this
+
+        return preference_data
+
     except Exception as ex:
         return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
