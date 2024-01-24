@@ -1,3 +1,5 @@
+from typing import List
+from pydantic import BaseModel, UUID4, Field
 from enum import IntEnum
 from tortoise import Tortoise
 from tortoise import fields
@@ -172,7 +174,7 @@ class CourseCategoryLectures(Model):
     library_id = fields.TextField(null=True, blank=True)
     video_id = fields.TextField(null=True, blank=True)
     video_duration = fields.FloatField(blank=True, null=True)
-    video_360 = fields.TextField(null=True, blank=True) 
+    video_360 = fields.TextField(null=True, blank=True)
     video_size_360 = fields.BigIntField(null=True, blank=True)
     video_540 = fields.TextField(null=True, blank=True)
     video_size_540 = fields.BigIntField(null=True, blank=True)
@@ -196,8 +198,6 @@ class CourseCategoryLecturesVideoURLS(Model):
     video_720 = fields.TextField(null=True, blank=True)
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
-     
-
 
 
 class CourseCategoryNotes(Model):
@@ -415,6 +415,7 @@ class CurrentAffairs(Model):
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
 
+
 Tortoise.init_models(["admin_dashboard.models", "student.models", ], "models")
 Preference_Pydantic = pydantic_model_creator(Preference)
 PreferenceIn_Pydantic = pydantic_model_creator(
@@ -458,3 +459,67 @@ CourseCartIn_Pydantic = pydantic_model_creator(
     CourseCart, name="CourseCartIn", exclude_readonly=True)
 CourseCart_Pydantic = pydantic_model_creator(CourseCart)
 CurrentAffairs_Pydantic = pydantic_model_creator(CurrentAffairs)
+
+
+# Lite Models
+PreferenceLite_Pydantic = pydantic_model_creator(
+    Preference, name="PreferenceLite", include=("id", "name", "slug"))
+# CourseLite_Pydantic = pydantic_model_creator(Course, name="CourseLite", include=("id", "name"))
+# #how to make this CourseLite_Pydantic include its relational objects as well
+
+# Assuming CategoryLite_Pydantic is created correctly
+CategoryLite_Pydantic = pydantic_model_creator(
+    Category, name="CategoryLite", include=("id", "name"))
+
+# This Pydantic model represents the CourseCategories model with a nested Category
+CourseCategoriesLite_Pydantic = pydantic_model_creator(
+    CourseCategories, name="CourseCategoriesLite", include=("id"))
+
+# This Pydantic model represents the Course model with nested CourseCategories
+class CourseLite_Pydantic(BaseModel):
+    id: UUID4
+    name: str
+    categories: List[CategoryLite_Pydantic] = []
+
+    class Config:
+        from_attributes = True
+
+# Now, when serializing the courses, ensure to use CourseCategoriesLite_Pydantic for the nested categories
+
+# Define the Pydantic model for Preference including related CourseLite
+class PreferenceWithCoursesLite_Pydantic(PreferenceLite_Pydantic):
+    courses: List[CourseLite_Pydantic] = []
+
+
+CategorySubjectsLite_Pydantic = pydantic_model_creator(
+    CategorySubjects, name="CategorySubjectsLite", include=("id", "name"))
+subjectsLite_Pydantic = pydantic_model_creator(
+    subjects, name="subjectsLite", include=("id", "name"))
+TopicsLite_Pydantic = pydantic_model_creator(
+    Topics, name="TopicsLite", include=("id", "name"))
+CategoryTopicsLite_Pydantic = pydantic_model_creator(
+    CategoryTopics, name="CategoryTopicsLite", include=("id", "name"))
+CourseCategoryLecturesLite_Pydantic = pydantic_model_creator(
+    CourseCategoryLectures, name="CourseCategoryLecturesLite", include=("id", "title"))
+CourseCategoryNotesLite_Pydantic = pydantic_model_creator(
+    CourseCategoryNotes, name="CourseCategoryNotesLite", include=("id", "title"))
+CourseCategoryTestSeriesLite_Pydantic = pydantic_model_creator(
+    CourseCategoryTestSeries, name="CourseCategoryTestSeriesLite", include=("id", "title"))
+CourseCategoryOverviewLite_Pydantic = pydantic_model_creator(
+    CourseCategoryOverview, name="CourseCategoryOverviewLite", include=("id", "overview"))
+InstructorLite_Pydantic = pydantic_model_creator(
+    Instructor, name="InstructorLite", include=("id", "name"))
+SubscriptionPlansLite_Pydantic = pydantic_model_creator(
+    SubscriptionPlans, name="SubscriptionPlansLite", include=("id", "name"))
+CourseSubscriptionPlansLite_Pydantic = pydantic_model_creator(
+    CourseSubscriptionPlans, name="CourseSubscriptionPlansLite", include=("id", "name"))
+LiveClassesLite_Pydantic = pydantic_model_creator(
+    LiveClasses, name="LiveClassesLite", include=("id", "title"))
+addAppStaticUrlsLite_Pydantic = pydantic_model_creator(
+    addAppStaticUrls, name="addAppStaticUrlsLite", include=("id", "title"))
+offerBannersLite_Pydantic = pydantic_model_creator(
+    offerBanners, name="offerBannersLite", include=("id", "title"))
+CourseCartLite_Pydantic = pydantic_model_creator(
+    CourseCart, name="CourseCartLite", include=("id", "title"))
+CurrentAffairsLite_Pydantic = pydantic_model_creator(
+    CurrentAffairs, name="CurrentAffairsLite", include=("id", "title"))
