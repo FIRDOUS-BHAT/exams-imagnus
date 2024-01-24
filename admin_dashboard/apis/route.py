@@ -1,3 +1,4 @@
+from tortoise.query_utils import Prefetch
 from datetime import datetime, timedelta
 from aiohttp import ClientSession
 from urllib.parse import urlparse
@@ -26,11 +27,11 @@ from starlette.responses import JSONResponse
 from tortoise.contrib.fastapi import HTTPNotFoundError
 from dateutil.relativedelta import relativedelta
 from admin_dashboard.controller import upload_images
-from admin_dashboard.models import CategoryTopics, CategoryTopics_Pydantic, Coupons, Preference, Course, \
+from admin_dashboard.models import Category_Pydantic, CategoryLite_Pydantic, CategoryTopics, CategoryTopics_Pydantic, Coupons, CourseCategoriesLite_Pydantic, CourseLite_Pydantic, Preference, Course, \
     Preference_Pydantic, Course_Pydantic, \
     CourseSubscriptionPlans_Pydantic, CourseSubscriptionPlans, CourseCategories, \
     CourseCategories_Pydantic, Category, CourseCategoryTestSeries, CourseCategoryLectures, CourseCategoryNotes, \
-    LiveClasses, InstructorIn_Pydantic, Instructor, Instructor_Pydantic, LiveClasses_Pydantic, \
+    LiveClasses, InstructorIn_Pydantic, Instructor, Instructor_Pydantic, LiveClasses_Pydantic, PreferenceLite_Pydantic, PreferenceWithCoursesLite_Pydantic, \
     addAppStaticUrls, Topics, \
     addAppStaticUrls_Pydantic, offerBanners, offerBanners_Pydantic, Scholarship2021, InterViewProgram, CourseCategoryLecturesVideoURLS
 from aws_services.deps import s3_auth
@@ -78,35 +79,46 @@ cache_time = settings.cache_time
 # @cache(expire=3600)
 async def get_all_preferences(current_user: Preference_Pydantic = Depends(get_current_user)):
     try:
-        obj = await Preference_Pydantic.from_queryset(Preference.all().order_by('display_order') )
+        obj = await Preference_Pydantic.from_queryset(Preference.all().order_by('display_order'))
         return jsonable_encoder(obj)
     except Exception as ex:
         return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
-@router.get('/get_each_preference_courses/{preference_slug}', response_model=Preference_Pydantic,
+@router.get('/get_each_preference_courses/{preference_slug}',
+            # response_model=Preference_Pydantic,
             responses={404: {"model": HTTPNotFoundError}})
-async def get_each_preference_courses(preference_slug: str,
-                                      _=Depends(get_current_user)):
+async def get_each_preference_courses(preference_slug: str, _=Depends(get_current_user)):
     try:
-        return await Preference_Pydantic.from_queryset_single(Preference.get(slug=preference_slug)
-    )
-        
-        # Fetch the Preference
         preference = await Preference.get(slug=preference_slug)
+        # Fetch and serialize related courses ordered by 'display_order'
+        courses_query = Course.filter(
+            preference__slug=preference_slug).order_by('display_order')
+        # courses = await courses_query.prefetch_related('categories__category')
 
-        # Fetch and sort related courses
-        courses = await Course.filter(preference_id=preference.id).order_by('name').all()
+        courses_data = []
+        # for course in courses:
+        #     # Assuming each 'course' instance has a 'categories' attribute that returns CourseCategories instances
+        #     # categories_data = [
+        #     #     CategoryLite_Pydantic.from_tortoise_orm(course_category.category) for course_category in course.categories
+        #     # ]
+        #     course_data = CourseLite_Pydantic(
+        #         id=course.id,
+        #         name=course.name,
+        #         # categories=categories_data
+        #     )
+        #     courses_data.append(course_data)
 
-        # Combine data (manually map courses to preference if necessary)
-        preference_data = await Preference_Pydantic.from_tortoise_orm(preference)
-        preference_data.courses = courses  # Assuming you have a structure to hold this
+        # Serialize preference with courses
+        preference_data = PreferenceWithCoursesLite_Pydantic.from_tortoise_orm(
+            preference)
+        preference_data.courses = courses_data
 
-        return preference_data
+        return preference_data.dict()
 
     except Exception as ex:
+        print(str(ex))
         return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
-
 # @router.post('/Course_Category', response_model=Category_Pydantic)
 # async def create_course_category(todo: CategoryIn_Pydantic):
 #     obj = await CourseCategories.create(**todo.dict(exclude_unset=True))
@@ -232,12 +244,12 @@ async def update_video_urls():
         lecture.video_360 = None
         lecture.video_540 = None
 
-            # if video_size_360 is not None:
-            #     lecture.video_size_360 = video_size_360
-            # if video_size_480 is not None:
-            #     lecture.video_size_540 = video_size_480
+        # if video_size_360 is not None:
+        #     lecture.video_size_360 = video_size_360
+        # if video_size_480 is not None:
+        #     lecture.video_size_540 = video_size_480
 
-            # Append object to the list
+        # Append object to the list
         lectures_to_update.append(lecture)
         print(f'done:{i}')
         i = i + 1
@@ -245,40 +257,40 @@ async def update_video_urls():
         # If video ID is found, construct the new URLs
         # if video_id:
 
-            # base_url = extract_base_url(lecture.mobile_video_url)
-            # base_url = extract_base_url(lecture.video_360)
-            # new_video_360 = f"{base_url}/{video_id}/play_360p.mp4"
-            # new_video_480 = f"{base_url}/{video_id}/play_480p.mp4"
+        # base_url = extract_base_url(lecture.mobile_video_url)
+        # base_url = extract_base_url(lecture.video_360)
+        # new_video_360 = f"{base_url}/{video_id}/play_360p.mp4"
+        # new_video_480 = f"{base_url}/{video_id}/play_480p.mp4"
 
-            # m3u8_url = f"{base_url}/{video_id}/playlist.m3u8"
+        # m3u8_url = f"{base_url}/{video_id}/playlist.m3u8"
 
-            # Get video sizes
-            # video_size_360 = await get_video_size(new_video_360)
-            # video_size_480 = await get_video_size(new_video_480)
+        # Get video sizes
+        # video_size_360 = await get_video_size(new_video_360)
+        # video_size_480 = await get_video_size(new_video_480)
 
-            # print(i)
-            # print(f"video_size_360++{video_size_360}")
-            # print(f"video_size_480++{video_size_480}")
+        # print(i)
+        # print(f"video_size_360++{video_size_360}")
+        # print(f"video_size_480++{video_size_480}")
 
-            # Update fields in the object
-            # lecture.video_360 = new_video_360
-            # lecture.video_540 = new_video_480
-            # lecture.video_360 = None
-            # lecture.video_540 = None
-            # lecture.mobile_video_url = m3u8_url
-            # lecture.mobile_video_url = None
-            # lecture.video_size_360 = None
-            # lecture.video_size_540 = None
+        # Update fields in the object
+        # lecture.video_360 = new_video_360
+        # lecture.video_540 = new_video_480
+        # lecture.video_360 = None
+        # lecture.video_540 = None
+        # lecture.mobile_video_url = m3u8_url
+        # lecture.mobile_video_url = None
+        # lecture.video_size_360 = None
+        # lecture.video_size_540 = None
 
-            # # if video_size_360 is not None:
-            # #     lecture.video_size_360 = video_size_360
-            # # if video_size_480 is not None:
-            # #     lecture.video_size_540 = video_size_480
+        # # if video_size_360 is not None:
+        # #     lecture.video_size_360 = video_size_360
+        # # if video_size_480 is not None:
+        # #     lecture.video_size_540 = video_size_480
 
-            # # Append object to the list
-            # lectures_to_update.append(lecture)
-            # print(f'done:{i}')
-            # i = i + 1
+        # # Append object to the list
+        # lectures_to_update.append(lecture)
+        # print(f'done:{i}')
+        # i = i + 1
     # await CourseCategoryLectures.bulk_update(lectures_to_update, fields=["video_360", "video_540", "mobile_video_url", "video_size_360", "video_size_540"])
     await CourseCategoryLectures.bulk_update(lectures_to_update, fields=["video_360", "video_540"])
 
@@ -1935,7 +1947,6 @@ async def subscription_plans(course_slug: str, student_id: str, _=Depends(get_cu
         for subscription in course_plans:
             subscription_instance = await CourseSubscriptionPlans.get(id=subscription.id)
             # now = datetime.today()
-            import pytz
             tz = pytz.timezone('Asia/Kolkata')
             now = datetime.now(tz)
             if await StudentChoices.exists(student=student_instance,
@@ -1949,7 +1960,7 @@ async def subscription_plans(course_slug: str, student_id: str, _=Depends(get_cu
                 delta = now - subscribed_obj.created_at
                 used_months = round(delta.days / 30)
 
-                updated_dict = subscription.dict()
+                updated_dict = subscription.model_dump()
                 initial_video_count = updated_dict['no_of_videos']
                 initial_notes_count = updated_dict['no_of_notes']
                 initial_tests_count = updated_dict['no_of_tests']
@@ -1964,7 +1975,7 @@ async def subscription_plans(course_slug: str, student_id: str, _=Depends(get_cu
                 existing_price = updated_dict['plan_price']
                 # print(updated_dict)
             else:
-                updated_dict = subscription.dict()
+                updated_dict = subscription.model_dump()
                 validity = updated_dict['validity']
                 plan_price = updated_dict['plan_price']
                 if existing_validity and (validity > existing_validity):
@@ -2117,16 +2128,16 @@ async def get_live_classes(course_slug: str, student_id: str, _=Depends(get_curr
 @router.get('/get_filtered_live_classes/{course_slug}/{student_id}/{d}',
             response_model=List[LiveClassesPydantic]
             )
-async def get_live_classes(course_slug: str, student_id: str, d:str, _=Depends(get_current_user)):
+async def get_live_classes(course_slug: str, student_id: str, d: str, _=Depends(get_current_user)):
     try:
-        #parse d as date
+        # parse d as date
         d = datetime.strptime(d, '%Y-%m-%d').date()
         tradeDate = datetime.combine(d, datetime.min.time())
 
         dt = tz.localize(tradeDate, is_dst=True)
         # tradeDay=dt.astimezone(pytz.utc)
         dt1 = (dt+relativedelta(hours=23, minutes=59, seconds=59))
-       
+
         subscription = await activeSubscription.exists(course__slug=course_slug, student__id=student_id)
         if subscription:
             obj = await LiveClasses_Pydantic.from_queryset(
