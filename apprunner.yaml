@@ -2,16 +2,14 @@ version: 1.0
 runtime: python3
 build:
   commands:
-    build:
+    pre_build:
       - python -m venv venv
       - . venv/bin/activate
       - pip install -r requirements.txt
-
-env:
-  - name: PORT
-    value: "8000"
-
 run:
   command: . venv/bin/activate && python main.py
+  env_variables:
+    - name: PORT
+      value: "8000"
   network:
     port: 8000
