@@ -1,15 +1,15 @@
-version: 1.0
-runtime: python3
+version: 1.0 # version of the specification
+runtime: python3 # runtime to use
 build:
   commands:
-    pre_build:
-      - python -m venv venv
-      - . venv/bin/activate
-      - pip install -r requirements.txt
-run:
-  command: . venv/bin/activate && python main.py
-  env_variables:
+    build:
+      - pip install -r requirements.txt # install dependencies
+
+  env: # define environment variables
     - name: PORT
       value: "8000"
+
+run:
+  command: python main.py # command to run fastapi
   network:
-    port: 8000
+    port: 8000 # port AppRunner will expose
