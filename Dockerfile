@@ -1,12 +1,12 @@
 # Use an official Python runtime as a parent image
-FROM python:3.11
+FROM tiangolo/uvicorn-gunicorn-fastapi:python:3.11
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # Set work directory
-WORKDIR /
+WORKDIR /app
 
 # Install system dependencies
 RUN apt-get update \
