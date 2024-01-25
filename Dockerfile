@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM tiangolo/uvicorn-gunicorn-fastapi:python:3.11
+FROM public.ecr.aws/lambda/python:3.11
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
