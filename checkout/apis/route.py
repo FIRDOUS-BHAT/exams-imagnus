@@ -324,10 +324,7 @@ async def create_order(data):
 
  # List of special subscription IDs
 SPECIAL_SUBSCRIPTION_IDS = [
-    "13aa5fdc-a5c1-43a9-ac90-5b65e036e914",
-    "f229d152-fd20-4191-9b6b-2a2fa70723b7",
-    "a73cd6b9-8eee-4f60-8edb-ffa059e10cf7",
-    "45757747-3212-4b71-9928-3f588684fa9a"
+    "ce9d35e6-08b2-4535-8c95-daf9ee056e98"
 ]
 
 
@@ -366,7 +363,7 @@ async def place_order(data: PaymentRecordsIn_Pydantic, _=Depends(get_current_use
                     source="adm",
                     bill_amount=0,
                     student_id=data.student_id,  # Assuming student_id is also passed in the request
-                    subscription_id='f9d1f72e-249e-4a5a-9823-789100ebbd77'
+                    subscription_id='ea9c70f3-cbd5-43c7-9d39-f2721941f8c3'
                 )
 
                 # Call the place_order function with the set parameters

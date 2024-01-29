@@ -1,3 +1,6 @@
+# from helpers.cache_helpers import custom_key_builder
+from fastapi_cache.decorator import cache
+from aiocache import cached
 from tortoise.query_utils import Prefetch
 from datetime import datetime, timedelta
 from aiohttp import ClientSession
@@ -85,18 +88,31 @@ async def get_all_preferences(current_user: Preference_Pydantic = Depends(get_cu
         return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
 
 
+# def custom_key_builder(func, *args, **kwargs):
+#     # Extract student_id from kwargs
+#     student_id = 'default'
+#     print(kwargs)
+#     if 'data' in kwargs and hasattr(kwargs['data'], 'student_id'):
+#         student_id = kwargs['data'].student_id
+
+#     return f"{func.__module__}:{func.__name__}:{student_id}"
+
+
 @router.get('/get_each_preference_courses/{preference_slug}',
-            # response_model=Preference_Pydantic,
+            response_model=Preference_Pydantic,
             responses={404: {"model": HTTPNotFoundError}})
+# @cache(expire=60)
 async def get_each_preference_courses(preference_slug: str, _=Depends(get_current_user)):
     try:
-        preference = await Preference.get(slug=preference_slug)
-        # Fetch and serialize related courses ordered by 'display_order'
-        courses_query = Course.filter(
-            preference__slug=preference_slug).order_by('display_order')
+        logging.info("Function called")
+        print("CACHE NOT USED")
+        # preference = await Preference.get(slug=preference_slug)
+        # # Fetch and serialize related courses ordered by 'display_order'
+        # courses_query = Course.filter(
+        #     preference__slug=preference_slug).order_by('display_order')
         # courses = await courses_query.prefetch_related('categories__category')
 
-        courses_data = []
+        # courses_data = []
         # for course in courses:
         #     # Assuming each 'course' instance has a 'categories' attribute that returns CourseCategories instances
         #     # categories_data = [
@@ -110,11 +126,13 @@ async def get_each_preference_courses(preference_slug: str, _=Depends(get_curren
         #     courses_data.append(course_data)
 
         # Serialize preference with courses
-        preference_data = PreferenceWithCoursesLite_Pydantic.from_tortoise_orm(
-            preference)
-        preference_data.courses = courses_data
+        # preference_data = PreferenceWithCoursesLite_Pydantic.from_tortoise_orm(
+        #     preference)
+        # preference_data.courses = courses_data
 
-        return preference_data.dict()
+        # return preference_data.dict()
+
+        return await Preference_Pydantic.from_queryset_single(Preference.get(slug=preference_slug))
 
     except Exception as ex:
         print(str(ex))
@@ -137,7 +155,7 @@ async def course_details(c_slug: str, _=Depends(get_current_user), ):
 
 
 @router.post('/course_details1/{c_slug}/', response_model=List[CourseCategoriesCount])
-async def course_details(c_slug: str, _=Depends(get_current_user), ):
+async def course_details(c_slug: str, _=Depends(get_current_user)):
     try:
         course_cat_obj = await CourseCategories_Pydantic.from_queryset(
             CourseCategories.filter(course__slug=c_slug))
@@ -190,6 +208,23 @@ def extract_video_id(url: str) -> str:
     return match.group(1) if match else None
 
 
+def extract_uuid(url):
+    # Regular expression pattern for a UUID
+    uuid_pattern = r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
+
+    # Search for the pattern in the URL
+    match = re.search(uuid_pattern, url)
+
+    # If a match is found, return the UUID, otherwise return None
+    return match.group() if match else None
+
+
+# Example URL
+# url = "b''://b''/8bcfbcf0-8c84-4b68-be0f-98ad4964ee73/playlist.m3u8"
+
+# Extracting the UUID
+
+
 # Utility function to extract the base URL
 
 
@@ -206,13 +241,15 @@ def is_multiple_of_100(n):
 
 async def update_video_urls():
     # Fetch rows where mobile_video_url contains the specific string, reducing the number of rows fetched.
-    query = Q(mobile_video_url__contains=".b-cdn.net/")
-    # query = Q(video_360__contains=".b-cdn.net/")
+    # query = Q(mobile_video_url__contains=".b-cdn.net/")
+    # query = Q(web_video_url__contains="https://iframe.mediadelivery.net/")
+    # query = Q(mobile_video_url__contains="b''://b''")
+    query = Q(video_360__contains=".b-cdn.net/")
     # Add condition to check that video_360 is not null
     # query &= Q(video_size_360__isnull=True)
     # query = Q(video_size_360__isnull=True)
     # Calculate the date 30 days ago from today
-    date_30_days_ago = datetime.today() - timedelta(days=30)
+    # date_30_days_ago = datetime.today() - timedelta(days=30)
 
     # lectures = await CourseCategoryLectures.filter(query, created_at__gte=date_30_days_ago)
     lectures = await CourseCategoryLectures.filter(query)
@@ -237,12 +274,26 @@ async def update_video_urls():
         # video_id = extract_video_id(lecture.mobile_video_url)
         # video_id = extract_video_id(lecture.video_360)
 
+        # uuid = extract_uuid(lecture.mobile_video_url)
+        # print(f"The extracted UUID is: {uuid}")
+
+        url0 = lecture.web_video_url
+        url = lecture.video_360
+
+        split_url0 = url0.split('/')
+        split_url = url.split('/')
+
+        last_segment = split_url0[-1]
+        split_last_segment = last_segment.split('?')
+
+        uuid = split_last_segment[0]
+
         # print(video_id)
 
         # return True
 
-        lecture.video_360 = None
-        lecture.video_540 = None
+        # lecture.video_360 = None
+        # lecture.video_540 = None
 
         # if video_size_360 is not None:
         #     lecture.video_size_360 = video_size_360
@@ -250,7 +301,7 @@ async def update_video_urls():
         #     lecture.video_size_540 = video_size_480
 
         # Append object to the list
-        lectures_to_update.append(lecture)
+        # lectures_to_update.append(lecture)
         print(f'done:{i}')
         i = i + 1
 
@@ -263,6 +314,8 @@ async def update_video_urls():
         # new_video_480 = f"{base_url}/{video_id}/play_480p.mp4"
 
         # m3u8_url = f"{base_url}/{video_id}/playlist.m3u8"
+        # m3u8_url = f"https://vz-142b630d-cde.b-cdn.net/{uuid}/playlist.m3u8"
+        m3u8_url = f"https://{split_url[2]}/{split_url[3]}/playlist.m3u8"
 
         # Get video sizes
         # video_size_360 = await get_video_size(new_video_360)
@@ -274,10 +327,11 @@ async def update_video_urls():
 
         # Update fields in the object
         # lecture.video_360 = new_video_360
-        # lecture.video_540 = new_video_480
+        # lecture.video_540 = new_video_480m3u8_url
         # lecture.video_360 = None
         # lecture.video_540 = None
-        # lecture.mobile_video_url = m3u8_url
+        lecture.mobile_video_url = m3u8_url
+        lecture.video_id = uuid
         # lecture.mobile_video_url = None
         # lecture.video_size_360 = None
         # lecture.video_size_540 = None
@@ -288,12 +342,14 @@ async def update_video_urls():
         # #     lecture.video_size_540 = video_size_480
 
         # # Append object to the list
-        # lectures_to_update.append(lecture)
+        lectures_to_update.append(lecture)
         # print(f'done:{i}')
         # i = i + 1
     # await CourseCategoryLectures.bulk_update(lectures_to_update, fields=["video_360", "video_540", "mobile_video_url", "video_size_360", "video_size_540"])
-    await CourseCategoryLectures.bulk_update(lectures_to_update, fields=["video_360", "video_540"])
-
+    # await CourseCategoryLectures.bulk_update(lectures_to_update, fields=["mobile_video_url", "video_360", "video_540"])
+    await CourseCategoryLectures.bulk_update(lectures_to_update, fields=["mobile_video_url", "video_id"])
+    # await CourseCategoryLectures.bulk_update(lectures_to_update, fields=["video_id"])
+    # print(lectures_to_update)
     # if is_multiple_of_100(i):
     #     # await CourseCategoryLectures.bulk_update(lectures_to_update, fields=["video_360", "video_540", "video_size_360", "video_size_540"])
     #     lectures_to_update = []
