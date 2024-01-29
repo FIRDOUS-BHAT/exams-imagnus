@@ -4,6 +4,7 @@ import os
 class Setting(BaseSettings):
     app_url: str
     app_name: str
+    app_version: str
     debug: str
     allowed_host: str
     cookie_name: str
