@@ -1,6 +1,8 @@
+import time
+import os
 import logging
 import uuid
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
 from functools import lru_cache
 from typing import Optional
 import boto3
@@ -22,7 +24,7 @@ from FCM.route import push_service
 from admin_dashboard.models import Course_Pydantic, CourseCart, CourseCategoryLectures, CurrentAffairs, Instructor, Instructor_Pydantic, \
     Course, \
     CourseCategories, CourseCategories_Pydantic, CourseSubscriptionPlans_Pydantic, CourseSubscriptionPlans, Preference
-from checkout.apis.route import confirmOrderPydantic
+from checkout.apis.route import confirmOrderPydantic, place_free_subscription
 from checkout.models import PaymentRecords, PaymentRecords_Pydantic, paymentSession
 from configs import appinfo
 from student.controller import get_current_user
@@ -91,19 +93,21 @@ async def get_courses():
 
 @router.get('/student/preference/', )
 async def courses(request: Request, _=Depends(get_current_user)):
+    """Get all preference with their courses"""
     try:
         # courses_obj = await Preference_Pydantic.from_queryset_single(Preference.get(slug=preference_slug))
 
         # return courses_obj
         preference_list = []
 
-        preferences = await Preference.all()
+        preferences = await Preference.all().order_by('display_order')
         for preference in preferences:
             new_list = []
             new_pref = jsonable_encoder(preference)
-            courses_obj = await Course.filter(preference__slug=preference.slug)
+            courses_obj = await Course.filter(preference__id=preference.id)
             for course in courses_obj:
                 new_dict = jsonable_encoder(course)
+                # new_dict = course
                 purchased_count = await StudentChoices.filter(course__id=course.id).count()
                 new_dict.update({'enrolled_students': purchased_count})
                 new_list.append(new_dict)
@@ -409,19 +413,17 @@ async def delete_old_s3_objects():
         threshold = datetime.now() - timedelta(days=60)
 
         s3 = boto3.client(
-                's3',
-                aws_access_key_id=aws_access_key_id,
-                aws_secret_access_key=aws_secret_access_key,
-                config=Config(signature_version='s3v4'),
-                region_name=aws_region,
-            )
-        
-        folder_name = 'transcoded/'
+            's3',
+            aws_access_key_id=aws_access_key_id,
+            aws_secret_access_key=aws_secret_access_key,
+            config=Config(signature_version='s3v4'),
+            region_name=aws_region,
+        )
 
+        folder_name = 'transcoded/'
 
         # List and check each object in the bucket
         print('S3 RESPONSE')
-        
 
         continuation_token = None
         while True:
@@ -453,11 +455,10 @@ async def delete_old_s3_objects():
             if response.get('IsTruncated'):  # True if there are more results available
                 continuation_token = response.get('NextContinuationToken')
             else:
-                break    
+                break
     except Exception as ex:
         print(str(ex))
         return str(ex)
-
 
 
 ''''Sample progress bar file here'''
@@ -468,16 +469,103 @@ async def download_progress_bar(request: Request, ):
 
     return templates.TemplateResponse('sample-file-progress-bar.html',
                                       context={'request': request,
-
                                                })
 
 
+async def get_razorpay_order_id(amount, subscription_id):
+    try:
+        print("YOU ARE IN GET RAZORPAY ORDER ID")
+        # TAKE ONLY LAST 10 CHARACTER OF THE SUBSCRIPTION ID FOR RECEITP ID
+        receipt_id = str(subscription_id)[-10:]
+
+        order = client.order.create({
+            "amount": amount * 100,
+            "currency": "INR",
+
+                        "receipt": f"order_rcptid_{receipt_id}"
+        })
+        order_id = order['id']
+        return order_id
+    except Exception as ex:
+        print(str(ex))
+        return None
+
+
+async def create_subscription(student, item_instance, now_date):
+    """Create subscription for student"""
+    try:
+        print("YOU ARE IN CREATE SUBSCRIPTION")
+        amount = item_instance.plan_price
+        validity = item_instance.validity
+        expiry_date = now_date + relativedelta(months=validity)
+
+        print(await get_razorpay_order_id(amount, item_instance.id))
+
+        order_id = await get_razorpay_order_id(amount, item_instance.id)
+
+        if not order_id:
+            return False, None
+
+        print(f"{order_id} is the order id")
+
+        payment_obj = await PaymentRecords.create(
+            student=student,
+            payment_mode=1,
+            subscription=item_instance,
+            payment_id='',
+            order_id=order_id,
+            coupon='',
+            coupon_discount=0,
+            bill_amount=amount,
+            gateway_name='Razorpay',
+            payment_status=1,
+            source='web',
+            updated_at=now_date,
+            created_at=now_date,
+
+        )
+
+        if payment_obj:
+
+            print("PAYMENT OBJECT CREATED")
+
+            c_ins = await Course.get(id=item_instance.course_id)
+
+            student_choices_obj = await StudentChoices.create(
+                student=student,
+                course=c_ins,
+                subscription=item_instance,
+                payment=payment_obj,
+                subscription_duration=validity,
+                expiry_date=expiry_date,
+                updated_at=now_date,
+                created_at=now_date
+            )
+            if student_choices_obj:
+                if await activeSubscription.exists(student=student, course=c_ins):
+                    await activeSubscription.filter(
+                        student=student, course=c_ins).delete()
+                    await activeSubscription.create(
+                        student=student, payment=payment_obj, subscription=item_instance,
+                        course=c_ins, updated_at=now_date
+                    )
+                else:
+                    await activeSubscription.create(
+                        student=student, payment=payment_obj, subscription=item_instance,
+                        course=c_ins, updated_at=now_date
+                    )
+
+                return True, order_id
+        return False, None
+    except Exception as ex:
+        print(f"{str(ex)} IN CREATE SUBSCRIPTION")
+        return False, None
+
+
 @router.post('/course/create_order/')
-async def create_razorpay_order(request: Request,
-                                create_order: Optional[str] = None,
+async def create_razorpay_order(create_order: Optional[str] = None,
                                 user=Depends(get_current_user)):
     try:
-        updated_at = datetime.now(tz)
         now = datetime.now(tz)
         student = await Student.get(id=user)
         if await CourseCart.exists(student=student):
@@ -485,85 +573,36 @@ async def create_razorpay_order(request: Request,
             item_id = cart_instance["subscription__id"]
             item_instance = await CourseSubscriptionPlans.get(id=item_id)
             amount = item_instance.plan_price
+            validity = item_instance.validity
             # await StudyMaterialOrderInstance.filter(student=student, item_id=item_instance).delete()
 
             if create_order == 'True':
 
-                subs_obj = await CourseSubscriptionPlans.get(id=item_id).values("course__id", "validity")
-                subs_obj1 = await CourseSubscriptionPlans.get(id=item_id)
+                # CASE 1: IF STUDENT IS ALREADY SUBSCRIBED TO A PLAN
+                if await StudentChoices.exists(student=student, subscription=item_instance, expiry_date__gte=now, payment__payment_status=2):
 
-                cid = subs_obj["course__id"]
-                validity = subs_obj["validity"]
-                c_ins = await Course.get(id=cid)
-
-                if await StudentChoices.exists(student=student, course=c_ins, expiry_date__gte=now, payment__payment_status=2):
+                    return JSONResponse(
+                        {"status": False,
+                         "message": "you're already registered with this plan"},
+                        status_code=200
+                    )
 
                     subscribed_obj = await StudentChoices.get(student=student,
-                                                              course=c_ins, expiry_date__gte=now).values("subscription__id")
+                                                              course=c_ins, expiry_date__gte=now, payment__payment_status=2).values("subscription__id")
                     subscription_id = subscribed_obj['subscription__id']
                     ex_subscript_obj = await CourseSubscriptionPlans.get(id=subscription_id)
                     existing_validity = ex_subscript_obj.validity
                     order_id = None
+                    flag = False
 
                     if validity > existing_validity:
-                        order = client.order.create({
-                            "amount": amount * 100,
-                            "currency": "INR",
-                            "receipt": 'order_rcptid_11'
-                        })
-                        order_id = order['id']
+
                         subscribed_plan_obj = await StudentChoices.get(student=student,
-                                                                       course=c_ins, expiry_date__gte=now)
+                                                                       course=c_ins, expiry_date__gte=now, payment__payment_status=2)
 
                         delta = now - subscribed_plan_obj.created_at
                         used_months = round(delta.days / 30)
                         validity = validity - used_months
-
-                        # payment_obj = await PaymentRecords.create(
-                        #     student=student,
-                        #     payment_mode=1,
-                        #     subscription=subs_obj1,
-                        #     payment_id='',
-                        #     order_id=order_id,
-                        #     coupon='',
-                        #     coupon_discount=0,
-                        #     bill_amount=amount,
-                        #     gateway_name='Razorpay',
-                        #     payment_status=1,
-                        #     source='web',
-                        #     updated_at=now,
-
-                        # )
-
-                        # await StudentChoices.filter(student=student, course=c_ins).update(
-                        #     subscription=ex_subscript_obj, payment=payment_obj, expiry_date=now,
-                        #     updated_at=now)
-
-                        # expiry_date = now + \
-                        #     relativedelta(months=validity)
-                        # if payment_obj:
-                        #     student_choices_obj = await StudentChoices.create(
-                        #         student=student,
-                        #         course=c_ins,
-                        #         subscription=subs_obj1,
-                        #         payment=payment_obj,
-                        #         subscription_duration=validity,
-                        #         expiry_date=expiry_date,
-                        #         updated_at=now,
-                        #         created_at=now
-                        #     )
-                        #     if student_choices_obj:
-                        #         if await activeSubscription.exists(student=student, course=c_ins):
-                        #             await activeSubscription.filter(
-                        #                 student=student, course=c_ins).update(
-                        #                 subscription=subs_obj1, payment=payment_obj, updated_at=now)
-                        #         else:
-                        #             await activeSubscription.create(
-                        #                 student=student, payment=payment_obj, subscription=subs_obj1,
-                        #                 course=c_ins, updated_at=now
-                        #             )
-
-                        return JSONResponse({"status": True, "order_id": order_id, "amount": amount}, status_code=200)
 
                     elif validity == existing_validity:
 
@@ -579,87 +618,35 @@ async def create_razorpay_order(request: Request,
                             status_code=200
                         )
 
-                elif await StudentChoices.exists(student=student, course=c_ins, expiry_date__gte=now, payment__payment_status=1):
-                    pending_order_obj = await StudentChoices.get(
-                        student=student, course=c_ins, expiry_date__gte=now, payment__payment_status=1
-                    ).values("payment__order_id")
-                    print(pending_order_obj)
-                    order_id = pending_order_obj["payment__order_id"]
-                    await PaymentRecords.get(order_id=order_id).delete()
+                # CASE 2: IF STUDENT IS ALREADY PLACED THE ORDER BUT PAYMENT IS PENDING
+                elif await StudentChoices.exists(student=student, subscription=item_instance, payment__payment_status=1):
+                    # delete it from payment records table
+                    await PaymentRecords.get(student=student, subscription=item_instance, payment_status=1).delete()
 
-                    order = client.order.create({
-                        "amount": amount * 100,
-                        "currency": "INR",
-                        "receipt": 'order_rcptid_11'
-                    })
-
-                    order_id = order['id']
-                    # payment_obj = await PaymentRecords.create(
-                    #     student=student,
-                    #     payment_mode=1,
-                    #     subscription=subs_obj1,
-                    #     payment_id='',
-                    #     order_id=order_id,
-                    #     coupon='',
-                    #     coupon_discount=0,
-                    #     bill_amount=amount,
-                    #     gateway_name='Razorpay',
-                    #     payment_status=1,
-                    #     updated_at=updated_at,
-                    #     source='web'
-                    # )
-
-                    # expiry_date = updated_at + \
-                    #     relativedelta(months=validity)
-                    # if payment_obj:
-                    #     student_choices_obj = await StudentChoices.create(
-                    #         student=student,
-                    #         course=c_ins,
-                    #         subscription=subs_obj1,
-                    #         payment=payment_obj,
-                    #         subscription_duration=validity,
-                    #         expiry_date=expiry_date,
-                    #         updated_at=updated_at,
-                    #         created_at=updated_at
-                    #     )
-                    #     if student_choices_obj:
-                    #         if await activeSubscription.exists(student=student, course=c_ins):
-                    #             await activeSubscription.filter(
-                    #                 student=student, course=c_ins).delete()
-                    #             await activeSubscription.create(
-                    #                 student=student, payment=payment_obj, subscription=subs_obj1,
-                    #                 course=c_ins, updated_at=updated_at
-                    #             )
-                    #         else:
-                    #             await activeSubscription.create(
-                    #                 student=student, payment=payment_obj, subscription=subs_obj1,
-                    #                 course=c_ins, updated_at=updated_at
-                    #             )
-
+                flag, order_id = await create_subscription(student, item_instance, now)
+                print(flag)
+                if flag:
                     return JSONResponse({"status": True, "order_id": order_id, "amount": amount}, status_code=200)
 
-                elif not await StudentChoices.exists(course=c_ins, student=student, expiry_date__gte=now):
-                    order = client.order.create({
-                        "amount": amount * 100,
-                        "currency": "INR",
-                        "receipt": 'order_rcptid_11'
-                    })
-                    order_id = order['id']
-
-                    return JSONResponse({"status": True, "order_id": order_id, "amount": amount}, status_code=200)
-
-                else:
-                    return JSONResponse(
-                        {"status": False,
-                         "message": "you're already registered with this plan"},
-                        status_code=200
-                    )
+                return JSONResponse({"status": False, "message": "Something went wrong"}, status_code=208)
 
         else:
-            return JSONResponse({"status": False, "details": "Student Id does not exist"}, status_code=208)
+            return JSONResponse({"status": False, "details": "Cart is Empty"}, status_code=208)
 
     except Exception as ex:
         return JSONResponse({'status': False, 'message': str(ex)}, status_code=208)
+
+
+async def razorpay_signature_verification(order_id, payment_id, signature):
+    is_valid_signature = client.utility.verify_payment_signature({
+        'razorpay_order_id': order_id,
+        'razorpay_payment_id': payment_id,
+        'razorpay_signature': signature
+    })
+
+    if is_valid_signature:
+        return True
+    return False
 
 
 @router.post('/course/confirm_order/')
@@ -668,20 +655,57 @@ async def confirm_order(request: Request, user=Depends(get_current_user)):
     try:
         data = await request.json()
         student = await Student.get(id=user)
-        import os
-        import time
-        time.sleep(1.5)
+        order_id = data['order_id']
+        payment_id = data['payment_id']
+        payment_signature = data['signature']
+
+        # now verify this razorpay signature
+
+        sig_resp = await razorpay_signature_verification(order_id=order_id, payment_id=payment_id, signature=payment_signature)
+
+        if not sig_resp:
+            return JSONResponse(
+                {"status": False, "message": "Something went wrong"}, status_code=208)
+
+        # time.sleep(1.5)
 
         if await PaymentRecords.exists(order_id=data['order_id']):
             print("YOU ARE HERE")
-            p_obj = await StudentChoices.get(student=student, payment__order_id=data['order_id']).values('course__id')
-            c_ins = await Course.get(id=p_obj['course__id'])
-            resp = client.payment.fetch(data['payment_id'])
-            updated_at = datetime.now(tz)
+            await PaymentRecords.filter(order_id=data['order_id']).update(payment_id=data['payment_id'], payment_status=2, updated_at=updated_at)
+            print("YOU ARE HERE 1 payment records updated")
 
-            # await PaymentRecords.get(order_id=data['order_id']).update(
-            #     payment_id=data['payment_id'], source='web', payment_status=2, updated_at=updated_at
-            # )
+            subscription_validity = await PaymentRecords.get(order_id=order_id).values("subscription__validity")
+            validity = subscription_validity['subscription__validity']
+
+            print(updated_at)
+            expiry_date = updated_at + relativedelta(months=validity)
+
+            # update expiry date of student choices
+            # Fetch the IDs
+            ids_to_update = await StudentChoices.filter(student=student, payment__order_id=order_id).values_list('id', flat=True)
+
+            # Perform the update
+            await StudentChoices.filter(id__in=ids_to_update).update(expiry_date=expiry_date, updated_at=updated_at)
+
+            print("YOU ARE HERE 2 student choices updated")
+
+            course_id = await PaymentRecords.get(order_id=order_id).values("subscription__course__id")
+
+            subscription_id = await PaymentRecords.get(order_id=order_id).values("subscription__id")
+
+            subscription_id = subscription_id['subscription__id']
+
+            await place_free_subscription(subscription_id, user)
+
+            print("free subscription called")
+
+
+            course_id = course_id['subscription__course__id']
+
+            c_ins = await Course.get(id=course_id)
+
+            #delete coursecart
+            await CourseCart.filter(student=student,subscription_id=subscription_id).delete()
 
             fcm_token = student.fcm_token
             if fcm_token:
@@ -692,10 +716,12 @@ async def confirm_order(request: Request, user=Depends(get_current_user)):
                     "open": "profile",
                     "data_payload": {}
                 }
-                result = push_service.notify_single_device(registration_id=fcm_token,
-                                                           message_title=message_title,
-                                                           message_body=message_body,
-                                                           data_message=data_message)
+
+                # fire notification to student
+                push_service.notify_single_device(registration_id=fcm_token,
+                                                  message_title=message_title,
+                                                  message_body=message_body,
+                                                  data_message=data_message)
 
             resp = JSONResponse(
                 {"status": True, "redirectUrl": "/student/new-dashboard/", "message": "Order confirmed"}, status_code=200)
