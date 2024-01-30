@@ -1,198 +1,238 @@
-{% extends "base.html" %}
-{% block content %}
-			
-			<!-- ============================ Hero Banner  Start================================== -->
-			<section class="newsletter themes-bg2 inverse-theme" data-wow-duration="2s" data-wow-delay="0.2s">
-				 <div class="container">
-					 <div class="row">
-						 <div class="col-lg-6 col-md-6 mt-20">
-							 <div class="text-left">
-								 <h2 class="text-white title m-b10">All the Special E-Course is available in Hindi & English. </h2>
-								 <p>In our E-Course, you will find the content in a precise as well as conceptual manner. Explicitly designed presentation to develop interest and avoid fuzziness. The notes have a proper linkage of subjects with current affairs to make the answers more effective than other competitors. </p>
-								 
-							 </div>
-						 </div>
-						 <div class="col-lg-6 col-md-6">
-						     
-					<div class="row">
-						<div class="col-md-12">
-							<div id="testimonials_style" class="slick-carousel-3 arrow_middle">
-								<div class="testimonial-detail">
-									<div class="client-detail-box">
-										<div class="img-responsive">
-										  <img src="/static/courses_assets/img/a3.png" alt="imagnus academy online coaching classes" style="height:240px; margin:0 auto;">
-										</div>
-										
-									</div>
-								
-								</div>
+{% extends "base.html" %} {% block content %}
 
-								<div class="testimonial-detail">
-									<div class="client-detail-box">
-									<div class="img-responsive">
-										  <img src="/static/courses_assets/img/ia.png" alt="imagnus academy online coaching classes" style="height:240px; margin:0 auto;">
-										</div>
-									
-									</div>
-								
-								</div>
-								
-								<div class="testimonial-detail">
-									<div class="client-detail-box">
-									<div class="img-responsive">
-										  <img src="/static/courses_assets/img/a2.png" alt="imagnus academy online coaching classes" style="height:240px; margin:0 auto;">
-										</div>
-										
-									</div>
-								
-								</div>
-								
-							
-							</div>
-						</div>
-					</div>
-						 </div>
-						 
-					 </div>
-				 </div>
-			 </section>
-			 
-			 
-		
-			<!-- ============================ Hero Banner End ================================== -->
-			
-			<!-- ============================ Featured Courses Start ================================== -->
-			<section>
-				<div class="container">
-				
-					<div class="row justify-content-center">
-					    <div class="col-lg-12 col-md-6 section-head style-1 text-center mb-30">
-					               <h6 class="sub-title bgl-primary m-b20 text-primary">Our Special E-Course Examinations </h6>
-					               <h4>Available<span class="theme-cl">   E-Course  </span>by Categories </h4>
-				         </div>
-					
-					</div>
-					
-					<div class="row">
-					    <div class="col-lg-4 col-md-12 col-sm-12">
-						   <div class="dashboard_container">
-                              <div class="dashboard_container_header">
-                                 <div class="dashboard_fl_1">
-                                    <h4> Preference</h4>
-                                 </div>
-                              </div>
-                              <div class="dashboard_container_body p-4">
-                                <div class="ui form">
-                                          <div class="grouped fields">
-                                             <div class="field fltr-radio">
-                                                <ul class="no-ul-list">
-												{% for preference in preferences %}
-												
-												<!-- {%if loop.index ==1%} -->
-                                                   <li class="{{ 'active' if loop.index ==1 else ''}}">
-                                                      <!-- <input  id="{{ preference.slug }}" onclick="openCourses('{{ preference.slug }}')" class="checkbox-custom"
-													   name="radio_button" type="radio"> -->
-                                                      <label for="a-p" class="checkbox-custom-label">{{ preference.name }}</label>
-                                                   </li>
-												   <!-- {%endif %} -->
-                                                {% endfor %}
-                                                   
-                                                </ul>
-                                             </div>
-                                          </div>
-                                       </div>
-                              </div>
-                           </div>
-						</div>
-						<div class="col-lg-8 col-md-12 col-sm-12">
-						
-						  <div >
-					{% for preference in preference_list %}
-					{% if loop.index ==1%}
-						<div class="row" >
-							{% for course in preference.courses%}
-						   <div class="col-lg-6 col-md-6 col-sm-6">
-							<a href="/student/course_details/{{preference.slug}}/{{course.slug}}/">
-							    <div class="edu_category1">
-								<div class="edu_cat_icons">
-									<span class="pic-main" href="#"><img src="{{course.web_icon}}" class="img-fluid" alt=""></span>
-								</div>
-								<div class="edu_cat_data">
-									<h4 class="title">{{course.name}}</h4>
-									<ul class="meta text-success">
-										<li class="video"><i class="ti-layers-alt"></i>{{course.enrolled_students+533+loop.index}} Students Enrolled</li>
-									</ul>
-								</div>
-							</div>	
-							</a>
-								</div>
-							{% endfor %}
-						</div>
-						{%endif%}
-						{% endfor %}
-						</div>
-						</div>	
-					</div>
-				</div>
-			</section>
-			<!-- ============================ Featured Courses End ================================== -->
-			
-		
-			
-			<!-- ========================== About Facts List Section =============================== -->
-			<section class="bg-light">
-				<div class="container">
-					
-					<div class="row align-items-center">
-					
-						<div class="col-lg-6 col-md-6 col-sm-12">
-							<div class="list_facts_wrap">
-								<div class="sec-heading mb-3">
-									<h2> Benefits of <span class="theme-cl">Test Series</span></h2>
-								</div>
-								<div class="list_facts">
-									<div class="list_facts_icons"><i class="ti-desktop"></i></div>
-									<div class="list_facts_caption">
-										<h4>Updated Syllabus</h4>
-										<p>Each and every aspect of the topic described in compliance with the updated syllabus.</p>
-									</div>
-								</div>
-								<div class="list_facts">
-									<div class="list_facts_icons"><i class="ti-heart"></i></div>
-									<div class="list_facts_caption">
-										<h4>Important Facts</h4>
-										<p>All the relevant topics cover introduction, features, important facts and figures, analysis, etc.</p>
-									</div>
-								</div>
-								<div class="list_facts">
-									<div class="list_facts_icons"><i class="ti-harddrives"></i></div>
-									<div class="list_facts_caption">
-										<h4>Boost Understanding</h4>
-										<p>The notes have a proper linkage of subjects with current affairs to boost understanding.</p>
-									</div>
-								</div>
-								
-							</div>
-						
-						</div>
-						
-						<div class="col-lg-6 col-md-6 col-sm-12">
-							<div class="list_facts_wrap_img">
-							
-								<img src="/static/courses_assets/img/ic.png" class="img-fluid" alt="" />
-								
-							</div>
-						</div>
+<!-- ============================ Hero Banner  Start================================== -->
+<section
+  class="newsletter themes-bg2 inverse-theme"
+  data-wow-duration="2s"
+  data-wow-delay="0.2s"
+>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 col-md-6 mt-20">
+        <div class="text-left">
+          <h2 class="text-white title m-b10">
+            All the Special E-Course is available in Hindi & English.
+          </h2>
+          <p>
+            In our E-Course, you will find the content in a precise as well as
+            conceptual manner. Explicitly designed presentation to develop
+            interest and avoid fuzziness. The notes have a proper linkage of
+            subjects with current affairs to make the answers more effective
+            than other competitors.
+          </p>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-6">
+        <div class="row">
+          <div class="col-md-12">
+            <div id="testimonials_style" class="slick-carousel-3 arrow_middle">
+              <div class="testimonial-detail">
+                <div class="client-detail-box">
+                  <div class="img-responsive">
+                    <img
+                      src="/static/courses_assets/img/a3.png"
+                      alt="imagnus academy online coaching classes"
+                      style="height: 240px; margin: 0 auto"
+                    />
+                  </div>
+                </div>
+              </div>
 
-					</div>
-					
-				</div>
-			</section>
-			<!-- ========================== About Facts List Section =============================== -->
-			
-		
-			
-			
-		
+              <div class="testimonial-detail">
+                <div class="client-detail-box">
+                  <div class="img-responsive">
+                    <img
+                      src="/static/courses_assets/img/ia.png"
+                      alt="imagnus academy online coaching classes"
+                      style="height: 240px; margin: 0 auto"
+                    />
+                  </div>
+                </div>
+              </div>
 
+              <div class="testimonial-detail">
+                <div class="client-detail-box">
+                  <div class="img-responsive">
+                    <img
+                      src="/static/courses_assets/img/a2.png"
+                      alt="imagnus academy online coaching classes"
+                      style="height: 240px; margin: 0 auto"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ Hero Banner End ================================== -->
+
+<!-- ============================ Featured Courses Start ================================== -->
+<section>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-12 col-md-6 section-head style-1 text-center mb-30">
+        <h6 class="sub-title bgl-primary m-b20 text-primary">
+          Our Special E-Course Examinations
+        </h6>
+        <h4>Available<span class="theme-cl"> E-Courses </span></h4>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-4 col-md-12 col-sm-12">
+        <div class="dashboard_container">
+          <div class="dashboard_container_header">
+            <div class="dashboard_fl_1">
+              <h4>Preferences</h4>
+            </div>
+          </div>
+          <div class="dashboard_container_body p-4">
+            <div class="ui form">
+              <div class="grouped fields">
+                <div class="field fltr-radio">
+                  <ul class="no-ul-list">
+                    {% for preference in preferences %}
+                    <li
+                      id="pref_{{ preference.id }}"
+                      class="preference-item  {{ 'active' if loop.index == 1 else '' }}"
+                      onclick="showCourses('{{ preference.id }}')"
+                    >
+                      <input
+                        type="checkbox"
+                        id="pref_{{ loop.index }}"
+                        class="hidden-checkbox"
+                      />
+                      <label
+                        for="pref_{{ loop.index }}"
+                        class="checkbox-custom-label"
+                        >{{ preference.name }}</label
+                      >
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-8 col-md-12 col-sm-12">
+        <div>
+          {% for preference in preference_list %} 
+          <div id="courses_{{ preference.id }}" class="row course-list {{ 'active' if loop.index == 1 else 'hidden' }}">
+            {% for course in preference.courses%}
+            <div class="col-lg-6 col-md-6 col-sm-6">
+              <a
+                href="/student/course_details/{{preference.slug}}/{{course.slug}}/"
+              >
+                <div class="edu_category1">
+                  <div class="edu_cat_icons">
+                    <span class="pic-main" href="#"
+                      ><img src="{{course.web_icon}}" class="img-fluid" alt=""
+                    /></span>
+                  </div>
+                  <div class="edu_cat_data">
+                    <h4 class="title">{{course.name}}</h4>
+                    <ul class="meta text-success">
+                      <li class="video">
+                        <i class="ti-layers-alt"></i
+                        >{{course.enrolled_students+533+loop.index}} Students
+                        Enrolled
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </a>
+            </div>
+            {% endfor %}
+          </div>
+           {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ============================ Featured Courses End ================================== -->
+
+<!-- ========================== About Facts List Section =============================== -->
+<section class="bg-light">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="list_facts_wrap">
+          <div class="sec-heading mb-3">
+            <h2>Benefits of <span class="theme-cl">Test Series</span></h2>
+          </div>
+          <div class="list_facts">
+            <div class="list_facts_icons"><i class="ti-desktop"></i></div>
+            <div class="list_facts_caption">
+              <h4>Updated Syllabus</h4>
+              <p>
+                Each and every aspect of the topic described in compliance with
+                the updated syllabus.
+              </p>
+            </div>
+          </div>
+          <div class="list_facts">
+            <div class="list_facts_icons"><i class="ti-heart"></i></div>
+            <div class="list_facts_caption">
+              <h4>Important Facts</h4>
+              <p>
+                All the relevant topics cover introduction, features, important
+                facts and figures, analysis, etc.
+              </p>
+            </div>
+          </div>
+          <div class="list_facts">
+            <div class="list_facts_icons"><i class="ti-harddrives"></i></div>
+            <div class="list_facts_caption">
+              <h4>Boost Understanding</h4>
+              <p>
+                The notes have a proper linkage of subjects with current affairs
+                to boost understanding.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="list_facts_wrap_img">
+          <img
+            src="/static/courses_assets/img/ic.png"
+            class="img-fluid"
+            alt=""
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ========================== About Facts List Section =============================== -->
+<script>
+  function showCourses(preferenceId) { 
+    // Hide all courses
+    document.querySelectorAll(".course-list").forEach(function (courseList) {
+      courseList.classList.add("hidden");
+    });
+
+    // Remove active class from all preferences
+    document.querySelectorAll(".preference-item").forEach(function (prefItem) {
+      prefItem.classList.remove("active");
+    });
+
+    // Show the courses related to the clicked preference
+    document
+      .getElementById("courses_" + preferenceId)
+      .classList.remove("hidden");
+
+    // Add active class to the clicked preference
+    document.getElementById("pref_" + preferenceId).classList.add("active");
+  }
+</script>
 {% endblock %}
