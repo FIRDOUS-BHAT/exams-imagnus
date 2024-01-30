@@ -212,3 +212,6 @@ venvOld
 .env copy
 venvTest
 .env
+parameter-group.py
+main copy.py
+delete_orphaned_videos.py
