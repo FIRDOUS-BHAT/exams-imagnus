@@ -260,8 +260,11 @@ async def student_dashboard(request: Request, user=Depends(get_current_user)):
         # )
         subscriptions = await StudentChoices.filter(student__id=user, expiry_date__gte=now)\
             .values(
+                subscription_id="subscription__id", 
             web_icon="course__web_icon", preference_name="course__preference__name",
-            course_name="course__name", plan_price="subscription__plan_price", course_id="course__id")
+            course_name="course__name", plan_price="subscription__plan_price", course_id="course__id",
+            payment_status="payment__payment_status"
+            )
     else:
         subscriptions = None
     std_m_exist = await StudyMaterialOrderInstance.exists(student__id=user, package_mode=1)
@@ -565,6 +568,7 @@ async def create_subscription(student, item_instance, now_date):
 @router.post('/course/create_order/')
 async def create_razorpay_order(create_order: Optional[str] = None,
                                 user=Depends(get_current_user)):
+    """create order"""
     try:
         now = datetime.now(tz)
         student = await Student.get(id=user)
@@ -620,11 +624,16 @@ async def create_razorpay_order(create_order: Optional[str] = None,
 
                 # CASE 2: IF STUDENT IS ALREADY PLACED THE ORDER BUT PAYMENT IS PENDING
                 elif await StudentChoices.exists(student=student, subscription=item_instance, payment__payment_status=1):
-                    # delete it from payment records table
-                    await PaymentRecords.get(student=student, subscription=item_instance, payment_status=1).delete()
+                    
+                    #delete from student choices
+                    if await StudentChoices.get(student=student, subscription=item_instance).delete():
+                        #delete from active subscription
+                        if await activeSubscription.get(student=student, subscription=item_instance).delete():
+                            # delete it from payment records table
+                            await PaymentRecords.get(student=student, subscription=item_instance, payment_status=1).delete()
 
                 flag, order_id = await create_subscription(student, item_instance, now)
-                print(flag)
+                
                 if flag:
                     return JSONResponse({"status": True, "order_id": order_id, "amount": amount}, status_code=200)
 

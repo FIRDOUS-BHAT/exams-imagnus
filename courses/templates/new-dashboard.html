@@ -119,7 +119,11 @@
                                                          </div>
                                                          <div class="dashboard_single_course_progress_2">
                                                             <ul class="m-0">
+                                                               {% if subscription.payment_status == 1%}
+                                                               <a href="/students/subscription_plan/{{subscription.subscription_id}}/checkout/" class="btn btn-primary btn-md">Purchase <i class="ti-angle-double-right"></i></a>
+                                                               {% else %}
                                                                <a href="/student/dashboard/{{ subscription.course_id}}/" class="btn btn-primary btn-md">View Course <i class="ti-angle-double-right"></i></a>
+                                                               {% endif %}
                                                             </ul>
                                                          </div>
                                                       </div>
