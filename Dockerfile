@@ -1,20 +1,17 @@
 # Use an official Python runtime as a parent image
-FROM python:3.11-slim
+FROM python:3.8-slim
 
 # Set the working directory in the container
-WORKDIR /imagnus
+WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /imagnus
+# Copy the dependencies file to the working directory
+COPY requirements.txt .
 
-# Install any needed packages specified in requirements.txt
+# Install any dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Make port 80 available to the world outside this container
-EXPOSE 80
+# Copy the content of the local src directory to the working directory
+COPY src/ .
 
-# Define environment variable
-# ENV NAME World
-
-# Run app.py when the container launches
+# Command to run the application
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]

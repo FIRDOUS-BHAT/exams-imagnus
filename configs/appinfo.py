@@ -5,8 +5,6 @@ class Setting(BaseSettings):
     app_url: str
     app_name: str
     app_version: str
-    app_framework: str
-    app_date: str
     debug: str
     allowed_host: str
     cookie_name: str
