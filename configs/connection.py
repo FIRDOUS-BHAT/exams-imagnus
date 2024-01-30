@@ -21,7 +21,7 @@ def DATABASE_URL(
         port: str = db_config().db_port,
         database: str = db_config().db_database
 ):
-    return str(connection + "://" + username + ":" + password + "@" + host + ":" + port + "/" + database)
+    return f"{connection}://{username}:{password}@{host}:{port}/{database}"
 
 
 database = databases.Database(DATABASE_URL())
@@ -31,8 +31,3 @@ database = databases.Database(DATABASE_URL())
 # )
 #
 # metadata.create_all(engine)
-
-
-
-
-

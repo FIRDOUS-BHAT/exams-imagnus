@@ -1,3 +1,4 @@
+import os
 import traceback
 import uvicorn
 from hypercorn.config import Config
@@ -322,7 +323,14 @@ register_tortoise(
 )
 
 
-# if __name__ == "__main__":
-#     run_async(run())
+if __name__ == "__main__":
+    print("Starting webserver...")
+    uvicorn.run(
+        app,
+        host="0.0.0.0",
+        port=os.getenv("PORT", "8080"),
+        log_level=os.getenv('LOG_LEVEL', "info"),
+        proxy_headers=True
+    )
 
 

@@ -323,15 +323,54 @@ async def create_order(data):
             {"status": False, "message": str(ex)}, status_code=208)
 
  # List of special subscription IDs
-SPECIAL_SUBSCRIPTION_IDS = [
-    "13aa5fdc-a5c1-43a9-ac90-5b65e036e914",
-    "f229d152-fd20-4191-9b6b-2a2fa70723b7",
-    "a73cd6b9-8eee-4f60-8edb-ffa059e10cf7",
-    "45757747-3212-4b71-9928-3f588684fa9a"
-]
+SPECIAL_SUBSCRIPTION_IDS = ["ce9d35e6-08b2-4535-8c95-daf9ee056e98"]
 
 
 logger = logging.getLogger(__name__)
+
+
+async def place_free_subscription(str_subscription_id, student_id):
+    """Check if the provided subscription_id is in the list of special IDs"""
+
+    try:
+        print("Subscription ID:", repr(str_subscription_id))
+        print("Special IDs:", SPECIAL_SUBSCRIPTION_IDS)
+
+        # Strip any leading/trailing whitespace
+        str_subscription_id = str(str_subscription_id)
+
+        if str_subscription_id in SPECIAL_SUBSCRIPTION_IDS:
+
+            # If it is, set the order parameters to the provided values
+
+            order_params = OrderParams(
+                payment_mode=1,
+                payment_status=1,
+                payment_id="",
+                order_id="",
+                gateway_name="",
+                coupon="",
+                coupon_discount=0,
+                notes="Free offer",
+                source="adm",
+                bill_amount=0,
+                student_id=student_id,  # Assuming student_id is also passed in the request
+                subscription_id='ea9c70f3-cbd5-43c7-9d39-f2721941f8c3'
+            )
+
+            print("Order parameters set to: ", order_params)
+
+            # Call the place_order function with the set parameters
+            await place_order(order_params)
+
+            print("Free Order placed successfully.")
+
+            return True
+        print("Special subscription ID not matched.")
+        return False
+    except Exception as ex:
+        print("Error while placing free order: ", str(ex))
+        return False
 
 
 @router.post('/place_order', )
@@ -348,29 +387,7 @@ async def place_order(data: PaymentRecordsIn_Pydantic, _=Depends(get_current_use
         if result_dict.get("status"):
             str_subscription_id = str(data.subscription_id).lower()
 
-            if str_subscription_id in [uuid.lower() for uuid in SPECIAL_SUBSCRIPTION_IDS]:
-
-                logger.info(
-                    "Special subscription ID matched. Creating special order.")
-                # If it is, set the order parameters to the provided values
-
-                order_params = OrderParams(
-                    payment_mode=1,
-                    payment_status=1,
-                    payment_id="",
-                    order_id="",
-                    gateway_name="",
-                    coupon="",
-                    coupon_discount=0,
-                    notes="Free offer",
-                    source="adm",
-                    bill_amount=0,
-                    student_id=data.student_id,  # Assuming student_id is also passed in the request
-                    subscription_id='f9d1f72e-249e-4a5a-9823-789100ebbd77'
-                )
-
-                # Call the place_order function with the set parameters
-                res = await place_order(order_params)
+            await place_free_subscription(str_subscription_id, data.student_id)
 
         return result_response
 
@@ -584,12 +601,13 @@ async def get_order_history(data: PaymentHistoryPydantic, _=Depends(get_current_
                     PaymentRecords.filter(student=student_instance))
                 return resp
             else:
-                return []  
+                return []
         else:
-            return [] 
+            return []
     except Exception as ex:
-       
-        return [] 
+
+        return []
+
 
 @router.post('/add_pre_target_batch_to_mains_students')
 async def add_pre_target_batch_to_mains_students(_=Depends(get_current_user)):

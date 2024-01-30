@@ -213,5 +213,11 @@ venvOld
 venvTest
 .env
 parameter-group.py
-main copy.py
+requirements copy.txt
+requirements-linux.txt
+requirements-win.txt
+s3-permissions
 delete_orphaned_videos.py
+main copy.py
+git_config.txt
+webScrapping.py
