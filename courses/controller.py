@@ -316,6 +316,7 @@ async def my_account(request: Request, user: str = Depends(get_current_user)):
 @router.get("/student/new-dashboard/", responses={404: {"model": HTTPNotFoundError}})
 async def student_dashboard(request: Request, user=Depends(get_current_user)):
     # try:
+    
     course_exist = await PaymentRecords.exists(student__id=user)
     course_count = 0
     std_m_count = 0
