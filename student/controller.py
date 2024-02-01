@@ -858,6 +858,7 @@ async def student_video_lectures(
                 async def check_isBookmarkedVideo(video_id):
                     video_instance = await CourseCategoryLectures.get(id=video_id)
                     student_instance = await Student.get(id=user)
+
                     if await BookMarkedVideos.exists(
                         student=student_instance, video=video_instance
                     ):
@@ -1042,8 +1043,8 @@ async def student_video_lectures(
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND, detail="Not Found"
                 )
-
-            # return all_videos_data
+           
+            
             return templates.TemplateResponse(
                 "video_lectures.html",
                 context={
