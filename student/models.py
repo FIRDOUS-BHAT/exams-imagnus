@@ -40,6 +40,17 @@ class Student(Model):
     is_active = fields.BooleanField(default=True)
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
+
+    #password needs to be excluded from pydantic model
+    def serialize(self):
+        return {
+            "id": str(self.id),  # Convert UUID to string if necessary
+            "fullname": self.fullname,
+            "mobile": self.mobile,
+            "email": self.email,
+            "dp": self.dp
+           
+        }
     
     
 class UserToken(Model):
