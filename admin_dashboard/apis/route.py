@@ -315,6 +315,14 @@ def is_multiple_of_100(n):
     return n % 10 == 0
 
 
+@router.post("/update_video_links")
+async def update_video_links(_=Depends(get_current_user)):
+    await update_video_urls()
+    # logging.basicConfig(level=logging.DEBUG)
+
+    return {"status": "Video links updated"}
+
+
 async def update_video_urls():
     # Fetch rows where mobile_video_url contains the specific string, reducing the number of rows fetched.
     # query = Q(mobile_video_url__contains=".b-cdn.net/")
@@ -426,7 +434,7 @@ async def update_video_urls():
     # await CourseCategoryLectures.bulk_update(lectures_to_update, fields=["video_360", "video_540", "mobile_video_url", "video_size_360", "video_size_540"])
     # await CourseCategoryLectures.bulk_update(lectures_to_update, fields=["mobile_video_url", "video_360", "video_540"])
     await CourseCategoryLectures.bulk_update(
-        lectures_to_update, fields=["video_360","video_540"]
+        lectures_to_update, fields=["video_360", "video_540"]
     )
     # await CourseCategoryLectures.bulk_update(lectures_to_update, fields=["video_id"])
     # print(lectures_to_update)
@@ -465,14 +473,6 @@ async def getBookMarkedNotes(student_id):
         return new_list
     else:
         return None
-
-
-@router.post("/update_video_links")
-async def update_video_links(_=Depends(get_current_user)):
-    await update_video_urls()
-    # logging.basicConfig(level=logging.DEBUG)
-
-    return {"status": "Video links updated"}
 
 
 @router.post(
