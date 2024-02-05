@@ -539,7 +539,8 @@ async def mobile_check(data: mobileIn, _=Depends(get_current_user)):
             }
             if await StudentChoices.exists(student__mobile=data.mobile):
                 student_choice = await StudentChoices.filter(
-                    student__mobile=data.mobile
+                    student__mobile=data.mobile,
+                    payment__payment_status=2,
                 )
 
                 datetime_1 = datetime.now(tz)
@@ -613,8 +614,10 @@ async def student_details(uid: str, _=Depends(get_current_user)):
         # async def login(form_data: OAuth2PasswordRequestForm = Depends()):
         student_ins = await Student.get(id=uid)
         user = await Student_Pydantic.from_queryset_single(Student.get(id=uid))
-        if await StudentChoices.exists(student=student_ins):
-            student_choice = await StudentChoices.filter(student=student_ins)
+        if await StudentChoices.exists(student=student_ins, payment__payment_status=2):
+            student_choice = await StudentChoices.filter(
+                student=student_ins, payment__payment_status=2
+            )
 
             datetime_1 = datetime.now(tz)
 
