@@ -2611,12 +2611,14 @@ async def subscription_plans(
                 subscription=subscription_instance,
                 course=c_obj,
                 expiry_date__gte=now,
+                payment__payment_status=2,
             ):
                 subscribed_obj = await StudentChoices.get(
                     student=student_instance,
                     subscription=subscription_instance,
                     course=c_obj,
                     expiry_date__gte=now,
+                    payment__payment_status=2,
                 )
 
                 delta = now - subscribed_obj.created_at
