@@ -316,7 +316,7 @@ async def my_account(request: Request, user: str = Depends(get_current_user)):
 @router.get("/student/new-dashboard/", responses={404: {"model": HTTPNotFoundError}})
 async def student_dashboard(request: Request, user=Depends(get_current_user)):
     # try:
-    
+
     course_exist = await PaymentRecords.exists(student__id=user)
     course_count = 0
     std_m_count = 0
@@ -330,7 +330,7 @@ async def student_dashboard(request: Request, user=Depends(get_current_user)):
         #     StudentChoices.filter(student__id=user, expiry_date__gte=now)
         # )
         subscriptions = await StudentChoices.filter(
-            student__id=user, expiry_date__gte=now
+            student__id=user, expiry_date__gte=now, payment__payment_status=2
         ).values(
             subscription_id="subscription__id",
             web_icon="course__web_icon",
@@ -946,10 +946,16 @@ async def place_order(request: Request, uid=Depends(get_current_user)):
                 used_months = 0
                 now = datetime.now(tz)
                 if await StudentChoices.exists(
-                    student=user_obj, course=c_ins, expiry_date__gte=now
+                    student=user_obj,
+                    course=c_ins,
+                    expiry_date__gte=now,
+                    payment__payment_status=2,
                 ):
                     subscribed_obj = await StudentChoices.get(
-                        student=user_obj, course=c_ins, expiry_date__gte=now
+                        student=user_obj,
+                        course=c_ins,
+                        expiry_date__gte=now,
+                        payment__payment_status=2,
                     ).values("subscription__id")
                     subscription_id = subscribed_obj["subscription__id"]
                     ex_subscript_obj = await CourseSubscriptionPlans.get(
@@ -959,7 +965,10 @@ async def place_order(request: Request, uid=Depends(get_current_user)):
 
                     if existing_validity and (validity > existing_validity):
                         subscribed_plan_obj = await StudentChoices.get(
-                            student=user_obj, course=c_ins, expiry_date__gte=now
+                            student=user_obj,
+                            course=c_ins,
+                            expiry_date__gte=now,
+                            payment__payment_status=2,
                         )
 
                         delta = now - subscribed_plan_obj.created_at
@@ -998,7 +1007,10 @@ async def place_order(request: Request, uid=Depends(get_current_user)):
                         )
 
                 elif not await StudentChoices.exists(
-                    course=c_ins, student=user_obj, expiry_date__gte=now
+                    course=c_ins,
+                    student=user_obj,
+                    expiry_date__gte=now,
+                    payment__payment_status=2,
                 ):
                     payment_obj = await PaymentRecords.create(
                         student=user_obj,
