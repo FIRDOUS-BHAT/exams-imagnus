@@ -133,7 +133,6 @@ async def get_current_user(session: Optional[str] = Depends(get_cookie)):
             status_code=status.HTTP_303_SEE_OTHER,
             headers={"Location": "/student/login/"},
         )
-
     # raise HTTPException(
     #     status_code=status.HTTP_403_FORBIDDEN, detail="Invalid authentication"
     # )
@@ -859,6 +858,7 @@ async def student_video_lectures(
                 async def check_isBookmarkedVideo(video_id):
                     video_instance = await CourseCategoryLectures.get(id=video_id)
                     student_instance = await Student.get(id=user)
+
                     if await BookMarkedVideos.exists(
                         student=student_instance, video=video_instance
                     ):
