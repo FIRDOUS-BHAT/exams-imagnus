@@ -12,6 +12,7 @@ from fastapi_limiter.depends import RateLimiter
 from fastapi_limiter import FastAPILimiter
 from admin_dashboard.apis.route import update_video_links
 from fastapi.encoders import jsonable_encoder
+
 # import aioredis
 from scholarship_tests.apis import route as scholarshipRoute
 import random
@@ -42,6 +43,7 @@ from student.apis.route import download_videos
 from student.models import UserToken
 from study_material import controller as studyMaterialController
 from starlette_context import middleware, plugins
+
 # from mangum import Mangum
 import logging
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -62,10 +64,7 @@ from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoin
 from starlette.middleware.base import BaseHTTPMiddleware
 
 
-
-
 limiter = Limiter(key_func=get_remote_address, default_limits=["10/minute"])
-
 
 
 @lru_cache()
@@ -79,49 +78,59 @@ debug_mode = settings.debug
 
 SLACK_WEBHOOK_URL = settings.slack_webhook_url
 
+
 class SlackHandler(logging.Handler):
-     def emit(self, record):
+    def emit(self, record):
         log_entry = self.format(record)
         payload = {
             "text": f"```{log_entry}```",
         }
         httpx.post(SLACK_WEBHOOK_URL, json=payload)
-        
-
-
 
 
 session = None
 
 
-
-
-
 allowed_host = settings.allowed_host
-
 
 
 logger = logging.getLogger("fastapi")
 logger.setLevel(logging.INFO)
 slack_handler = SlackHandler()
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 slack_handler.setFormatter(formatter)
 logger.addHandler(slack_handler)
 
+
+class RedirectMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        # Check if the incoming request is from exams.imagnus.in and not targeting /api/*
+        if "exams.imagnus.in" in request.headers.get(
+            "host", ""
+        ) and not request.url.path.startswith("/api/"):
+            # Redirect to study.imagnus.in
+            # Preserve the path and query string from the original request
+            new_url = f"https://study.imagnus.in{request.url.path}"
+            if request.url.query:
+                new_url += f"?{request.url.query}"
+            return RedirectResponse(url=new_url)
+
+        # If the request is from exams.imagnus.in but targets /api/*, or from another domain, just proceed normally
+        return await call_next(request)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup logic
-   
+
     print(debug_mode)
     yield
     # Shutdown logic
     print("Shutting down")
 
 
-if debug_mode == 'True':
-   
+if debug_mode == "True":
+
     app = FastAPI()
     LOCAL_REDIS_URL = "redis://localhost"
 
@@ -132,6 +141,7 @@ else:
 
 
 app.lifespan = lifespan  # Assign the lifespan function
+
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
@@ -145,23 +155,18 @@ async def global_exception_handler(request: Request, exc: Exception):
         "api_endpoint": request.url.path,
         "http_method": request.method,
         "error": str(exc),
-        "client_ip": client_ip
+        "client_ip": client_ip,
     }
     formatted_log = json.dumps(log_entry, indent=2)
     logger.error(formatted_log)
-    return JSONResponse(
-        status_code=500,
-        content={"message": "Internal Server Error"}
-    )
+    return JSONResponse(status_code=500, content={"message": "Internal Server Error"})
 
 
-
-
-
+app.add_middleware(RedirectMiddleware)
 
 app.add_middleware(SessionMiddleware, secret_key="secret")
 
-secret_key = settings.secret_key.encode('utf-8')
+secret_key = settings.secret_key.encode("utf-8")
 
 
 class GzipRequest(Request):
@@ -176,27 +181,24 @@ class GzipRequest(Request):
 
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
-    idem = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    idem = "".join(random.choices(string.ascii_uppercase + string.digits, k=6))
     # logger.info(f"rid={idem} start request path={request.url.path}")
     start_time = time.time()
     response = await call_next(request)
     end_time = time.time()
-    process_time = (end_time - start_time)
-    response.headers['X-Process-Time'] = str(process_time)
-    formatted_process_time = '{0:.2f}'.format(process_time)
+    process_time = end_time - start_time
+    response.headers["X-Process-Time"] = str(process_time)
+    formatted_process_time = "{0:.2f}".format(process_time)
     return response
 
 
-
-
-
 @app.get("/error")
-async def raise_error():    
-  exc = Exception("Something went wrong!")  
+async def raise_error():
+    exc = Exception("Something went wrong!")
 
-  logger.error(f"An error occurred: {exc}")
-    
-  raise Exception("Something went wrong!")
+    logger.error(f"An error occurred: {exc}")
+
+    raise Exception("Something went wrong!")
 
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -235,17 +237,17 @@ async def log_requests(request: Request, call_next):
             "api_endpoint": request.url.path,
             "http_method": request.method,
             "status_code": response.status_code,
-            "client_ip": client_ip
-
+            "client_ip": client_ip,
         }
         # Log the error
         formatted_log = json.dumps(log_entry, indent=2)
         logger.error(formatted_log)
     return response
 
+
 # app.include_router(authController.router, tags=["Auth"])
 app.include_router(apiController.api_router, prefix="/api", tags=["APIs"])
-app.include_router(scholarshipRoute.router, tags=['Scholarship APIs'])
+app.include_router(scholarshipRoute.router, tags=["Scholarship APIs"])
 # app.include_router(checkoutController.router, tags=["checkout"])
 app.include_router(adminController.router, tags=["Admin"])
 app.include_router(studentController.router, tags=["Students"])
@@ -262,33 +264,33 @@ app.add_middleware(SlowAPIMiddleware)
 
 # Middleware for logging request body
 # class RequestLoggingMiddleware(BaseHTTPMiddleware):
-    # async def dispatch(self, request: Request, call_next):
-    #     body = await request.body()
-        
-    #     # Clone the request with the in-memory body so it can be accessed again later
-    #     request._body = body  # temporarily store original body
-    #     async def receive():
-    #         return {"type": "http.request", "body": request._body}
+# async def dispatch(self, request: Request, call_next):
+#     body = await request.body()
 
-    #     # Log the request details
-    #     request_log_entry = {
-    #         "timestamp": datetime.now().isoformat(),
-    #         "level": "INFO",
-    #         "message": "Request received",
-    #         "api_endpoint": request.url.path,
-    #         "http_method": request.method,
-    #         "request_body": body.decode("utf-8")  # Assuming body is in UTF-8
-    #     }
-    #     logger.info(json.dumps(request_log_entry, indent=2))
+#     # Clone the request with the in-memory body so it can be accessed again later
+#     request._body = body  # temporarily store original body
+#     async def receive():
+#         return {"type": "http.request", "body": request._body}
 
-    #     # Create a new request object with the cloned body for the endpoint to use
-    #     request = Request(request.scope, receive=receive)
-    #     response = await call_next(request)
+#     # Log the request details
+#     request_log_entry = {
+#         "timestamp": datetime.now().isoformat(),
+#         "level": "INFO",
+#         "message": "Request received",
+#         "api_endpoint": request.url.path,
+#         "http_method": request.method,
+#         "request_body": body.decode("utf-8")  # Assuming body is in UTF-8
+#     }
+#     logger.info(json.dumps(request_log_entry, indent=2))
 
-    #     return response
+#     # Create a new request object with the cloned body for the endpoint to use
+#     request = Request(request.scope, receive=receive)
+#     response = await call_next(request)
+
+#     return response
 
 # app.add_middleware(RequestLoggingMiddleware)
-  
+
 
 db_url = DATABASE_URL()
 
@@ -296,14 +298,12 @@ db_url = DATABASE_URL()
 register_tortoise(
     app=app,
     config={
-        'connections': {
-            'default': db_url
-        },
-        'apps': {
-            'models': {
-                'models': [
-                    'admin_dashboard.models',
-                    'student.models',
+        "connections": {"default": db_url},
+        "apps": {
+            "models": {
+                "models": [
+                    "admin_dashboard.models",
+                    "student.models",
                     "student_choices.models",
                     "screen_banners.models",
                     "checkout.models",
@@ -312,11 +312,11 @@ register_tortoise(
                     "scholarship_tests.models",
                 ],
                 # If no default_connection specified, defaults to 'default'
-                'default_connection': 'default',
+                "default_connection": "default",
             }
         },
-        'use_tz': True,
-        'timezone': 'Asia/Kolkata'
+        "use_tz": True,
+        "timezone": "Asia/Kolkata",
     },
     generate_schemas=True,
     add_exception_handlers=True,
@@ -329,8 +329,6 @@ if __name__ == "__main__":
         app,
         host="0.0.0.0",
         port=os.getenv("PORT", "8080"),
-        log_level=os.getenv('LOG_LEVEL', "info"),
-        proxy_headers=True
+        log_level=os.getenv("LOG_LEVEL", "info"),
+        proxy_headers=True,
     )
-
-
