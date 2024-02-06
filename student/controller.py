@@ -1,5 +1,5 @@
 from collections import defaultdict
-from fastapi import WebSocket, HTTPException
+from fastapi import Query, WebSocket, HTTPException
 from utils.util import dd
 from fastapi import HTTPException
 from fastapi.security import OAuth2PasswordBearer
@@ -832,7 +832,10 @@ async def student_video_lectures(
     "/student/video_lectures/{cid}/", responses={404: {"model": HTTPNotFoundError}}
 )
 async def student_video_lectures(
-    request: Request, cid: str, user: str = Depends(get_current_user)
+    request: Request,
+    cid: str,
+    page: int = Query(..., title="Page Number", ge=1),
+    user: str = Depends(get_current_user),
 ):
     # try:
     check = await authenticate_student_subscription(cid=cid, user=user)
@@ -850,10 +853,15 @@ async def student_video_lectures(
         stat = await Student.exists(id=user)
         if stat:
             if await Course.exists(id=cid):
+                perPage = 2
                 c_instance = await Course.get(id=cid)
                 course_cat_obj = await CourseCategories_Pydantic.from_queryset(
                     CourseCategories.filter(course=c_instance)
+                    .offset((page * perPage) - perPage)
+                    .limit(perPage)
                 )
+                data_count = await CourseCategories.filter(course=c_instance).count()
+                segments = data_count / perPage
 
                 async def check_isBookmarkedVideo(video_id):
                     video_instance = await CourseCategoryLectures.get(id=video_id)
@@ -1052,6 +1060,9 @@ async def student_video_lectures(
                     "student": student_instance,
                     "course_cat_obj": all_videos_data,
                     "cid": cid,
+                    "page_segments": segments,
+                    "page": page,
+                    "perPage": perPage,
                     "video_lectures": "active",
                 },
             )
