@@ -853,7 +853,7 @@ async def student_video_lectures(
         stat = await Student.exists(id=user)
         if stat:
             if await Course.exists(id=cid):
-                perPage = 2
+                perPage = 1
                 c_instance = await Course.get(id=cid)
                 course_cat_obj = await CourseCategories_Pydantic.from_queryset(
                     CourseCategories.filter(course=c_instance)
@@ -1084,7 +1084,11 @@ async def student_video_lectures(
     responses={404: {"model": HTTPNotFoundError}},
 )
 async def student_video_lectures(
-    request: Request, cid: str, cat_id: str, user: str = Depends(get_current_user)
+    request: Request,
+    cid: str,
+    cat_id: str,
+    page: int = Query(..., title="Page Number", ge=1),
+    user: str = Depends(get_current_user),
 ):
     try:
         check = await authenticate_student_subscription(cid=cid, user=user)
@@ -1103,9 +1107,16 @@ async def student_video_lectures(
             if stat:
                 if await Course.exists(id=cid):
                     c_instance = await Course.get(id=cid)
+                    perPage = 1
                     course_cat_obj = await CourseCategories_Pydantic.from_queryset(
                         CourseCategories.filter(course=c_instance, category__id=cat_id)
+                        .offset((page * perPage) - perPage)
+                        .limit(perPage)
                     )
+                    data_count = await CourseCategories.filter(
+                        course=c_instance
+                    ).count()
+                    segments = data_count / perPage
 
                     async def check_isBookmarkedVideo(video_id):
                         video_instance = await CourseCategoryLectures.get(id=video_id)
@@ -1325,6 +1336,9 @@ async def student_video_lectures(
                         "student": student_instance,
                         "course_cat_obj": all_videos_data,
                         "cid": cid,
+                        "page_segments": segments,
+                        "page": page,
+                        "perPage": perPage,
                     },
                 )
             else:
@@ -2002,7 +2016,11 @@ async def student_pdf_notes(
     responses={404: {"model": HTTPNotFoundError}},
 )
 async def student_pdf_notes(
-    request: Request, cid: str, cat_id: str, user: str = Depends(get_current_user)
+    request: Request,
+    cid: str,
+    cat_id: str,
+    page: int = Query(..., title="Page Number", ge=1),
+    user: str = Depends(get_current_user),
 ):
     try:
         check = await authenticate_student_subscription(cid=cid, user=user)
@@ -2021,8 +2039,16 @@ async def student_pdf_notes(
             if stat:
                 if await Course.exists(id=cid):
                     c_instance = await Course.get(id=cid)
+                    perPage = 1
+                    data_count = await CourseCategories.filter(
+                        course=c_instance
+                    ).count()
+
+                    segments = data_count / perPage
                     course_cat_obj = await CourseCategories_Pydantic.from_queryset(
                         CourseCategories.filter(course=c_instance, category__id=cat_id)
+                        .offset((page * perPage) - perPage)
+                        .limit(perPage)
                     )
 
                     async def check_isBookmarkedNotes(notes_id):
@@ -2199,6 +2225,9 @@ async def student_pdf_notes(
                         "course_cat_obj": all_notes_data,
                         "cid": cid,
                         "student": student_instance,
+                        "page_segments": segments,
+                        "page": page,
+                        "perPage": perPage,
                     },
                 )
             else:
