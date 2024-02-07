@@ -1695,7 +1695,10 @@ async def test_series_topics(
 
 @router.get("/student/pdf_notes/{cid}/", responses={404: {"model": HTTPNotFoundError}})
 async def student_pdf_notes(
-    request: Request, cid: str, user: str = Depends(get_current_user)
+    request: Request,
+    cid: str,
+    page: int = Query(..., title="Page Number", ge=1),
+    user: str = Depends(get_current_user),
 ):
     # try:
     check = await authenticate_student_subscription(cid=cid, user=user)
@@ -1715,8 +1718,15 @@ async def student_pdf_notes(
             if await Course.exists(id=cid):
                 c_instance = await Course.get(id=cid)
                 course = await Course.get(id=cid)
+                perPage = 1
+                data_count = await CourseCategories.filter(course=c_instance).count()
+
+                segments = data_count / perPage
+
                 course_cat_obj = await CourseCategories_Pydantic.from_queryset(
                     CourseCategories.filter(course=c_instance)
+                    .offset((page * perPage) - perPage)
+                    .limit(perPage)
                 )
 
                 async def check_isBookmarkedNotes(notes_id):
@@ -1967,6 +1977,10 @@ async def student_pdf_notes(
                     "course_cat_obj": all_notes_data,
                     "cid": cid,
                     "student": student_instance,
+                    "page_segments": segments,
+                    "page": page,
+                    "perPage": perPage,
+                    "data_count": data_count,
                     "pdf_notes_active": "active",
                 },
             )
