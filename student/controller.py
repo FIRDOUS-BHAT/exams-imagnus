@@ -853,7 +853,7 @@ async def student_video_lectures(
         stat = await Student.exists(id=user)
         if stat:
             if await Course.exists(id=cid):
-                perPage = 1
+                perPage = 2
                 c_instance = await Course.get(id=cid)
                 course_cat_obj = await CourseCategories_Pydantic.from_queryset(
                     CourseCategories.filter(course=c_instance)
@@ -1107,7 +1107,7 @@ async def student_video_lectures(
             if stat:
                 if await Course.exists(id=cid):
                     c_instance = await Course.get(id=cid)
-                    perPage = 1
+                    perPage = 2
                     course_cat_obj = await CourseCategories_Pydantic.from_queryset(
                         CourseCategories.filter(course=c_instance, category__id=cat_id)
                         .offset((page * perPage) - perPage)
