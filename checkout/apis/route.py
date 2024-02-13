@@ -251,7 +251,7 @@ async def create_order(data):
 
             pretty_print = json.dumps(razorpay_resp, indent=4)
 
-            print(pretty_print)
+           
 
             if razorpay_resp["status"] == "authorized":
                 payment_status = 2
