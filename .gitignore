@@ -70,6 +70,7 @@ pyvenv.cfg
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *$py.class
+# .env
 # C extensions
 *.so
 # Distribution / packaging
@@ -204,6 +205,7 @@ JsonToExcel.py
 auth/__pycache__
 linuxvenv
 venvOld
+# .env
 .env copy
 venvTest
 parameter-group.py
