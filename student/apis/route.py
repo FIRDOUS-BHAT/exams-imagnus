@@ -468,7 +468,7 @@ async def update_fcm_on_login(
                 message_body = "Another device has logged into your account."
 
                 data_message = {"open": "logout", "data_payload": {}}
-                result = push_service.notify_single_device(
+                push_service.notify_single_device(
                     registration_id=student.fcm_token,
                     message_title=message_title,
                     message_body=message_body,
@@ -505,7 +505,9 @@ async def get_fcm_(data: GetFcmOfStudent, _=Depends(get_current_user)):
             student = await Student.get(id=data.student_id).values("fcm_token")
             return JSONResponse({"status": True, "message": student["fcm_token"]})
         else:
-            return JSONResponse({"status": False, "message": "Student ID is invalid"})
+            return JSONResponse(
+                {"status": False, "message": "Student ID is invalid"}
+            )
     except Exception as ex:
         return JSONResponse({"status": False, "message": str(ex)})
 
