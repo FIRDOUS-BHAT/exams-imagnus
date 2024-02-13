@@ -16,7 +16,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request, BackgroundTasks
 from pydantic import BaseModel, validator
 from starlette.responses import JSONResponse
 from FCM.route import push_service
-from admin_dashboard.models import CourseSubscriptionPlans, Course
+from admin_dashboard.models import Coupons, CourseSubscriptionPlans, Course
 from checkout.models import (
     MobileCart,
     PaymentRecordsIn_Pydantic,
@@ -236,41 +236,94 @@ OrderParams = namedtuple(
 
 async def create_order(data):
     try:
-        updated_at = datetime.now(tz)
         now = datetime.now(tz)
 
         uid = data.student_id
         payment_id = data.payment_id
         payment_status = 1
-        # if payment_id:
-        #     razorpay_resp = client.payment.fetch(data.payment_id)
+        payment_mode = 1
+        gateway_name = "Razorpay"
+        razorpay_resp = None
+        order_id = None
+        bill_amount = data.bill_amount
+        if payment_id and data.source != "adm":
+            razorpay_resp = client.payment.fetch(data.payment_id)
 
-        #     # print(razorpay_resp)
+            pretty_print = json.dumps(razorpay_resp, indent=4)
 
-        #     if razorpay_resp and (not await PaymentRecords.exists(payment_id=payment_id)):
-        #         payment_status = 2
-        if data.source == "adm":
-            payment_status = 2
+            print(pretty_print)
+
+            if razorpay_resp["status"] == "authorized":
+                payment_status = 2
+                order_id = razorpay_resp["order_id"]
+                bill_amount = razorpay_resp["amount"] / 100
+
+            if razorpay_resp and (
+                not await PaymentRecords.exists(payment_id=payment_id)
+            ):
+                payment_status = 2
+            else:
+                return JSONResponse(
+                    {"status": False, "message": "Invalid Payment Id"},
+                    status_code=208,
+                )
+
         if await Student.exists(id=uid):
-            user_obj = await Student.get(id=uid)
             subscrip_id = data.subscription_id
 
-            if await CourseSubscriptionPlans.exists(id=subscrip_id):
-                subs_obj = await CourseSubscriptionPlans.get(id=subscrip_id).values(
-                    "course__id", "validity"
-                )
-                subs_obj1 = await CourseSubscriptionPlans.get(id=subscrip_id)
+            user_obj = await Student.get(id=uid)
 
-                cid = subs_obj["course__id"]
-                validity = subs_obj["validity"]
+            if await CourseSubscriptionPlans.exists(id=subscrip_id):
+                subs_obj1 = await CourseSubscriptionPlans.get(id=subscrip_id)
+                cid = subs_obj1.course_id
+                validity = subs_obj1.validity
+                plan_price = subs_obj1.plan_price
+                if razorpay_resp:
+                    print("Yes in razorpay_resp")
+                    print("data.coupon", data.coupon)
+                    if not data.coupon:
+
+                        if round(plan_price) != round(razorpay_resp["amount"] / 100):
+                            return JSONResponse(
+                                {
+                                    "status": False,
+                                    "message": "Invalid bill amount for the plan",
+                                },
+                                status_code=208,
+                            )
+
+                    else:
+                        # Check if the coupon is valid and subtract the discount from the plan_price then compare with the razorpay amount
+                        if await Coupons.exists(
+                            name=data.coupon, subscription_id=subscrip_id
+                        ):
+                            coupon_obj = await Coupons.get(name=data.coupon)
+                            if coupon_obj.coupon_type == 1:
+                                discount = (plan_price * coupon_obj.discount) / 100
+                            elif coupon_obj.coupon_type == 2:
+                                discount = coupon_obj.discount
+                            plan_price = plan_price - discount
+
+                            if round(plan_price) != round(
+                                razorpay_resp["amount"] / 100
+                            ):
+                                return JSONResponse(
+                                    {
+                                        "status": False,
+                                        "message": "Invalid bill amount for the plan",
+                                    },
+                                    status_code=208,
+                                )
+                        else:
+                            return JSONResponse(
+                                {"status": False, "message": "Invalid Coupon"},
+                                status_code=208,
+                            )
+
                 c_ins = await Course.get(id=cid)
 
                 """check if any subscription"""
-
-                new_validity = 0
-                new_price = 0
                 existing_validity = 0
-                existing_price = 0
                 used_months = 0
                 if await StudentChoices.exists(
                     student=user_obj,
@@ -308,32 +361,26 @@ async def create_order(data):
                         ).update(expiry_date=now)
 
                 if not await StudentChoices.exists(
-                    subscription=subs_obj1,
+                    subscription__id=subscrip_id,
                     student=user_obj,
                     expiry_date__gte=now,
                     payment__payment_status=2,
                 ):
-
-                    gateway_name = data.gateway_name
-
-                    # async for team in subs_obj.course:
-                    #     if team[0] == 'id':
-                    #         cid = team[1]
-                    #         break
-
-                    # import pytz
-                    # tz = pytz.timezone('Asia/Kolkata')
+                    if data.source == "adm":
+                        payment_status = 2
+                        payment_mode = 2
+                        gateway_name = "Manual"
 
                     payment_obj = await PaymentRecords.create(
                         student=user_obj,
-                        payment_mode=data.payment_mode,
+                        payment_mode=payment_mode,
                         subscription=subs_obj1,
                         payment_id=payment_id,
-                        order_id=data.order_id,
+                        order_id=order_id,
                         coupon=data.coupon,
                         coupon_discount=data.coupon_discount,
-                        bill_amount=data.bill_amount,
-                        gateway_name="Razorpay",
+                        bill_amount=bill_amount,
+                        gateway_name=gateway_name,
                         payment_status=payment_status,
                         updated_at=updated_at,
                         created_at=updated_at,
@@ -389,7 +436,8 @@ async def create_order(data):
                                     message_body=message_body,
                                     data_message=data_message,
                                 )
-                            from send_mails.controller import send_email_backgroundtasks
+                            # Remove the unused import statement
+                            # from send_mails.controller import send_email_backgroundtasks
 
                             email_body = {
                                 "name": user_obj.fullname,
@@ -483,10 +531,22 @@ async def place_free_subscription(str_subscription_id, student_id):
         return False
 
 
+class OrderPlacePydantic(BaseModel):
+    payment_id: str
+    order_id: str
+    coupon: str
+    coupon_discount: int
+    notes: str
+    source: str
+    bill_amount: int
+    student_id: str
+    subscription_id: str
+
+
 @router.post(
     "/place_order",
 )
-async def place_order(data: PaymentRecordsIn_Pydantic, _=Depends(get_current_user)):
+async def place_order(data: OrderPlacePydantic, _=Depends(get_current_user)):
     # Check and process the regular order
     try:
         result_response = await create_order(data)
