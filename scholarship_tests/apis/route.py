@@ -1,7 +1,9 @@
+import uuid
 import numpy as np
 from fastapi.encoders import jsonable_encoder
+from pydantic import BaseModel
 import pytz
-from fastapi import APIRouter, Depends, UploadFile, File
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from datetime import datetime
 from utils.util import get_current_user
 from cache_config import cache
@@ -31,69 +33,72 @@ router = APIRouter()
 tz = pytz.timezone("Asia/Kolkata")
 
 
+class StudentIdPydantic(BaseModel):
+    student_id: str
+    course_id: str
+    lang: str
+
+
+async def fetch_test_series_status(course_id: int, updated_at: datetime) -> str:
+    """
+    Fetches the status of the test series based on the course_id and current time.
+    """
+    if await ScholarshipTestSeries.filter(
+        course__id=course_id, result_announcement_date__lte=updated_at
+    ).exists():
+        return "announced"
+    if await ScholarshipTestSeries.filter(
+        course__id=course_id, on_date__lte=updated_at, end_date__gte=updated_at
+    ).exists():
+        return "online"
+    if await ScholarshipTestSeries.filter(
+        course__id=course_id, on_date__gt=updated_at
+    ).exists():
+        return "not_yet_started"
+    if await ScholarshipTestSeries.filter(
+        course__id=course_id, end_date__lt=updated_at
+    ).exists():
+        return "expired"
+    return "not_attempted"
+
+
 @router.post("/v1/scholarship/2022/")
-async def scholarship(data: studentIdPydanctic):
+async def scholarship(data: StudentIdPydantic):
     student_id = data.student_id
     course_id = data.course_id
-    lang = data.lang
-    # test_obj = await ScholarshipTestSeries.get(course__id=course_id, lang=lang)
-    test_obj = await ScholarshipTestSeries.get(course__id=course_id).limit(1)
+
+    # Fetch the first matching ScholarshipTestSeries object or None if not found.
+    test_obj = await ScholarshipTestSeries.get_or_none(course__id=course_id).limit(1)
+    if not test_obj:
+        raise HTTPException(status_code=404, detail="Test series not found.")
+
     updated_at = datetime.now(tz)
-    if await Student.exists(id=student_id):
-        test_series_id = None
-        student = await Student.get(id=student_id)
-        if await StudentScholarshipTestSeriesRecord.exists(
-            student=student, test_series__course__id=course_id, is_attempted=True
-        ):
-            if await ScholarshipTestSeries.filter(
-                course__id=course_id,
-                result_announcement_date__lte=updated_at,
-            ).limit(1):
 
-                status = "announced"
-                test_series_id = test_obj.id
-            else:
-                status = "attempted"
-        else:
-            if await ScholarshipTestSeries.filter(
-                course__id=course_id,
-                on_date__lte=updated_at,
-                end_date__gte=updated_at,
-            ).limit(1):
-                status = "online"
-                test_series_id = test_obj.id
-            elif await ScholarshipTestSeries.filter(
-                course__id=course_id, on_date__gt=updated_at
-            ).limit(1):
-                status = "not_yet_started"
-            elif await ScholarshipTestSeries.filter(
-                course__id=course_id, end_date__lt=updated_at
-            ).limit(1):
-                status = "not_attempted"
-            else:
-                status = "not_attempted"
-        message = {
-            "title": test_obj.title,
-            "banner": test_obj.image,
-            "status": status,
-            "testseries_start_time": test_obj.on_date,
-            "server_time": updated_at,
-            "description": test_obj.description,
-            "testseries_id": test_series_id,
-        }
-
+    student = await Student.get_or_none(id=student_id)
+    if not student:
         return JSONResponse(
-            {"status": True, "message": jsonable_encoder(message)}, status_code=200
+            {"status": False, "message": "Student not registered"}, status_code=400
         )
-    return JSONResponse(
-        {"status": False, "message": "Student not registered"}, status_code=208
+
+    test_series_record = await StudentScholarshipTestSeriesRecord.get_or_none(
+        student=student, test_series=test_obj, is_attempted=True
     )
-    # if not await StudentScholarshipTestSeriesRecord.exists(student=student, is_attempted=True):
+    if test_series_record:
+        status = "attempted"
+    else:
+        status = await fetch_test_series_status(course_id, updated_at)
 
-    # else:
-    #             return JSONResponse({"status": False, "message": "You've already made an attempt"}, status_code=208)
+    message = {
+        "title": test_obj.title,
+        "banner": test_obj.image,
+        "status": status,
+        "testseries_start_time": test_obj.on_date,
+        "server_time": updated_at,
+        "description": test_obj.description,
+        "testseries_id": test_obj.id if status in ["announced", "online"] else None,
+    }
 
-    return JSONResponse({""})
+    return JSONResponse({"status": True, "message": jsonable_encoder(message)}, status_code=200)
 
 
 @router.post("/v1/scholarship/testseries/")
