@@ -108,7 +108,8 @@ class RedirectMiddleware(BaseHTTPMiddleware):
         if (
             "exams.imagnus.in" in request.headers.get("host", "")
             and not request.url.path.startswith("/api/")
-            and not request.url.path.endswith("/v1/scholarship/2022/")
+            and not request.url.path.startswith("/v1/scholarship/")
+            and not request.url.path.startswith("/get_students_rank/")
         ):
             # Redirect to study.imagnus.in
             # Preserve the path and query string from the original request
