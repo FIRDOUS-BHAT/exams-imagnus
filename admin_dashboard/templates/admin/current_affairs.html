@@ -1,28 +1,38 @@
+{% extends "base.html"%} {% block content %}
 
-{% extends "base.html"%}
-{% block content %}
-
-
-      <div class="wrapper">
-         <div class="sa4d25">
-            <div class="container">
-               <div class="row">
-                  <div class="col-lg-12">
-                     <h2 class="st_title"><i class="uil uil-book"></i> Current Affairs  </h2>
-                  </div>
-               </div>
-               <div class="row">
-                  <div class="col-lg-12 tab-panel" id="pills-discount" role="tabpanel">
-                     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                        <div class="panel panel-default">
-                           <div class="panel-heading" role="tab" id="headingOne">
-                              <div class="panel-title adcrse1250">
-                                 <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                 Add Monthly Current Affairs 
-                                 </a>
-                              </div>
-                           </div>
-                           <!-- <div id="collapseOne" class="panel-collapse collapse show" role="tabpanel" aria-labelledby="headingOne">
+<div class="wrapper">
+  <div class="sa4d25">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <h2 class="st_title"><i class="uil uil-book"></i> Current Affairs</h2>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12 tab-panel" id="pills-discount" role="tabpanel">
+          <div
+            class="panel-group"
+            id="accordion"
+            role="tablist"
+            aria-multiselectable="true"
+          >
+            <div class="panel panel-default">
+              <div class="panel-heading" role="tab" id="headingOne">
+                <div class="panel-title adcrse1250">
+                  <a
+                    class="collapsed"
+                    data-toggle="collapse"
+                    data-parent="#accordion"
+                    href=""
+                    data-target="#collapseOne"
+                    aria-expanded="true"
+                    aria-controls="collapseOne"
+                  >
+                    Add Monthly Current Affairs
+                  </a>
+                </div>
+              </div>
+              <!-- <div id="collapseOne" class="panel-collapse collapse show" role="tabpanel" aria-labelledby="headingOne">
                               <div class="panel-body adcrse_body">
                                  <div class="row">
                                     <div class="col-lg-12">
@@ -73,31 +83,46 @@
                                  </div>
                               </div>
                            </div> -->
-                        </div>
-                     </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-5">
+          <div class="top_countries">
+            <div class="top_countries_title">
+              <h2>Add Daily Current Affairs</h2>
+            </div>
+            <form
+              action="/admin/add/current/affairs/"
+              method="post"
+              enctype="multipart/form-data"
+            >
+              <div class="payout_content">
+                <div class="col-lg-12 col-md-6">
+                  <div class="lbel25">
+                    <label>Choose Month* </label>
                   </div>
-                  <div class="col-lg-4 col-md-5">
-                     <div class="top_countries">
-                        <div class="top_countries_title">
-                           <h2> Add Daily Current Affairs  </h2>
-                        </div>
-                        <form action="/admin/add/current/affairs/" method="post" enctype="multipart/form-data">
-                        <div class="payout_content">
-                           <div class="col-lg-12 col-md-6">
-                              <div class="lbel25">
-                                 <label>Choose Month* </label>
-                              </div>
-                              <div class="row">
-                              <div class="col-lg-4 col-md-4">
-                                 <input class="form-control" type="text" name="day" id="datepicker2" placeholder="01">
-
-                              </div>
-                              <div class="col-lg-8 col-md-8">
-                              <input type="text" name="month_year" id="datepicker1" class="form-control" placeholder="Jan 2022">
-                              </div>
-                              </div>
-                           </div>
-                           <!-- <div class="col-lg-12 col-md-6 mt-10">
+                  <div class="row">
+                    <div class="col-lg-4 col-md-4">
+                      <input
+                        class="form-control"
+                        type="text"
+                        name="day"
+                        id="datepicker2"
+                        placeholder="01"
+                      />
+                    </div>
+                    <div class="col-lg-8 col-md-8">
+                      <input
+                        type="text"
+                        name="month_year"
+                        id="datepicker1"
+                        class="form-control"
+                        placeholder="Jan 2022"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <!-- <div class="col-lg-12 col-md-6 mt-10">
                               <div class="ui search focus lbel25">
                                  <label>Enter Date* </label>
                                  <div class="ui left icon input swdh19">
@@ -105,80 +130,103 @@
                                  </div>
                               </div>
                            </div> -->
-                           <div class="col-lg-12 col-md-6 mt-10">
-                              <div class="ui search focus lbel25">
-                                 <label class="form-label" for="customFile"> Choose PDF File*</label>
-                                 <input type="file" class="form-control btn btn-danger" name="file" accept="application/pdf" id="customFile" />
-                              </div>
-                              <button type="submit" class="btn btn-success mt-20"> Submit Current Affairs</button>
-                           </div>
-                        </div>
-                        </form>
-                     </div>
+                <div class="col-lg-12 col-md-6 mt-10">
+                  <div class="ui search focus lbel25">
+                    <label class="form-label" for="customFile">
+                      Choose PDF File*</label
+                    >
+                    <input
+                      type="file"
+                      class="form-control btn btn-danger"
+                      name="file"
+                      accept="application/pdf"
+                      id="customFile"
+                    />
                   </div>
-                  <div class="col-lg-8 col-md-7">
-                     <div class="table-responsive">
-                        <input type="hidden" id="delete_url" value="/admin/delete_current_affairs" placeholder="">
-                        <table class="table ucp-table earning__table">
-                           <thead class="thead-s">
-                              <tr>
-                                 <th scope="col">S No. </th>
-                                 <th scope="col">Day</th>
-                                 <th scope="col">Date</th>
-                                 <th scope="col">PDF Notes</th>
-                                 <th scope="col">Actions</th>
-                              </tr>
-                           </thead>
-                           <tbody>
-                              {% for affair in current_affairs%}
-                              <tr>
-                                 <td>00{{ loop.index }} </td>
-                                 <td>{{affair.day}} </td>
-                                 <td>{{affair.month_year}} </td>
-                                 <td><a href="{{affair.file_url}}" target="_blank"> Current Affairs FIle </a></td>
-                          <td>
-                            <a onclick="deleteSubscription('{{affair.id}}')" title="Delete" class="gray-s"
-                    ><i class="uil uil-trash-alt"></i
-                  ></a>
-                          </td>
-                              </tr>
-                              {% endfor %}
-                            
-                           </tbody>
-                        </table>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-         <footer class="footer mt-40">
-            <div class="container-fluid">
-               <div class="row">
-                  <div class="col-lg-12">
-                     <div class="footer_bottm">
-                        <div class="row">
-                           <div class="col-md-6">
-                              <ul class="fotb_left">
-                                 <li>
-                                    <a href="index.html">
-                                       <div class="footer_logo">
-                                          <img src="images/fav.png" alt="" />
-                                       </div>
-                                    </a>
-                                 </li>
-                                 <li>
-                                    <p>© 2021  <strong>Imagnus Academy </strong>. All Rights Reserved. </p>
-                                 </li>
-                              </ul>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </footer>
+                  <button type="submit" class="btn btn-success mt-20">
+                    Submit Current Affairs
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="col-lg-8 col-md-7">
+          <div class="table-responsive">
+            <input
+              type="hidden"
+              id="delete_url"
+              value="/admin/delete_current_affairs"
+              placeholder=""
+            />
+            <table class="table ucp-table earning__table">
+              <thead class="thead-s">
+                <tr>
+                  <th scope="col">S No.</th>
+                  <th scope="col">Day</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">PDF Notes</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for affair in current_affairs%}
+                <tr>
+                  <td>00{{ loop.index }}</td>
+                  <td>{{affair.day}}</td>
+                  <td>{{affair.month_year}}</td>
+                  <td>
+                    <a href="{{affair.file_url}}" target="_blank">
+                      Current Affairs FIle
+                    </a>
+                  </td>
+                  <td>
+                    <a
+                      onclick="deleteSubscription('{{affair.id}}')"
+                      title="Delete"
+                      class="gray-s"
+                      ><i class="uil uil-trash-alt"></i
+                    ></a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
-     <script>
-   
-</script>
+    </div>
+  </div>
+  <footer class="footer mt-40">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="footer_bottm">
+            <div class="row">
+              <div class="col-md-6">
+                <ul class="fotb_left">
+                  <li>
+                    <a href="index.html">
+                      <div class="footer_logo">
+                        <img src=/static/student_assets/images/fav.png" alt=""
+                        />
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <p>
+                      © 2021 <strong>Imagnus Academy </strong>. All Rights
+                      Reserved.
+                    </p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+<script></script>
 {% endblock content %}
