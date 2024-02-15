@@ -1,3 +1,4 @@
+from tortoise.exceptions import DoesNotExist
 import logging
 from collections import namedtuple
 from functools import lru_cache
@@ -250,8 +251,6 @@ async def create_order(data):
             razorpay_resp = client.payment.fetch(data.payment_id)
 
             # pretty_print = json.dumps(razorpay_resp, indent=4)
-
-           
 
             if razorpay_resp["status"] == "authorized":
                 payment_status = 2
@@ -1334,3 +1333,227 @@ async def mobile_cart(data: CartParams, _=Depends(get_current_user)):
         )
 
     return JSONResponse({"status": True, "message": "Cart loaded"}, status_code=200)
+
+
+"""New code to grant access to warrior batchs"""
+
+
+@router.post("/grant_access_to_warriors_batch")
+async def grant_access_to_warriors_batch_api(_=Depends(get_current_user)):
+    await grant_access_to_warriors_batch(
+        source_batch_ids=[
+            "80265e0a-908e-4aae-b960-4b9f0839da73",
+            "2adbab33-5634-4370-af90-0234b44156a0",
+        ],
+        target_batch_id="dbab4049-f96b-41e5-bc6c-8ef5e449ffad",
+    )
+
+
+async def grant_access_to_warriors_batch(source_batch_ids: list, target_batch_id: str):
+    """
+    Grant access to the 'Warriors batch' for students from the specified source batches.
+    """
+    expiry_date = datetime(2024, 3, 20)
+    target_batch = await get_subscription_plan(target_batch_id)
+
+    for source_batch_id in source_batch_ids:
+        source_batch = await get_subscription_plan(source_batch_id)
+        if source_batch:
+            await process_students_from_source_batch(
+                source_batch, target_batch, expiry_date
+            )
+
+
+from tortoise.query_utils import Prefetch
+
+
+async def get_subscription_plan(batch_id: str):
+    """
+    Fetch a subscription plan based on batch ID.
+    """
+    try:
+        subscription_plan = await CourseSubscriptionPlans.get(
+            id=batch_id
+        ).prefetch_related(Prefetch("course", queryset=Course.all()))
+        return subscription_plan
+    except DoesNotExist:
+        print(f"Batch with ID {batch_id} not found.")
+        return None
+
+
+async def process_students_from_source_batch(source_batch, target_batch, expiry_date):
+    """
+    Process each student from the source batch to grant access to the target batch.
+    """
+    current_subscriptions = await StudentChoices.filter(
+        subscription=source_batch, expiry_date__gte=datetime.now(tz)
+    ).prefetch_related("student")
+
+    for subscription in current_subscriptions:
+        student = subscription.student
+        if not await has_existing_access(student, target_batch):
+            payment_record = await create_payment_record(student, target_batch)
+            if payment_record:
+                await create_student_choice(
+                    student, target_batch, expiry_date, payment_record
+                )
+                await update_or_create_active_subscription(
+                    student, target_batch, payment_record
+                )
+                print(
+                    f"Granted access to Student ID: {student.id} for Warriors batch until {expiry_date.strftime('%Y-%m-%d')}"
+                )
+
+
+async def has_existing_access(student, target_batch):
+    """
+    Check if the student already has access to the target batch.
+    """
+    return await StudentChoices.filter(
+        student=student, subscription=target_batch
+    ).exists()
+
+
+async def create_payment_record(student, subscription_plan):
+    """
+    Create a PaymentRecords entry for a student for the specified subscription plan.
+    """
+    try:
+
+        return await PaymentRecords.create(
+            student=student,
+            payment_mode=2,
+            payment_status=2,
+            subscription=subscription_plan,
+            bill_amount=0,
+            gateway_name="Admin",
+            notes="Access to Warriors for those who have Shaurya 3.0",
+            source="adm",
+            updated_at=datetime.now(tz),
+            created_at=datetime.now(tz),
+        )
+    except Exception as ex:
+        print(f"Error while creating PaymentRecords: {str(ex)}")
+
+
+async def create_student_choice(
+    student, subscription_plan, expiry_date, payment_record
+):
+    """
+    Create a StudentChoices record to link the student with the new batch access.
+    """
+    try:
+
+        print(f"Creating StudentChoices for Student course: {subscription_plan.course}")
+
+        print(f"Student: {student}, Type: {type(student)}")
+        print(
+            f"Course: {subscription_plan.course}, Type: {type(subscription_plan.course)}"
+        )
+        print(
+            f"Subscription Plan: {subscription_plan}, Type: {type(subscription_plan)}"
+        )
+        print(f"Payment Record: {payment_record}, Type: {type(payment_record)}")
+
+        return await StudentChoices.create(
+            student=student,
+            course=subscription_plan.course,
+            subscription=subscription_plan,
+            expiry_date=expiry_date,
+            payment=payment_record,
+            subscription_duration=subscription_plan.validity,
+        )
+
+    except Exception as ex:
+        print(f"Error while creating StudentChoices: {str(ex)}")
+
+
+async def update_or_create_active_subscription(
+    student, subscription_plan, payment_record
+):
+    """
+    Update or create an activeSubscription record for the student for the target batch.
+    """
+    await activeSubscription.create(
+        student=student,
+        subscription=subscription_plan,
+        course=subscription_plan.course,
+        payment=payment_record,
+    )
+    print(
+        f"Created new activeSubscription record for Student ID: {student.id} for Warriors batch."
+    )
+
+
+# delete duplicate subscription of warrior batch for a student
+@router.post("/delete_duplicate_warriors_subscription")
+async def delete_duplicate_warriors_subscription_api(_=Depends(get_current_user)):
+    await delete_duplicate_warriors_subscription()
+
+
+async def delete_duplicate_warriors_subscription():
+    """
+    Delete duplicate subscriptions of the 'Warriors batch' for students.
+    """
+    target_batch_id = "dbab4049-f96b-41e5-bc6c-8ef5e449ffad"
+    target_batch = await get_subscription_plan(target_batch_id)
+
+    if target_batch:
+        await process_students_for_duplicate_subscriptions(target_batch)
+    else:
+        print(f"Warriors batch with ID {target_batch_id} not found.")
+
+
+async def process_students_for_duplicate_subscriptions(target_batch):
+    """
+    Process each student to delete duplicate subscriptions of the target batch.
+    """
+    current_subscriptions = (
+        await StudentChoices.filter(
+            subscription=target_batch, expiry_date__gte=datetime.now(tz)
+        )
+        .prefetch_related("student")
+        .order_by("-created_at")
+    )
+
+    for subscription in current_subscriptions:
+        student = subscription.student
+        if await has_duplicate_subscriptions(student, target_batch):
+            await delete_duplicate_subscriptions(student, target_batch)
+            print(
+                f"Deleted duplicate subscriptions for Student ID: {student.id} for Warriors batch."
+            )
+
+
+async def has_duplicate_subscriptions(student, target_batch):
+    """
+    Check if the student has duplicate subscriptions of the target batch.
+    """
+    return (
+        await StudentChoices.filter(
+            student=student,
+            subscription=target_batch,
+            expiry_date__gte=datetime.now(tz),
+        ).count()
+        > 1
+    )
+
+
+async def delete_duplicate_subscriptions(student, target_batch):
+    """
+    Delete duplicate subscriptions of the target batch for the student.
+    """
+    await StudentChoices.filter(student=student, subscription=target_batch).order_by(
+        "-created_at"
+    ).offset(1).delete()
+    # delete from active subscription model as well
+    await activeSubscription.filter(
+        student=student, subscription=target_batch
+    ).order_by("-created_at").offset(1).delete()
+    # delete from payment record model as well
+    await PaymentRecords.filter(student=student, subscription=target_batch).order_by(
+        "-created_at"
+    ).offset(1).delete()
+    print(
+        f"Deleted duplicate subscriptions for Student ID: {student.id} for Warriors batch."
+    )
