@@ -105,9 +105,11 @@ logger.addHandler(slack_handler)
 class RedirectMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         # Check if the incoming request is from exams.imagnus.in and not targeting /api/*
-        if "exams.imagnus.in" in request.headers.get(
-            "host", ""
-        ) and not request.url.path.startswith("/api/"):
+        if (
+            "exams.imagnus.in" in request.headers.get("host", "")
+            and not request.url.path.startswith("/api/")
+            and not request.url.path == "/v1/scholarship/2022/"
+        ):
             # Redirect to study.imagnus.in
             # Preserve the path and query string from the original request
             new_url = f"https://study.imagnus.in{request.url.path}"
