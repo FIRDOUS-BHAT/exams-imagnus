@@ -46,10 +46,9 @@ async def scholarship(data: studentIdPydanctic):
             student=student, test_series__course__id=course_id, is_attempted=True
         ):
             if await ScholarshipTestSeries.filter(
-                lang=lang,
                 course__id=course_id,
                 result_announcement_date__lte=updated_at,
-            ):
+            ).limit(1):
 
                 status = "announced"
                 test_series_id = test_obj.id
@@ -57,20 +56,19 @@ async def scholarship(data: studentIdPydanctic):
                 status = "attempted"
         else:
             if await ScholarshipTestSeries.filter(
-                lang=lang,
                 course__id=course_id,
                 on_date__lte=updated_at,
                 end_date__gte=updated_at,
-            ):
+            ).limit(1):
                 status = "online"
                 test_series_id = test_obj.id
             elif await ScholarshipTestSeries.filter(
-                lang=lang, course__id=course_id, on_date__gt=updated_at
-            ):
+                course__id=course_id, on_date__gt=updated_at
+            ).limit(1):
                 status = "not_yet_started"
             elif await ScholarshipTestSeries.filter(
-                lang=lang, course__id=course_id, end_date__lt=updated_at
-            ):
+                course__id=course_id, end_date__lt=updated_at
+            ).limit(1):
                 status = "not_attempted"
             else:
                 status = "not_attempted"
