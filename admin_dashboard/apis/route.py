@@ -3078,7 +3078,7 @@ class getCandidates(BaseModel):
 async def interview_program(
     s3: BaseClient = Depends(s3_auth),
     data: getCandidates = Depends(),
-    image: Optional[UploadFile] = File(default=None, media_type="image/*"),
+    image: Optional[UploadFile] = File(default=None),
 ):
     try:
         if await InterViewProgram.exists(email=data.email):
@@ -3092,7 +3092,7 @@ async def interview_program(
         else:
             folder = "interview-files/2020"
             image_url = await upload_images(
-                s3, folder=folder, image=image, mimetype=None
+                s3, folder=folder, image=image, mimetype=image.content_type
             )
 
             await InterViewProgram.create(
