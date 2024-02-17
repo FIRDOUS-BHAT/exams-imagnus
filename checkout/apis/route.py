@@ -278,8 +278,7 @@ async def create_order(data):
                 validity = subs_obj1.validity
                 plan_price = subs_obj1.plan_price
                 if razorpay_resp:
-                    print("Yes in razorpay_resp")
-                    print("data.coupon", data.coupon)
+                   
                     if not data.coupon:
 
                         if round(plan_price) != round(razorpay_resp["amount"] / 100):
