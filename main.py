@@ -64,7 +64,7 @@ from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoin
 from starlette.middleware.base import BaseHTTPMiddleware
 
 
-limiter = Limiter(key_func=get_remote_address, default_limits=["40/minute"])
+limiter = Limiter(key_func=get_remote_address, default_limits=["500/minute"])
 
 
 @lru_cache()
