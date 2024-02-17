@@ -277,11 +277,13 @@ async def create_order(data):
                 cid = subs_obj1.course_id
                 validity = subs_obj1.validity
                 plan_price = subs_obj1.plan_price
-                if razorpay_resp:
+                if (razorpay_resp or data.bill_amount) and data.source != "adm":
 
                     if not data.coupon:
 
-                        if round(plan_price) != round(razorpay_resp["amount"] / 100):
+                        if round(plan_price) != round(
+                            razorpay_resp["amount"] / 100
+                        ) or round(data.bill_amount) != round(plan_price):
                             return JSONResponse(
                                 {
                                     "status": False,
