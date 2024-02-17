@@ -2716,7 +2716,6 @@ async def add_live_class(
     _=Depends(get_current_user),
 ):
     instructor = await Instructor.get(id=instructor_id)
-    lecture = await CourseCategoryLectures.get(id=lecture_id)
     image_url = await upload_images(
         s3, folder="live_classes/thumbnails", image=thumbnail, mimetype=None
     )
@@ -2725,7 +2724,6 @@ async def add_live_class(
         title=title,
         url=url,
         lecture_duration=lecture_duration,
-        lecture=lecture,
         instructor=instructor,
         thumbnail=image_url,
         streaming_time=streaming_time,
@@ -2749,7 +2747,7 @@ class lecturePydantic(BaseModel):
 class LiveClassesPydantic(BaseModel):
     id: uuid.UUID
     title: str
-    lecture: lecturePydantic
+    lecture: Optional[lecturePydantic] = None
     instructor: InstructorPydantic
     url: Optional[str] = None
     thumbnail: Optional[str] = None
@@ -2770,7 +2768,7 @@ class PNCoursePydantic(BaseModel):
 class PNLiveClassesPydantic(BaseModel):
     id: uuid.UUID
     title: str
-    lecture: lecturePydantic
+    lecture: Optional[lecturePydantic] = None
     instructor: InstructorPydantic
     url: str
     thumbnail: Optional[str] = None

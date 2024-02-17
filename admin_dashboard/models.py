@@ -55,6 +55,7 @@ class Course(Model):
     """
     This references an Event in a Tournament
     """
+
     id = fields.UUIDField(pk=True)
     name = fields.CharField(max_length=100, unique=True)
     slug = fields.CharField(max_length=250, unique=True)
@@ -67,7 +68,9 @@ class Course(Model):
     created_at = fields.DatetimeField(auto_now_add=True)
     display_order = fields.IntField(default=0)
     preference = fields.ForeignKeyField(
-        "models.Preference", related_name="courses", on_delete='CASCADE',
+        "models.Preference",
+        related_name="courses",
+        on_delete="CASCADE",
     )
 
 
@@ -94,13 +97,17 @@ class Category(Model):
 class CourseCategories(Model):
     id = fields.UUIDField(pk=True)
     category = fields.ForeignKeyField(
-        "models.Category", related_name="course_categories", on_delete='CASCADE',
+        "models.Category",
+        related_name="course_categories",
+        on_delete="CASCADE",
     )
     is_active = fields.BooleanField(default=True)
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
     course = fields.ForeignKeyField(
-        "models.Course", related_name="categories", on_delete='CASCADE',
+        "models.Course",
+        related_name="categories",
+        on_delete="CASCADE",
     )
     is_free = fields.BooleanField(default=False)
     # class PydanticMeta:
@@ -119,14 +126,18 @@ class subjects(Model):
 class CategorySubjects(Model):
     id = fields.UUIDField(pk=True)
     subject = fields.ForeignKeyField(
-        "models.subjects", related_name="subjects_CategorySubjects", on_delete='CASCADE',
+        "models.subjects",
+        related_name="subjects_CategorySubjects",
+        on_delete="CASCADE",
     )
     is_active = fields.BooleanField(default=True)
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
 
     category = fields.ForeignKeyField(
-        "models.Category", related_name="category_CategorySubjects", on_delete='CASCADE',
+        "models.Category",
+        related_name="category_CategorySubjects",
+        on_delete="CASCADE",
     )
 
 
@@ -134,15 +145,20 @@ class Topics(Model):
     """
     This references a chapters
     """
+
     id = fields.UUIDField(pk=True)
-    name = fields.CharField(max_length=250, )
+    name = fields.CharField(
+        max_length=250,
+    )
     slug = fields.CharField(max_length=150)
     is_active = fields.BooleanField(default=True)
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
 
     category = fields.ForeignKeyField(
-        "models.Category", related_name="topics", on_delete='CASCADE',
+        "models.Category",
+        related_name="topics",
+        on_delete="CASCADE",
     )
 
 
@@ -157,17 +173,27 @@ class CategoryTopics(Model):
     created_at = fields.DatetimeField(auto_now_add=True)
     order_seq = fields.IntField(default=0, index=True)
     category = fields.ForeignKeyField(
-        "models.CourseCategories", related_name="categories_topics", on_delete='CASCADE', index=True
+        "models.CourseCategories",
+        related_name="categories_topics",
+        on_delete="CASCADE",
+        index=True,
     )
     topic = fields.ForeignKeyField(
-        "models.Topics", related_name="categories_topics_title", on_delete='CASCADE', index=True
+        "models.Topics",
+        related_name="categories_topics_title",
+        on_delete="CASCADE",
+        index=True,
     )
 
 
 class CourseCategoryLectures(Model):
     id = fields.UUIDField(pk=True, index=True)
-    title = fields.CharField(max_length=250, )
-    slug = fields.CharField(max_length=550, )
+    title = fields.CharField(
+        max_length=250,
+    )
+    slug = fields.CharField(
+        max_length=550,
+    )
     mobile_video_url = fields.TextField(null=True, blank=True)
     web_video_url = fields.TextField(null=True, blank=True)
     app_thumbnail = fields.TextField(blank=True, null=True)
@@ -181,7 +207,10 @@ class CourseCategoryLectures(Model):
     video_720 = fields.TextField(null=True, blank=True)
     video_size_720 = fields.BigIntField(null=True, blank=True)
     category_topic = fields.ForeignKeyField(
-        "models.CategoryTopics", related_name="CategoryLectures", on_delete='CASCADE', index=True
+        "models.CategoryTopics",
+        related_name="CategoryLectures",
+        on_delete="CASCADE",
+        index=True,
     )
     discription = fields.TextField(blank=True, null=True)
     order_display = fields.IntField(default=0)
@@ -191,7 +220,10 @@ class CourseCategoryLectures(Model):
 
 class CourseCategoryLecturesVideoURLS(Model):
     video_link = fields.ForeignKeyField(
-        "models.CourseCategoryLectures", related_name="CourseCategoryLecturesVideoURLS", on_delete='CASCADE', index=True
+        "models.CourseCategoryLectures",
+        related_name="CourseCategoryLecturesVideoURLS",
+        on_delete="CASCADE",
+        index=True,
     )
     video_360 = fields.TextField(null=True, blank=True)
     video_540 = fields.TextField(null=True, blank=True)
@@ -207,7 +239,10 @@ class CourseCategoryNotes(Model):
     notes_url = fields.TextField()
     thumbnail = fields.TextField(null=True, blank=True)
     category_topic = fields.ForeignKeyField(
-        "models.CategoryTopics", related_name="CategoryNotes", on_delete='CASCADE', index=True
+        "models.CategoryTopics",
+        related_name="CategoryNotes",
+        on_delete="CASCADE",
+        index=True,
     )
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
@@ -216,7 +251,10 @@ class CourseCategoryNotes(Model):
 class CourseCategoryTestSeries(Model):
     id = fields.UUIDField(pk=True, index=True)
     category_topic = fields.ForeignKeyField(
-        "models.CategoryTopics", related_name="CategoryTestSeries", on_delete='CASCADE', index=True
+        "models.CategoryTopics",
+        related_name="CategoryTestSeries",
+        on_delete="CASCADE",
+        index=True,
     )
     series_no = fields.IntField(blank=True, null=True)
     time_duration = fields.IntField()
@@ -240,7 +278,10 @@ class CourseCategoryTestSeriesQuestions(Model):
     answer = fields.CharField(max_length=10)
     solution = fields.TextField()
     test_series = fields.ForeignKeyField(
-        "models.CourseCategoryTestSeries", related_name="CategoryTestSeriesQuestions", on_delete='CASCADE', index=True
+        "models.CourseCategoryTestSeries",
+        related_name="CategoryTestSeriesQuestions",
+        on_delete="CASCADE",
+        index=True,
     )
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
@@ -252,7 +293,9 @@ class CourseCategoryOverview(Model):
     examination = fields.TextField()
     syllabus = fields.TextField()
     course = fields.ForeignKeyField(
-        "models.Course", related_name="course_overview", on_delete='CASCADE',
+        "models.Course",
+        related_name="course_overview",
+        on_delete="CASCADE",
     )
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
@@ -288,11 +331,17 @@ class SubscriptionPlans(Model):
 class CourseSubscriptionPlans(Model):
     id = fields.UUIDField(pk=True)
     course = fields.ForeignKeyField(
-        "models.Course", related_name="CourseSubscriptionPlans_course", on_delete='CASCADE', index=True
+        "models.Course",
+        related_name="CourseSubscriptionPlans_course",
+        on_delete="CASCADE",
+        index=True,
     )
 
     SubscriptionPlan = fields.ForeignKeyField(
-        "models.SubscriptionPlans", related_name="SubscriptionPlans", on_delete='CASCADE', index=True
+        "models.SubscriptionPlans",
+        related_name="SubscriptionPlans",
+        on_delete="CASCADE",
+        index=True,
     )
     validity = fields.IntField(blank=True, null=True)
     plan_price = fields.IntField(default=0)
@@ -311,13 +360,19 @@ class LiveClasses(Model):
     id = fields.UUIDField(pk=True)
     title = fields.CharField(max_length=250)
     course = fields.ForeignKeyField(
-        "models.Course", related_name="liveClasses_course", on_delete='CASCADE', index=True
+        "models.Course",
+        related_name="liveClasses_course",
+        on_delete="CASCADE",
+        index=True,
     )
-    lecture = fields.ForeignKeyField(
-        "models.CourseCategoryLectures", related_name="live_lectures", on_delete='CASCADE', index=True
-    )
+
+    lecture = fields.CharField(max_length=250, blank=True, null=True)
+
     instructor = fields.ForeignKeyField(
-        "models.Instructor", related_name="live_lecture_Instructor", on_delete='CASCADE', index=True
+        "models.Instructor",
+        related_name="live_lecture_Instructor",
+        on_delete="CASCADE",
+        index=True,
     )
     url = fields.TextField(blank=True, null=True)
     is_paid = fields.BooleanField(default=False)
@@ -358,12 +413,13 @@ class Coupons(Model):
     name = fields.CharField(80)
     discount = fields.IntField()
     subscription = fields.ForeignKeyField(
-        "models.CourseSubscriptionPlans", related_name="student_coupon_subscription", on_delete='CASCADE', index=True
+        "models.CourseSubscriptionPlans",
+        related_name="student_coupon_subscription",
+        on_delete="CASCADE",
+        index=True,
     )
-    coupon_type = fields.IntEnumField(
-        CouponType, default=CouponType.percentage)
-    apply_mode = fields.IntEnumField(
-        ApplyMode, default=ApplyMode.on_all)
+    coupon_type = fields.IntEnumField(CouponType, default=CouponType.percentage)
+    apply_mode = fields.IntEnumField(ApplyMode, default=ApplyMode.on_all)
     discription = fields.TextField(blank=True, null=True)
     is_active = fields.BooleanField(default=True)
     updated_at = fields.DatetimeField(auto_now=True)
@@ -373,10 +429,13 @@ class Coupons(Model):
 class CourseCart(Model):
     id = fields.UUIDField(pk=True)
     student = fields.ForeignKeyField(
-        "models.Student", related_name="student_cart", on_delete='CASCADE', index=True
+        "models.Student", related_name="student_cart", on_delete="CASCADE", index=True
     )
     subscription = fields.ForeignKeyField(
-        "models.CourseSubscriptionPlans", related_name="student_cart_subscription", on_delete='CASCADE', index=True
+        "models.CourseSubscriptionPlans",
+        related_name="student_cart_subscription",
+        on_delete="CASCADE",
+        index=True,
     )
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now=True)
@@ -416,64 +475,79 @@ class CurrentAffairs(Model):
     created_at = fields.DatetimeField(auto_now_add=True)
 
 
-Tortoise.init_models(["admin_dashboard.models", "student.models", ], "models")
+Tortoise.init_models(
+    [
+        "admin_dashboard.models",
+        "student.models",
+    ],
+    "models",
+)
 Preference_Pydantic = pydantic_model_creator(Preference)
 PreferenceIn_Pydantic = pydantic_model_creator(
-    Preference, name="PreferenceIn", exclude_readonly=True)
+    Preference, name="PreferenceIn", exclude_readonly=True
+)
 Course_Pydantic = pydantic_model_creator(Course)
 CourseIn_Pydantic = pydantic_model_creator(
-    Course, name="CourseIn", exclude_readonly=True)
+    Course, name="CourseIn", exclude_readonly=True
+)
 CategoryIn_Pydantic = pydantic_model_creator(
-    CourseCategories, name="CategoryIn", exclude_readonly=True)
+    CourseCategories, name="CategoryIn", exclude_readonly=True
+)
 CourseCategories_Pydantic = pydantic_model_creator(CourseCategories)
 Category_Pydantic = pydantic_model_creator(Category)
 CourseCategoriesIn_Pydantic = pydantic_model_creator(
-    CourseCategories, name="CategoryIn", exclude_readonly=True)
+    CourseCategories, name="CategoryIn", exclude_readonly=True
+)
 CategorySubjectsIn_Pydantic = pydantic_model_creator(
-    CategorySubjects, name="CategorySubjectsIn", exclude_readonly=True)
+    CategorySubjects, name="CategorySubjectsIn", exclude_readonly=True
+)
 CategorySubjects_Pydantic = pydantic_model_creator(CategorySubjects)
 subjects_Pydantic = pydantic_model_creator(subjects)
 Topics_Pydantic = pydantic_model_creator(Topics)
 CategoryTopics_Pydantic = pydantic_model_creator(CategoryTopics)
-CourseCategoryLectures_Pydantic = pydantic_model_creator(
-    CourseCategoryLectures)
+CourseCategoryLectures_Pydantic = pydantic_model_creator(CourseCategoryLectures)
 CourseCategoryNotes_Pydantic = pydantic_model_creator(CourseCategoryNotes)
-CourseCategoryTestSeries_Pydantic = pydantic_model_creator(
-    CourseCategoryTestSeries)
+CourseCategoryTestSeries_Pydantic = pydantic_model_creator(CourseCategoryTestSeries)
 CourseCategoryTestSeriesQuestions_Pydantic = pydantic_model_creator(
-    CourseCategoryTestSeriesQuestions)
-CourseCategoryOverview_Pydantic = pydantic_model_creator(
-    CourseCategoryOverview)
+    CourseCategoryTestSeriesQuestions
+)
+CourseCategoryOverview_Pydantic = pydantic_model_creator(CourseCategoryOverview)
 Instructor_Pydantic = pydantic_model_creator(Instructor)
 InstructorIn_Pydantic = pydantic_model_creator(
-    Instructor, name="InstructorIn", exclude_readonly=True)
+    Instructor, name="InstructorIn", exclude_readonly=True
+)
 SubscriptionPlans_Pydantic = pydantic_model_creator(SubscriptionPlans)
-CourseSubscriptionPlans_Pydantic = pydantic_model_creator(
-    CourseSubscriptionPlans)
+CourseSubscriptionPlans_Pydantic = pydantic_model_creator(CourseSubscriptionPlans)
 LiveClassesIn_Pydantic = pydantic_model_creator(
-    LiveClasses, name="LiveClassesIn", exclude_readonly=True)
+    LiveClasses, name="LiveClassesIn", exclude_readonly=True
+)
 LiveClasses_Pydantic = pydantic_model_creator(LiveClasses)
 addAppStaticUrls_Pydantic = pydantic_model_creator(addAppStaticUrls)
 offerBanners_Pydantic = pydantic_model_creator(offerBanners)
 CourseCartIn_Pydantic = pydantic_model_creator(
-    CourseCart, name="CourseCartIn", exclude_readonly=True)
+    CourseCart, name="CourseCartIn", exclude_readonly=True
+)
 CourseCart_Pydantic = pydantic_model_creator(CourseCart)
 CurrentAffairs_Pydantic = pydantic_model_creator(CurrentAffairs)
 
 
 # Lite Models
 PreferenceLite_Pydantic = pydantic_model_creator(
-    Preference, name="PreferenceLite", include=("id", "name", "slug"))
+    Preference, name="PreferenceLite", include=("id", "name", "slug")
+)
 # CourseLite_Pydantic = pydantic_model_creator(Course, name="CourseLite", include=("id", "name"))
 # #how to make this CourseLite_Pydantic include its relational objects as well
 
 # Assuming CategoryLite_Pydantic is created correctly
 CategoryLite_Pydantic = pydantic_model_creator(
-    Category, name="CategoryLite", include=("id", "name"))
+    Category, name="CategoryLite", include=("id", "name")
+)
 
 # This Pydantic model represents the CourseCategories model with a nested Category
 CourseCategoriesLite_Pydantic = pydantic_model_creator(
-    CourseCategories, name="CourseCategoriesLite", include=("id"))
+    CourseCategories, name="CourseCategoriesLite", include=("id")
+)
+
 
 # This Pydantic model represents the Course model with nested CourseCategories
 class CourseLite_Pydantic(BaseModel):
@@ -484,7 +558,9 @@ class CourseLite_Pydantic(BaseModel):
     class Config:
         from_attributes = True
 
+
 # Now, when serializing the courses, ensure to use CourseCategoriesLite_Pydantic for the nested categories
+
 
 # Define the Pydantic model for Preference including related CourseLite
 class PreferenceWithCoursesLite_Pydantic(PreferenceLite_Pydantic):
@@ -492,34 +568,54 @@ class PreferenceWithCoursesLite_Pydantic(PreferenceLite_Pydantic):
 
 
 CategorySubjectsLite_Pydantic = pydantic_model_creator(
-    CategorySubjects, name="CategorySubjectsLite", include=("id", "name"))
+    CategorySubjects, name="CategorySubjectsLite", include=("id", "name")
+)
 subjectsLite_Pydantic = pydantic_model_creator(
-    subjects, name="subjectsLite", include=("id", "name"))
+    subjects, name="subjectsLite", include=("id", "name")
+)
 TopicsLite_Pydantic = pydantic_model_creator(
-    Topics, name="TopicsLite", include=("id", "name"))
+    Topics, name="TopicsLite", include=("id", "name")
+)
 CategoryTopicsLite_Pydantic = pydantic_model_creator(
-    CategoryTopics, name="CategoryTopicsLite", include=("id", "name"))
+    CategoryTopics, name="CategoryTopicsLite", include=("id", "name")
+)
 CourseCategoryLecturesLite_Pydantic = pydantic_model_creator(
-    CourseCategoryLectures, name="CourseCategoryLecturesLite", include=("id", "title"))
+    CourseCategoryLectures, name="CourseCategoryLecturesLite", include=("id", "title")
+)
 CourseCategoryNotesLite_Pydantic = pydantic_model_creator(
-    CourseCategoryNotes, name="CourseCategoryNotesLite", include=("id", "title"))
+    CourseCategoryNotes, name="CourseCategoryNotesLite", include=("id", "title")
+)
 CourseCategoryTestSeriesLite_Pydantic = pydantic_model_creator(
-    CourseCategoryTestSeries, name="CourseCategoryTestSeriesLite", include=("id", "title"))
+    CourseCategoryTestSeries,
+    name="CourseCategoryTestSeriesLite",
+    include=("id", "title"),
+)
 CourseCategoryOverviewLite_Pydantic = pydantic_model_creator(
-    CourseCategoryOverview, name="CourseCategoryOverviewLite", include=("id", "overview"))
+    CourseCategoryOverview,
+    name="CourseCategoryOverviewLite",
+    include=("id", "overview"),
+)
 InstructorLite_Pydantic = pydantic_model_creator(
-    Instructor, name="InstructorLite", include=("id", "name"))
+    Instructor, name="InstructorLite", include=("id", "name")
+)
 SubscriptionPlansLite_Pydantic = pydantic_model_creator(
-    SubscriptionPlans, name="SubscriptionPlansLite", include=("id", "name"))
+    SubscriptionPlans, name="SubscriptionPlansLite", include=("id", "name")
+)
 CourseSubscriptionPlansLite_Pydantic = pydantic_model_creator(
-    CourseSubscriptionPlans, name="CourseSubscriptionPlansLite", include=("id", "name"))
+    CourseSubscriptionPlans, name="CourseSubscriptionPlansLite", include=("id", "name")
+)
 LiveClassesLite_Pydantic = pydantic_model_creator(
-    LiveClasses, name="LiveClassesLite", include=("id", "title"))
+    LiveClasses, name="LiveClassesLite", include=("id", "title")
+)
 addAppStaticUrlsLite_Pydantic = pydantic_model_creator(
-    addAppStaticUrls, name="addAppStaticUrlsLite", include=("id", "title"))
+    addAppStaticUrls, name="addAppStaticUrlsLite", include=("id", "title")
+)
 offerBannersLite_Pydantic = pydantic_model_creator(
-    offerBanners, name="offerBannersLite", include=("id", "title"))
+    offerBanners, name="offerBannersLite", include=("id", "title")
+)
 CourseCartLite_Pydantic = pydantic_model_creator(
-    CourseCart, name="CourseCartLite", include=("id", "title"))
+    CourseCart, name="CourseCartLite", include=("id", "title")
+)
 CurrentAffairsLite_Pydantic = pydantic_model_creator(
-    CurrentAffairs, name="CurrentAffairsLite", include=("id", "title"))
+    CurrentAffairs, name="CurrentAffairsLite", include=("id", "title")
+)

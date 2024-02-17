@@ -1868,14 +1868,8 @@ async def add_live_class(request: Request, course_id: List[str] = Form(...), ins
                 is_paid = True
             else:
                 is_paid = False
-            if app_url == 'https://exams.imagnus.in':
-                lecture_id = 'da9f64de-95cb-4349-91b1-f5c78c7abfe1'
-            elif app_url == 'https://testserver.imagnus.in':
-                lecture_id = '1302e05b-46b3-4a19-ac31-5f1ea279a7d9'
-            elif app_url == 'http://127.0.0.1:8000':
-                lecture_id = '3645de71-2140-4a43-9005-3cb0141004ed'
-            lecture = await CourseCategoryLectures.get(id=lecture_id)
-            saved_obj = await LiveClasses.create(title=title, course=course, streaming_time=stream_time, lecture=lecture,
+          
+            saved_obj = await LiveClasses.create(title=title, course=course, streaming_time=stream_time,
                                                  instructor=instructor, thumbnail=image_url, url=url, is_paid=is_paid, )
 
             if saved_obj:
