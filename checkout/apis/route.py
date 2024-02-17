@@ -278,7 +278,7 @@ async def create_order(data):
                 validity = subs_obj1.validity
                 plan_price = subs_obj1.plan_price
                 if razorpay_resp:
-                   
+
                     if not data.coupon:
 
                         if round(plan_price) != round(razorpay_resp["amount"] / 100):
@@ -380,11 +380,17 @@ async def create_order(data):
                         bill_amount=bill_amount,
                         gateway_name=gateway_name,
                         payment_status=payment_status,
+                        source=data.source,
                         updated_at=updated_at,
                         created_at=updated_at,
                     )
                     datetime_1 = datetime.now(tz)
                     expiry_date = datetime_1 + relativedelta(months=validity)
+
+                    if data.source == "adm":
+                        if data.expiry_date:
+                            expiry_date = data.expiry_date
+
                     if payment_obj:
                         student_choices_obj = await StudentChoices.create(
                             student=user_obj,
@@ -539,6 +545,7 @@ class OrderPlacePydantic(BaseModel):
     bill_amount: int
     student_id: str
     subscription_id: str
+    expiry_date: Optional[datetime] = None
 
 
 @router.post(
