@@ -548,6 +548,10 @@ class OrderPlacePydantic(BaseModel):
 async def place_order(data: OrderPlacePydantic, _=Depends(get_current_user)):
     # Check and process the regular order
     try:
+        if not data.order_id:
+            return JSONResponse(
+                {"status": False, "message": "Invalid Order Id"}, status_code=208
+            )
         result_response = await create_order(data)
 
         # Extract and decode the body from the JSONResponse
