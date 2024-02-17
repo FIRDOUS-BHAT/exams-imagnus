@@ -77,7 +77,7 @@ async def create_order_id(data: OrderIdPydantic, _=Depends(get_current_user)):
                 "receipt": "order_rcptid_11",
             }
         )
-        if order["id"]:
+        if len(order["id"]) > 4:
             return JSONResponse(
                 {"status": True, "order_id": order["id"]}, status_code=200
             )
