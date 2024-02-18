@@ -2769,7 +2769,7 @@ class PNCoursePydantic(BaseModel):
 class PNLiveClassesPydantic(BaseModel):
     id: uuid.UUID
     title: str
-    lecture: Optional[lecturePydantic] = None
+    lecture: Optional[str] = None
     instructor: InstructorPydantic
     url: str
     thumbnail: Optional[str] = None
