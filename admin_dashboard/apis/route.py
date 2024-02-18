@@ -2747,7 +2747,8 @@ class lecturePydantic(BaseModel):
 class LiveClassesPydantic(BaseModel):
     id: uuid.UUID
     title: str
-    lecture: Optional[lecturePydantic] = None
+    # lecture: Optional[lecturePydantic] = None
+    lecture: Optional[str] = None
     instructor: InstructorPydantic
     url: Optional[str] = None
     thumbnail: Optional[str] = None
@@ -2859,6 +2860,7 @@ async def get_live_classes(
 @router.get("/get_all_live_classes/", response_model=List[LiveClassesPydantic])
 async def get_all_live_classes(_=Depends(get_current_user)):
     obj = await LiveClasses_Pydantic.from_queryset(LiveClasses.all())
+    # obj = await LiveClasses.all()
     return obj
 
 
