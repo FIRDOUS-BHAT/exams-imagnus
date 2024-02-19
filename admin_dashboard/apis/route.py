@@ -2747,8 +2747,8 @@ class lecturePydantic(BaseModel):
 class LiveClassesPydantic(BaseModel):
     id: uuid.UUID
     title: str
-    # lecture: Optional[lecturePydantic] = None
-    lecture: Optional[str] = None
+    lecture: Optional[lecturePydantic] = None
+    # lecture: Optional[str] = []
     instructor: InstructorPydantic
     url: Optional[str] = None
     thumbnail: Optional[str] = None
@@ -2769,7 +2769,8 @@ class PNCoursePydantic(BaseModel):
 class PNLiveClassesPydantic(BaseModel):
     id: uuid.UUID
     title: str
-    lecture: Optional[str] = None
+    lecture: Optional[lecturePydantic] = None
+    # lecture: Optional[str] = None
     instructor: InstructorPydantic
     url: str
     thumbnail: Optional[str] = None
