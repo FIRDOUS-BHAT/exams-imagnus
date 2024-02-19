@@ -12,8 +12,12 @@ class Token(BaseModel):
 
 
 class UserIn(BaseModel):
-    mobile: str = Field(..., )
-    password: str = Field(..., )
+    mobile: str = Field(
+        ...,
+    )
+    password: str = Field(
+        ...,
+    )
 
 
 class UserList(BaseModel):
@@ -26,7 +30,9 @@ class UserList(BaseModel):
 
 
 class UserMobileCheck(BaseModel):
-    mobile: str = Field(..., )
+    mobile: str = Field(
+        ...,
+    )
 
 
 class Student(Model):
@@ -41,68 +47,91 @@ class Student(Model):
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
 
-    #password needs to be excluded from pydantic model
+    # password needs to be excluded from pydantic model
     def serialize(self):
         return {
             "id": str(self.id),  # Convert UUID to string if necessary
             "fullname": self.fullname,
             "mobile": self.mobile,
             "email": self.email,
-            "dp": self.dp
-           
+            "dp": self.dp,
         }
-    
-    
+
+
 class UserToken(Model):
     user_id = fields.UUIDField(pk=True)
     token = fields.TextField()
+    expires_at = fields.DatetimeField()
     updated_at = fields.DatetimeField(auto_now=True)
-    created_at = fields.DatetimeField(auto_now_add=True)    
+    created_at = fields.DatetimeField(auto_now_add=True)
+
+
 
 
 class StudentCoursePreferences(Model):
     student = fields.ForeignKeyField(
-        "models.Student", related_name="students_StudentCoursePreferences", on_delete='CASCADE',)
-    course = fields.ForeignKeyField("models.Course", related_name="courses_StudentCoursePreferences", on_delete='CASCADE',)
+        "models.Student",
+        related_name="students_StudentCoursePreferences",
+        on_delete="CASCADE",
+    )
+    course = fields.ForeignKeyField(
+        "models.Course",
+        related_name="courses_StudentCoursePreferences",
+        on_delete="CASCADE",
+    )
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
+
 
 class StudentTestSeriesRecord(Model):
     id = fields.UUIDField(pk=True)
     student = fields.ForeignKeyField(
-        "models.Student", related_name="students_StudentTestSeriesRecord", on_delete='CASCADE',
+        "models.Student",
+        related_name="students_StudentTestSeriesRecord",
+        on_delete="CASCADE",
     )
     test_series = fields.ForeignKeyField(
-        "models.CourseCategoryTestSeries", related_name="students_CategoryTestSeriesQuestions", on_delete='CASCADE',
+        "models.CourseCategoryTestSeries",
+        related_name="students_CategoryTestSeriesQuestions",
+        on_delete="CASCADE",
     )
     correct_ans = fields.IntField()
     wrong_ans = fields.IntField()
     skipped_qns = fields.IntField()
     marks = fields.IntField()
-    test_record_summary = fields.TextField(null=True,blank=True)
+    test_record_summary = fields.TextField(null=True, blank=True)
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
 
 
-
-        
 class UsedCoupons(Model):
     id = fields.UUIDField(pk=True)
     coupon = fields.ForeignKeyField(
-        "models.Coupons", related_name="coupon_used", on_delete='CASCADE',
+        "models.Coupons",
+        related_name="coupon_used",
+        on_delete="CASCADE",
     )
     student = fields.ForeignKeyField(
-        "models.Student", related_name="coupon_used", on_delete='CASCADE',
+        "models.Student",
+        related_name="coupon_used",
+        on_delete="CASCADE",
     )
 
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
 
 
-Tortoise.init_models(["student.models", "admin_dashboard.models", ], "models")
+Tortoise.init_models(
+    [
+        "student.models",
+        "admin_dashboard.models",
+    ],
+    "models",
+)
 Student_Pydantic = pydantic_model_creator(Student)
 StudentIn_Pydantic = pydantic_model_creator(
-    Student, name="StudentIn", exclude_readonly=True)
+    Student, name="StudentIn", exclude_readonly=True
+)
 
 
 class UserPWD(UserList):

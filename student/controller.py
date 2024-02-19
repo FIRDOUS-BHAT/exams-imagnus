@@ -365,15 +365,6 @@ async def register_student(
         )
 
 
-@router.get(
-    "/get_all_students/",
-    response_model=List[Student_Pydantic],
-    responses={404: {"model": HTTPNotFoundError}},
-)
-async def get_all_students():
-    return await Student_Pydantic.from_queryset(Student.all())
-
-
 class userPydantic(BaseModel):
     user: uuid.UUID
 
@@ -404,16 +395,24 @@ async def authenticate_user(username: str, password: str):
 
 
 async def create_access_token_for_user(user):
-    existing_token = await UserToken.filter(user_id=user.id).first()
-    if existing_token:
-        await existing_token.delete()
+    """create access token for the user and store it in the database."""
+    # Delete any existing token for the user
+    await UserToken.filter(user_id=uuid.UUID(str(user.id))).delete()
 
+    # Calculate expiration time for the new token
+    expires_delta = timedelta(hours=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    expires_at = datetime.utcnow() + expires_delta
+
+    # Create a new access token
     access_token = create_access_token(
-        data=dict(sub=jsonable_encoder(user.id)),
-        expires=timedelta(hours=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
+        data={"sub": jsonable_encoder(user.id)},
+        expires=expires_delta,
     )
 
-    await UserToken.create(user_id=uuid.UUID(str(user.id)), token=access_token)
+    # Create a new UserToken record with the expiration date
+    await UserToken.create(
+        user_id=uuid.UUID(str(user.id)), token=access_token, expires_at=expires_at
+    )
 
     return access_token
 
@@ -421,25 +420,23 @@ async def create_access_token_for_user(user):
 @router.post("/student/secure_login/")
 async def login(
     request: Request,
-    response: Response,
     data: OAuth2PasswordRequestForm = Depends(),
-    return_url: Optional[str] = Form(default=None),
+    return_url: str = Form(default=None),
 ):
     username = data.username
     password = data.password
 
-    user = await authenticate_user(username, password)
-    # print(user)
+    user = await authenticate_user(
+        username, password
+    )  # Implement this function based on your auth logic
     if not user:
         request.session["data"] = (
             "Mobile number not found"
             if not await Student.exists(mobile=username)
             else "Incorrect password"
         )
-        # dd(request.session["data"])
-
         return RedirectResponse(
-            url="/student/login/?returnURL=" + return_url,
+            url=f"/student/login/?returnURL={return_url}",
             status_code=status.HTTP_302_FOUND,
         )
 
@@ -447,7 +444,6 @@ async def login(
 
     redirect_url = return_url if return_url != "None" else "/student/new-dashboard/"
     resp = RedirectResponse(url=redirect_url, status_code=status.HTTP_302_FOUND)
-
     resp.set_cookie(key=settings.cookie_name, value=access_token, httponly=True)
     request.session.clear()
     return resp
