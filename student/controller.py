@@ -1,4 +1,5 @@
 from collections import defaultdict
+import typing
 from fastapi import Query, WebSocket, HTTPException
 from utils.util import dd
 from fastapi import HTTPException
@@ -109,7 +110,33 @@ async def get_cookie(request: Request):
         raise HTTPException(status_code=208, detail=str(ex))
 
 
+def flash(request: Request, message: typing.Any, category: str = "primary") -> None:
+    """Flash a message to the next request."""
+    if "_messages" not in request.session:
+        request.session["_messages"] = []
+    request.session["_messages"].append({"message": message, "category": category})
+
+
+def get_flashed_messages(request: Request):
+    """Get the flashed messages from the session."""
+    return request.session.pop("_messages") if "_messages" in request.session else []
+
+
+templates.env.globals["get_flashed_messages"] = get_flashed_messages
+
+
 async def get_current_user(session: Optional[str] = Depends(get_cookie)):
+    """Get the current user from the database using the session token."""
+    token = await UserToken.filter(
+        token=session, expires_at__gt=datetime.utcnow()
+    ).first()
+
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_303_SEE_OTHER,
+            headers={"Location": "/student/login/"},
+        )
+
     if session is None:
         raise HTTPException(
             status_code=status.HTTP_303_SEE_OTHER,
@@ -257,32 +284,32 @@ async def login_page(
         token = request.cookies.get(settings.cookie_name)
 
         if token:
-            payload = jwt.decode(token, secret_key, algorithms=[settings.algorithm])
-            user: uuid.UUID = payload.get("sub")
-            exp = payload.get("exp")
-            print(exp)
-            print("===========expiry date here========")
-            student = await Student.exists(id=user)
+            if await UserToken.filter(token=token).exists():
+                payload = jwt.decode(token, secret_key, algorithms=[settings.algorithm])
+                user: uuid.UUID = payload.get("sub")
+                exp = payload.get("exp")
+                print(exp)
+                print("===========expiry date here========")
+                student = await Student.exists(id=user)
 
-            if student:
-                return RedirectResponse(
-                    url="/student/new-dashboard/", status_code=status.HTTP_302_FOUND
-                )
+                if student:
+                    return RedirectResponse(
+                        url="/student/new-dashboard/", status_code=status.HTTP_302_FOUND
+                    )
 
+        if "data" in request.session:
+            message = request.session["data"]
         else:
-            if "data" in request.session:
-                message = request.session["data"]
-            else:
-                message = ""
-            request.session.clear()
-            return templates.TemplateResponse(
-                "login.html",
-                context={
-                    "request": request,
-                    "returnURL": returnURL,
-                    "message": message,
-                },
-            )
+            message = ""
+        request.session.clear()
+        return templates.TemplateResponse(
+            "login.html",
+            context={
+                "request": request,
+                "returnURL": returnURL,
+                "message": message,
+            },
+        )
     except (jwt.ExpiredSignatureError, JWTError):
         if "data" in request.session:
             message = request.session["data"]
@@ -346,7 +373,7 @@ async def register_student(
                 fullname=fullname,
                 mobile=mobile,
                 email=email,
-                dp="https://ik.imagekit.io/imagnus/student-avatars/default_pp.png",
+                # dp="https://ik.imagekit.io/imagnus/student-avatars/default_pp.png",
                 fcm_token="",
                 password=util.get_password_hash(password),
                 status="1",
@@ -440,6 +467,20 @@ async def login(
             status_code=status.HTTP_302_FOUND,
         )
 
+    # Check for existing active sessions
+    existing_session = await UserToken.filter(
+        user_id=user.id, expires_at__gt=datetime.utcnow()
+    ).first()
+    if existing_session:
+
+        request.session["data"] = (
+            "Active session already exists. Please log out from other devices."
+        )
+        return RedirectResponse(
+            url=f"/student/login/?returnURL={return_url}",
+            status_code=status.HTTP_302_FOUND,
+        )
+
     access_token = await create_access_token_for_user(user)
 
     redirect_url = return_url if return_url != "None" else "/student/new-dashboard/"
@@ -449,8 +490,19 @@ async def login(
     return resp
 
 
+async def logout_user(token: str):
+    await UserToken.filter(token=token).delete()
+
+
 @router.post("/logout/")
-def logout():
+async def logout(request: Request):
+    """Log out the user by deleting the token from the database."""
+    # await UserToken.filter(user_id=user).delete()
+    token = request.cookies.get("session_id")
+    if not token:
+        raise HTTPException(status_code=400, detail="Session token not found")
+    await logout_user(token)
+
     resp = RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
     resp.delete_cookie(key=settings.cookie_name)
     return resp

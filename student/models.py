@@ -65,7 +65,10 @@ class UserToken(Model):
     updated_at = fields.DatetimeField(auto_now=True)
     created_at = fields.DatetimeField(auto_now_add=True)
 
-
+    class Meta:
+        indexes = [
+            ("user_id", "expires_at"),
+        ]  # Index for querying sessions by user and expiration
 
 
 class StudentCoursePreferences(Model):
