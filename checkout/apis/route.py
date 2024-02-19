@@ -1228,6 +1228,8 @@ async def webhook(request: Request):
                             coupon_discount,
                             status,
                         )
+                        await place_free_subscription(subscription_id, student_id)
+
                 elif order_type == "testseries":
 
                     if await Student.exists(id=student_id):
