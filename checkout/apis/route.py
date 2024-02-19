@@ -1215,7 +1215,10 @@ async def webhook(request: Request):
                         id=subscription_id
                     ).values("course__name")
                     c_ins = subs_ins["course__name"]
-                    if not await PaymentRecords.exists(payment_id=payment_id):
+                    if (
+                        not await PaymentRecords.exists(payment_id=payment_id)
+                        and order_id
+                    ):
 
                         await generate_order_from_webhook(
                             student_id,
