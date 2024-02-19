@@ -637,73 +637,70 @@ async def get_razorpay_order_id(amount, subscription_id):
 async def create_subscription(student, item_instance, now_date):
     """Create subscription for student"""
     try:
-        print("YOU ARE IN CREATE SUBSCRIPTION")
         amount = item_instance.plan_price
         validity = item_instance.validity
         expiry_date = now_date + relativedelta(months=validity)
-
-        print(await get_razorpay_order_id(amount, item_instance.id))
 
         order_id = await get_razorpay_order_id(amount, item_instance.id)
 
         if not order_id:
             return False, None
 
-        print(f"{order_id} is the order id")
+        if not await PaymentRecords.exists(order_id=order_id):
 
-        payment_obj = await PaymentRecords.create(
-            student=student,
-            payment_mode=1,
-            subscription=item_instance,
-            payment_id="",
-            order_id=order_id,
-            coupon="",
-            coupon_discount=0,
-            bill_amount=amount,
-            gateway_name="Razorpay",
-            payment_status=1,
-            source="web",
-            updated_at=now_date,
-            created_at=now_date,
-        )
-
-        if payment_obj:
-            print("PAYMENT OBJECT CREATED")
-
-            c_ins = await Course.get(id=item_instance.course_id)
-
-            student_choices_obj = await StudentChoices.create(
+            payment_obj = await PaymentRecords.create(
                 student=student,
-                course=c_ins,
+                payment_mode=1,
                 subscription=item_instance,
-                payment=payment_obj,
-                subscription_duration=validity,
-                expiry_date=expiry_date,
+                payment_id="",
+                order_id=order_id,
+                coupon="",
+                coupon_discount=0,
+                bill_amount=amount,
+                gateway_name="Razorpay",
+                payment_status=1,
+                source="web",
                 updated_at=now_date,
                 created_at=now_date,
             )
-            if student_choices_obj:
-                if await activeSubscription.exists(student=student, course=c_ins):
-                    await activeSubscription.filter(
-                        student=student, course=c_ins
-                    ).delete()
-                    await activeSubscription.create(
-                        student=student,
-                        payment=payment_obj,
-                        subscription=item_instance,
-                        course=c_ins,
-                        updated_at=now_date,
-                    )
-                else:
-                    await activeSubscription.create(
-                        student=student,
-                        payment=payment_obj,
-                        subscription=item_instance,
-                        course=c_ins,
-                        updated_at=now_date,
-                    )
 
-                return True, order_id
+            if payment_obj:
+                print("PAYMENT OBJECT CREATED")
+
+                c_ins = await Course.get(id=item_instance.course_id)
+
+                student_choices_obj = await StudentChoices.create(
+                    student=student,
+                    course=c_ins,
+                    subscription=item_instance,
+                    payment=payment_obj,
+                    subscription_duration=validity,
+                    expiry_date=expiry_date,
+                    updated_at=now_date,
+                    created_at=now_date,
+                )
+                if student_choices_obj:
+                    if await activeSubscription.exists(student=student, course=c_ins):
+                        await activeSubscription.filter(
+                            student=student, course=c_ins
+                        ).delete()
+                        await activeSubscription.create(
+                            student=student,
+                            payment=payment_obj,
+                            subscription=item_instance,
+                            course=c_ins,
+                            updated_at=now_date,
+                        )
+                    else:
+                        await activeSubscription.create(
+                            student=student,
+                            payment=payment_obj,
+                            subscription=item_instance,
+                            course=c_ins,
+                            updated_at=now_date,
+                        )
+
+                    return True, order_id
         return False, None
     except Exception as ex:
         print(f"{str(ex)} IN CREATE SUBSCRIPTION")
