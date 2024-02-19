@@ -280,6 +280,7 @@ async def login_page(
     request: Request,
     returnURL: Optional[str] = None,
 ):
+    """Render the login page."""
     try:
         token = request.cookies.get(settings.cookie_name)
 
@@ -348,6 +349,7 @@ async def register_student(
     # fcm_token: str = Form(...),
     password: str = Form(...),
 ):
+    """Register a new student."""
     try:
         updated_at = datetime.now(tz)
 
@@ -428,7 +430,7 @@ async def create_access_token_for_user(user):
 
     # Calculate expiration time for the new token
     expires_delta = timedelta(hours=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    expires_at = datetime.utcnow() + expires_delta
+    expires_at = datetime.now(tz) + expires_delta
 
     # Create a new access token
     access_token = create_access_token(
