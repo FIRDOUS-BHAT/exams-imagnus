@@ -11,6 +11,7 @@ from datetime import datetime
 from datetime import timedelta
 from functools import lru_cache
 from typing import List, Optional
+import aiocron
 
 import pytz
 
@@ -444,6 +445,13 @@ async def create_access_token_for_user(user):
     )
 
     return access_token
+
+
+@aiocron.crontab("*/10 * * * *")  # Runs every 10 minutes
+async def cleanup_expired_sessions():
+    """Clean up expired sessions from the database."""
+    await UserToken.filter(expires_at__lt=datetime.now(tz)).delete()
+    print("Expired sessions cleaned up")
 
 
 @router.post("/student/secure_login/")
