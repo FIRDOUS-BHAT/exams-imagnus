@@ -464,6 +464,16 @@ async def cleanup_expired_sessions():
     print("Expired sessions cleaned up")
 
 
+# create a cron funtion that runs once a day to delete those payment records which have status as 1 and created_at is older than 3 days
+@aiocron.crontab("0 0 * * *")  # Runs every day at 12:00 AM
+async def cleanup_expired_payment_records():
+    """Clean up expired sessions from the database."""
+    await PaymentRecords.filter(
+        payment_status=1, created_at__lt=datetime.now(tz) - timedelta(days=2)
+    ).delete()
+    print("Expired payment records cleaned up")
+
+
 @router.post("/student/secure_login/")
 async def login(
     request: Request,
