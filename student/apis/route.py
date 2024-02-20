@@ -460,29 +460,29 @@ async def update_fcm_on_login(
     try:
         if await Student.exists(id=data.student_id):
             student = await Student.get(id=data.student_id)
-            if student.fcm_token != data.fcm:
-                """push a notification to existing device for logout"""
+            # if student.fcm_token != data.fcm:
+            #     """push a notification to existing device for logout"""
 
-                message_title = "You've been logged out"
-                message_body = "Another device has logged into your account."
+            #     message_title = "You've been logged out"
+            #     message_body = "Another device has logged into your account."
 
-                data_message = {"open": "logout", "data_payload": {}}
-                push_service.notify_single_device(
-                    registration_id=student.fcm_token,
-                    message_title=message_title,
-                    message_body=message_body,
-                    data_message=data_message,
-                )
-                student.fcm_token = data.fcm
-                await student.save()
-                return JSONResponse(
+            #     data_message = {"open": "logout", "data_payload": {}}
+            #     push_service.notify_single_device(
+            #         registration_id=student.fcm_token,
+            #         message_title=message_title,
+            #         message_body=message_body,
+            #         data_message=data_message,
+            #     )
+            student.fcm_token = data.fcm
+            await student.save()
+            return JSONResponse(
                     {"status": True, "message": "FCM updated"}, status_code=200
                 )
-            else:
-                return JSONResponse(
-                    {"status": False, "message": "FCM already registered"},
-                    status_code=208,
-                )
+            # else:
+            #     return JSONResponse(
+            #         {"status": False, "message": "FCM already registered"},
+            #         status_code=208,
+            #     )
         else:
             return JSONResponse({"status": False, "message": "Student ID is invalid"})
     except Exception as ex:
