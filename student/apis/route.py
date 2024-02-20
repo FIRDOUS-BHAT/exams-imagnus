@@ -155,8 +155,7 @@ class registerPydantic(BaseModel):
     mobile: str
     email: str
     password: str
-    is_active: bool
-
+    fcm_token: Optional[str] = None
 
 @router.post("/register", status_code=201, response_model=loginResponsePydantic)
 async def register_student(user: registerPydantic, _=Depends(get_current_user)):
@@ -192,7 +191,7 @@ async def register_student(user: registerPydantic, _=Depends(get_current_user)):
                 mobile=user.mobile,
                 email=user.email.replace(" ", ""),
                 dp="https://ik.imagekit.io/imagnus/student-avatars/default_pp.png",
-                fcm_token=None,
+                fcm_token=user.fcm_token,
                 password=util.get_password_hash(user.password),
                 status="1",
                 updated_at=updated_at,
