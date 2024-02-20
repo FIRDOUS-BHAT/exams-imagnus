@@ -1,8 +1,9 @@
+from slowapi import Limiter
+import re
 from collections import defaultdict
 import typing
-from fastapi import Query, WebSocket, HTTPException
+from fastapi import Query, WebSocket, HTTPException, Header
 from utils.util import dd
-from fastapi import HTTPException
 from fastapi.security import OAuth2PasswordBearer
 import numpy as np
 import json
@@ -31,6 +32,8 @@ from datetime import datetime, timezone
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response, RedirectResponse
 from tortoise.contrib.fastapi import HTTPNotFoundError
+from slowapi.util import get_remote_address
+
 
 from admin_dashboard.models import (
     CourseCategoryTestSeriesQuestions_Pydantic,
@@ -64,9 +67,10 @@ from student_choices.models import (
     studentNotesActivity,
 )
 from utils import util
-from email_validator import validate_email, EmailNotValidError
 
 tz = pytz.timezone("Asia/Kolkata")
+
+limiter = Limiter(key_func=get_remote_address)
 
 
 @lru_cache()
@@ -81,6 +85,10 @@ app = FastAPI()
 cookie_sec = APIKeyCookie(name=settings.cookie_name)
 
 secret_key = settings.secret_key.encode("utf-8")
+
+algorithm = settings.algorithm
+
+sms_api_key = settings.sms_api_key
 
 templates = Jinja2Templates(directory="student/templates")
 
@@ -147,7 +155,7 @@ async def get_current_user(session: Optional[str] = Depends(get_cookie)):
         )
 
     try:
-        payload = jwt.decode(session, secret_key, algorithms=[settings.algorithm])
+        payload = jwt.decode(session, secret_key, algorithms=[algorithm])
         user: uuid.UUID = payload.get("sub")
         student_ins = await Student.exists(id=user)
 
@@ -173,7 +181,7 @@ async def verify_token(request: Request):
     token = request.cookies.get(settings.cookie_name)
     if token:
         # payload = decode_token(token)
-        payload = jwt.decode(token, secret_key, algorithms=[settings.algorithm])
+        payload = jwt.decode(token, secret_key, algorithms=[algorithm])
         user_id = payload.get("sub")
         stored_token_obj = await UserToken.get(user_id=user_id)
 
@@ -194,7 +202,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
     if token:
         # payload = decode_token(token)  # Your existing token decoding logic
-        payload = jwt.decode(token, secret_key, algorithms=[settings.algorithm])
+        payload = jwt.decode(token, secret_key, algorithms=[algorithm])
         user_id = payload.get("sub")
 
         stored_token_obj = await UserToken.get(user_id=user_id)
@@ -241,7 +249,7 @@ async def login_page(
         token = request.cookies.get(settings.cookie_name)
 
         if token:
-            payload = jwt.decode(token, secret_key, algorithms=[settings.algorithm])
+            payload = jwt.decode(token, secret_key, algorithms=[algorithm])
             user: uuid.UUID = payload.get("sub")
             exp = payload.get("exp")
             print(exp)
@@ -289,7 +297,7 @@ async def login_page(
 
         if token:
             if await UserToken.filter(token=token).exists():
-                payload = jwt.decode(token, secret_key, algorithms=[settings.algorithm])
+                payload = jwt.decode(token, secret_key, algorithms=[algorithm])
                 user: uuid.UUID = payload.get("sub")
                 exp = payload.get("exp")
                 print(exp)
@@ -408,7 +416,7 @@ def create_access_token(*, data: dict, expires: timedelta = None):
     else:
         expire = datetime.utcnow() + timedelta(minutes=30)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, secret_key, algorithm=settings.algorithm)
+    encoded_jwt = jwt.encode(to_encode, secret_key, algorithm=algorithm)
     return encoded_jwt
 
 
@@ -525,55 +533,149 @@ async def logout(request: Request):
 # return RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
 
 
+# @router.post("/forgot_password_send_otp/")
+# async def forgot_password_send_otp(request: Request):
+#     """Send an OTP to the user's mobile number for password reset."""
+#     data = await request.json()
+#     mobile = data["mobile"]
+#     if await Student.exists(mobile=mobile):
+#         otp = await generateOTP()
+#         message = (
+#             otp + " is your one time verification code for registration at i-Magnus."
+#         )
+#         resp = await sendSMS(
+#             "ODg1YjEyMDg5YWVkNGI3MGY5ZDhhODA4ZDMxNzIwNWQ=",
+#             "91" + mobile,
+#             "IMGNUS",
+#             message,
+#         )
+#         resp = json.loads(resp)
+#         if resp["status"] == "success":
+#             request.session["mobile"] = mobile
+#             request.session["otp"] = otp
+
+#             res = {"status": resp["status"], "message": "OTP has been sent!"}
+
+#         else:
+#             res = {"status": resp["status"]}
+
+#     else:
+#         res = {
+#             "status": False,
+#             "message": "This Mobile Number is not registered with us",
+#         }
+
+#     return res
+
+
+def is_valid_mobile(mobile: str) -> bool:
+    """Validate the mobile number format."""
+    # Adjust the regex according to your mobile number format requirements
+    pattern = re.compile(r"^\d{10}$")
+    return bool(pattern.match(mobile))
+
+
 @router.post("/forgot_password_send_otp/")
-async def send_otp(request: Request):
+@limiter.limit("2/minute")
+async def forgot_password_send_otp(request: Request):
+    """Send an OTP to the user's mobile number for password reset."""
     data = await request.json()
-    mobile = data["mobile"]
+    mobile = data.get("mobile")
+
+    # Validate mobile number format
+    if not is_valid_mobile(mobile):
+        return JSONResponse(
+            status_code=400,
+            content={"status": False, "message": "Invalid mobile number format"},
+        )
+
     if await Student.exists(mobile=mobile):
         otp = await generateOTP()
         message = (
-            otp + " is your one time verification code for registration at i-Magnus."
+            f"{otp} is your one time verification code for registration at i-Magnus."
         )
-        resp = await sendSMS(
-            "ODg1YjEyMDg5YWVkNGI3MGY5ZDhhODA4ZDMxNzIwNWQ=",
-            "91" + mobile,
-            "IMGNUS",
-            message,
-        )
-        resp = json.loads(resp)
+        print(sms_api_key)
+        # Use environment variable or secure storage for API key
+        try:
+            resp = await sendSMS(
+                sms_api_key,
+                "91" + mobile,
+                "IMGNUS",
+                message,
+            )
+            resp = json.loads(resp)
+            print(resp)
+        except Exception as e:
+            # Log the error for debugging
+            print(f"Error sending SMS: {e}")
+            return JSONResponse(
+                status_code=500,
+                content={"status": False, "message": "Failed to send OTP"},
+            )
+
         if resp["status"] == "success":
             request.session["mobile"] = mobile
             request.session["otp"] = otp
-
-            res = {"status": resp["status"], "message": "OTP has been sent!"}
-
+            return {"status": True, "message": "OTP has been sent!"}
         else:
-            res = {"status": resp["status"]}
-
+            return {
+                "status": False,
+                "message": "Failed to send OTP due to SMS service error",
+            }
     else:
-        res = {
+        return {
             "status": False,
             "message": "This Mobile Number is not registered with us",
         }
 
-    return res
+
+def generate_token(mobile: str):
+    payload = {
+        "mobile": mobile,
+        "exp": datetime.utcnow() + timedelta(minutes=15),  # Token expiration time
+    }
+    token = jwt.encode(payload, secret_key, algorithm=algorithm)
+    return token
+
+
+def validate_token(authorization: str = Header(...)):
+    token_prefix = "Bearer "
+    if not authorization.startswith(token_prefix):
+        raise HTTPException(
+            status_code=401, detail="Invalid authorization header format."
+        )
+    # Remove the prefix to get the token
+    token = authorization[len(token_prefix) :]
+    try:
+        payload = jwt.decode(token, secret_key, algorithms=[algorithm])
+        return payload  # You could return the mobile number or any other data included in the token
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token has expired")
+    except jwt.PyJWTError:
+        raise HTTPException(status_code=401, detail="Token is invalid")
 
 
 @router.post("/verify_otp/")
 async def verify_otp(request: Request):
     data = await request.json()
     new_otp = data["otp"]
+    mobile = data["mobile"]
     if request.session:
         old_otp = request.session["otp"]
         if new_otp == old_otp:
-            return {"status": True, "message": "Verification successfull"}
+            token = generate_token(mobile)
+            return {
+                "status": True,
+                "message": "Verification successfull",
+                "token": token,
+            }
         else:
             return {"status": False, "message": "Incorrect OTP"}
 
 
 @router.post("/update_password/")
-async def update_password(request: Request):
-    mobile = request.session["mobile"]
+async def update_password(request: Request, token: str = Depends(validate_token)):
+    mobile = token["mobile"]
     data = await request.json()
     instance = await Student.get(mobile=mobile)
     instance.password = util.get_password_hash(data["password"])

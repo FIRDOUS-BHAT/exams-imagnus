@@ -1,3 +1,4 @@
+from starlette.status import HTTP_429_TOO_MANY_REQUESTS
 import os
 import traceback
 import uvicorn
@@ -112,7 +113,8 @@ allowed_host = settings.allowed_host
 logger = logging.getLogger("fastapi")
 logger.setLevel(logging.INFO)
 slack_handler = SlackHandler()
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+formatter = logging.Formatter(
+    "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 slack_handler.setFormatter(formatter)
 logger.addHandler(slack_handler)
 
@@ -313,6 +315,14 @@ app.add_middleware(CustomRateLimitMiddleware, exclude_paths=exclude_paths)
 #     return response
 
 # app.add_middleware(RequestLoggingMiddleware)
+
+
+@app.exception_handler(RateLimitExceeded)
+async def custom_rate_limit_handler(request: Request, exc: RateLimitExceeded):
+    return JSONResponse(
+        status_code=HTTP_429_TOO_MANY_REQUESTS,
+        content={"message": "Rate limit exceeded. Please try again later."},
+    )
 
 
 db_url = DATABASE_URL()
