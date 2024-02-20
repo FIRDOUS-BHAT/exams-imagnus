@@ -70,7 +70,7 @@ async def scholarship(data: StudentIdPydantic):
     # Fetch the first matching ScholarshipTestSeries object or None if not found.
     test_obj = await ScholarshipTestSeries.get_or_none(course__id=course_id).limit(1)
     if not test_obj:
-        raise HTTPException(status_code=200, detail="Test series not found.")
+        raise HTTPException(status_code=404, detail="Test series not found.")
 
     updated_at = datetime.now(tz)
 
@@ -98,7 +98,9 @@ async def scholarship(data: StudentIdPydantic):
         "testseries_id": test_obj.id if status in ["announced", "online"] else None,
     }
 
-    return JSONResponse({"status": True, "message": jsonable_encoder(message)}, status_code=200)
+    return JSONResponse(
+        {"status": True, "message": jsonable_encoder(message)}, status_code=200
+    )
 
 
 @router.post("/v1/scholarship/testseries/")
