@@ -70,7 +70,7 @@ async def scholarship(data: StudentIdPydantic):
     # Fetch the first matching ScholarshipTestSeries object or None if not found.
     test_obj = await ScholarshipTestSeries.get_or_none(course__id=course_id).limit(1)
     if not test_obj:
-        raise HTTPException(status_code=404, detail="Test series not found.")
+        raise HTTPException(status_code=200, detail="Test series not found.")
 
     updated_at = datetime.now(tz)
 
