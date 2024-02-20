@@ -577,9 +577,8 @@ async def update_password(request: Request):
     data = await request.json()
     instance = await Student.get(mobile=mobile)
     instance.password = util.get_password_hash(data["password"])
-    instance.fcm_token = None
     instance.updated_at = datetime.now(tz)
-    await instance.save()
+
     await UserToken.filter(user_id=instance.id).delete()
     request.session.clear()
 
@@ -589,12 +588,15 @@ async def update_password(request: Request):
     message_body = "Password has been updated. Please login again."
 
     data_message = {"open": "logout", "data_payload": {}}
-    push_service.notify_single_device(
-        registration_id=instance.fcm_token,
-        message_title=message_title,
-        message_body=message_body,
-        data_message=data_message,
-    )
+    if instance.fcm_token:
+        push_service.notify_single_device(
+            registration_id=instance.fcm_token,
+            message_title=message_title,
+            message_body=message_body,
+            data_message=data_message,
+        )
+        instance.fcm_token = None
+    await instance.save()
 
     return {"status": True, "message": "Password has been updated."}
 
