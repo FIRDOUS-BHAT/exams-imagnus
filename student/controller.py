@@ -12,6 +12,8 @@ from datetime import timedelta
 from functools import lru_cache
 from typing import List, Optional
 import aiocron
+from FCM.route import push_service
+
 
 import pytz
 
@@ -580,6 +582,19 @@ async def update_password(request: Request):
     await instance.save()
     await UserToken.filter(user_id=instance.id).delete()
     request.session.clear()
+
+    """push a notification to existing device for logout"""
+
+    message_title = "You've been logged out"
+    message_body = "Password has been updated. Please login again."
+
+    data_message = {"open": "logout", "data_payload": {}}
+    push_service.notify_single_device(
+        registration_id=instance.fcm_token,
+        message_title=message_title,
+        message_body=message_body,
+        data_message=data_message,
+    )
 
     return {"status": True, "message": "Password has been updated."}
 
