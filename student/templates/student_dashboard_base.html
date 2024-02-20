@@ -122,8 +122,19 @@
     />
     <link href="/static/student_assets/css/test.css" rel="stylesheet" />
     <script src="/static/courses_assets/js/jquery.min.js"></script>
+    <style>
+      body {
+        -webkit-user-select: none; /* Safari */
+        -ms-user-select: none; /* IE 10 and IE 11 */
+        user-select: none; /* Standard syntax */
+      }
+    </style>
   </head>
   <body>
+    <noscript>
+      <strong>JavaScript is required to view this page.</strong>
+      <!-- You can also display a message instead of redirecting -->
+    </noscript>
     <header class="header clearfix">
       <div class="main_logo" id="logo">
         <a href="/student/dashboard/{{cid}}/"
@@ -305,8 +316,10 @@
                       <li>
                         <a href="index.html">
                           <div class="footer_logo">
-                            <img src="/static/student_assets/images/fav.png"
-                            alt="" />
+                            <img
+                              src="/static/student_assets/images/fav.png"
+                              alt=""
+                            />
                           </div>
                         </a>
                       </li>
@@ -343,6 +356,43 @@
     <script src="/static/student_assets/js/tripledes.js"></script>
     <script src="/static/student_assets/js/main-script.js?v=127"></script>
     <script src="/static/student_assets/js/enc-base64.js"></script>
-    <script></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", (event) => {
+        document.addEventListener(
+          "contextmenu",
+          function (e) {
+            e.preventDefault();
+          },
+          false
+        );
+        document.onkeydown = function (e) {
+          if (e.keyCode === 123) {
+            // F12 key
+            e.preventDefault();
+          } else if (
+            e.ctrlKey &&
+            e.shiftKey &&
+            (e.keyCode === 73 || e.keyCode === 74)
+          ) {
+            // Ctrl+Shift+I or Ctrl+Shift+J
+            e.preventDefault();
+          }
+        };
+
+        //  Disable F12 key, Ctrl+Shift+I/J/K, and Ctrl+U
+        document.onkeydown = function (e) {
+          if (
+            e.keyCode === 123 || // F12
+            (e.ctrlKey &&
+              e.shiftKey &&
+              (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 75)) || // Ctrl+Shift+I/J/K
+            (e.ctrlKey && e.keyCode === 85)
+          ) {
+            // Ctrl+U
+            e.preventDefault();
+          }
+        };
+      });
+    </script>
   </body>
 </html>

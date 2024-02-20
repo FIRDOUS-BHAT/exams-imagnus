@@ -81,6 +81,7 @@ h2==4.1.0
 hiredis==2.2.2
 hpack==4.0.0
 html2text==2020.1.16
+htmlmin==0.1.12
 httpcore==0.16.3
 httplib2==0.22.0
 httptools==0.5.0

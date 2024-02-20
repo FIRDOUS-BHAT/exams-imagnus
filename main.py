@@ -80,7 +80,7 @@ class CustomRateLimitMiddleware(BaseHTTPMiddleware):
         return response
 
 
-limiter = Limiter(key_func=get_remote_address, default_limits=["100/minute"])
+limiter = Limiter(key_func=get_remote_address, default_limits=["500/minute"])
 
 
 @lru_cache()
@@ -113,8 +113,7 @@ allowed_host = settings.allowed_host
 logger = logging.getLogger("fastapi")
 logger.setLevel(logging.INFO)
 slack_handler = SlackHandler()
-formatter = logging.Formatter(
-    "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 slack_handler.setFormatter(formatter)
 logger.addHandler(slack_handler)
 

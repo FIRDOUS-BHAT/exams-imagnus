@@ -1,3 +1,5 @@
+from fastapi.responses import HTMLResponse
+import htmlmin
 from slowapi import Limiter
 import re
 from collections import defaultdict
@@ -11,7 +13,7 @@ import uuid
 from datetime import datetime
 from datetime import timedelta
 from functools import lru_cache
-from typing import List, Optional
+from typing import Any, List, Optional
 import aiocron
 from FCM.route import push_service
 
@@ -1544,9 +1546,18 @@ async def student_video_lectures(
         # return RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
 
 
+class MinifiedHTMLResponse(HTMLResponse):
+    def render(self, content: Any) -> bytes:
+        minified_content = htmlmin.minify(
+            content.decode("utf-8"), remove_empty_space=True
+        )
+        return minified_content.encode("utf-8")
+
+
 @router.get(
     "/student/view_lecture/{cid}/{tid}/{cat_slug}/{t_slug}/",
-    responses={404: {"model": HTTPNotFoundError}},
+    # responses={404: {"model": HTTPNotFoundError}},
+    response_class=MinifiedHTMLResponse,
 )
 async def student_view_lecture(
     request: Request,
