@@ -141,7 +141,7 @@ templates.env.globals["get_flashed_messages"] = get_flashed_messages
 async def get_current_user(session: Optional[str] = Depends(get_cookie)):
     """Get the current user from the database using the session token."""
     token = await UserToken.filter(
-        token=session, expires_at__gt=datetime.utcnow()
+        token=session, expires_at__gt=datetime.now(tz)
     ).first()
 
     if not token:

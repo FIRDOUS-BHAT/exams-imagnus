@@ -1,3 +1,5 @@
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.status import HTTP_429_TOO_MANY_REQUESTS
 import os
 import traceback
@@ -113,7 +115,8 @@ allowed_host = settings.allowed_host
 logger = logging.getLogger("fastapi")
 logger.setLevel(logging.INFO)
 slack_handler = SlackHandler()
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+formatter = logging.Formatter(
+    "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 slack_handler.setFormatter(formatter)
 logger.addHandler(slack_handler)
 
@@ -162,15 +165,56 @@ else:
 app.lifespan = lifespan  # Assign the lifespan function
 
 
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    """Handle validation errors and return them as JSON."""
+    return JSONResponse(
+        status_code=422,
+        content={"message": "Validation Error", "details": exc.errors()},
+    )
+
+
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+    """Handle HTTP exceptions and log the error if it's a server error."""
+    if exc.status_code >= 400 and exc.status_code < 500:
+        # Handle client error (400 range) without logging
+        return JSONResponse(
+            status_code=exc.status_code, content={"message": exc.detail}
+        )
+    elif exc.status_code >= 300 and exc.status_code < 400:
+        # Handle redirection (300 range) without logging
+        return JSONResponse(
+            status_code=exc.status_code, content={"message": exc.detail}
+        )
+    else:
+        # Log server errors (500 range)
+        log_entry = {
+            "timestamp": datetime.now().isoformat(),
+            "level": "ERROR",
+            "message": "A server error occurred",
+            "api_endpoint": request.url.path,
+            "http_method": request.method,
+            "error": str(exc.detail),
+            "client_ip": request.client.host,
+        }
+        formatted_log = json.dumps(log_entry, indent=2)
+        logger.error(formatted_log)
+        return JSONResponse(
+            status_code=exc.status_code, content={
+                "message": "A server error occurred"}
+        )
+
+
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
+    # Log unexpected errors
     client_ip = request.client.host
 
     log_entry = {
         "timestamp": datetime.now().isoformat(),
         "level": "ERROR",
-        "APP_TYPE": settings.app_type,  # Replace with your app type
-        "message": "An error occurred",
+        "message": "An unexpected error occurred",
         "api_endpoint": request.url.path,
         "http_method": request.method,
         "error": str(exc),
