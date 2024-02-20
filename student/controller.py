@@ -576,6 +576,7 @@ async def update_password(request: Request):
     instance = await Student.get(mobile=mobile)
     instance.password = util.get_password_hash(data["password"])
     await instance.save()
+    await UserToken.filter(user_id=instance.id).delete()
     request.session.clear()
 
     return {"status": True, "message": "Password has been updated."}
