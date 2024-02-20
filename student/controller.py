@@ -575,6 +575,8 @@ async def update_password(request: Request):
     data = await request.json()
     instance = await Student.get(mobile=mobile)
     instance.password = util.get_password_hash(data["password"])
+    instance.fcm_token = None
+    instance.updated_at = datetime.now(tz)
     await instance.save()
     await UserToken.filter(user_id=instance.id).delete()
     request.session.clear()
