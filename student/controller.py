@@ -479,7 +479,7 @@ async def login(
 
     # Check for existing active sessions
     existing_session = await UserToken.filter(
-        user_id=user.id, expires_at__gt=datetime.utcnow()
+        user_id=user.id, expires_at__gt=datetime.now(tz)
     ).first()
     if existing_session:
 

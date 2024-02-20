@@ -64,7 +64,22 @@ from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoin
 from starlette.middleware.base import BaseHTTPMiddleware
 
 
-limiter = Limiter(key_func=get_remote_address, default_limits=["500/minute"])
+class CustomRateLimitMiddleware(BaseHTTPMiddleware):
+    def __init__(self, app, exclude_paths: list):
+        super().__init__(app)
+        self.exclude_paths = exclude_paths
+
+    async def dispatch(self, request: Request, call_next):
+        if request.url.path in self.exclude_paths:
+            # If the path is in the exclude list, bypass the limiter
+            response = await call_next(request)
+        else:
+            # Otherwise, proceed normally
+            response = await call_next(request)
+        return response
+
+
+limiter = Limiter(key_func=get_remote_address, default_limits=["100/minute"])
 
 
 @lru_cache()
@@ -260,9 +275,14 @@ app.include_router(studyMaterialController.router)
 app.include_router(scholarshipController.router)
 
 
+# List of paths to exclude from rate limiting
+exclude_paths = ["/api/student/get_fcm/"]
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
 app.add_middleware(SlowAPIMiddleware)
+
+app.add_middleware(CustomRateLimitMiddleware, exclude_paths=exclude_paths)
 
 
 # Middleware for logging request body
