@@ -288,6 +288,9 @@ async def login_page(
         )
 
 
+tz = pytz.timezone("Asia/Kolkata")
+
+
 @router.get("/student/login/")
 async def login_page(
     request: Request,
@@ -298,19 +301,30 @@ async def login_page(
         token = request.cookies.get(settings.cookie_name)
 
         if token:
-            if await UserToken.filter(token=token).exists():
+            if await UserToken.filter(
+                token=token, expires_at__gt=datetime.now(tz)
+            ).exists():
                 payload = jwt.decode(token, secret_key, algorithms=[algorithm])
                 user: uuid.UUID = payload.get("sub")
                 exp = payload.get("exp")
-                print(exp)
-                print("===========expiry date here========")
+
                 student = await Student.exists(id=user)
 
                 if student:
                     return RedirectResponse(
                         url="/student/new-dashboard/", status_code=status.HTTP_302_FOUND
                     )
-
+            elif await UserToken.filter(
+                token=token, expires_at__lt=datetime.now(tz)
+            ).exists():
+                await UserToken.filter(
+                    token=token, expires_at__lt=datetime.now(tz)
+                ).delete()
+                
+                return RedirectResponse(
+                    url="/student/login/?returnURL=" + returnURL,
+                    status_code=status.HTTP_302_FOUND,
+                )
         if "data" in request.session:
             message = request.session["data"]
         else:
