@@ -599,7 +599,7 @@ async def logout(request: Request):
 
         # raise HTTPException(status_code=400, detail="Session token not found")
     await logout_user(token)
-
+    request.session["data"] = "You have been logged out."
     resp = RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
     resp.delete_cookie(key=settings.cookie_name)
     return resp
