@@ -136,6 +136,7 @@ def get_flashed_messages(request: Request):
 
 
 templates.env.globals["get_flashed_messages"] = get_flashed_messages
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 
 async def get_current_user(session: Optional[str] = Depends(get_cookie)):
@@ -152,10 +153,16 @@ async def get_current_user(session: Optional[str] = Depends(get_cookie)):
     ).first()
 
     if not token:
-        raise HTTPException(
-            status_code=status.HTTP_303_SEE_OTHER,
-            headers={"Location": "/student/login/"},
+        print("Token not found")
+
+        return RedirectResponse(
+            url="/student/login/", status_code=status.HTTP_302_FOUND
         )
+
+        # raise HTTPException(
+        #     status_code=status.HTTP_303_SEE_OTHER,
+        #     headers={"Location": "/student/login/"},
+        # )
 
     try:
         payload = jwt.decode(session, secret_key, algorithms=[algorithm])
@@ -163,6 +170,9 @@ async def get_current_user(session: Optional[str] = Depends(get_cookie)):
         student_ins = await Student.exists(id=user)
 
         if not student_ins:
+            return RedirectResponse(
+                url="/student/login/", status_code=status.HTTP_302_FOUND
+            )
             raise HTTPException(
                 status_code=status.HTTP_303_SEE_OTHER,
                 headers={"Location": "/student/login/"},
@@ -170,6 +180,9 @@ async def get_current_user(session: Optional[str] = Depends(get_cookie)):
         return user
 
     except (jwt.ExpiredSignatureError, JWTError):
+        return RedirectResponse(
+            url="/student/login/", status_code=status.HTTP_302_FOUND
+        )
         raise HTTPException(
             status_code=status.HTTP_303_SEE_OTHER,
             headers={"Location": "/student/login/"},
@@ -428,11 +441,13 @@ class userPydantic(BaseModel):
 
 def create_access_token(*, data: dict, expires: timedelta = None):
     to_encode = data.copy()
-    if expires:
-        expire = datetime.utcnow() + expires
-    else:
-        expire = datetime.utcnow() + timedelta(minutes=30)
-    to_encode.update({"exp": expire})
+    # if expires:
+    #     expire = datetime.now(tz) + expires
+    # else:
+    #     expire = datetime.now(tz) + timedelta(
+    #         hours=settings.ACCESS_TOKEN_EXPIRE_MINUTES
+    #     )
+    to_encode.update({"exp": expires})
     encoded_jwt = jwt.encode(to_encode, secret_key, algorithm=algorithm)
     return encoded_jwt
 
