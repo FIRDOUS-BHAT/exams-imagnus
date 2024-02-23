@@ -168,6 +168,7 @@ app.lifespan = lifespan  # Assign the lifespan function
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     """Handle validation errors and return them as JSON."""
+    
     return JSONResponse(
         status_code=422,
         content={"message": "Validation Error", "details": exc.errors()},

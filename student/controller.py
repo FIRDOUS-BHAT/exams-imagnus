@@ -143,10 +143,13 @@ async def get_current_user(session: Optional[str] = Depends(get_cookie)):
     """Get the current user from the database using the session token."""
 
     if session is None:
-        raise HTTPException(
-            status_code=status.HTTP_303_SEE_OTHER,
-            headers={"Location": "/student/login/"},
+        return RedirectResponse(
+            url="/student/login/", status_code=status.HTTP_302_FOUND
         )
+    # raise HTTPException(
+    #     status_code=status.HTTP_303_SEE_OTHER,
+    #     headers={"Location": "/student/login/"},
+    # )
 
     token = await UserToken.filter(
         token=session, expires_at__gt=datetime.now(tz)
@@ -313,7 +316,7 @@ async def login_page(
     """Render the login page."""
     try:
         token = request.cookies.get(settings.cookie_name)
-
+        print(token)
         if token:
             if await UserToken.filter(
                 token=token, expires_at__gt=datetime.now(tz)
