@@ -156,7 +156,6 @@ async def get_current_user(session: Optional[str] = Depends(get_cookie)):
     ).first()
 
     if not token:
-        print("Token not found")
 
         return RedirectResponse(
             url="/student/login/", status_code=status.HTTP_302_FOUND
@@ -271,8 +270,6 @@ async def login_page(
             payload = jwt.decode(token, secret_key, algorithms=[algorithm])
             user: uuid.UUID = payload.get("sub")
             exp = payload.get("exp")
-            print(exp)
-            print("===========expiry date here========")
             student = await Student.exists(id=user)
             if student:
                 return RedirectResponse(
@@ -316,7 +313,6 @@ async def login_page(
     """Render the login page."""
     try:
         token = request.cookies.get(settings.cookie_name)
-        print(token)
         if token:
             if await UserToken.filter(
                 token=token, expires_at__gt=datetime.now(tz)
@@ -496,8 +492,6 @@ async def create_access_token_for_user(user):
 async def cleanup_expired_sessions():
     """Clean up expired sessions from the database."""
     await UserToken.filter(expires_at__lt=datetime.now(tz)).delete()
-    print("Expired sessions cleaned up")
-
 
 # create a cron funtion that runs once a day to delete those payment records which have status as 1 and created_at is older than 3 days
 @aiocron.crontab("0 0 * * *")  # Runs every day at 12:00 AM
@@ -506,7 +500,6 @@ async def cleanup_expired_payment_records():
     await PaymentRecords.filter(
         payment_status=1, created_at__lt=datetime.now(tz) - timedelta(days=2)
     ).delete()
-    print("Expired payment records cleaned up")
 
 
 @router.post("/student/secure_login/")
@@ -643,7 +636,6 @@ async def forgot_password_send_otp(request: Request):
         message = (
             f"{otp} is your one time verification code for registration at i-Magnus."
         )
-        print(sms_api_key)
         # Use environment variable or secure storage for API key
         try:
             resp = await sendSMS(
@@ -653,10 +645,8 @@ async def forgot_password_send_otp(request: Request):
                 message,
             )
             resp = json.loads(resp)
-            print(resp)
         except Exception as e:
             # Log the error for debugging
-            print(f"Error sending SMS: {e}")
             return JSONResponse(
                 status_code=500,
                 content={"status": False, "message": "Failed to send OTP"},
@@ -2035,7 +2025,6 @@ async def student_pdf_notes(
                                 > subscription_notes_counter
                             ):
                                 access_counter = subscription_notes_counter
-                                print("NOTES GREATER THAN STARTED")
                                 if category_topics_obj.CategoryNotes:
                                     if forward_access_flag:
                                         for i in range(access_counter):
@@ -2134,7 +2123,6 @@ async def student_pdf_notes(
                                 len(category_topics_obj.CategoryNotes)
                                 < subscription_notes_counter
                             ):
-                                print("NOTES LESS THAN STARTED")
                                 if category_topics_obj.CategoryNotes:
                                     if forward_access_flag:
                                         for (
