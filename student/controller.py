@@ -139,7 +139,9 @@ templates.env.globals["get_flashed_messages"] = get_flashed_messages
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 
-async def get_current_user(session: Optional[str] = Depends(get_cookie)):
+async def get_current_user(
+    request: Request, session: Optional[str] = Depends(get_cookie)
+):
     """Get the current user from the database using the session token."""
 
     if session is None:
@@ -156,9 +158,11 @@ async def get_current_user(session: Optional[str] = Depends(get_cookie)):
     ).first()
 
     if not token:
-
+       
+        request.session["data"] = "Logged in from other device."
         return RedirectResponse(
-            url="/student/login/", status_code=status.HTTP_302_FOUND
+            url="/student/login/",
+            status_code=status.HTTP_302_FOUND,
         )
 
         # raise HTTPException(
@@ -259,9 +263,10 @@ async def notify_other_sessions(user_id: uuid.UUID, new_token: str):
 
 
 @router.get("/")
-async def login_page(
+async def home_page(
     request: Request,
     returnURL: Optional[str] = None,
+    message: Optional[str] = None,
 ):
     try:
         token = request.cookies.get(settings.cookie_name)
@@ -269,19 +274,41 @@ async def login_page(
         if token:
             payload = jwt.decode(token, secret_key, algorithms=[algorithm])
             user: uuid.UUID = payload.get("sub")
+
             exp = payload.get("exp")
             student = await Student.exists(id=user)
+
             if student:
                 return RedirectResponse(
                     url="/student/new-dashboard/", status_code=status.HTTP_302_FOUND
                 )
 
+            else:
+                if "data" in request.session:
+                    message = request.session["data"]
+                else:
+                    message = ""
+                request.session.clear()
+                if message == "INVALID_SESSION":
+                    request.session["data"] = "Session Expired. Please login again."
+                return templates.TemplateResponse(
+                    "login.html",
+                    context={
+                        "request": request,
+                        "returnURL": returnURL,
+                        "message": message,
+                    },
+                )
+
         else:
+            print("nooooooooooooooooo")
             if "data" in request.session:
                 message = request.session["data"]
             else:
                 message = ""
             request.session.clear()
+            if message == "INVALID_SESSION":
+                request.session["data"] = "Session Expired. Please login again."
             return templates.TemplateResponse(
                 "login.html",
                 context={
@@ -309,10 +336,14 @@ tz = pytz.timezone("Asia/Kolkata")
 async def login_page(
     request: Request,
     returnURL: Optional[str] = None,
+    message: Optional[str] = None,
 ):
     """Render the login page."""
     try:
+        print(message)
         token = request.cookies.get(settings.cookie_name)
+        if message == "INVALID_SESSION":
+            request.session["data"] = "Session Expired. Please login again."
         if token:
             if await UserToken.filter(
                 token=token, expires_at__gt=datetime.now(tz)
@@ -493,6 +524,7 @@ async def cleanup_expired_sessions():
     """Clean up expired sessions from the database."""
     await UserToken.filter(expires_at__lt=datetime.now(tz)).delete()
 
+
 # create a cron funtion that runs once a day to delete those payment records which have status as 1 and created_at is older than 3 days
 @aiocron.crontab("0 0 * * *")  # Runs every day at 12:00 AM
 async def cleanup_expired_payment_records():
@@ -526,18 +558,18 @@ async def login(
         )
 
     # Check for existing active sessions
-    existing_session = await UserToken.filter(
-        user_id=user.id, expires_at__gt=datetime.now(tz)
-    ).first()
-    if existing_session:
+    # existing_session = await UserToken.filter(
+    #     user_id=user.id, expires_at__gt=datetime.now(tz)
+    # ).first()
+    # if existing_session:
 
-        request.session["data"] = (
-            "Active session already exists. Please log out from other devices."
-        )
-        return RedirectResponse(
-            url=f"/student/login/?returnURL={return_url}",
-            status_code=status.HTTP_302_FOUND,
-        )
+    #     request.session["data"] = (
+    #         "Active session already exists. Please log out from other devices."
+    #     )
+    #     return RedirectResponse(
+    #         url=f"/student/login/?returnURL={return_url}",
+    #         status_code=status.HTTP_302_FOUND,
+    #     )
 
     access_token = await create_access_token_for_user(user)
 
