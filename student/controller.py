@@ -565,7 +565,11 @@ async def logout(request: Request):
     # await UserToken.filter(user_id=user).delete()
     token = request.cookies.get("session_id")
     if not token:
-        raise HTTPException(status_code=400, detail="Session token not found")
+        return RedirectResponse(
+            url="/student/login/", status_code=status.HTTP_302_FOUND
+        )
+
+        # raise HTTPException(status_code=400, detail="Session token not found")
     await logout_user(token)
 
     resp = RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
