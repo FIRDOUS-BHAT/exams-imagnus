@@ -140,17 +140,18 @@ templates.env.globals["get_flashed_messages"] = get_flashed_messages
 
 async def get_current_user(session: Optional[str] = Depends(get_cookie)):
     """Get the current user from the database using the session token."""
-    token = await UserToken.filter(
-        token=session, expires_at__gt=datetime.now(tz)
-    ).first()
 
-    if not token:
+    if session is None:
         raise HTTPException(
             status_code=status.HTTP_303_SEE_OTHER,
             headers={"Location": "/student/login/"},
         )
 
-    if session is None:
+    token = await UserToken.filter(
+        token=session, expires_at__gt=datetime.now(tz)
+    ).first()
+
+    if not token:
         raise HTTPException(
             status_code=status.HTTP_303_SEE_OTHER,
             headers={"Location": "/student/login/"},
@@ -320,7 +321,7 @@ async def login_page(
                 await UserToken.filter(
                     token=token, expires_at__lt=datetime.now(tz)
                 ).delete()
-                
+
                 return RedirectResponse(
                     url="/student/login/?returnURL=" + returnURL,
                     status_code=status.HTTP_302_FOUND,
@@ -462,7 +463,7 @@ async def create_access_token_for_user(user):
     # Create a new access token
     access_token = create_access_token(
         data={"sub": jsonable_encoder(user.id)},
-        expires=expires_delta,
+        expires=expires_at,
     )
 
     # Create a new UserToken record with the expiration date
