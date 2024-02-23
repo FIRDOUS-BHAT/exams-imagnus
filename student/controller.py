@@ -158,7 +158,7 @@ async def get_current_user(
     ).first()
 
     if not token:
-       
+
         request.session["data"] = "Logged in from other device."
         return RedirectResponse(
             url="/student/login/",
@@ -203,13 +203,16 @@ async def verify_token(request: Request):
     token = request.cookies.get(settings.cookie_name)
     if token:
         # payload = decode_token(token)
-        payload = jwt.decode(token, secret_key, algorithms=[algorithm])
-        user_id = payload.get("sub")
-        stored_token_obj = await UserToken.get(user_id=user_id)
+        # payload = jwt.decode(token, secret_key, algorithms=[algorithm])
+        # user_id = payload.get("sub")
+        if await UserToken.exists(token=token, expires_at__gt=datetime.now(tz)):
+            # stored_token_obj = await UserToken.get(user_id=user_id)
 
-        if stored_token_obj and stored_token_obj.token == token:
+            # if stored_token_obj and stored_token_obj.token == token:
             return {"valid": True}
-
+        request.session["data"] = "Logged in from other device."
+        return {"valid": False}
+    request.session["data"] = "Logged in from other device."
     return {"valid": False}
 
 

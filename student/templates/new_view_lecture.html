@@ -190,7 +190,6 @@
     "contextmenu",
     function (event) {
       event.preventDefault();
-      alert("Right-click is disabled on this page");
     },
     false
   );
@@ -198,7 +197,6 @@
     if (e.keyCode === 123) {
       // F12 key
       e.preventDefault();
-      alert("Developer tools are disabled on this page");
     } else if (
       e.ctrlKey &&
       e.shiftKey &&
@@ -206,7 +204,6 @@
     ) {
       // Ctrl+Shift+I or Ctrl+Shift+J
       e.preventDefault();
-      alert("Developer tools are disabled on this page");
     }
   };
 </script>
