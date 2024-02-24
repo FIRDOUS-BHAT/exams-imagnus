@@ -148,10 +148,10 @@ async def get_current_user(
         return RedirectResponse(
             url="/student/login/", status_code=status.HTTP_302_FOUND
         )
-    # raise HTTPException(
-    #     status_code=status.HTTP_303_SEE_OTHER,
-    #     headers={"Location": "/student/login/"},
-    # )
+        # raise HTTPException(
+        #     status_code=status.HTTP_303_SEE_OTHER,
+        #     headers={"Location": "/student/login/"},
+        # )
 
     token = await UserToken.filter(
         token=session, expires_at__gt=datetime.now(tz)
@@ -160,15 +160,15 @@ async def get_current_user(
     if not token:
 
         request.session["data"] = "Logged in from other device."
-        return RedirectResponse(
-            url="/student/login/",
-            status_code=status.HTTP_302_FOUND,
-        )
-
-        # raise HTTPException(
-        #     status_code=status.HTTP_303_SEE_OTHER,
-        #     headers={"Location": "/student/login/"},
+        # return RedirectResponse(
+        #     url="/student/login/",
+        #     status_code=status.HTTP_302_FOUND,
         # )
+
+        raise HTTPException(
+            status_code=status.HTTP_303_SEE_OTHER,
+            headers={"Location": "/student/login/"},
+        )
 
     try:
         payload = jwt.decode(session, secret_key, algorithms=[algorithm])
@@ -839,6 +839,8 @@ async def student_dashboard(request: Request, user=Depends(get_current_user)):
 @router.get("/student/dashboard/{cid}/", responses={404: {"model": HTTPNotFoundError}})
 async def student_dashboard(request: Request, cid: str, user=Depends(get_current_user)):
     try:
+        print("test 1")
+        print(user)
         check = await authenticate_student_subscription(cid=cid, user=user)
         if not check:
             return RedirectResponse(
