@@ -159,7 +159,7 @@ async def get_current_user(
 
     if not token:
 
-        request.session["data"] = "Logged in from other device."
+        request.session["data"] = "Multiple device login found"
         # return RedirectResponse(
         #     url="/student/login/",
         #     status_code=status.HTTP_302_FOUND,
@@ -210,9 +210,9 @@ async def verify_token(request: Request):
 
             # if stored_token_obj and stored_token_obj.token == token:
             return {"valid": True}
-        request.session["data"] = "Logged in from other device."
+        request.session["data"] = "Multiple device login found"
         return {"valid": False}
-    request.session["data"] = "Logged in from other device."
+    request.session["data"] = "Multiple device login found"
     return {"valid": False}
 
 
@@ -837,7 +837,7 @@ async def student_dashboard(request: Request, user=Depends(get_current_user)):
 @router.get("/student/dashboard/{cid}/", responses={404: {"model": HTTPNotFoundError}})
 async def student_dashboard(request: Request, cid: str, user=Depends(get_current_user)):
     try:
-       
+
         check = await authenticate_student_subscription(cid=cid, user=user)
         if not check:
             return RedirectResponse(
