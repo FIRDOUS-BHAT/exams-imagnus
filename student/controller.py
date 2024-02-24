@@ -145,13 +145,13 @@ async def get_current_user(
     """Get the current user from the database using the session token."""
 
     if session is None:
-        return RedirectResponse(
-            url="/student/login/", status_code=status.HTTP_302_FOUND
-        )
-        # raise HTTPException(
-        #     status_code=status.HTTP_303_SEE_OTHER,
-        #     headers={"Location": "/student/login/"},
+        # return RedirectResponse(
+        #     url="/student/login/", status_code=status.HTTP_302_FOUND
         # )
+        raise HTTPException(
+            status_code=status.HTTP_303_SEE_OTHER,
+            headers={"Location": "/student/login/"},
+        )
 
     token = await UserToken.filter(
         token=session, expires_at__gt=datetime.now(tz)
