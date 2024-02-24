@@ -304,7 +304,6 @@ async def home_page(
                 )
 
         else:
-            print("nooooooooooooooooo")
             if "data" in request.session:
                 message = request.session["data"]
             else:
@@ -343,7 +342,6 @@ async def login_page(
 ):
     """Render the login page."""
     try:
-        print(message)
         token = request.cookies.get(settings.cookie_name)
         if message == "INVALID_SESSION":
             request.session["data"] = "Session Expired. Please login again."
@@ -839,8 +837,7 @@ async def student_dashboard(request: Request, user=Depends(get_current_user)):
 @router.get("/student/dashboard/{cid}/", responses={404: {"model": HTTPNotFoundError}})
 async def student_dashboard(request: Request, cid: str, user=Depends(get_current_user)):
     try:
-        print("test 1")
-        print(user)
+       
         check = await authenticate_student_subscription(cid=cid, user=user)
         if not check:
             return RedirectResponse(
