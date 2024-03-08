@@ -258,7 +258,7 @@ async def log_requests(request: Request, call_next):
     response = await call_next(request)
     client_ip = request.client.host
 
-    if response.status_code != 200:
+    if response.status_code == 500 | response.status_code == 208:
         # Construct log entry
         log_entry = {
             "timestamp": datetime.now().isoformat(),
