@@ -1,0 +1,39 @@
+{% extends "student_dashboard_base.html" %} {% block content %}
+
+<div class="sa4d25">
+  <div class="container-fluid">
+    <div class="chat_header">
+      <div class="user-status">
+        <div class="user">
+          <img src="{{category_image}}" class="catg" alt="" />
+        </div>
+        <p class="user-status-title">
+          <span class="bold"
+            >{{category_name}}:
+            <span id="new_title">{{ notes_list[0].title }} </span>
+          </span>
+        </p>
+        <p class="user-status-tag online">{{category_name}}</p>
+        <p class="user-status-tag online">{{topic_name}}</p>
+      </div>
+    </div>
+    <div class="row">
+      {% for notes in notes_list %}
+      <div class="col-xl-3 col-lg-6 col-md-6">
+        <div class="card_dash activee mb-30">
+          <div class="card_dash_left">
+            <h5><b class="clr_brown">1.</b> {{ notes.title }}</h5>
+            <a href="{{ notes.notes_url }}"
+              ><span class="crdbg_2" download
+                >Download
+                <i class="fa fa-download" aria-hidden="true"></i> </span
+            ></a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}

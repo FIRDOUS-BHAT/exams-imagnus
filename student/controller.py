@@ -2529,7 +2529,7 @@ async def view_notes(
                 )
                 # return notes_instance
                 return templates.TemplateResponse(
-                    "view_pdfnotes.html",
+                    "view_pdfnotes-v1.html",
                     context={
                         "request": request,
                         "cid": cid,
