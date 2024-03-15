@@ -41,7 +41,7 @@
       as="style"
     />
     <link
-      href="/static/student_assets/css/instructor-dashboard.css"
+      href="/static/student_assets/css/instructor-dashboard.css?v=1.0.0"
       rel="preload"
       as="style"
     />
@@ -92,10 +92,6 @@
       href="/static/admin/css/vertical-responsive-menu1.min.css"
       rel="stylesheet"
     />
-    <link
-      href="/static/student_assets/css/instructor-dashboard.css"
-      rel="stylesheet"
-    />
     <link href="/static/admin/css/instructor-responsive.css" rel="stylesheet" />
     <link href="/static/admin/css/night-mode.css" rel="stylesheet" />
     <link href="/static/admin/css/jquery-steps.css" rel="stylesheet" />
@@ -122,6 +118,12 @@
     />
     <link href="/static/student_assets/css/test.css" rel="stylesheet" />
     <script src="/static/courses_assets/js/jquery.min.js"></script>
+    <link
+      href="https://unpkg.com/video.js/dist/video-js.css"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/video.js/dist/video.js"></script>
+    <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
     <style>
       body {
         -webkit-user-select: none; /* Safari */
@@ -393,6 +395,29 @@
           }
         };
       });
+    </script>
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+        apiKey: "REDACTED_GOOGLE_API_KEY",
+        authDomain: "imagnus-10fef.firebaseapp.com",
+        projectId: "imagnus-10fef",
+        storageBucket: "imagnus-10fef.appspot.com",
+        messagingSenderId: "912941505105",
+        appId: "1:912941505105:web:4b7605a135a586d1a03670",
+        measurementId: "G-ESD4BVNMC2",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
     </script>
   </body>
 </html>
