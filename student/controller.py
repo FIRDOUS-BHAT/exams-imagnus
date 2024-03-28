@@ -576,7 +576,6 @@ async def login(
     user = await authenticate_user(
         username, password
     )  # Implement this function based on your auth logic
-    user = False
     if not user:
         request.session["data"] = (
             "Mobile number not found"
