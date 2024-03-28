@@ -833,7 +833,8 @@ async def student_video_activities(_=Depends(get_current_user)):
 
 
 @router.get(
-    "/student_activities/{student_id}/{course_slug}/", response_model=ActivityPydantic
+    "/student_activities/{student_id}/{course_slug}/", 
+    response_model=Optional[ActivityPydantic]
 )
 async def student_activities(
     student_id,

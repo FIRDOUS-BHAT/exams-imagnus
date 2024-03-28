@@ -218,7 +218,7 @@ class videoPydantic(BaseModel):
     id: uuid.UUID
     title: str
     slug: str
-    mobile_video_url: str
+    mobile_video_url: Optional[str] = None
     web_video_url: Optional[str] = None
     app_thumbnail: Optional[str] = None
     library_id: Optional[str] = None
