@@ -487,7 +487,10 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 async def authenticate_user(username: str, password: str):
+    if not await Student.exists(mobile=username):
+        return False
     user = await Student.get(mobile=username)
+   
     # print(f'{password} password here')
     if not user or not (
         util.verify_password(password, user.password)
@@ -544,9 +547,26 @@ async def login(
     username = data.username
     password = data.password
 
+    if len(username) == 0 or len(password) == 0:
+        request.session["data"] = (
+            "Mobile number or password not provided"
+            )
+        return RedirectResponse(
+            url=f"/student/login/?returnURL={return_url}",
+            status_code=status.HTTP_302_FOUND,
+        )
+    elif len(username) != 10:
+        request.session["data"] = (
+            "Mobile number not found"
+        )
+        return RedirectResponse(
+            url=f"/student/login/?returnURL={return_url}",
+            status_code=status.HTTP_302_FOUND,
+        )
     user = await authenticate_user(
         username, password
     )  # Implement this function based on your auth logic
+    user = False
     if not user:
         request.session["data"] = (
             "Mobile number not found"
@@ -576,7 +596,8 @@ async def login(
 
     redirect_url = return_url if return_url != "None" else "/student/new-dashboard/"
     resp = RedirectResponse(url=redirect_url, status_code=status.HTTP_302_FOUND)
-    resp.set_cookie(key=settings.cookie_name, value=access_token, httponly=True)
+    resp.set_cookie(key=settings.cookie_name, value=access_token,
+                     httponly=True,secure=True,samesite="Lax")
     request.session.clear()
     return resp
 
