@@ -366,8 +366,13 @@ async def login_page(
                     token=token, expires_at__lt=datetime.now(tz)
                 ).delete()
 
+                if returnURL != "None":
+                    url = f"/student/login/?returnURL={returnURL}"
+                else:
+                    url = "/student/login/"    
+               
                 return RedirectResponse(
-                    url="/student/login/?returnURL=" + returnURL,
+                    url=url,
                     status_code=status.HTTP_302_FOUND,
                 )
         if "data" in request.session:
@@ -544,15 +549,20 @@ async def login(
     data: OAuth2PasswordRequestForm = Depends(),
     return_url: str = Form(default=None),
 ):
+    """Authenticate a user."""
     username = data.username
     password = data.password
 
+    if return_url == "None":
+        url = "/student/login/"
+    else:
+        url = f"/student/login/?returnURL={return_url}"    
     if len(username) == 0 or len(password) == 0:
         request.session["data"] = (
             "Mobile number or password not provided"
             )
         return RedirectResponse(
-            url=f"/student/login/?returnURL={return_url}",
+            url=url,
             status_code=status.HTTP_302_FOUND,
         )
     elif len(username) != 10:
@@ -574,7 +584,7 @@ async def login(
             else "Incorrect password"
         )
         return RedirectResponse(
-            url=f"/student/login/?returnURL={return_url}",
+            url=url,
             status_code=status.HTTP_302_FOUND,
         )
 
