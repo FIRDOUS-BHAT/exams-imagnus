@@ -13,8 +13,7 @@ SELECT t2.fullname as Name,t2.mobile,t5.name as course,t3.expiry_date as Expiry_
 FROM public.student t2 
 INNER JOIN public.studentchoices t3 ON t3.student_id=t2.id
 INNER JOIN public.course t5 ON t5.id=t3.course_id
-WHERE t3.course_id IN ('05c1c611-474d-4295-be03-9b69be3fe3a7','427a7d26-53d2-416c-97b5-4bebf5b76603',
-'0a5c4ceb-df8b-4978-b242-22ca431f7667','b98be0b6-848a-4a1f-b61a-9b52bb9c69f8','ce99f0eb-63eb-4e8f-931f-022ea3d3b6c5') 
+WHERE t3.course_id IN ('c609d956-efe7-4f44-b0aa-ab556a40ad75') 
 AND t3.expiry_date>'2023-07-29 23:59:12.944269+05:30' order by t5.name 
 
 =================================================================
