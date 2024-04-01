@@ -578,7 +578,8 @@ async def each_test_series(
 
 
 @router.post(
-    "/get_test_series_order_history/", response_model=List[TestSeriesOrderHistory]
+    "/get_test_series_order_history/",
+    #   response_model=List[TestSeriesOrderHistory]
 )
 async def test_series_order_history(
     data: DashboardPydantic, user=Depends(get_current_user)
