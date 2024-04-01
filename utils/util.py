@@ -9,6 +9,7 @@ from fastapi.security import OAuth2PasswordBearer
 from auth import model
 # from jwt import PyJWTError
 from pydantic import ValidationError
+import pytz
 
 from functools import lru_cache
 import sys
@@ -30,6 +31,7 @@ oauth2_scheme = OAuth2PasswordBearer(
 
 pwd_context = CryptContext(schemes=["bcrypt"])
 
+tz = pytz.timezone("Asia/Kolkata")
 
 # exception handler for authjwt
 # in production, you can tweak performance using orjson response
@@ -56,9 +58,9 @@ def verify_password(plain_password, hashed_password):
 def create_access_token(*, data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
     if expires_delta:
-        expire = datetime.utcnow() + expires_delta
+        expire = datetime.now(tz) + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire = datetime.now(tz) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(
         to_encode, settings.secret_key, algorithm=settings.algorithm)
