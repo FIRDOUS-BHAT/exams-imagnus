@@ -286,7 +286,7 @@ async def register_student(user: StudentRegisterPydantic, _=Depends(get_current_
     "/login",
     # response_model=loginResponsePydantic
 )
-async def login(form_data: UserIn, _=Depends(get_current_user)):
+async def login(form_data: UserIn):
     try:
         tz = pytz.timezone("Asia/Kolkata")
         now = datetime.now(tz)
@@ -297,9 +297,13 @@ async def login(form_data: UserIn, _=Depends(get_current_user)):
                 {"status": False, "message": "Mobile number not found"}, status_code=208
             )
         student_ins = await Student.get(mobile=form_data.mobile)
-        user = await Student_Pydantic.from_queryset_single(
-            Student.get(mobile=form_data.mobile)
-        )
+        # user = await Student_Pydantic.from_queryset_single(
+        #     Student.get(mobile=form_data.mobile)
+        # )
+
+        user = await Student.get(mobile=form_data.mobile, is_active=True).only("id", "fullname", "email", "password", "mobile", "dp", "updated_at")
+
+        # return user.password
 
         isValid = util.verify_password(form_data.password, user.password)
         # or (not isValid)
@@ -355,19 +359,20 @@ async def login(form_data: UserIn, _=Depends(get_current_user)):
             else:
                 new_payment_records = []
 
-            result = jsonable_encoder(
-                user.dict(
-                    exclude={
-                        "password",
-                        "updated_at",
-                        "is_active",
-                        "students_StudentTestSeriesRecord",
-                        "fcm_token",
-                        "coupon_used",
-                        "student_cart",
-                    }
-                )
-            )
+            # result = jsonable_encoder(
+            #     user.dict(
+            #         # exclude={
+            #         #     "password",
+            #         #     "updated_at",
+            #         #     "is_active",
+            #         #     "students_StudentTestSeriesRecord",
+            #         #     "fcm_token",
+            #         #     "coupon_used",
+            #         #     "student_cart",
+            #         # }
+            #     )
+            # )
+            result = jsonable_encoder(user)    
             result.update({"subscriptions": new_payment_records})
             resp = JSONResponse({"status": True, "message": result}, status_code=200)
 
@@ -428,20 +433,37 @@ async def login(form_data: UserIn, _=Depends(get_current_user)):
             else:
                 new_payment_records = []
 
-            result = jsonable_encoder(
-                user.dict(
-                    exclude={
-                        "password",
-                        "updated_at",
-                        "is_active",
-                        "students_StudentTestSeriesRecord",
-                        "fcm_token",
-                        "coupon_used",
-                        "student_cart",
-                    }
-                )
-            )
+            # result = jsonable_encoder(
+            #     user.dict(
+            #         # exclude={
+            #         #     "password",
+            #         #     "updated_at",
+            #         #     "is_active",
+            #         #     "students_StudentTestSeriesRecord",
+            #         #     "fcm_token",
+            #         #     "coupon_used",
+            #         #     "student_cart",
+            #         # }
+            #     )
+            # )
+            result = jsonable_encoder(user)
             result.update({"subscriptions": new_payment_records})
+
+            access_token_expires = util.timedelta(
+                    minutes=int(config("ACCESS_TOKEN_EXPIRE_MINUTES"))
+                )
+            access_token = util.create_access_token(
+                    data={"sub": user.id},
+                    expires_delta=access_token_expires,
+                )
+
+            results = {
+                    "access_token": access_token,
+                    "token_type": "bearer",
+                    # "expired_in": int(config('ACCESS_TOKEN_EXPIRE_MINUTES')) * 60,
+                }
+            
+            result.update({"token": results})
 
             return {"status": True, "message": result}
     except Exception as ex:
