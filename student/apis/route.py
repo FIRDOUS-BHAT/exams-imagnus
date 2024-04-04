@@ -111,10 +111,11 @@ class Status(BaseModel):
 manager = LoginManager(settings.secret_key,  use_cookie=True, token_url="/api/student/login",
                        )
 
+
 @manager.user_loader()
 async def load_user(id: str):  # could also be an asynchronous function
     return await Student.get(id=id).only("id", "fullname", "email", "mobile", "is_active", "created_at", "updated_at", "dp")
-   
+
 
 @router.post("/auth/token/old", response_model=Token)
 def generate_token(form_data: OAuth2PasswordRequestForm = Depends()):
@@ -302,13 +303,14 @@ async def register_student(user: StudentRegisterPydantic):
 )
 async def login(response: Response, form_data: OAuth2PasswordRequestForm = Depends()):
     try:
+        new_payment_records = []
         mobile = form_data.username
         password = form_data.password
         mob_obj = await Student.exists(mobile=mobile)
         if not mob_obj:
             access_token = None
 
-        user = await Student.get(mobile=mobile, is_active=True).only("id", "fullname", "email", "password", "mobile", "dp", "updated_at")
+        user = await Student.get(mobile=mobile, is_active=True).only("id", "fullname", "email", "password", "mobile", "dp", "updated_at", "created_at")
 
         isValid = util.verify_password(password, user.password)
         # or (not isValid)
@@ -322,15 +324,80 @@ async def login(response: Response, form_data: OAuth2PasswordRequestForm = Depen
         elif not isValid:
             # return InvalidCredentialsException
             return {"status": False, "message": "Invalid Credentials"}
-            
-        response.set_cookie(key="accessToken",
+
+        if await StudentChoices.exists(student__mobile=user.mobile):
+            student_choice = await StudentChoices.filter(
+                student__mobile=user.mobile,
+                payment__payment_status=2,
+            )
+
+            datetime_1 = datetime.now(tz)
+
+            for eachSubscription in student_choice:
+                new_dict = jsonable_encoder(eachSubscription)
+                exp_date = eachSubscription.expiry_date
+                course_id = new_dict["course_id"]
+                coursesubscription_id = new_dict["subscription_id"]
+                coursesubscription_instance = await CourseSubscriptionPlans.get(
+                    id=coursesubscription_id
+                )
+                subscription_obj = await CourseSubscriptionPlans.get(
+                    id=coursesubscription_id
+                ).values("SubscriptionPlan__id")
+                subscription_id = subscription_obj["SubscriptionPlan__id"]
+                subscription_instance = await SubscriptionPlans.get(
+                    id=subscription_id
+                )
+                subscription = {
+                    "id": coursesubscription_instance.id,
+                    "SubscriptionPlan": {
+                        "id": subscription_id,
+                        "name": subscription_instance.name,
+                    },
+                    "validity": coursesubscription_instance.validity,
+                    "plan_price": coursesubscription_instance.plan_price,
+                    "created_at": coursesubscription_instance.created_at,
+                }
+
+                course = await Course.get(id=course_id)
+                course_obj = {
+                    "id": course.id,
+                    "name": course.name,
+                    "slug": course.slug,
+                    "telegram_link": course.telegram_link,
+                }
+                if exp_date > datetime_1:
+                    time_left = exp_date - datetime_1
+                else:
+                    # Set time_left to 0 if exp_date has already passed
+                    time_left = timedelta(days=0)
+
+                new_dict.update({"subscription": subscription})
+                new_dict.update({"course": course_obj})
+                new_dict.update({"time_left": str(time_left)})
+
+                new_payment_records.append(jsonable_encoder(new_dict))
+
+        else:
+            new_payment_records = []
+        user = {
+            "id": user.id,
+            "fullname": user.fullname,
+            "mobile": user.mobile,
+            "email": user.email,
+            "dp": user.dp,
+            "created_at": user.created_at,
+        }
+        result = jsonable_encoder(user)
+        result.update({"subscriptions": new_payment_records})
+        response.set_cookie(key="access-token",
                             value=access_token,
                             httponly=True,
                             secure=False,
                             samesite='Lax',
-                            max_age=1800)
+                            max_age=86400)
 
-        return {'status': True,'message': 'Login Successful'}
+        return {'status': True, 'message': result}
 
     except Exception as ex:
         return JSONResponse({"status": False, "message": str(ex)}, status_code=208)
@@ -378,7 +445,7 @@ async def update_fcm_on_login(
 
 
 class mobileIn(BaseModel):
-    mobile: str
+    mobile: Optional[str] = None
 
 
 class GetFcmOfStudent(BaseModel):
@@ -418,7 +485,7 @@ async def mobile_check(data: mobileIn, user=Depends(manager)):
             tz = pytz.timezone("Asia/Kolkata")
             now = datetime.now(tz)
             # std_obj = await Student.get(mobile=user.mobile)
-           
+
             if await StudentChoices.exists(student__mobile=user.mobile):
                 student_choice = await StudentChoices.filter(
                     student__mobile=user.mobile,
@@ -484,7 +551,7 @@ async def mobile_check(data: mobileIn, user=Depends(manager)):
             }
             result = jsonable_encoder(user)
             result.update({"subscriptions": new_payment_records})
-            
+
         return {"status": True, "message": result}
     except Exception as ex:
         return JSONResponse({"status": False, "message": str(ex)}, status_code=208)
@@ -497,7 +564,7 @@ async def mobile_check(data: mobileIn, user=Depends(manager)):
 
 
 @router.get("/{uid}", response_model=studentPydantic)
-async def student_details(uid: str, user=Depends(manager)):
+async def student_details(uid: Optional[str], user=Depends(manager)):
     try:
         new_payment_records = []
         # async def login(form_data: OAuth2PasswordRequestForm = Depends()):
@@ -669,7 +736,7 @@ async def forgot_password(mobile: str, new_password: str, user=Depends(manager))
             password = util.get_password_hash(new_password)
             student.password = password
             if student.save():
-              
+
                 if await PaymentRecords.exists(student=user):
                     payment_records = await PaymentRecords_Pydantic.from_queryset(
                         PaymentRecords.filter(student=user)
