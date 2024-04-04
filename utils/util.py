@@ -25,7 +25,7 @@ def app_setting():
 settings = app_setting()
 
 oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl="/api/student/login"
+    tokenUrl="/api/student/v2/auth/token"
 )
 
 pwd_context = CryptContext(schemes=["bcrypt"])
@@ -56,9 +56,9 @@ def verify_password(plain_password, hashed_password):
 def create_access_token(*, data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
     if expires_delta:
-        expire = datetime.utcnow() + expires_delta
+        expire = datetime.now() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire = datetime.now() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(
         to_encode, settings.secret_key, algorithm=settings.algorithm)

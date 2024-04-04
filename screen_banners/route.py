@@ -8,7 +8,7 @@ from tortoise.contrib.fastapi import HTTPNotFoundError
 from aws_services.settings import settings
 from screen_banners.models import ScreenBanners, ScreenBanners_Pydantic
 from utils.util import get_current_user
-
+from student.apis.route import manager 
 router = APIRouter()
 
 
@@ -46,5 +46,5 @@ imagekit = ImageKit(
 
 @router.get('/screen_images/', response_model=List[ScreenBanners_Pydantic],
             responses={404: {"model": HTTPNotFoundError}})
-async def get_screen_images(_=Depends(get_current_user)):
+async def get_screen_images(_=Depends(manager)):
     return await ScreenBanners_Pydantic.from_queryset(ScreenBanners.filter(is_active=True))

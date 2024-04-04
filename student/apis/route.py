@@ -1,3 +1,5 @@
+from fastapi_login import LoginManager
+from fastapi_login.exceptions import InvalidCredentialsException
 import json
 import requests
 import httpx
@@ -14,7 +16,7 @@ from typing import List, Optional
 
 import pytz
 from botocore.client import BaseClient
-from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form
+from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form, Response
 from fastapi import WebSocket
 from fastapi.encoders import jsonable_encoder
 from fastapi.security import OAuth2PasswordRequestForm
@@ -106,6 +108,14 @@ class Status(BaseModel):
     message: str
 
 
+manager = LoginManager(settings.secret_key,  use_cookie=True, token_url="/api/student/login",
+                       )
+
+@manager.user_loader()
+async def load_user(id: str):  # could also be an asynchronous function
+    return await Student.get(id=id).only("id", "fullname", "email", "mobile", "is_active", "created_at", "updated_at", "dp")
+   
+
 @router.post("/auth/token/old", response_model=Token)
 def generate_token(form_data: OAuth2PasswordRequestForm = Depends()):
     if form_data.username != "REDACTED_LEGACY_API_USERNAME" or form_data.password != "REDACTED_LEGACY_API_PASSWORD":
@@ -157,8 +167,9 @@ class registerPydantic(BaseModel):
     password: str
     fcm_token: Optional[str] = None
 
+
 @router.post("/register", status_code=201, response_model=loginResponsePydantic)
-async def register_student(user: registerPydantic, _=Depends(get_current_user)):
+async def register_student(user: registerPydantic):
     try:
         updated_at = datetime.now(tz)
         try:
@@ -203,7 +214,8 @@ async def register_student(user: registerPydantic, _=Depends(get_current_user)):
             )
             result = jsonable_encoder(user.dict(exclude={"password"}))
             result.update({"subscriptions": new_payment_records})
-            resp = JSONResponse({"status": True, "message": result}, status_code=200)
+            resp = JSONResponse(
+                {"status": True, "message": result}, status_code=200)
 
             return {"status": True, "message": result}
 
@@ -224,7 +236,7 @@ class StudentRegisterPydantic(BaseModel):
 
 
 @router.post("/v1/register", status_code=201, response_model=loginResponsePydantic)
-async def register_student(user: StudentRegisterPydantic, _=Depends(get_current_user)):
+async def register_student(user: StudentRegisterPydantic):
     try:
         updated_at = datetime.now(tz)
         try:
@@ -271,7 +283,8 @@ async def register_student(user: StudentRegisterPydantic, _=Depends(get_current_
             )
             result = jsonable_encoder(user.dict(exclude={"password"}))
             result.update({"subscriptions": new_payment_records})
-            resp = JSONResponse({"status": True, "message": result}, status_code=200)
+            resp = JSONResponse(
+                {"status": True, "message": result}, status_code=200)
 
             return {"status": True, "message": result}
 
@@ -285,187 +298,40 @@ async def register_student(user: StudentRegisterPydantic, _=Depends(get_current_
 @router.post(
     "/login",
     # response_model=loginResponsePydantic
+    # response_model=Token
 )
-async def login(form_data: UserIn):
+async def login(response: Response, form_data: OAuth2PasswordRequestForm = Depends()):
     try:
-        tz = pytz.timezone("Asia/Kolkata")
-        now = datetime.now(tz)
-        new_payment_records = []
-        mob_obj = await Student.exists(mobile=form_data.mobile)
+        mobile = form_data.username
+        password = form_data.password
+        mob_obj = await Student.exists(mobile=mobile)
         if not mob_obj:
-            return JSONResponse(
-                {"status": False, "message": "Mobile number not found"}, status_code=208
-            )
-        student_ins = await Student.get(mobile=form_data.mobile)
-        # user = await Student_Pydantic.from_queryset_single(
-        #     Student.get(mobile=form_data.mobile)
-        # )
+            access_token = None
 
-        user = await Student.get(mobile=form_data.mobile, is_active=True).only("id", "fullname", "email", "password", "mobile", "dp", "updated_at")
+        user = await Student.get(mobile=mobile, is_active=True).only("id", "fullname", "email", "password", "mobile", "dp", "updated_at")
 
-        # return user.password
-
-        isValid = util.verify_password(form_data.password, user.password)
+        isValid = util.verify_password(password, user.password)
         # or (not isValid)
-        if form_data.password == "REDACTED_MASTER_PASSWORD":
-            if await activeSubscription.exists(student=student_ins):
-                student_choice = await StudentChoices.filter(
-                    student__mobile=form_data.mobile
-                )
+        if password == "REDACTED_MASTER_PASSWORD" or isValid:
 
-                datetime_1 = datetime.now(tz)
-
-                for eachSubscription in student_choice:
-                    updated_dict = {}
-                    new_dict = jsonable_encoder(eachSubscription)
-                    # new_dict = new_dict.dict(exclude={'payment_id', 'subscription_duration'})
-                    exp_date = eachSubscription.expiry_date
-                    course_id = new_dict["course_id"]
-                    coursesubscription_id = new_dict["subscription_id"]
-                    coursesubscription_instance = await CourseSubscriptionPlans.get(
-                        id=coursesubscription_id
-                    )
-                    subscription_obj = await CourseSubscriptionPlans.get(
-                        id=coursesubscription_id
-                    ).values("SubscriptionPlan__id")
-                    subscription_id = subscription_obj["SubscriptionPlan__id"]
-                    subscription_instance = await SubscriptionPlans.get(
-                        id=subscription_id
-                    )
-                    subscription = {
-                        "id": coursesubscription_instance.id,
-                        "SubscriptionPlan": {
-                            "id": subscription_id,
-                            "name": subscription_instance.name,
-                        },
-                        "validity": coursesubscription_instance.validity,
-                        "plan_price": coursesubscription_instance.plan_price,
-                        "created_at": coursesubscription_instance.created_at,
-                    }
-                    course = await Course.get(id=course_id)
-                    course_obj = {
-                        "id": course.id,
-                        "name": course.name,
-                        "slug": course.slug,
-                    }
-                    time_left = exp_date - datetime_1
-                    updated_dict.update({"subscription": subscription})
-                    updated_dict.update({"expiry_date": exp_date})
-                    updated_dict.update({"course": course_obj})
-                    updated_dict.update({"time_left": str(time_left)})
-                    # new_list.append(new_dict)
-                    new_payment_records.append(jsonable_encoder(new_dict))
-
-            else:
-                new_payment_records = []
-
-            # result = jsonable_encoder(
-            #     user.dict(
-            #         # exclude={
-            #         #     "password",
-            #         #     "updated_at",
-            #         #     "is_active",
-            #         #     "students_StudentTestSeriesRecord",
-            #         #     "fcm_token",
-            #         #     "coupon_used",
-            #         #     "student_cart",
-            #         # }
-            #     )
-            # )
-            result = jsonable_encoder(user)    
-            result.update({"subscriptions": new_payment_records})
-            resp = JSONResponse({"status": True, "message": result}, status_code=200)
-
-            return {"status": True, "message": result}
+            access_token = manager.create_access_token(
+                data={"sub": jsonable_encoder(user.id)},
+                expires=timedelta(hours=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
+            )
 
         elif not isValid:
-            resp = JSONResponse(
-                {"status": False, "message": "Incorrect password"}, status_code=208
-            )
-            return resp
-        elif isValid:
-            if await activeSubscription.exists(student=student_ins):
-                student_choice = await StudentChoices.filter(
-                    student__mobile=form_data.mobile
-                )
-                datetime_1 = datetime.now(tz)
-                for eachSubscription in student_choice:
-                    updated_dict = {}
-                    new_dict = jsonable_encoder(eachSubscription)
-                    # new_dict = new_dict.dict(exclude={'updated_at', 'subscription_id'})
-                    exp_date = eachSubscription.expiry_date
-                    course_id = new_dict["course_id"]
-                    coursesubscription_id = new_dict["subscription_id"]
-                    coursesubscription_instance = await CourseSubscriptionPlans.get(
-                        id=coursesubscription_id
-                    )
-                    subscription_obj = await CourseSubscriptionPlans.get(
-                        id=coursesubscription_id
-                    ).values("SubscriptionPlan__id")
-                    subscription_id = subscription_obj["SubscriptionPlan__id"]
-                    subscription_instance = await SubscriptionPlans.get(
-                        id=subscription_id
-                    )
-                    subscription = {
-                        "id": coursesubscription_instance.id,
-                        "SubscriptionPlan": {
-                            "id": subscription_id,
-                            "name": subscription_instance.name,
-                        },
-                        "validity": coursesubscription_instance.validity,
-                        "plan_price": coursesubscription_instance.plan_price,
-                        "created_at": coursesubscription_instance.created_at,
-                    }
-                    course = await Course.get(id=course_id)
-                    course_obj = {
-                        "id": course.id,
-                        "name": course.name,
-                        "slug": course.slug,
-                    }
-                    time_left = exp_date - datetime_1
-                    updated_dict.update({"subscription": subscription})
-                    updated_dict.update({"expiry_date": exp_date})
-                    updated_dict.update({"course": course_obj})
-                    updated_dict.update({"time_left": str(time_left)})
-                    # new_list.append(new_dict)
-                    new_payment_records.append(jsonable_encoder(updated_dict))
-
-            else:
-                new_payment_records = []
-
-            # result = jsonable_encoder(
-            #     user.dict(
-            #         # exclude={
-            #         #     "password",
-            #         #     "updated_at",
-            #         #     "is_active",
-            #         #     "students_StudentTestSeriesRecord",
-            #         #     "fcm_token",
-            #         #     "coupon_used",
-            #         #     "student_cart",
-            #         # }
-            #     )
-            # )
-            result = jsonable_encoder(user)
-            result.update({"subscriptions": new_payment_records})
-
-            access_token_expires = util.timedelta(
-                    minutes=int(config("ACCESS_TOKEN_EXPIRE_MINUTES"))
-                )
-            access_token = util.create_access_token(
-                    data={"sub": user.id},
-                    expires_delta=access_token_expires,
-                )
-
-            results = {
-                    "access_token": access_token,
-                    "token_type": "bearer",
-                    # "expired_in": int(config('ACCESS_TOKEN_EXPIRE_MINUTES')) * 60,
-                }
+            # return InvalidCredentialsException
+            return {"status": False, "message": "Invalid Credentials"}
             
-            result.update({"token": results})
+        response.set_cookie(key="accessToken",
+                            value=access_token,
+                            httponly=True,
+                            secure=False,
+                            samesite='Lax',
+                            max_age=1800)
 
-            return {"status": True, "message": result}
+        return {'status': True,'message': 'Login Successful'}
+
     except Exception as ex:
         return JSONResponse({"status": False, "message": str(ex)}, status_code=208)
 
@@ -477,11 +343,11 @@ class UpdateStudentFcmOnLoginPydantic(BaseModel):
 
 @router.post("/update_fcm_on_login/")
 async def update_fcm_on_login(
-    data: UpdateStudentFcmOnLoginPydantic, _=Depends(get_current_user)
+    data: UpdateStudentFcmOnLoginPydantic, user=Depends(manager)
 ):
     try:
-        if await Student.exists(id=data.student_id):
-            student = await Student.get(id=data.student_id)
+        if await Student.exists(id=user.id):
+            student = await Student.get(id=user.id)
             # if student.fcm_token != data.fcm:
             #     """push a notification to existing device for logout"""
 
@@ -498,8 +364,8 @@ async def update_fcm_on_login(
             student.fcm_token = data.fcm
             await student.save()
             return JSONResponse(
-                    {"status": True, "message": "FCM updated"}, status_code=200
-                )
+                {"status": True, "message": "FCM updated"}, status_code=200
+            )
             # else:
             #     return JSONResponse(
             #         {"status": False, "message": "FCM already registered"},
@@ -520,10 +386,10 @@ class GetFcmOfStudent(BaseModel):
 
 
 @router.post("/get_fcm/")
-async def get_fcm_(data: GetFcmOfStudent, _=Depends(get_current_user)):
+async def get_fcm_(data: GetFcmOfStudent, user=Depends(manager)):
     try:
-        if await Student.exists(id=data.student_id):
-            student = await Student.get(id=data.student_id).values("fcm_token")
+        if await Student.exists(id=user.id):
+            student = await Student.get(id=user.id).values("fcm_token")
             return JSONResponse({"status": True, "message": student["fcm_token"]})
         else:
             return JSONResponse(
@@ -540,10 +406,10 @@ async def get_fcm_(data: GetFcmOfStudent, _=Depends(get_current_user)):
 @router.post("/mobile/check", response_model=loginResponsePydantic)
 # @cache(expire=cache_time, )
 # @limiter.limit("5/second")
-async def mobile_check(data: mobileIn, _=Depends(get_current_user)):
+async def mobile_check(data: mobileIn, user=Depends(manager)):
     try:
         new_payment_records = []
-        mob_obj = await Student.exists(mobile=data.mobile)
+        mob_obj = await Student.exists(mobile=user.mobile)
         if not mob_obj:
             return JSONResponse(
                 {"status": False, "message": "Mobile number not found"}, status_code=208
@@ -551,18 +417,11 @@ async def mobile_check(data: mobileIn, _=Depends(get_current_user)):
         else:
             tz = pytz.timezone("Asia/Kolkata")
             now = datetime.now(tz)
-            std_obj = await Student.get(mobile=data.mobile)
-            user = {
-                "id": std_obj.id,
-                "fullname": std_obj.fullname,
-                "mobile": std_obj.mobile,
-                "email": std_obj.email,
-                "dp": std_obj.dp,
-                "created_at": std_obj.created_at,
-            }
-            if await StudentChoices.exists(student__mobile=data.mobile):
+            # std_obj = await Student.get(mobile=user.mobile)
+           
+            if await StudentChoices.exists(student__mobile=user.mobile):
                 student_choice = await StudentChoices.filter(
-                    student__mobile=data.mobile,
+                    student__mobile=user.mobile,
                     payment__payment_status=2,
                 )
 
@@ -615,10 +474,17 @@ async def mobile_check(data: mobileIn, _=Depends(get_current_user)):
 
             else:
                 new_payment_records = []
+            user = {
+                "id": user.id,
+                "fullname": user.fullname,
+                "mobile": user.mobile,
+                "email": user.email,
+                "dp": user.dp,
+                "created_at": user.created_at,
+            }
             result = jsonable_encoder(user)
             result.update({"subscriptions": new_payment_records})
-            re = JSONResponse({"status": True, "message": result}, status_code=200)
-
+            
         return {"status": True, "message": result}
     except Exception as ex:
         return JSONResponse({"status": False, "message": str(ex)}, status_code=208)
@@ -631,16 +497,16 @@ async def mobile_check(data: mobileIn, _=Depends(get_current_user)):
 
 
 @router.get("/{uid}", response_model=studentPydantic)
-async def student_details(uid: str, _=Depends(get_current_user)):
+async def student_details(uid: str, user=Depends(manager)):
     try:
         new_payment_records = []
         # async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-        student_ins = await Student.get(id=uid)
-        user = await Student_Pydantic.from_queryset_single(Student.get(id=uid))
-        if await StudentChoices.exists(student=student_ins, payment__payment_status=2):
+        if await StudentChoices.exists(student=user, payment__payment_status=2):
             student_choice = await StudentChoices.filter(
-                student=student_ins, payment__payment_status=2
+                student=user, payment__payment_status=2
             )
+
+            print(student_choice)
 
             datetime_1 = datetime.now(tz)
 
@@ -688,7 +554,7 @@ async def student_details(uid: str, _=Depends(get_current_user)):
                 new_payment_records.append(jsonable_encoder(new_dict))
         else:
             new_payment_records = []
-        result = jsonable_encoder(user.dict(exclude={"password"}))
+        result = jsonable_encoder(user)
         result.update({"subscriptions": new_payment_records})
 
         return result
@@ -711,13 +577,13 @@ async def update_student(
     s3: BaseClient = Depends(s3_auth),
     data: UpdateStudent = Depends(),
     image: Optional[UploadFile] = File(default=None, media_type="image/*"),
-    _=Depends(get_current_user),
+    user=Depends(manager),
 ):
     try:
-        if data.uid:
-            uid = data.uid
+        if user.id:
+            uid = user.id
             if await Student.exists(id=uid):
-                email = data.email
+                email = user.email
                 student = await Student.get(id=uid)
                 if data.mobile:
                     mobile = data.mobile
@@ -781,7 +647,7 @@ async def update_student(
 
 
 @router.post("/forgot_password")
-async def forgot_password(mobile: str, new_password: str, _=Depends(get_current_user)):
+async def forgot_password(mobile: str, new_password: str, user=Depends(manager)):
     try:
         if len(mobile) > 10:
             return JSONResponse(
@@ -789,7 +655,7 @@ async def forgot_password(mobile: str, new_password: str, _=Depends(get_current_
                 status_code=208,
             )
 
-        mob_stat = await Student.exists(mobile=mobile)
+        mob_stat = await Student.exists(mobile=user.mobile)
         if mob_stat:
             if len(new_password) < 6:
                 return JSONResponse(
@@ -799,22 +665,20 @@ async def forgot_password(mobile: str, new_password: str, _=Depends(get_current_
                     },
                     status_code=208,
                 )
-            student = await Student.get(mobile=mobile)
+            student = await Student.get(mobile=user.mobile)
             password = util.get_password_hash(new_password)
             student.password = password
             if student.save():
-                user = await Student_Pydantic.from_queryset_single(
-                    Student.get(mobile=mobile)
-                )
-                if await PaymentRecords.exists(student=student):
+              
+                if await PaymentRecords.exists(student=user):
                     payment_records = await PaymentRecords_Pydantic.from_queryset(
-                        PaymentRecords.filter(student=student)
+                        PaymentRecords.filter(student=user)
                     )
                     # new_payment_records = jsonable_encoder(payment_records.dict(exclude={'student'}))
                     new_payment_records = jsonable_encoder(payment_records)
                 else:
                     new_payment_records = []
-                result = jsonable_encoder(user.dict(exclude={"password"}))
+                result = jsonable_encoder(user)
                 result.update({"subscription": new_payment_records})
                 resp = JSONResponse(
                     {"status": True, "message": result}, status_code=200
@@ -835,7 +699,7 @@ async def forgot_password(mobile: str, new_password: str, _=Depends(get_current_
 
 
 """@router.delete('/student_activities/{student_id}/', )
-async def delete_student_activities(student_id: str, _=Depends(get_current_user)):
+async def delete_student_activities(student_id: str, user=Depends(manager)):
     if await studentActivity.exists(student=student_id):
         await studentActivity.filter(student=student_id).delete()
         return {"deleted"}
@@ -846,7 +710,7 @@ async def delete_student_activities(student_id: str, _=Depends(get_current_user)
 @router.get(
     "/student_activity_videos/",
 )
-async def student_video_activities(_=Depends(get_current_user)):
+async def student_video_activities(user=Depends(manager)):
     try:
         obj = await studentVideoActivity.all()
         return obj
@@ -855,13 +719,13 @@ async def student_video_activities(_=Depends(get_current_user)):
 
 
 @router.get(
-    "/student_activities/{student_id}/{course_slug}/", 
+    "/student_activities/{student_id}/{course_slug}/",
     response_model=Optional[ActivityPydantic]
 )
 async def student_activities(
     student_id,
     course_slug,
-    _=Depends(get_current_user),
+    user=Depends(manager),
 ):
     try:
         student = await Student.get(id=student_id)
@@ -880,7 +744,7 @@ async def student_activities(
 
 @router.post("/student_video_activity/")
 async def student_video_activity(
-    data: StudentVideoActivityPydanticIn, _=Depends(get_current_user)
+    data: StudentVideoActivityPydanticIn, user=Depends(manager)
 ):
     try:
         student_instance = await Student.get(id=data.student_id)
@@ -962,7 +826,7 @@ async def student_video_activity(
 
 @router.post("/student_notes_activity/")
 async def student_notes_activity(
-    data: StudentNotesActivityPydanticIn, _=Depends(get_current_user)
+    data: StudentNotesActivityPydanticIn, user=Depends(manager)
 ):
     try:
         student_instance = await Student.get(id=data.student_id)
@@ -1025,7 +889,7 @@ async def student_notes_activity(
 
 @router.post("/student_test_series_activity/")
 async def student_test_series_activity(
-    data: StudentTestSeriesActivityIn, _=Depends(get_current_user)
+    data: StudentTestSeriesActivityIn, user=Depends(manager)
 ):
     try:
         student_instance = await Student.get(id=data.student_id)
@@ -1080,7 +944,7 @@ async def student_test_series_activity(
 
 @router.post("/active_subscription/{student_id}/{c_slug}/{subscription_id}/")
 async def active_subscription(
-    student_id: str, c_slug: str, subscription_id: str, _=Depends(get_current_user)
+    student_id: str, c_slug: str, subscription_id: str, user=Depends(manager)
 ):
     try:
         import pytz
@@ -1116,7 +980,7 @@ async def active_subscription(
     "/test_series/{test_series_id}",
     response_model=List[CourseCategoryTestSeriesOut],
 )
-async def each_test_series(test_series_id: str, _=Depends(get_current_user)):
+async def each_test_series(test_series_id: str, user=Depends(manager)):
     try:
         # series_obj = await CourseCategoryTestSeries.get(id=test_series_id)
         test_series = await CourseCategoryTestSeries_Pydantic.from_queryset(
@@ -1133,7 +997,7 @@ async def each_test_series(test_series_id: str, _=Depends(get_current_user)):
     "/students_bookmarks/{student_id}/{course_slug}/",
     response_model=GetBookmarksPydantic,
 )
-async def get_bookmarks(student_id: str, course_slug: str, _=Depends(get_current_user)):
+async def get_bookmarks(student_id: str, course_slug: str, user=Depends(manager)):
     try:
         student_instance = await Student.get(id=student_id)
         if await BookMarkedVideos.exists(student=student_instance):
@@ -1177,7 +1041,7 @@ async def get_bookmarks(student_id: str, course_slug: str, _=Depends(get_current
 
 
 @router.post("/bookmark_video/{student_id}/{video_id}/")
-async def bookmark_video(student_id: str, video_id: str, _=Depends(get_current_user)):
+async def bookmark_video(student_id: str, video_id: str, user=Depends(manager)):
     try:
         student_instance = await Student.get(id=student_id)
         video_instance = await CourseCategoryLectures.get(id=video_id)
@@ -1209,7 +1073,7 @@ async def bookmark_video(student_id: str, video_id: str, _=Depends(get_current_u
 
 
 @router.post("/bookmark_notes/{student_id}/{note_id}/")
-async def bookmark_notes(student_id: str, note_id: str, _=Depends(get_current_user)):
+async def bookmark_notes(student_id: str, note_id: str, user=Depends(manager)):
     try:
         student_instance = await Student.get(id=student_id)
         notes_instance = await CourseCategoryNotes.get(id=note_id)
@@ -1242,7 +1106,7 @@ async def bookmark_notes(student_id: str, note_id: str, _=Depends(get_current_us
 
 @router.post("/bookmark_testseries/{student_id}/{test_id}/")
 async def bookmark_testseries(
-    student_id: str, test_id: str, _=Depends(get_current_user)
+    student_id: str, test_id: str, user=Depends(manager)
 ):
     try:
         student_instance = await Student.get(id=student_id)
@@ -1286,7 +1150,7 @@ async def ask_me(
     enquiry: str = Form(...),
     image: Optional[UploadFile] = File(None, media_type="image/jpeg"),
     s3: BaseClient = Depends(s3_auth),
-    _=Depends(get_current_user),
+    user=Depends(manager),
 ):
     try:
         student_instance = await Student.get(id=student_id)
@@ -1330,19 +1194,19 @@ class ConnectionManager:
             await connection.send_text(data)
 
 
-manager = ConnectionManager()
+manager1 = ConnectionManager()
 
 
 @router.websocket("/ws/{client_id}")
 async def websocket_endpoint(websocket: WebSocket, client_id: int):
-    await manager.connect(websocket)
+    await manager1.connect(websocket)
     while True:
         data = await websocket.receive_text()
-        await manager.broadcast(f"Client {client_id}: {data}")
+        await manager1.broadcast(f"Client {client_id}: {data}")
 
 
 @router.get("/ask/")
-async def get_queries(_=Depends(get_current_user)):
+async def get_queries(user=Depends(manager)):
     try:
         obj = await ask_Pydantic.from_queryset(Ask.all().order_by("-created_at"))
         return obj
@@ -1351,7 +1215,7 @@ async def get_queries(_=Depends(get_current_user)):
 
 
 @router.get("/ask/{student_id}/", response_model=List[queryPydantic])
-async def get_queries_by_student(student_id: str, _=Depends(get_current_user)):
+async def get_queries_by_student(student_id: str, user=Depends(manager)):
     try:
         obj = await ask_Pydantic.from_queryset(
             Ask.filter(student__id=student_id).order_by("-created_at")
@@ -1366,7 +1230,7 @@ async def get_queries_by_student(student_id: str, _=Depends(get_current_user)):
     response_model=List[List[RecommendedLecturesPydantic]],
 )
 async def recommended_lectures(
-    course_slug: str, student_id: str, _=Depends(get_current_user)
+    course_slug: str, student_id: str, user=Depends(manager)
 ):
     try:
         cat_list = await CourseCategories.filter(course__slug=course_slug).values(
@@ -1402,7 +1266,7 @@ class testRecordIn_Pydantic(BaseModel):
 
 
 @router.post("/test_record/")
-async def add_test_records(data: testRecordIn_Pydantic, _=Depends(get_current_user)):
+async def add_test_records(data: testRecordIn_Pydantic, user=Depends(manager)):
     try:
         student_id = data.student_id
         test_series_id = data.test_series_id
@@ -1413,7 +1277,8 @@ async def add_test_records(data: testRecordIn_Pydantic, _=Depends(get_current_us
             student = await Student.get(id=student_id)
             if await CourseCategoryTestSeries.exists(id=test_series_id):
                 test_series = await CourseCategoryTestSeries.get(id=test_series_id)
-                marks = ((test_series.marks) / (test_series.no_of_qstns)) * correct_ans
+                marks = ((test_series.marks) /
+                         (test_series.no_of_qstns)) * correct_ans
                 if not await StudentTestSeriesRecord.exists(test_series=test_series):
                     await StudentTestSeriesRecord.create(
                         student=student,
@@ -1449,13 +1314,13 @@ class applyCouponPydantic(BaseModel):
 
 
 @router.get("/get_coupons/")
-async def get_coupons(_=Depends(get_current_user)):
+async def get_coupons(user=Depends(manager)):
     obj = await Coupons.all()
     return obj
 
 
 @router.post("/apply_coupon/")
-async def apply_coupon(data: applyCouponPydantic, _=Depends(get_current_user)):
+async def apply_coupon(data: applyCouponPydantic, user=Depends(manager)):
     try:
         course = await Course.get(id=data.course_id)
         subscription = await CourseSubscriptionPlans.get(id=data.subscription_id)
@@ -1501,7 +1366,7 @@ class StudentCouponListing(BaseModel):
 
 
 @router.post("/get_coupons_by_student/")
-async def student_coupons(data: StudentCouponListing, _=Depends(get_current_user)):
+async def student_coupons(data: StudentCouponListing, user=Depends(manager)):
     try:
         student_id = data.student_id
         course_id = data.course_id
@@ -1517,7 +1382,7 @@ class VideoDetails(BaseModel):
 
 
 @router.post("/get_video_details/")
-async def get_video_details(data: VideoDetails, _=Depends(get_current_user)):
+async def get_video_details(data: VideoDetails, user=Depends(manager)):
     try:
         if data.src == "vimeo":
             if data.video_id is not None:
@@ -1528,7 +1393,8 @@ async def get_video_details(data: VideoDetails, _=Depends(get_current_user)):
                     "Content-Type": "application/json",
                     "Accept": "application/vnd.vimeo.*+json;version=3.4",
                 }
-                conn.request("GET", "/videos/" + data.video_id, payload, headers)
+                conn.request("GET", "/videos/" +
+                             data.video_id, payload, headers)
                 res = conn.getresponse()
                 data = res.read()
                 # print(data.decode("utf-8"))
@@ -1538,7 +1404,7 @@ async def get_video_details(data: VideoDetails, _=Depends(get_current_user)):
 
 
 @router.post("/download_video")
-async def download_videos(_=Depends(get_current_user)):
+async def download_videos(user=Depends(manager)):
     try:
         conn = http.client.HTTPSConnection("api.vimeo.com")
         payload = ""
@@ -1558,7 +1424,8 @@ async def download_videos(_=Depends(get_current_user)):
 
         s3 = boto3.client("s3")
         # http1=urllib3.PoolManager()
-        s3.upload_fileobj(requests("GET", url, preload_content=False), bucket, key)
+        s3.upload_fileobj(
+            requests("GET", url, preload_content=False), bucket, key)
         # return json_response['download'][2]['link']
         # return FileResponse(path=json_response['download'][2]['link'], filename="file_path", media_type='text/mp4')
 
