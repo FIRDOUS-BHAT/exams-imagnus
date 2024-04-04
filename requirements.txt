@@ -59,7 +59,6 @@ extras==1.0.0
 fastapi==0.105.0
 fastapi-cache2==0.2.1
 fastapi-limiter==0.1.5
-fastapi-login==1.8.3
 fastapi-mail==1.4.1
 fastapi-pagination==0.12.14
 fasteners==0.18
