@@ -245,7 +245,7 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Or specify domains
+    allow_origins=["nb7f2yrcgj.ap-south-1.awsapprunner.com"],  # Or specify domains
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
