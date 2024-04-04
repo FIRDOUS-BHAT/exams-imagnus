@@ -28,6 +28,7 @@
 				 <div class="container">
 
 					 <div class="row">
+						{% if plans %}
 
 						 <!-- Single Package -->
 						 {% for plan in plans %}
@@ -64,6 +65,18 @@
 							 </div>
 						 </div>
 						{% endfor %}
+
+						{% else %}
+						 <div class="col-lg-12 col-md-12">
+							 <div class="packages_wrapping">
+								 <div class="packages_headers">
+									 <i class="fa fa-exclamation-triangle"></i>
+									 <h4 class="packages_pr_title">No Subscription Plans Available </h4>
+								 </div>
+							 </div>
+						 </div>
+
+						{% endif %}
 						 <!-- Single Package -->
 <!--						 <div class="col-lg-4 col-md-4">-->
 <!--							 <div class="packages_wrapping recommended">-->
