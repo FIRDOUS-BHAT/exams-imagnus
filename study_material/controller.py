@@ -281,9 +281,16 @@ async def exam_study_material(request: Request, flag: str, user=Depends(get_curr
 
         else:
             raise HTTPException(detail="Bad Request", status_code=208)
-        category_course_obj = await StudyMaterialCourse_Pydantic.from_queryset(
-            StudyMaterialCourse.filter(material__id=std_material_id)
-        )
+        
+        # category_course_obj = await StudyMaterialCourse_Pydantic.from_queryset(
+        #     StudyMaterialCourse.filter(material__id=std_material_id)
+        # )
+        category_course_obj = await StudyMaterialCourse.filter(
+            material__id=std_material_id
+        ).prefetch_related("course", "material")
+
+       
+        
 
         return frontend_templates.TemplateResponse('exam_study_material.html', context={
             'request': request,

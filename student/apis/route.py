@@ -402,6 +402,12 @@ async def login(response: Response, form_data: OAuth2PasswordRequestForm = Depen
     except Exception as ex:
         return JSONResponse({"status": False, "message": str(ex)}, status_code=208)
 
+@router.post('/logout')
+def logout(response: Response):
+    # Clear the "access-token" cookie
+    response.delete_cookie(key="access-token", httponly=True, secure=True, samesite='Lax')
+    # Return a response indicating the logout was successful
+    return {'status': True, 'message': 'Logged out successfully'}
 
 class UpdateStudentFcmOnLoginPydantic(BaseModel):
     student_id: uuid.UUID

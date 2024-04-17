@@ -245,7 +245,10 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://development.d1d7byszpl3ts5.amplifyapp.com", "https://reactfrontend.imagnus.in"],  # Or specify domains
+    allow_origins=["https://development.d1d7byszpl3ts5.amplifyapp.com",
+                    "https://reactfrontend.imagnus.in",
+                    "http://127.0.0.1:3000"
+                  ],  # Or specify domains
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

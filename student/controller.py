@@ -587,27 +587,11 @@ async def login(
             status_code=status.HTTP_302_FOUND,
         )
 
-    # Check for existing active sessions
-    # existing_session = await UserToken.filter(
-    #     user_id=user.id, expires_at__gt=datetime.now(tz)
-    # ).first()
-    # if existing_session:
-
-    #     request.session["data"] = (
-    #         "Active session already exists. Please log out from other devices."
-    #     )
-    #     return RedirectResponse(
-    #         url=f"/student/login/?returnURL={return_url}",
-    #         status_code=status.HTTP_302_FOUND,
-    #     )
-
     access_token = await create_access_token_for_user(user)
-
     redirect_url = return_url if return_url != "None" else "/student/new-dashboard/"
     resp = RedirectResponse(url=redirect_url, status_code=status.HTTP_302_FOUND)
     resp.set_cookie(key=settings.cookie_name, value=access_token,
-                     httponly=True,secure=True,samesite="Lax")
-    request.session.clear()
+                    max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES, httponly=True,secure=True,samesite="Lax")
     return resp
 
 

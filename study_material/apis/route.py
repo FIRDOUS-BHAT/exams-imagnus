@@ -1,3 +1,4 @@
+from student.apis.route import manager
 from admin_dashboard.apis.route import DashboardPydantic
 from student.models import Student
 import boto3
@@ -44,6 +45,7 @@ from configs import appinfo
 import pytz
 from datetime import datetime
 from botocore.client import Config
+from fastapi import Depends
 
 tz = pytz.timezone("Asia/Kolkata")
 
@@ -100,7 +102,8 @@ async def study_material_labels(
         material_array = []
         main_array = {}
         for material in obj:
-            material_array.append({"label_id": material.id, "label": material.name})
+            material_array.append(
+                {"label_id": material.id, "label": material.name})
 
         if await StudyMaterialCategories.exists(
             course__material__id=material_array[0]["label_id"],
@@ -155,10 +158,10 @@ async def study_material_labels(
 
 @router.get(
     "/study_material_labels/v1/{course_id}/{student_id}/",
-    response_model=StudyMaterialScreenV1,
+    response_model=StudyMaterialScreenV1
 )
 async def study_material_labels(
-    course_id: str, student_id: str, user=Depends(get_current_user)
+    course_id: str, user=Depends(manager)
 ):
     try:
         # obj = await StudyMaterialName_Pydantic.from_queryset(StudyMaterialName.all())
@@ -167,7 +170,8 @@ async def study_material_labels(
         main_array = {}
 
         for material in obj:
-            material_array.append({"label_id": material.id, "label": material.name})
+            material_array.append(
+                {"label_id": material.id, "label": material.name})
 
         if await StudyMaterialCategories.exists(
             course__material__id=material_array[0]["label_id"],
@@ -198,7 +202,8 @@ async def study_material_labels(
         main_array.update({"content": material_array})
 
         course_categories = await StudyMaterialCategories_Pydantic.from_queryset(
-            StudyMaterialCategories.filter(course__course__id=course_id).limit(5)
+            StudyMaterialCategories.filter(
+                course__course__id=course_id).limit(5)
         )
 
         new_array = []
@@ -206,7 +211,7 @@ async def study_material_labels(
             new_dict = item.dict()
             item_id = item.id
             if await StudyMaterialOrderItems.exists(
-                item_id=item_id, order__student__id=student_id
+                item_id=item_id, order__student__id=user.id
             ):
                 new_dict.update({"is_purchased": True})
             else:
@@ -216,10 +221,11 @@ async def study_material_labels(
 
         main_array.update({"recommendedNotes": new_array})
         test_series_obj = await StudyMaterialTestSeries_Pydantic.from_queryset(
-            StudyMaterialTestSeries.filter(course__course__id=course_id).limit(5)
+            StudyMaterialTestSeries.filter(
+                course__course__id=course_id).limit(5)
         )
         if await TestSeriesOrders.exists(
-            student__id=student_id, test_series__course__id=course_id
+            student__id=user.id, test_series__course__id=course_id
         ):
             is_purchased = {"is_purchased": True}
         else:

@@ -175,6 +175,11 @@ async def course_details(
 @router.post("/course_details1/{c_slug}/", response_model=List[CourseCategoriesCount])
 async def course_details(c_slug: str, user=Depends(manager)):
     try:
+        # check if student course subscription is not expired
+        if not await StudentChoices.exists(student=user, course__slug=c_slug,
+                                            expiry_date__gte=updated_at):
+            print('Subscription Expired')
+            return JSONResponse({"status": False, "message": "Subscription Expired"}, status_code=208)
         course_cat_obj = await CourseCategories_Pydantic.from_queryset(
             CourseCategories.filter(course__slug=c_slug)
         )

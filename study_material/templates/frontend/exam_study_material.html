@@ -75,6 +75,7 @@
 
 					<div class="row">
 
+						
 						{% for course in category_course %}
 					  <div class="col-lg-4 col-md-4 col-sm-6">
 						  {% if flag == 'pdf-notes' %}
@@ -90,12 +91,13 @@
 									<h4 class="title">{{ course.course.name }}</h4>
 									<ul class="meta text-success">
 										<li class="video"><i class="ti-layers-alt"></i>
-										    {% if flag == 'pdf-notes'%}
-											{{ course.StudyMaterialCourse|length }} {{flag}}</li>
+										<!-- {% if flag == 'pdf-notes'%}
+											{{ course.material }} {{flag}}</li>
 											{% else%}
-											{{ course.StudyMaterialTSCourse|length }} {{flag}}</li>
+											{{ course.material }} {{flag}}</li>
 
-											{%endif%}
+											{%endif%}  -->
+										 
 											
 									</ul>
 								</div>
