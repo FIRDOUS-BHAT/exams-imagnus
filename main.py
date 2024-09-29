@@ -64,7 +64,6 @@ import json
 from aiocache import Cache
 from aiocache.serializers import JsonSerializer
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
-from starlette.middleware.base import BaseHTTPMiddleware
 
 
 class CustomRateLimitMiddleware(BaseHTTPMiddleware):

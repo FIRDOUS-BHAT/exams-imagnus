@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: imagnus-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: imagnus
+  template:
+    metadata:
+      labels:
+        app: imagnus
+    spec:
+      containers:
+        - name: imagnus
+          image: gcr.io/imagnus-432717/imagnus:latest
+          ports:
+            - containerPort: 8000
