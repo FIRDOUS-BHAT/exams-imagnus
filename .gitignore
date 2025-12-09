@@ -220,3 +220,4 @@ webScrapping.py
 .env.dev
 .env.prod
 .env
+.history
