@@ -2,18 +2,54 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: imagnus-deployment
+  namespace: imagnus-namespace
+  labels:
+    app: imagnus-app
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: imagnus
+      app: imagnus-app
   template:
     metadata:
       labels:
-        app: imagnus
+        app: imagnus-app
     spec:
+      imagePullSecrets:
+        - name: gcr-json-key
+      initContainers:
+        - name: aerich-migrate
+          image: gcr.io/imagnus-432717/imagnus-app:v1
+          command: ["aerich", "upgrade"]
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: DATABASE_URL
       containers:
-        - name: imagnus
-          image: gcr.io/imagnus-432717/imagnus:latest
+        - name: imagnus-app
+          image: gcr.io/imagnus-432717/imagnus-app:v1
+          imagePullPolicy: Always
           ports:
             - containerPort: 8000
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: DATABASE_URL
+          # Include other environment variables as needed
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: imagnus-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: imagnus-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000

@@ -1,12 +1,17 @@
+# service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: imagnus-service
+  name: fastapi-service
+  namespace: imagnus-namespace
+  labels:
+    app: fastapi
 spec:
   type: LoadBalancer
-  selector:
-    app: imagnus
   ports:
-    - protocol: TCP
-      port: 80
+    - port: 80
       targetPort: 8000
+      protocol: TCP
+      name: http
+  selector:
+    app: fastapi

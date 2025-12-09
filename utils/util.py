@@ -14,9 +14,11 @@ import pytz
 from functools import lru_cache
 import sys
 
+
 def dd(data):
     print(data)
     sys.exit()
+
 
 @lru_cache()
 def app_setting():
@@ -47,12 +49,26 @@ def findExistedEmail(email: str):
     return database.fetch_one(query, values={"email": email})
 
 
+def _bcrypt_safe(password: str) -> str:
+    """
+    Bcrypt only uses the first 72 bytes of a password. Newer versions of
+    passlib/bcrypt raise a ValueError for longer inputs, so we truncate
+    before hashing / verifying to avoid runtime errors while preserving
+    the effective bcrypt input.
+    """
+    return (password or "")[:72]
+
+
 def get_password_hash(password):
-    return pwd_context.hash(password)
+    return pwd_context.hash(_bcrypt_safe(password))
 
 
 def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
+    try:
+        return pwd_context.verify(_bcrypt_safe(plain_password), hashed_password)
+    except ValueError:
+        # If an unexpected bcrypt error occurs (e.g., malformed hash), treat as mismatch
+        return False
 
 
 def create_access_token(*, data: dict, expires_delta: timedelta = None):
@@ -60,7 +76,8 @@ def create_access_token(*, data: dict, expires_delta: timedelta = None):
     if expires_delta:
         expire = datetime.now(tz) + expires_delta
     else:
-        expire = datetime.now(tz) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire = datetime.now(
+            tz) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(
         to_encode, settings.secret_key, algorithm=settings.algorithm)

@@ -1,0 +1,41 @@
+# Ignore Python cache and compiled files
+__pycache__/
+*/__pycache__/
+**__pycache__/
+*/*/__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Ignore virtual environments
+.venv/
+env/
+
+# Ignore Git folder
+.git/
+.gitignore
+
+# Ignore IDE/editor config files
+.idea/
+.vscode/
+
+# Ignore environment files (if sensitive)
+# .env
+
+# Ignore documentation and test folders
+docs/
+tests/
+
+# Ignore Docker ignore file
+.dockerignore
+
+.ebextensions/
+
+linuxvenv/
+
+.ebextensions_bck/
+
+.platform
+
+.history
+

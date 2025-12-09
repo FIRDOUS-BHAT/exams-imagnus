@@ -1,0 +1,15 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: exams
+build:
+  artifacts:
+    - image: gcr.io/imagnus-432717/imagnus-app
+      docker:
+        dockerfile: Dockerfile
+  tagPolicy:
+    sha256: {}
+manifests:
+  rawYaml:
+    - deployment.yaml
+    - service.yaml

@@ -366,12 +366,12 @@ class LiveClasses(Model):
         index=True,
     )
 
-    lecture = fields.ForeignKeyField(
-        "models.CourseCategoryLectures",
-        related_name="live_lectures",
-        on_delete="CASCADE",
-        index=True,
-    )
+    # lecture = fields.ForeignKeyField(
+    #     "models.CourseCategoryLectures",
+    #     related_name="live_lectures",
+    #     on_delete="CASCADE",
+    #     index=True,
+    # )
 
     # lecture = fields.CharField(max_length=250, blank=True, null=True)
 

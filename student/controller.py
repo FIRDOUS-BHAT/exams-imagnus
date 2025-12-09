@@ -1,3 +1,4 @@
+from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi.responses import HTMLResponse
 import htmlmin
 from slowapi import Limiter
@@ -33,7 +34,13 @@ from pydantic import BaseModel
 from datetime import datetime, timezone
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response, RedirectResponse
-from tortoise.contrib.fastapi import HTTPNotFoundError
+try:
+    from tortoise.contrib.fastapi import HTTPNotFoundError  # removed in newer tortoise
+except ImportError:
+    from pydantic import BaseModel
+
+    class HTTPNotFoundError(BaseModel):
+        detail: str = "Not found"
 from slowapi.util import get_remote_address
 
 
@@ -127,7 +134,8 @@ def flash(request: Request, message: typing.Any, category: str = "primary") -> N
     """Flash a message to the next request."""
     if "_messages" not in request.session:
         request.session["_messages"] = []
-    request.session["_messages"].append({"message": message, "category": category})
+    request.session["_messages"].append(
+        {"message": message, "category": category})
 
 
 def get_flashed_messages(request: Request):
@@ -136,7 +144,6 @@ def get_flashed_messages(request: Request):
 
 
 templates.env.globals["get_flashed_messages"] = get_flashed_messages
-from starlette.exceptions import HTTPException as StarletteHTTPException
 
 
 async def get_current_user(
@@ -327,7 +334,8 @@ async def home_page(
         request.session.clear()
         return templates.TemplateResponse(
             "login.html",
-            context={"request": request, "returnURL": returnURL, "message": message},
+            context={"request": request,
+                     "returnURL": returnURL, "message": message},
         )
 
 
@@ -369,8 +377,8 @@ async def login_page(
                 if returnURL != "None":
                     url = f"/student/login/?returnURL={returnURL}"
                 else:
-                    url = "/student/login/"    
-               
+                    url = "/student/login/"
+
                 return RedirectResponse(
                     url=url,
                     status_code=status.HTTP_302_FOUND,
@@ -396,7 +404,8 @@ async def login_page(
         request.session.clear()
         return templates.TemplateResponse(
             "login.html",
-            context={"request": request, "returnURL": returnURL, "message": message},
+            context={"request": request,
+                     "returnURL": returnURL, "message": message},
         )
 
 
@@ -412,7 +421,8 @@ async def register_page(
     request.session.clear()
     return templates.TemplateResponse(
         "register.html",
-        context={"request": request, "returnURL": returnURL, "message": message},
+        context={"request": request,
+                 "returnURL": returnURL, "message": message},
     )
 
 
@@ -495,7 +505,7 @@ async def authenticate_user(username: str, password: str):
     if not await Student.exists(mobile=username):
         return False
     user = await Student.get(mobile=username)
-   
+
     # print(f'{password} password here')
     if not user or not (
         util.verify_password(password, user.password)
@@ -556,11 +566,11 @@ async def login(
     if return_url == "None":
         url = "/student/login/"
     else:
-        url = f"/student/login/?returnURL={return_url}"    
+        url = f"/student/login/?returnURL={return_url}"
     if len(username) == 0 or len(password) == 0:
         request.session["data"] = (
             "Mobile number or password not provided"
-            )
+        )
         return RedirectResponse(
             url=url,
             status_code=status.HTTP_302_FOUND,
@@ -604,9 +614,10 @@ async def login(
     access_token = await create_access_token_for_user(user)
 
     redirect_url = return_url if return_url != "None" else "/student/new-dashboard/"
-    resp = RedirectResponse(url=redirect_url, status_code=status.HTTP_302_FOUND)
+    resp = RedirectResponse(
+        url=redirect_url, status_code=status.HTTP_302_FOUND)
     resp.set_cookie(key=settings.cookie_name, value=access_token,
-                     httponly=True,secure=True,samesite="Lax")
+                    httponly=True, secure=True, samesite="Lax")
     request.session.clear()
     return resp
 
@@ -628,7 +639,8 @@ async def logout(request: Request):
         # raise HTTPException(status_code=400, detail="Session token not found")
     await logout_user(token)
     request.session["data"] = "You have been logged out."
-    resp = RedirectResponse(url="/student/login/", status_code=status.HTTP_302_FOUND)
+    resp = RedirectResponse(url="/student/login/",
+                            status_code=status.HTTP_302_FOUND)
     resp.delete_cookie(key=settings.cookie_name)
     return resp
 
@@ -691,7 +703,8 @@ async def forgot_password_send_otp(request: Request):
     if not is_valid_mobile(mobile):
         return JSONResponse(
             status_code=400,
-            content={"status": False, "message": "Invalid mobile number format"},
+            content={"status": False,
+                     "message": "Invalid mobile number format"},
         )
 
     if await Student.exists(mobile=mobile):
@@ -747,7 +760,7 @@ def validate_token(authorization: str = Header(...)):
             status_code=401, detail="Invalid authorization header format."
         )
     # Remove the prefix to get the token
-    token = authorization[len(token_prefix) :]
+    token = authorization[len(token_prefix):]
     try:
         payload = jwt.decode(token, secret_key, algorithms=[algorithm])
         return payload  # You could return the mobile number or any other data included in the token
@@ -1191,7 +1204,8 @@ async def student_video_lectures(
                                         is_bookmarked = await check_isBookmarkedVideo(
                                             video_id
                                         )
-                                        new_dict.update({"isBookmarked": is_bookmarked})
+                                        new_dict.update(
+                                            {"isBookmarked": is_bookmarked})
 
                                         is_liked = await check_isLikedVideo(video_id)
                                         new_dict.update({"isLiked": is_liked})
@@ -1208,8 +1222,10 @@ async def student_video_lectures(
                                                 subscription_video_counter + j
                                             ].dict()
                                         )
-                                        updated_dict.update({"mobile_video_url": None})
-                                        updated_dict.update({"web_video_url": None})
+                                        updated_dict.update(
+                                            {"mobile_video_url": None})
+                                        updated_dict.update(
+                                            {"web_video_url": None})
                                         access_lectures.append(updated_dict)
                                     """OLD CODE ENDS"""
                                     new_lect_dict.update(
@@ -1236,7 +1252,8 @@ async def student_video_lectures(
                                         is_bookmarked = await check_isBookmarkedVideo(
                                             video_id
                                         )
-                                        new_dict.update({"isBookmarked": is_bookmarked})
+                                        new_dict.update(
+                                            {"isBookmarked": is_bookmarked})
                                         is_liked = await check_isLikedVideo(video_id)
                                         new_dict.update({"isLiked": is_liked})
                                         access_lectures.append(new_dict)
@@ -1265,7 +1282,8 @@ async def student_video_lectures(
                                         is_bookmarked = await check_isBookmarkedVideo(
                                             video_id
                                         )
-                                        new_dict.update({"isBookmarked": is_bookmarked})
+                                        new_dict.update(
+                                            {"isBookmarked": is_bookmarked})
                                         is_liked = await check_isLikedVideo(video_id)
                                         new_dict.update({"isLiked": is_liked})
                                         access_lectures.append(new_dict)
@@ -1296,7 +1314,8 @@ async def student_video_lectures(
                                     is_bookmarked = await check_isBookmarkedVideo(
                                         video_id
                                     )
-                                    new_dict.update({"isBookmarked": is_bookmarked})
+                                    new_dict.update(
+                                        {"isBookmarked": is_bookmarked})
                                     is_liked = await check_isLikedVideo(video_id)
                                     new_dict.update({"isLiked": is_liked})
 
@@ -1320,7 +1339,8 @@ async def student_video_lectures(
                     category = eachCategory.category.dict(exclude={"topics"})
                     each_category_videos.update({"category": category})
                     for category_topics in eachCategory.categories_topics:
-                        total_count_of_videos += len(category_topics.CategoryLectures)
+                        total_count_of_videos += len(
+                            category_topics.CategoryLectures)
 
                     access_notes_array = await execute_lectures_loop(
                         total_count_of_videos,
@@ -1392,7 +1412,8 @@ async def student_video_lectures(
                     c_instance = await Course.get(id=cid)
                     perPage = 2
                     course_cat_obj = await CourseCategories_Pydantic.from_queryset(
-                        CourseCategories.filter(course=c_instance, category__id=cat_id)
+                        CourseCategories.filter(
+                            course=c_instance, category__id=cat_id)
                         .offset((page * perPage) - perPage)
                         .limit(perPage)
                     )
@@ -1456,7 +1477,8 @@ async def student_video_lectures(
                                             is_liked = await check_isLikedVideo(
                                                 video_id
                                             )
-                                            new_dict.update({"isLiked": is_liked})
+                                            new_dict.update(
+                                                {"isLiked": is_liked})
 
                                             access_lectures.append(new_dict)
 
@@ -1473,13 +1495,16 @@ async def student_video_lectures(
                                             updated_dict.update(
                                                 {"mobile_video_url": None}
                                             )
-                                            updated_dict.update({"web_video_url": None})
-                                            access_lectures.append(updated_dict)
+                                            updated_dict.update(
+                                                {"web_video_url": None})
+                                            access_lectures.append(
+                                                updated_dict)
                                         """OLD CODE ENDS"""
                                         new_lect_dict.update(
                                             {"CategoryLectures": access_lectures}
                                         )
-                                        category_topics_array.append(new_lect_dict)
+                                        category_topics_array.append(
+                                            new_lect_dict)
                                         subscription_video_counter = 0
 
                                 if subscription_video_counter and (
@@ -1506,7 +1531,8 @@ async def student_video_lectures(
                                             is_liked = await check_isLikedVideo(
                                                 video_id
                                             )
-                                            new_dict.update({"isLiked": is_liked})
+                                            new_dict.update(
+                                                {"isLiked": is_liked})
                                             access_lectures.append(new_dict)
 
                                         # access_lectures.append(new_lectures)
@@ -1517,7 +1543,8 @@ async def student_video_lectures(
                                         new_lect_dict.update(
                                             {"CategoryLectures": access_lectures}
                                         )
-                                        category_topics_array.append(new_lect_dict)
+                                        category_topics_array.append(
+                                            new_lect_dict)
 
                                 if (
                                     len(category_topics_obj.CategoryLectures)
@@ -1539,7 +1566,8 @@ async def student_video_lectures(
                                             is_liked = await check_isLikedVideo(
                                                 video_id
                                             )
-                                            new_dict.update({"isLiked": is_liked})
+                                            new_dict.update(
+                                                {"isLiked": is_liked})
                                             access_lectures.append(new_dict)
 
                                         # access_lectures.append(new_lectures)
@@ -1547,7 +1575,8 @@ async def student_video_lectures(
                                             {"CategoryLectures": access_lectures}
                                         )
 
-                                        category_topics_array.append(new_lect_dict)
+                                        category_topics_array.append(
+                                            new_lect_dict)
                                         subscription_video_counter = 0
                                     # return category_topics_array
 
@@ -1570,7 +1599,8 @@ async def student_video_lectures(
                                         is_bookmarked = await check_isBookmarkedVideo(
                                             video_id
                                         )
-                                        new_dict.update({"isBookmarked": is_bookmarked})
+                                        new_dict.update(
+                                            {"isBookmarked": is_bookmarked})
                                         is_liked = await check_isLikedVideo(video_id)
                                         new_dict.update({"isLiked": is_liked})
 
@@ -1591,7 +1621,8 @@ async def student_video_lectures(
                     for eachCategory in course_cat_obj:
                         total_count_of_videos = 0
                         each_category_videos = {}
-                        category = eachCategory.category.dict(exclude={"topics"})
+                        category = eachCategory.category.dict(
+                            exclude={"topics"})
                         each_category_videos.update({"category": category})
                         for category_topics in eachCategory.categories_topics:
                             total_count_of_videos += len(
@@ -1603,7 +1634,8 @@ async def student_video_lectures(
                             eachCategory.categories_topics,
                             no_of_videos,
                         )
-                        each_category_videos.update({"videos": access_notes_array})
+                        each_category_videos.update(
+                            {"videos": access_notes_array})
                         all_videos_data.append(each_category_videos)
 
                 else:
@@ -2107,7 +2139,8 @@ async def student_pdf_notes(
                                                 {"isBookmarked": is_bookmarked}
                                             )
                                             last_seen = await notes_activity(notes_id)
-                                            new_dict.update({"last_seen": last_seen})
+                                            new_dict.update(
+                                                {"last_seen": last_seen})
 
                                             access_notes.append(new_dict)
                                         remaining_counter = (
@@ -2120,7 +2153,8 @@ async def student_pdf_notes(
                                                     subscription_notes_counter + j
                                                 ].dict()
                                             )
-                                            updated_dict.update({"notes_url": None})
+                                            updated_dict.update(
+                                                {"notes_url": None})
                                             access_notes.append(updated_dict)
 
                                     else:
@@ -2132,13 +2166,15 @@ async def student_pdf_notes(
                                                     j
                                                 ].dict()
                                             )
-                                            updated_dict.update({"notes_url": None})
+                                            updated_dict.update(
+                                                {"notes_url": None})
                                             access_notes.append(updated_dict)
 
                                     new_notes_dict.update(
                                         {"CategoryNotes": access_notes}
                                     )
-                                    category_topics_array.append(new_notes_dict)
+                                    category_topics_array.append(
+                                        new_notes_dict)
                                     forward_access_flag = 0
 
                             elif (
@@ -2159,7 +2195,8 @@ async def student_pdf_notes(
                                                 {"isBookmarked": is_bookmarked}
                                             )
                                             last_seen = await notes_activity(notes_id)
-                                            new_dict.update({"last_seen": last_seen})
+                                            new_dict.update(
+                                                {"last_seen": last_seen})
                                             access_notes.append(new_dict)
                                         # subscription_notes_counter = 0
 
@@ -2172,13 +2209,15 @@ async def student_pdf_notes(
                                                     j
                                                 ].dict()
                                             )
-                                            updated_dict.update({"notes_url": None})
+                                            updated_dict.update(
+                                                {"notes_url": None})
                                             access_notes.append(updated_dict)
 
                                     new_notes_dict.update(
                                         {"CategoryNotes": access_notes}
                                     )
-                                    category_topics_array.append(new_notes_dict)
+                                    category_topics_array.append(
+                                        new_notes_dict)
                                     forward_access_flag = 0
                                     subscription_video_counter = 0
                                 # return category_topics_array
@@ -2201,7 +2240,8 @@ async def student_pdf_notes(
                                                 {"isBookmarked": is_bookmarked}
                                             )
                                             last_seen = await notes_activity(notes_id)
-                                            new_dict.update({"last_seen": last_seen})
+                                            new_dict.update(
+                                                {"last_seen": last_seen})
                                             access_notes.append(new_dict)
 
                                     else:
@@ -2213,13 +2253,15 @@ async def student_pdf_notes(
                                                     j
                                                 ].dict()
                                             )
-                                            updated_dict.update({"notes_url": None})
+                                            updated_dict.update(
+                                                {"notes_url": None})
                                             access_notes.append(updated_dict)
 
                                     new_notes_dict.update(
                                         {"CategoryNotes": access_notes}
                                     )
-                                    category_topics_array.append(new_notes_dict)
+                                    category_topics_array.append(
+                                        new_notes_dict)
                                     subscription_notes_counter -= len(
                                         category_topics_obj.CategoryNotes
                                     )
@@ -2240,12 +2282,14 @@ async def student_pdf_notes(
                                     is_bookmarked = await check_isBookmarkedNotes(
                                         notes_id
                                     )
-                                    new_dict.update({"isBookmarked": is_bookmarked})
+                                    new_dict.update(
+                                        {"isBookmarked": is_bookmarked})
                                     last_seen = await notes_activity(notes_id)
                                     new_dict.update({"last_seen": last_seen})
                                     access_notes.append(new_dict)
 
-                                new_notes_dict.update({"CategoryNotes": access_notes})
+                                new_notes_dict.update(
+                                    {"CategoryNotes": access_notes})
                                 category_topics_array.append(new_notes_dict)
 
                     return category_topics_array
@@ -2258,7 +2302,8 @@ async def student_pdf_notes(
                     each_category_notes.update({"category": category})
 
                     for category_topics in eachCategory.categories_topics:
-                        total_count_of_notes += len(category_topics.CategoryNotes)
+                        total_count_of_notes += len(
+                            category_topics.CategoryNotes)
 
                     access_notes_array = await execute_notes_loop(
                         total_count_of_notes,
@@ -2336,7 +2381,8 @@ async def student_pdf_notes(
 
                     segments = data_count / perPage
                     course_cat_obj = await CourseCategories_Pydantic.from_queryset(
-                        CourseCategories.filter(course=c_instance, category__id=cat_id)
+                        CourseCategories.filter(
+                            course=c_instance, category__id=cat_id)
                         .offset((page * perPage) - perPage)
                         .limit(perPage)
                     )
@@ -2397,14 +2443,16 @@ async def student_pdf_notes(
                                                     subscription_notes_counter + j
                                                 ].dict()
                                             )
-                                            updated_dict.update({"notes_url": None})
+                                            updated_dict.update(
+                                                {"notes_url": None})
                                             access_notes.append(updated_dict)
 
                                         new_lect_dict.update(
                                             {"CategoryNotes": access_notes}
                                         )
 
-                                        category_topics_array.append(new_lect_dict)
+                                        category_topics_array.append(
+                                            new_lect_dict)
                                         subscription_notes_counter = 0
 
                                 if subscription_notes_counter and (
@@ -2455,7 +2503,8 @@ async def student_pdf_notes(
                                             {"CategoryNotes": access_notes}
                                         )
 
-                                        category_topics_array.append(new_lect_dict)
+                                        category_topics_array.append(
+                                            new_lect_dict)
                                     # return category_topics_array
 
                             elif total_length_of_notes <= subscription_notes_counter:
@@ -2474,7 +2523,8 @@ async def student_pdf_notes(
                                         is_bookmarked = await check_isBookmarkedNotes(
                                             notes_id
                                         )
-                                        new_dict.update({"isBookmarked": is_bookmarked})
+                                        new_dict.update(
+                                            {"isBookmarked": is_bookmarked})
                                         access_notes.append(new_dict)
 
                                     new_lect_dict.update(
@@ -2488,18 +2538,21 @@ async def student_pdf_notes(
                     for eachCategory in course_cat_obj:
                         total_count_of_notes = 0
                         each_category_notes = {}
-                        category = eachCategory.category.dict(exclude={"topics"})
+                        category = eachCategory.category.dict(
+                            exclude={"topics"})
                         each_category_notes.update({"category": category})
 
                         for category_topics in eachCategory.categories_topics:
-                            total_count_of_notes += len(category_topics.CategoryNotes)
+                            total_count_of_notes += len(
+                                category_topics.CategoryNotes)
 
                         access_notes_array = await execute_notes_loop(
                             total_count_of_notes,
                             eachCategory.categories_topics,
                             no_of_notes,
                         )
-                        each_category_notes.update({"notes": access_notes_array})
+                        each_category_notes.update(
+                            {"notes": access_notes_array})
                         all_notes_data.append(each_category_notes)
 
                 else:
@@ -2848,12 +2901,14 @@ async def view_result(
 
                             return flag2, flag1
 
-                        opt_arr = np.array(["opt_1", "opt_2", "opt_3", "opt_4"])
+                        opt_arr = np.array(
+                            ["opt_1", "opt_2", "opt_3", "opt_4"])
                         opt_dict = {}
                         for x in opt_arr:
                             if (i + 1) <= len(state_summary):
                                 if state_summary[i]:
-                                    resp = get_state_summary(x, state_summary[i])
+                                    resp = get_state_summary(
+                                        x, state_summary[i])
 
                                 else:
                                     resp = get_state_summary(x, None)

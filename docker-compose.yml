@@ -1,37 +1,34 @@
-version: "3"
-
 services:
-  web:
-    build: ./
-    image: imagnus_image
-    command:  uvicorn main:app --reload --workers 4 --host 0.0.0.0 --port 8000
-    
+  imagnus-app:
+    image: gcr.io/imagnus-432717/imagnus-fastapi:v1  # Replace with your FastAPI app image
+    container_name: imagnus-app
+    build:
+      context: .
     ports:
-      - 8000:8000
+      - "8000:80"
+    depends_on:
+      - postgres-db
+    environment:
+      - DATABASE_URL=postgresql://imagnus_user:imagnus_password@postgres-db:5432/imagnus_db
     networks:
-      - imagnus_network
+      - imagnus-network
 
-
+  postgres-db:
+    image: postgres:15
+    container_name: imagnus-postgres
     environment:
-      - CELERY_BROKER_URL=redis://redis:6379/0
-      - CELERY_RESULT_BACKEND=redis://redis:6379/0
-    depends_on:
-      - redis
-  
-  worker:
-    build: ./
-    command: celery --app=worker.celery worker --loglevel=info
-    
-    environment:
-      - CELERY_BROKER_URL=redis://redis:6379/0
-      - CELERY_RESULT_BACKEND=redis://redis:6379/0
-    depends_on:
-      - web
-      - redis
-
-  redis:
-    image: redis:6-alpine
+      POSTGRES_USER: imagnus_user
+      POSTGRES_PASSWORD: imagnus_password
+      POSTGRES_DB: imagnus_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - imagnus-network
 
 networks:
-  imagnus_network:
-    driver: bridge
+  imagnus-network:
+
+volumes:
+  postgres_data:

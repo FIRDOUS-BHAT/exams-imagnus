@@ -3,7 +3,13 @@ from typing import List
 from fastapi import APIRouter, Depends
 from imagekitio import ImageKit
 from pydantic import BaseModel
-from tortoise.contrib.fastapi import HTTPNotFoundError
+try:
+    from tortoise.contrib.fastapi import HTTPNotFoundError  # removed in newer tortoise
+except ImportError:
+    from pydantic import BaseModel
+
+    class HTTPNotFoundError(BaseModel):
+        detail: str = "Not found"
 
 from aws_services.settings import settings
 from screen_banners.models import ScreenBanners, ScreenBanners_Pydantic

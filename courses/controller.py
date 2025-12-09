@@ -18,7 +18,13 @@ from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from starlette import status
 from starlette.responses import JSONResponse, RedirectResponse, Response
-from tortoise.contrib.fastapi import HTTPNotFoundError
+try:
+    from tortoise.contrib.fastapi import HTTPNotFoundError  # removed in newer tortoise
+except ImportError:
+    from pydantic import BaseModel
+
+    class HTTPNotFoundError(BaseModel):
+        detail: str = "Not found"
 
 from FCM.route import push_service
 from admin_dashboard.models import (
@@ -466,7 +472,8 @@ async def my_account(request: Request, user: str = Depends(get_current_user)):
 
         if await PaymentRecords.exists(student=student_ins):
             orders = await PaymentRecords_Pydantic.from_queryset(
-                PaymentRecords.filter(student=student_ins).order_by("-created_at")
+                PaymentRecords.filter(
+                    student=student_ins).order_by("-created_at")
             )
         else:
             orders = None
@@ -1076,7 +1083,8 @@ async def place_order(request: Request, uid=Depends(get_current_user)):
                                     + c_ins.name
                                     + " course.\n\nHappy Learning"
                                 )
-                                data_message = {"open": "profile", "data_payload": {}}
+                                data_message = {
+                                    "open": "profile", "data_payload": {}}
                                 result = push_service.notify_single_device(
                                     registration_id=fcm_token,
                                     message_title=message_title,

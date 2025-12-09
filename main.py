@@ -1,3 +1,5 @@
+from config import TORTOISE_ORM, DATABASE_URL
+from typing import AsyncGenerator
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.status import HTTP_429_TOO_MANY_REQUESTS
@@ -64,6 +66,7 @@ import json
 from aiocache import Cache
 from aiocache.serializers import JsonSerializer
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
+db_url = DATABASE_URL()
 
 
 class CustomRateLimitMiddleware(BaseHTTPMiddleware):
@@ -114,7 +117,8 @@ allowed_host = settings.allowed_host
 logger = logging.getLogger("fastapi")
 logger.setLevel(logging.INFO)
 slack_handler = SlackHandler()
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+formatter = logging.Formatter(
+    "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 slack_handler.setFormatter(formatter)
 logger.addHandler(slack_handler)
 
@@ -140,27 +144,37 @@ class RedirectMiddleware(BaseHTTPMiddleware):
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
-    # Startup logic
+async def lifespan(app: FastAPI) -> AsyncGenerator:
+    # **Call the startup event handlers**
+    await app.router.startup()
 
+    # Startup logic
     print(debug_mode)
+
     yield
+
     # Shutdown logic
     print("Shutting down")
 
+    # **Call the shutdown event handlers**
+    await app.router.shutdown()
 
 if debug_mode:
-
     app = FastAPI()
     LOCAL_REDIS_URL = "redis://localhost"
-
-
 else:
     app = FastAPI(debug=False, docs_url=None, redoc_url=None, openapi_url=None)
     LOCAL_REDIS_URL = "redis://imagnuscache-001.8vqeqj.0001.aps1.cache.amazonaws.com"
 
-
 app.lifespan = lifespan  # Assign the lifespan function
+
+
+register_tortoise(
+    app=app,
+    config=TORTOISE_ORM,
+    generate_schemas=False,
+    add_exception_handlers=True,
+)
 
 
 @app.exception_handler(RequestValidationError)
@@ -335,35 +349,7 @@ async def custom_rate_limit_handler(request: Request, exc: RateLimitExceeded):
     )
 
 
-db_url = DATABASE_URL()
-
-
-register_tortoise(
-    app=app,
-    config={
-        "connections": {"default": db_url},
-        "apps": {
-            "models": {
-                "models": [
-                    "admin_dashboard.models",
-                    "student.models",
-                    "student_choices.models",
-                    "screen_banners.models",
-                    "checkout.models",
-                    "send_mails.models",
-                    "study_material.models",
-                    "scholarship_tests.models",
-                ],
-                # If no default_connection specified, defaults to 'default'
-                "default_connection": "default",
-            }
-        },
-        "use_tz": True,
-        "timezone": "Asia/Kolkata",
-    },
-    generate_schemas=True,
-    add_exception_handlers=True,
-)
+# db_url = os.getenv('DATABASE_URL')
 
 
 if __name__ == "__main__":
@@ -371,7 +357,7 @@ if __name__ == "__main__":
     uvicorn.run(
         app,
         host="0.0.0.0",
-        port=os.getenv("PORT", "8080"),
+        port=os.getenv("PORT", "8000"),
         log_level=os.getenv("LOG_LEVEL", "info"),
         proxy_headers=True,
     )

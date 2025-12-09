@@ -37,7 +37,13 @@ from imagekitio import ImageKit
 from pydantic import BaseModel
 from slugify import slugify
 from starlette.responses import RedirectResponse
-from tortoise.contrib.fastapi import HTTPNotFoundError
+try:
+    from tortoise.contrib.fastapi import HTTPNotFoundError  # removed in newer tortoise
+except ImportError:
+    from pydantic import BaseModel
+
+    class HTTPNotFoundError(BaseModel):
+        detail: str = "Not found"
 from FCM.route import push_service
 from admin_dashboard.models import *
 from aws_services.deps import s3_auth
@@ -1462,7 +1468,8 @@ async def add_category_test_series(course_id: str = Form(...),
         title=test_series_title).count()
     if series_count == 0:
         data = pd.read_excel(
-            lecture_test_series.file.read())  # place "r" before the path string to address special character,
+            # place "r" before the path string to address special character,
+            lecture_test_series.file.read())
         # such as '\'. Don't forget to put the file name at the end of the path + '.xlsx'
 
         image_url = await upload_images(s3, folder='testSeriesthumbnails/' + category_obj.slug + '/' + topic_obj.slug,
@@ -1868,7 +1875,7 @@ async def add_live_class(request: Request, course_id: List[str] = Form(...), ins
                 is_paid = True
             else:
                 is_paid = False
-          
+
             saved_obj = await LiveClasses.create(title=title, course=course, streaming_time=stream_time,
                                                  instructor=instructor, thumbnail=image_url, url=url, is_paid=is_paid, )
 

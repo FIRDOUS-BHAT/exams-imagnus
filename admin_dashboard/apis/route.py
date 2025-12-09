@@ -31,7 +31,14 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import HTTPException
 from pydantic import BaseModel, validator
 from starlette.responses import JSONResponse
-from tortoise.contrib.fastapi import HTTPNotFoundError
+try:
+    # deprecated in newer tortoise
+    from tortoise.contrib.fastapi import HTTPNotFoundError
+except ImportError:  # fallback for tortoise>=0.20 where symbol was removed
+    from pydantic import BaseModel
+
+    class HTTPNotFoundError(BaseModel):
+        detail: str = "Not found"
 from dateutil.relativedelta import relativedelta
 from admin_dashboard.controller import upload_images
 from admin_dashboard.models import (
@@ -582,7 +589,8 @@ async def get_course_category(
                     subscription_initial_video_counter - each_topic_lectures_length
                 )
 
-            lectures.append({"topic": topic_obj, "CategoryLectures": allowed_lectures})
+            lectures.append(
+                {"topic": topic_obj, "CategoryLectures": allowed_lectures})
         return lectures
 
     async def execute_notes_loop(initial_notes_counter):
@@ -1005,7 +1013,8 @@ async def course_category(
                                 > subscription_video_counter
                             ):
                                 access_counter = subscription_video_counter
-                                print("access_counter_here: " + str(access_counter))
+                                print("access_counter_here: " +
+                                      str(access_counter))
                                 """Old code """
                                 if category_topics_obj.CategoryLectures:
                                     if forward_access_flag:
@@ -1033,9 +1042,11 @@ async def course_category(
                                             is_liked = await check_isLikedVideo(
                                                 video_id
                                             )
-                                            new_dict.update({"isLiked": is_liked})
+                                            new_dict.update(
+                                                {"isLiked": is_liked})
                                             watch_time = await watch_activity(video_id)
-                                            new_dict.update({"watch_time": watch_time})
+                                            new_dict.update(
+                                                {"watch_time": watch_time})
                                             access_lectures.append(new_dict)
 
                                         remaining_counter = (
@@ -1051,8 +1062,10 @@ async def course_category(
                                             updated_dict.update(
                                                 {"mobile_video_url": None}
                                             )
-                                            updated_dict.update({"web_video_url": None})
-                                            access_lectures.append(updated_dict)
+                                            updated_dict.update(
+                                                {"web_video_url": None})
+                                            access_lectures.append(
+                                                updated_dict)
                                     else:
                                         for j in range(
                                             len(category_topics_obj.CategoryLectures)
@@ -1065,11 +1078,14 @@ async def course_category(
                                             updated_dict.update(
                                                 {"mobile_video_url": None}
                                             )
-                                            updated_dict.update({"web_video_url": None})
-                                            access_lectures.append(updated_dict)
+                                            updated_dict.update(
+                                                {"web_video_url": None})
+                                            access_lectures.append(
+                                                updated_dict)
 
                                     sorted_list = sorted(
-                                        access_lectures, key=itemgetter("order_display")
+                                        access_lectures, key=itemgetter(
+                                            "order_display")
                                     )
                                     new_lect_dict.update(
                                         {"CategoryLectures": sorted_list}
@@ -1098,9 +1114,11 @@ async def course_category(
                                             is_liked = await check_isLikedVideo(
                                                 video_id
                                             )
-                                            new_dict.update({"isLiked": is_liked})
+                                            new_dict.update(
+                                                {"isLiked": is_liked})
                                             watch_time = await watch_activity(video_id)
-                                            new_dict.update({"watch_time": watch_time})
+                                            new_dict.update(
+                                                {"watch_time": watch_time})
                                             access_lectures.append(new_dict)
 
                                     else:
@@ -1115,11 +1133,14 @@ async def course_category(
                                             updated_dict.update(
                                                 {"mobile_video_url": None}
                                             )
-                                            updated_dict.update({"web_video_url": None})
-                                            access_lectures.append(updated_dict)
+                                            updated_dict.update(
+                                                {"web_video_url": None})
+                                            access_lectures.append(
+                                                updated_dict)
 
                                     sorted_list = sorted(
-                                        access_lectures, key=itemgetter("order_display")
+                                        access_lectures, key=itemgetter(
+                                            "order_display")
                                     )
                                     new_lect_dict.update(
                                         {"CategoryLectures": sorted_list}
@@ -1152,11 +1173,14 @@ async def course_category(
                                             is_liked = await check_isLikedVideo(
                                                 video_id
                                             )
-                                            new_dict.update({"isLiked": is_liked})
+                                            new_dict.update(
+                                                {"isLiked": is_liked})
                                             watch_time = await watch_activity(video_id)
-                                            new_dict.update({"watch_time": watch_time})
+                                            new_dict.update(
+                                                {"watch_time": watch_time})
                                             access_lectures.append(new_dict)
-                                            print("lectures are less than subscription")
+                                            print(
+                                                "lectures are less than subscription")
                                     else:
                                         for j in range(
                                             len(category_topics_obj.CategoryLectures)
@@ -1169,8 +1193,10 @@ async def course_category(
                                             updated_dict.update(
                                                 {"mobile_video_url": None}
                                             )
-                                            updated_dict.update({"web_video_url": None})
-                                            access_lectures.append(updated_dict)
+                                            updated_dict.update(
+                                                {"web_video_url": None})
+                                            access_lectures.append(
+                                                updated_dict)
 
                                     # access_lectures.append(new_lectures)
 
@@ -1178,7 +1204,8 @@ async def course_category(
                                         category_topics_obj.CategoryLectures
                                     )
                                     sorted_list = sorted(
-                                        access_lectures, key=itemgetter("order_display")
+                                        access_lectures, key=itemgetter(
+                                            "order_display")
                                     )
                                     new_lect_dict.update(
                                         {"CategoryLectures": sorted_list}
@@ -1220,7 +1247,8 @@ async def course_category(
                                             is_bookmarked = False
                                     else:
                                         is_bookmarked = False
-                                    new_dict.update({"isBookmarked": is_bookmarked})
+                                    new_dict.update(
+                                        {"isBookmarked": is_bookmarked})
                                     # is_liked = await check_isLikedVideo(video_id)
                                     # new_dict.update({"isLiked": is_liked})
                                     # watch_time = await watch_activity(video_id)
@@ -1231,9 +1259,11 @@ async def course_category(
                                 # access_lectures.append(new_lectures)
 
                                 sorted_list = sorted(
-                                    access_lectures, key=itemgetter("order_display")
+                                    access_lectures, key=itemgetter(
+                                        "order_display")
                                 )
-                                new_lect_dict.update({"CategoryLectures": sorted_list})
+                                new_lect_dict.update(
+                                    {"CategoryLectures": sorted_list})
 
                                 category_topics_array.append(new_lect_dict)
                             # category_topics_array.append({"CategoryLectures": access_lectures})
@@ -1280,7 +1310,8 @@ async def course_category(
                                                 {"isBookmarked": is_bookmarked}
                                             )
                                             last_seen = await notes_activity(notes_id)
-                                            new_dict.update({"last_seen": last_seen})
+                                            new_dict.update(
+                                                {"last_seen": last_seen})
 
                                             access_notes.append(new_dict)
                                         remaining_counter = (
@@ -1293,7 +1324,8 @@ async def course_category(
                                                     subscription_notes_counter + j
                                                 ].dict()
                                             )
-                                            updated_dict.update({"notes_url": None})
+                                            updated_dict.update(
+                                                {"notes_url": None})
                                             access_notes.append(updated_dict)
 
                                     else:
@@ -1305,13 +1337,15 @@ async def course_category(
                                                     j
                                                 ].dict()
                                             )
-                                            updated_dict.update({"notes_url": None})
+                                            updated_dict.update(
+                                                {"notes_url": None})
                                             access_notes.append(updated_dict)
 
                                     new_notes_dict.update(
                                         {"CategoryNotes": access_notes}
                                     )
-                                    category_topics_array.append(new_notes_dict)
+                                    category_topics_array.append(
+                                        new_notes_dict)
                                     forward_access_flag = 0
 
                             elif (
@@ -1332,7 +1366,8 @@ async def course_category(
                                                 {"isBookmarked": is_bookmarked}
                                             )
                                             last_seen = await notes_activity(notes_id)
-                                            new_dict.update({"last_seen": last_seen})
+                                            new_dict.update(
+                                                {"last_seen": last_seen})
                                             access_notes.append(new_dict)
                                         # subscription_notes_counter = 0
 
@@ -1345,13 +1380,15 @@ async def course_category(
                                                     j
                                                 ].dict()
                                             )
-                                            updated_dict.update({"notes_url": None})
+                                            updated_dict.update(
+                                                {"notes_url": None})
                                             access_notes.append(updated_dict)
 
                                     new_notes_dict.update(
                                         {"CategoryNotes": access_notes}
                                     )
-                                    category_topics_array.append(new_notes_dict)
+                                    category_topics_array.append(
+                                        new_notes_dict)
                                     forward_access_flag = 0
                                     subscription_video_counter = 0
                                 # return category_topics_array
@@ -1375,7 +1412,8 @@ async def course_category(
                                                 {"isBookmarked": is_bookmarked}
                                             )
                                             last_seen = await notes_activity(notes_id)
-                                            new_dict.update({"last_seen": last_seen})
+                                            new_dict.update(
+                                                {"last_seen": last_seen})
                                             access_notes.append(new_dict)
 
                                     else:
@@ -1387,13 +1425,15 @@ async def course_category(
                                                     j
                                                 ].dict()
                                             )
-                                            updated_dict.update({"notes_url": None})
+                                            updated_dict.update(
+                                                {"notes_url": None})
                                             access_notes.append(updated_dict)
 
                                     new_notes_dict.update(
                                         {"CategoryNotes": access_notes}
                                     )
-                                    category_topics_array.append(new_notes_dict)
+                                    category_topics_array.append(
+                                        new_notes_dict)
                                     subscription_notes_counter -= len(
                                         category_topics_obj.CategoryNotes
                                     )
@@ -1414,12 +1454,14 @@ async def course_category(
                                     is_bookmarked = await check_isBookmarkedNotes(
                                         notes_id
                                     )
-                                    new_dict.update({"isBookmarked": is_bookmarked})
+                                    new_dict.update(
+                                        {"isBookmarked": is_bookmarked})
                                     last_seen = await notes_activity(notes_id)
                                     new_dict.update({"last_seen": last_seen})
                                     access_notes.append(new_dict)
 
-                                new_notes_dict.update({"CategoryNotes": access_notes})
+                                new_notes_dict.update(
+                                    {"CategoryNotes": access_notes})
                                 category_topics_array.append(new_notes_dict)
 
                     return category_topics_array
@@ -1452,7 +1494,8 @@ async def course_category(
                                     is_bookmarked = await check_isBookmarkedTestSeries(
                                         test_series_id
                                     )
-                                    new_dict.update({"isBookmarked": is_bookmarked})
+                                    new_dict.update(
+                                        {"isBookmarked": is_bookmarked})
                                     attempted = await testseries_activity(
                                         test_series_id
                                     )
@@ -1476,11 +1519,13 @@ async def course_category(
                                     is_bookmarked = await check_isBookmarkedTestSeries(
                                         test_series_id
                                     )
-                                    updated_dict.update({"isBookmarked": is_bookmarked})
+                                    updated_dict.update(
+                                        {"isBookmarked": is_bookmarked})
                                     attempted = await testseries_activity(
                                         test_series_id
                                     )
-                                    updated_dict.update({"attempted": attempted})
+                                    updated_dict.update(
+                                        {"attempted": attempted})
                                     access_series.append(updated_dict)
 
                                 new_lect_dict.update(
@@ -1498,7 +1543,8 @@ async def course_category(
                                         eachTest
                                     ) in category_topics_obj.CategoryTestSeries:
                                         new_dict = eachTest.dict(
-                                            exclude={"CategoryTestSeriesQuestions"}
+                                            exclude={
+                                                "CategoryTestSeriesQuestions"}
                                         )
                                         test_series_id = eachTest.id
                                         is_bookmarked = (
@@ -1506,11 +1552,13 @@ async def course_category(
                                                 test_series_id
                                             )
                                         )
-                                        new_dict.update({"isBookmarked": is_bookmarked})
+                                        new_dict.update(
+                                            {"isBookmarked": is_bookmarked})
                                         attempted = await testseries_activity(
                                             test_series_id
                                         )
-                                        new_dict.update({"attempted": attempted})
+                                        new_dict.update(
+                                            {"attempted": attempted})
 
                                         access_series.append(new_dict)
                                     # subscription_series_counter -= len(category_topics_obj.CategoryTestSeries)
@@ -1529,7 +1577,8 @@ async def course_category(
                                         eachTest
                                     ) in category_topics_obj.CategoryTestSeries:
                                         new_dict = eachTest.dict(
-                                            exclude={"CategoryTestSeriesQuestions"}
+                                            exclude={
+                                                "CategoryTestSeriesQuestions"}
                                         )
                                         test_series_id = eachTest.id
                                         is_bookmarked = (
@@ -1537,11 +1586,13 @@ async def course_category(
                                                 test_series_id
                                             )
                                         )
-                                        new_dict.update({"isBookmarked": is_bookmarked})
+                                        new_dict.update(
+                                            {"isBookmarked": is_bookmarked})
                                         attempted = await testseries_activity(
                                             test_series_id
                                         )
-                                        new_dict.update({"attempted": attempted})
+                                        new_dict.update(
+                                            {"attempted": attempted})
                                         access_series.append(new_dict)
                                         # subscription_series_counter = 0
 
@@ -1569,7 +1620,8 @@ async def course_category(
                                     is_bookmarked = await check_isBookmarkedTestSeries(
                                         test_series_id
                                     )
-                                    new_dict.update({"isBookmarked": is_bookmarked})
+                                    new_dict.update(
+                                        {"isBookmarked": is_bookmarked})
                                     attempted = await testseries_activity(
                                         test_series_id
                                     )
@@ -1846,7 +1898,8 @@ async def course_category(
                 total_length_of_test_series = 0
 
                 for category_topics in resp:
-                    total_length_of_lectures += len(category_topics.CategoryLectures)
+                    total_length_of_lectures += len(
+                        category_topics.CategoryLectures)
                     total_length_of_notes += len(category_topics.CategoryNotes)
                     total_length_of_test_series += len(
                         category_topics.CategoryTestSeries
@@ -1870,7 +1923,8 @@ async def course_category(
                                 > subscription_video_counter
                             ):
                                 access_counter = subscription_video_counter
-                                print("access_counter_here: " + str(access_counter))
+                                print("access_counter_here: " +
+                                      str(access_counter))
                                 """Old code """
                                 if category_topics_obj.CategoryLectures:
                                     if forward_access_flag:
@@ -1898,9 +1952,11 @@ async def course_category(
                                             is_liked = await check_isLikedVideo(
                                                 video_id
                                             )
-                                            new_dict.update({"isLiked": is_liked})
+                                            new_dict.update(
+                                                {"isLiked": is_liked})
                                             watch_time = await watch_activity(video_id)
-                                            new_dict.update({"watch_time": watch_time})
+                                            new_dict.update(
+                                                {"watch_time": watch_time})
                                             access_lectures.append(new_dict)
 
                                         remaining_counter = (
@@ -1916,8 +1972,10 @@ async def course_category(
                                             updated_dict.update(
                                                 {"mobile_video_url": None}
                                             )
-                                            updated_dict.update({"web_video_url": None})
-                                            access_lectures.append(updated_dict)
+                                            updated_dict.update(
+                                                {"web_video_url": None})
+                                            access_lectures.append(
+                                                updated_dict)
                                     else:
                                         for j in range(
                                             len(category_topics_obj.CategoryLectures)
@@ -1930,11 +1988,14 @@ async def course_category(
                                             updated_dict.update(
                                                 {"mobile_video_url": None}
                                             )
-                                            updated_dict.update({"web_video_url": None})
-                                            access_lectures.append(updated_dict)
+                                            updated_dict.update(
+                                                {"web_video_url": None})
+                                            access_lectures.append(
+                                                updated_dict)
 
                                     sorted_list = sorted(
-                                        access_lectures, key=itemgetter("order_display")
+                                        access_lectures, key=itemgetter(
+                                            "order_display")
                                     )
                                     new_lect_dict.update(
                                         {"CategoryLectures": sorted_list}
@@ -1963,9 +2024,11 @@ async def course_category(
                                             is_liked = await check_isLikedVideo(
                                                 video_id
                                             )
-                                            new_dict.update({"isLiked": is_liked})
+                                            new_dict.update(
+                                                {"isLiked": is_liked})
                                             watch_time = await watch_activity(video_id)
-                                            new_dict.update({"watch_time": watch_time})
+                                            new_dict.update(
+                                                {"watch_time": watch_time})
                                             access_lectures.append(new_dict)
 
                                     else:
@@ -1980,11 +2043,14 @@ async def course_category(
                                             updated_dict.update(
                                                 {"mobile_video_url": None}
                                             )
-                                            updated_dict.update({"web_video_url": None})
-                                            access_lectures.append(updated_dict)
+                                            updated_dict.update(
+                                                {"web_video_url": None})
+                                            access_lectures.append(
+                                                updated_dict)
 
                                     sorted_list = sorted(
-                                        access_lectures, key=itemgetter("order_display")
+                                        access_lectures, key=itemgetter(
+                                            "order_display")
                                     )
                                     new_lect_dict.update(
                                         {"CategoryLectures": sorted_list}
@@ -2017,11 +2083,14 @@ async def course_category(
                                             is_liked = await check_isLikedVideo(
                                                 video_id
                                             )
-                                            new_dict.update({"isLiked": is_liked})
+                                            new_dict.update(
+                                                {"isLiked": is_liked})
                                             watch_time = await watch_activity(video_id)
-                                            new_dict.update({"watch_time": watch_time})
+                                            new_dict.update(
+                                                {"watch_time": watch_time})
                                             access_lectures.append(new_dict)
-                                            print("lectures are less than subscription")
+                                            print(
+                                                "lectures are less than subscription")
                                     else:
                                         for j in range(
                                             len(category_topics_obj.CategoryLectures)
@@ -2034,8 +2103,10 @@ async def course_category(
                                             updated_dict.update(
                                                 {"mobile_video_url": None}
                                             )
-                                            updated_dict.update({"web_video_url": None})
-                                            access_lectures.append(updated_dict)
+                                            updated_dict.update(
+                                                {"web_video_url": None})
+                                            access_lectures.append(
+                                                updated_dict)
 
                                     # access_lectures.append(new_lectures)
 
@@ -2043,7 +2114,8 @@ async def course_category(
                                         category_topics_obj.CategoryLectures
                                     )
                                     sorted_list = sorted(
-                                        access_lectures, key=itemgetter("order_display")
+                                        access_lectures, key=itemgetter(
+                                            "order_display")
                                     )
                                     new_lect_dict.update(
                                         {"CategoryLectures": sorted_list}
@@ -2069,7 +2141,8 @@ async def course_category(
                                     is_bookmarked = await check_isBookmarkedVideo(
                                         video_id
                                     )
-                                    new_dict.update({"isBookmarked": is_bookmarked})
+                                    new_dict.update(
+                                        {"isBookmarked": is_bookmarked})
                                     is_liked = await check_isLikedVideo(video_id)
                                     new_dict.update({"isLiked": is_liked})
                                     watch_time = await watch_activity(video_id)
@@ -2080,9 +2153,11 @@ async def course_category(
                                 # access_lectures.append(new_lectures)
 
                                 sorted_list = sorted(
-                                    access_lectures, key=itemgetter("order_display")
+                                    access_lectures, key=itemgetter(
+                                        "order_display")
                                 )
-                                new_lect_dict.update({"CategoryLectures": sorted_list})
+                                new_lect_dict.update(
+                                    {"CategoryLectures": sorted_list})
 
                                 category_topics_array.append(new_lect_dict)
                             # category_topics_array.append({"CategoryLectures": access_lectures})
@@ -2128,7 +2203,8 @@ async def course_category(
                                                 {"isBookmarked": is_bookmarked}
                                             )
                                             last_seen = await notes_activity(notes_id)
-                                            new_dict.update({"last_seen": last_seen})
+                                            new_dict.update(
+                                                {"last_seen": last_seen})
 
                                             access_notes.append(new_dict)
                                         remaining_counter = (
@@ -2141,7 +2217,8 @@ async def course_category(
                                                     subscription_notes_counter + j
                                                 ].dict()
                                             )
-                                            updated_dict.update({"notes_url": None})
+                                            updated_dict.update(
+                                                {"notes_url": None})
                                             access_notes.append(updated_dict)
 
                                     else:
@@ -2153,13 +2230,15 @@ async def course_category(
                                                     j
                                                 ].dict()
                                             )
-                                            updated_dict.update({"notes_url": None})
+                                            updated_dict.update(
+                                                {"notes_url": None})
                                             access_notes.append(updated_dict)
 
                                     new_notes_dict.update(
                                         {"CategoryNotes": access_notes}
                                     )
-                                    category_topics_array.append(new_notes_dict)
+                                    category_topics_array.append(
+                                        new_notes_dict)
                                     forward_access_flag = 0
 
                             elif (
@@ -2180,7 +2259,8 @@ async def course_category(
                                                 {"isBookmarked": is_bookmarked}
                                             )
                                             last_seen = await notes_activity(notes_id)
-                                            new_dict.update({"last_seen": last_seen})
+                                            new_dict.update(
+                                                {"last_seen": last_seen})
                                             access_notes.append(new_dict)
                                         # subscription_notes_counter = 0
 
@@ -2193,13 +2273,15 @@ async def course_category(
                                                     j
                                                 ].dict()
                                             )
-                                            updated_dict.update({"notes_url": None})
+                                            updated_dict.update(
+                                                {"notes_url": None})
                                             access_notes.append(updated_dict)
 
                                     new_notes_dict.update(
                                         {"CategoryNotes": access_notes}
                                     )
-                                    category_topics_array.append(new_notes_dict)
+                                    category_topics_array.append(
+                                        new_notes_dict)
                                     forward_access_flag = 0
                                     subscription_video_counter = 0
                                 # return category_topics_array
@@ -2223,7 +2305,8 @@ async def course_category(
                                                 {"isBookmarked": is_bookmarked}
                                             )
                                             last_seen = await notes_activity(notes_id)
-                                            new_dict.update({"last_seen": last_seen})
+                                            new_dict.update(
+                                                {"last_seen": last_seen})
                                             access_notes.append(new_dict)
 
                                     else:
@@ -2235,13 +2318,15 @@ async def course_category(
                                                     j
                                                 ].dict()
                                             )
-                                            updated_dict.update({"notes_url": None})
+                                            updated_dict.update(
+                                                {"notes_url": None})
                                             access_notes.append(updated_dict)
 
                                     new_notes_dict.update(
                                         {"CategoryNotes": access_notes}
                                     )
-                                    category_topics_array.append(new_notes_dict)
+                                    category_topics_array.append(
+                                        new_notes_dict)
                                     subscription_notes_counter -= len(
                                         category_topics_obj.CategoryNotes
                                     )
@@ -2262,12 +2347,14 @@ async def course_category(
                                     is_bookmarked = await check_isBookmarkedNotes(
                                         notes_id
                                     )
-                                    new_dict.update({"isBookmarked": is_bookmarked})
+                                    new_dict.update(
+                                        {"isBookmarked": is_bookmarked})
                                     last_seen = await notes_activity(notes_id)
                                     new_dict.update({"last_seen": last_seen})
                                     access_notes.append(new_dict)
 
-                                new_notes_dict.update({"CategoryNotes": access_notes})
+                                new_notes_dict.update(
+                                    {"CategoryNotes": access_notes})
                                 category_topics_array.append(new_notes_dict)
 
                     return category_topics_array
@@ -2299,7 +2386,8 @@ async def course_category(
                                     is_bookmarked = await check_isBookmarkedTestSeries(
                                         test_series_id
                                     )
-                                    new_dict.update({"isBookmarked": is_bookmarked})
+                                    new_dict.update(
+                                        {"isBookmarked": is_bookmarked})
                                     attempted = await testseries_activity(
                                         test_series_id
                                     )
@@ -2320,7 +2408,8 @@ async def course_category(
                                     #     subscription_series_counter + j].id
                                     # is_bookmarked = await check_isBookmarkedTestSeries(test_series_id)
                                     updated_dict.update({"id": None})
-                                    updated_dict.update({"isBookmarked": False})
+                                    updated_dict.update(
+                                        {"isBookmarked": False})
                                     # attempted = await testseries_activity(test_series_id)
                                     updated_dict.update({"attempted": False})
                                     access_series.append(updated_dict)
@@ -2340,7 +2429,8 @@ async def course_category(
                                         eachTest
                                     ) in category_topics_obj.CategoryTestSeries:
                                         new_dict = eachTest.dict(
-                                            exclude={"CategoryTestSeriesQuestions"}
+                                            exclude={
+                                                "CategoryTestSeriesQuestions"}
                                         )
                                         test_series_id = eachTest.id
                                         is_bookmarked = (
@@ -2348,11 +2438,13 @@ async def course_category(
                                                 test_series_id
                                             )
                                         )
-                                        new_dict.update({"isBookmarked": is_bookmarked})
+                                        new_dict.update(
+                                            {"isBookmarked": is_bookmarked})
                                         attempted = await testseries_activity(
                                             test_series_id
                                         )
-                                        new_dict.update({"attempted": attempted})
+                                        new_dict.update(
+                                            {"attempted": attempted})
 
                                         access_series.append(new_dict)
                                     # subscription_series_counter -= len(category_topics_obj.CategoryTestSeries)
@@ -2371,7 +2463,8 @@ async def course_category(
                                         eachTest
                                     ) in category_topics_obj.CategoryTestSeries:
                                         new_dict = eachTest.dict(
-                                            exclude={"CategoryTestSeriesQuestions"}
+                                            exclude={
+                                                "CategoryTestSeriesQuestions"}
                                         )
                                         test_series_id = eachTest.id
                                         is_bookmarked = (
@@ -2379,11 +2472,13 @@ async def course_category(
                                                 test_series_id
                                             )
                                         )
-                                        new_dict.update({"isBookmarked": is_bookmarked})
+                                        new_dict.update(
+                                            {"isBookmarked": is_bookmarked})
                                         attempted = await testseries_activity(
                                             test_series_id
                                         )
-                                        new_dict.update({"attempted": attempted})
+                                        new_dict.update(
+                                            {"attempted": attempted})
                                         access_series.append(new_dict)
                                         # subscription_series_counter = 0
 
@@ -2411,7 +2506,8 @@ async def course_category(
                                     is_bookmarked = await check_isBookmarkedTestSeries(
                                         test_series_id
                                     )
-                                    new_dict.update({"isBookmarked": is_bookmarked})
+                                    new_dict.update(
+                                        {"isBookmarked": is_bookmarked})
                                     attempted = await testseries_activity(
                                         test_series_id
                                     )
