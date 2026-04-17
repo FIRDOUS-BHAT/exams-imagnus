@@ -19,6 +19,7 @@
     />
     <!-- Custom CSS -->
     <link href="/static/courses_assets/css/styles.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <!-- Custom Color Option -->
     <link href="/static/courses_assets/css/colors.css" rel="stylesheet" />
@@ -105,6 +106,118 @@
       }
 
       /* Add more styling as per your design requirements */
+
+      /* ======================================
+         DARK NAVBAR OVERRIDE
+         ====================================== */
+      :root {
+        --nav-bg:      #0f0f13;
+        --nav-border:  rgba(255,255,255,0.07);
+        --nav-text:    #cbd5e1;
+        --nav-hover:   #fff;
+        --nav-accent:  #8b5cf6;
+        --nav-accent-glow: rgba(139,92,246,0.35);
+      }
+
+      /* Main bar */
+      .header.header-light {
+        background: var(--nav-bg) !important;
+        border-bottom: 1px solid var(--nav-border) !important;
+        box-shadow: none !important;
+      }
+
+      /* Logo sizing */
+      .header .logo { height: 38px; width: auto; }
+
+      /* Nav wrapper — horizontal flex, vertically centered */
+      .header.header-light .navigation { display: flex !important; align-items: center !important; }
+      .header.header-light .nav-header { display: flex !important; align-items: center !important; }
+      .nav-menus-wrapper { display: flex !important; align-items: center !important; height: 100% !important; }
+      .nav-menus-wrapper .nav-menu { display: flex !important; align-items: center !important; margin: 0 !important; }
+
+      /* Top-level links — keep original vertical padding so they stay centered */
+      .navigation .nav-menu > li > a {
+        color: var(--nav-text) !important;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 500;
+        font-size: .88rem;
+        letter-spacing: .3px;
+        transition: color .2s ease;
+        display: flex !important;
+        align-items: center !important;
+      }
+      .navigation .nav-menu > li > a:hover,
+      .navigation .nav-menu > li.active > a {
+        color: var(--nav-hover) !important;
+      }
+
+      /* Active link — Courses highlighted */
+      .navigation .nav-menu > li > a[href='/student/preference/'] {
+        color: #fff !important;
+      }
+
+      /* Submenu indicator arrows */
+      .navigation .submenu-indicator { border-color: var(--nav-text) transparent transparent; }
+      .navigation li:hover .submenu-indicator { border-color: var(--nav-hover) transparent transparent; }
+
+      /* Dropdown panel */
+      .nav-dropdown.nav-submenu {
+        background: #1a1a24 !important;
+        border: 1px solid var(--nav-border) !important;
+        border-radius: 12px !important;
+        box-shadow: 0 16px 40px rgba(0,0,0,0.5) !important;
+        padding: 8px !important;
+        min-width: 180px !important;
+        top: calc(100% + 8px) !important;
+      }
+      .nav-dropdown.nav-submenu li a {
+        color: var(--nav-text) !important;
+        font-family: 'Inter', sans-serif;
+        font-size: .87rem;
+        border-radius: 8px !important;
+        padding: 9px 14px !important;
+        display: block;
+        transition: background .18s, color .18s;
+      }
+      .nav-dropdown.nav-submenu li a:hover {
+        background: rgba(139,92,246,.15) !important;
+        color: #fff !important;
+      }
+
+      /* My Account icon + text */
+      .nav-menu-social .ti-user {
+        color: var(--nav-accent);
+        margin-right: 6px;
+      }
+      .nav-menu-social > li > a {
+        color: var(--nav-text) !important;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 500;
+        font-size: .88rem;
+        transition: color .2s;
+      }
+      .nav-menu-social > li > a:hover { color: #fff !important; }
+
+      /* Mobile hamburger toggle */
+      .nav-toggle { color: var(--nav-text); }
+      .nav-toggle span,
+      .nav-toggle span::before,
+      .nav-toggle span::after { background: var(--nav-text); }
+
+      /* Mobile menu panel */
+      @media (max-width: 991px) {
+        .nav-menus-wrapper {
+          background: #0f0f13 !important;
+          border-top: 1px solid var(--nav-border) !important;
+        }
+        .nav-menu > li > a { padding: 12px 20px !important; }
+      }
+
+      /* Preloader dark */
+      .preloader {
+        background-color: #0f0f13 !important;
+        background-image: url('/static/courses_assets/img/loader.svg');
+      }
     </style>
   </head>
   <body>
