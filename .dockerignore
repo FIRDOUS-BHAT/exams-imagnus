@@ -1,41 +1,71 @@
-# Ignore Python cache and compiled files
+# ---- Python ----
 __pycache__/
-*/__pycache__/
-**__pycache__/
-*/*/__pycache__/
+**/__pycache__/
 *.py[cod]
 *.pyo
 *.pyd
+*.egg-info/
+dist/
+build/
 
-# Ignore virtual environments
+# ---- Virtual Environments ----
 .venv/
+venv/
+venvOld/
+venvTest/
+linuxvenv/
 env/
 
-# Ignore Git folder
+# ---- Git ----
 .git/
 .gitignore
 
-# Ignore IDE/editor config files
+# ---- IDE / Editor ----
 .idea/
 .vscode/
+.cursor/
+*.swp
+*.swo
 
-# Ignore environment files (if sensitive)
-# .env
+# ---- Environment files ----
+.env
+.env.*
+!.env.examples
 
-# Ignore documentation and test folders
-docs/
-tests/
-
-# Ignore Docker ignore file
+# ---- Docker (prevent recursive context) ----
+Dockerfile
+docker-compose.yml
 .dockerignore
 
+# ---- Deployment configs (not needed in image) ----
 .ebextensions/
-
-linuxvenv/
-
 .ebextensions_bck/
+.platform/
+.history/
+apprunner.yaml
+serverless.yaml
+skaffold.yaml
+deployment.yaml
+service.yaml
+Procfile
 
-.platform
+# ---- Docs / Tests / Logs ----
+docs/
+tests/
+*.log
+logs.txt
+error.log
+README.md
 
-.history
+# ---- Data files (not needed in image) ----
+*.xlsx
+*.csv
+*.mp3
+*.json
+!package.json
+videos.json
 
+# ---- Misc ----
+node_modules/
+package-lock.json
+requirements.txt.backup

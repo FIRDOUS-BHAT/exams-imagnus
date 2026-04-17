@@ -5,7 +5,7 @@ package:
 ​
 provider:
   name: aws
-  runtime: python3.9
+  runtime: python3.12
   region: ap-south-1
   stage: ${opt:stage, "dev"}
 ​
@@ -19,7 +19,7 @@ custom:
       name: my-awesome-app-layer
       description: My awesome app layer
       compatibleRuntimes:
-        - python3.9
+        - python3.12
 ​
 functions:
   app:

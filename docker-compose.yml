@@ -1,20 +1,94 @@
 services:
+  # ─── FastAPI Application ───────────────────────────────
   imagnus-app:
-    image: gcr.io/imagnus-432717/imagnus-fastapi:v1  # Replace with your FastAPI app image
     container_name: imagnus-app
     build:
       context: .
+      dockerfile: Dockerfile
     ports:
-      - "8000:80"
+      - "8000:8000"
     depends_on:
-      - postgres-db
+      postgres-db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - .env
     environment:
       - DATABASE_URL=postgresql://imagnus_user:imagnus_password@postgres-db:5432/imagnus_db
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    volumes:
+      - app_static:/app/static
     networks:
       - imagnus-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 1G
+        reservations:
+          cpus: "0.5"
+          memory: 256M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
+  # ─── Celery Worker (video transcoding & background tasks) ──
+  celery-worker:
+    container_name: imagnus-celery
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: celery -A worker.celery worker --loglevel=info --concurrency=2
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgresql://imagnus_user:imagnus_password@postgres-db:5432/imagnus_db
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    volumes:
+      - celery_tmp:/tmp/transcoded
+    networks:
+      - imagnus-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 1G
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+    healthcheck:
+      test: ["CMD-SHELL", "celery -A worker.celery inspect ping --timeout 10 || exit 1"]
+      interval: 30s
+      timeout: 15s
+      retries: 3
+      start_period: 20s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ─── PostgreSQL Database ───────────────────────────────
   postgres-db:
-    image: postgres:15
+    image: postgres:16-alpine
     container_name: imagnus-postgres
     environment:
       POSTGRES_USER: imagnus_user
@@ -23,12 +97,61 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5434:5432"  # 5434 on host to avoid conflict with local PostgreSQL
     networks:
       - imagnus-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U imagnus_user -d imagnus_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ─── Redis (cache + Celery broker) ─────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: imagnus-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - imagnus-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 300M
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "2"
 
 networks:
   imagnus-network:
+    driver: bridge
 
 volumes:
   postgres_data:
+  redis_data:
+  app_static:
+  celery_tmp:

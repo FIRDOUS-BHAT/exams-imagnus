@@ -221,3 +221,4 @@ webScrapping.py
 .env.prod
 .env
 .history
+.venv
