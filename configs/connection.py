@@ -1,6 +1,8 @@
 import databases
 import sqlalchemy
 from functools import lru_cache
+from typing import Optional
+from urllib.parse import quote, urlencode
 from configs import dbinfo
 from db.table import metadata
 from databases import DatabaseURL
@@ -19,9 +21,18 @@ def DATABASE_URL(
         password: str = db_config().db_password,
         host: str = db_config().db_host,
         port: str = db_config().db_port,
-        database: str = db_config().db_database
+        database: str = db_config().db_database,
+        sslmode: Optional[str] = db_config().db_sslmode,
 ):
-    return f"{connection}://{username}:{password}@{host}:{port}/{database}"
+    encoded_username = quote(username, safe="")
+    encoded_password = quote(password, safe="")
+    encoded_database = quote(database, safe="")
+    base_url = f"{connection}://{encoded_username}:{encoded_password}@{host}:{port}/{encoded_database}"
+
+    if sslmode:
+        return f"{base_url}?{urlencode({'sslmode': sslmode})}"
+
+    return base_url
 
 
 database = databases.Database(DATABASE_URL())

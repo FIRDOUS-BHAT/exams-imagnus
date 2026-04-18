@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: imagnus-exams-platform
+    runtime: docker
+    plan: free
+    region: singapore # Change to your preferred region
+    healthCheckPath: /api/
+    envVars:
+      - key: APP_TYPE
+        value: production
+      - key: DEBUG
+        value: "false"
+      - key: ALLOWED_HOST
+        value: "*"
+      - key: DB_CONNECTION
+        value: postgres
+      # The following should be set in the Render Dashboard for security
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DB_HOST
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_DATABASE
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: RAZORPAY_KEY
+        sync: false
+      - key: RAZORPAY_SECRET
+        sync: false
+      - key: AWS_SERVER_PUBLIC_KEY
+        sync: false
+      - key: AWS_SERVER_SECRET_KEY
+        sync: false
+      - key: AWS_SERVER_REGION
+        value: ap-south-1

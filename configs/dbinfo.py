@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from typing import Optional
 import os
 
 class Setting(BaseSettings):
@@ -8,6 +9,7 @@ class Setting(BaseSettings):
     db_database: str
     db_username: str
     db_password: str
+    db_sslmode: Optional[str] = None
     app_url: str
     slack_webhook_url: str
 
