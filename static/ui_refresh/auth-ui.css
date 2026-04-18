@@ -1047,12 +1047,15 @@ body.imagnus-auth-ui .auth-switcher-pill {
   border-radius: 99px;
   padding: 4px;
   position: relative;
-  width: fit-content;
+  width: 320px;
+  max-width: 100%;
   margin-bottom: 16px;
 }
 
 body.imagnus-auth-ui .pill-tab {
-  padding: 10px 24px;
+  flex: 1;
+  text-align: center;
+  padding: 10px 12px;
   border-radius: 99px;
   color: var(--auth-muted);
   font-weight: 600;
