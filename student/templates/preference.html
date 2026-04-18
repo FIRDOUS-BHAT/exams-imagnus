@@ -4,53 +4,57 @@
 
  <div class="page_loader"></div>
                 <div class="login-14">
-		 
+
      <div class="container">
          <div class="row login-box">
              <div class="col-lg-12 col-md-12 bg-color-16 align-self-center">
 
                  <div class="form-section">
-                     <h3>Select Preference </h3>
+                     <div class="auth-page-intro">
+                        <span class="auth-kicker">Course Access</span>
+                        <h3>Select Preference </h3>
+                        <p class="auth-copy">
+                           Choose the learning track you want to enter. We grouped the available
+                           exams below so students can move into the right dashboard without
+                           extra clicks.
+                        </p>
+                     </div>
                      <div class="login-inner-form">
-                             <div class="checkbox clearfix">
+                             <div class="checkbox clearfix preference-grid">
                                  {% for preference in preferences %}
-                              <div class="card mb-20">
-                                <div class="card-body hover">
+                              <div class="preference-choice-card">
+                                <div class="hover">
                                  <div class="form-check checkbox-theme">
-                                     <input class="form-check-input" type="checkbox" name="pref_id" value="{{ preference.slug }}" id="{{ preference.id }}" />
-                                     <label class="form-check-label" for="{{ preference.id }}">
-                                         {{ preference.name }}
+                                     <label class="form-check-label preference-choice-label" for="{{ preference.id }}">
+                                       <input class="form-check-input" type="checkbox" name="pref_id" value="{{ preference.slug }}" id="{{ preference.id }}" />
+                                       <span class="preference-choice-body">
+                                          <span class="preference-choice-heading">{{ preference.name }}</span>
+                                          <span class="preference-choice-meta">
+                                             Continue into the exam cluster and unlock the related
+                                             lectures, tests, and notes from one dashboard.
+                                          </span>
+                                          <span class="preference-choice-pills">
+                                             {% for course in preference.courses %}
+                                             {% if loop.index < 5 %}
+                                             <span class="preference-choice-pill">{{ course.name }}</span>
+                                             {% endif %}
+                                             {% endfor %}
+                                             <span class="preference-choice-pill">More inside</span>
+                                          </span>
+                                       </span>
                                      </label>
                                  </div>
-                                 <br>
-                                <small style="float: left;margin-top: 10px;">
-                                    {% for course in preference.courses %}
-                                    {% if loop.index < 5%}
-
-                                    {{ course.name }}
-
-                                    {% endif %}
-                                        <!-- {% if not loop.last  %}
-                                          {{ course.name }},
-                                        {% else %}
-                                           {{ course.name }}
-                                        {% endif %} -->
-
-                                    {% endfor %}
-
-                                    etc..</small>
-                                 
                                 </div>
                               </div>
                               {% endfor %}
 
-                              
+
                              </div>
-                             <div class="form-group mb-20">
+                             <div class="form-group mb-20 preference-actions">
                                  <button type="button" id="pref_submit_btn" class="btn-md btn-theme btn-block">Submit
 								 <i class="fa fa-arrow-circle-right float-right" aria-hidden="true" style="margin-top: 2px;"></i></button>
                              </div>
-                            
+
                      </div>
                  </div>
              </div>
@@ -61,4 +65,4 @@
 
 
  {% endblock %}
- 
+

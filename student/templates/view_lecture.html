@@ -1,34 +1,47 @@
  {% extends "student_dashboard_base.html" %}
          {% block content %}
 
-         <div class="sa4d25">
+         <div class="sa4d25 dashboard-shell">
             <div class="container-fluid">
+               <div class="dashboard-page-head">
+                  <div>
+                     <div class="dashboard-page-kicker">Lecture Player</div>
+                     <h1 class="dashboard-page-title">{{ c_name }}</h1>
+                     <p class="dashboard-page-copy">
+                        Watch topic-wise lectures and move between classes from the
+                        playlist on the right without losing context.
+                     </p>
+                  </div>
+                  <div class="dashboard-page-badges">
+                     <span class="dashboard-page-badge">{{ t_name }}</span>
+                     <span class="dashboard-page-badge">{{ cc_lectures|length }} lectures in this topic</span>
+                  </div>
+               </div>
 
                <div class="row">
                   <div class="col-12">
                      <div class="all_msg_bg">
                         <div class="row no-gutters">
                             <div class="col-xl-8 col-lg-7 col-md-12">
-                              <div class="chatbox_right">
+                              <div class="chatbox_right dashboard-player-shell">
                                  <div class="chat_header">
                                     <div class="user-status">
                                        <div class="user">
                                           <img src="{{icon_image}}" class="catg" alt="">
                                        </div>
-                                       <p class="user-status-title"><span class="bold">{{c_name}}: <span id="new_title">{{ cc_lectures[0].title }}</span></span></p>
-                                       <p class="user-status-tag online">Lecture :  </p>
-                                       <p class="user-status-tag online">{{c_name}} </p>
-                                       <p class="user-status-tag online">{{t_name}} </p>
+                                       <div class="dashboard-player-meta">
+                                          <p class="dashboard-player-title">{{c_name}}: <span id="new_title">{{ cc_lectures[0].title }}</span></p>
+                                          <div class="dashboard-player-tags">
+                                             <span class="dashboard-player-tag">Lecture Player</span>
+                                             <span class="dashboard-player-tag">{{c_name}}</span>
+                                             <span class="dashboard-player-tag">{{t_name}}</span>
+                                          </div>
+                                       </div>
                                     </div>
                                  </div>
                                  <div class="messages-line simplebar-content-wrapper2 scrollstyle_4">
-                                     <div style="position: relative; padding-top: 56.25%;">
-                                       
-
-                                       <iframe id="new_url" src="{{ cc_lectures[0].web_video_url }}" loading="lazy" style="border: none; position: absolute; top: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; encrypted-media; picture-in-picture;" allowfullscreen="true"></iframe>
-                                    
-
-
+                                     <div class="media-frame-16x9">
+                                       <iframe id="new_url" src="{{ cc_lectures[0].web_video_url }}" loading="lazy" allow="accelerometer; gyroscope; encrypted-media; picture-in-picture;" allowfullscreen="true"></iframe>
                                     </div>
                                 
                                     </div>

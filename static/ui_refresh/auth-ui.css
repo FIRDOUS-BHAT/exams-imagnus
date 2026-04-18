@@ -1,0 +1,1323 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap");
+
+body.imagnus-auth-ui {
+  --auth-bg: #07111f;
+  --auth-panel: rgba(12, 23, 40, 0.94);
+  --auth-panel-soft: rgba(255, 255, 255, 0.04);
+  --auth-border: rgba(148, 163, 184, 0.18);
+  --auth-text: #edf3fb;
+  --auth-muted: #95abc4;
+  --auth-accent: #2ea7ff;
+  --auth-shadow: 0 28px 70px rgba(0, 8, 20, 0.44);
+  background:
+    radial-gradient(circle at top left, rgba(46, 167, 255, 0.16), transparent 34%),
+    radial-gradient(circle at bottom right, rgba(38, 198, 180, 0.12), transparent 30%),
+    linear-gradient(180deg, #07111f 0%, #0a1728 100%) !important;
+  color: var(--auth-text);
+  font-family: "Inter", sans-serif !important;
+}
+
+body.imagnus-auth-ui::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.026) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+body.imagnus-auth-ui .login-14 {
+  position: relative;
+  z-index: 1;
+}
+
+body.imagnus-auth-ui .page_loader {
+  background: var(--auth-bg) !important;
+}
+
+body.imagnus-auth-ui .login-14 .row.login-box,
+body.imagnus-auth-ui .login-14 .login-box {
+  background: linear-gradient(180deg, rgba(12, 23, 40, 0.65), rgba(9, 19, 33, 0.75)) !important;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--auth-border) !important;
+  border-radius: 40px !important;
+  box-shadow: 0 32px 80px rgba(0, 8, 20, 0.6) !important;
+  overflow: hidden;
+  position: relative;
+}
+
+body.imagnus-auth-ui .login-14 .bg-color-16 {
+  background: transparent !important;
+}
+
+body.imagnus-auth-ui .form-section h3 {
+  color: var(--auth-text) !important;
+  font-family: "Space Grotesk", sans-serif !important;
+  font-size: clamp(2rem, 3vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+body.imagnus-auth-ui .form-section h3::after {
+  content: none !important;
+}
+
+body.imagnus-auth-ui .form-check-label,
+body.imagnus-auth-ui p.text,
+body.imagnus-auth-ui small {
+  color: var(--auth-muted) !important;
+}
+
+body.imagnus-auth-ui .btn-theme,
+body.imagnus-auth-ui .link-btn {
+  min-height: 52px;
+}
+
+body.imagnus-auth-ui .auth-page-intro {
+  margin-bottom: 26px;
+}
+
+body.imagnus-auth-ui .auth-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  background: rgba(46, 167, 255, 0.12);
+  border: 1px solid rgba(46, 167, 255, 0.2);
+  color: var(--auth-accent);
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  margin-bottom: 16px;
+  padding: 8px 14px;
+  text-transform: uppercase;
+}
+
+body.imagnus-auth-ui .auth-copy {
+  color: var(--auth-muted) !important;
+  font-size: 0.96rem;
+  line-height: 1.75;
+  margin: 10px 0 0;
+  max-width: 440px;
+}
+
+body.imagnus-auth-ui .preference-grid {
+  display: grid;
+  gap: 14px;
+}
+
+body.imagnus-auth-ui .preference-choice-card {
+  background: var(--auth-panel-soft);
+  border: 1px solid var(--auth-border);
+  border-radius: 20px;
+  padding: 18px 20px;
+  transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
+}
+
+body.imagnus-auth-ui .preference-choice-card:hover {
+  border-color: rgba(46, 167, 255, 0.34);
+  box-shadow: 0 18px 36px rgba(0, 8, 20, 0.24);
+  transform: translateY(-2px);
+}
+
+body.imagnus-auth-ui .preference-choice-label {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin: 0;
+}
+
+body.imagnus-auth-ui .preference-choice-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+body.imagnus-auth-ui .preference-choice-heading {
+  color: var(--auth-text) !important;
+  font-family: "Space Grotesk", sans-serif !important;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+body.imagnus-auth-ui .preference-choice-meta {
+  color: var(--auth-muted) !important;
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+body.imagnus-auth-ui .preference-choice-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+body.imagnus-auth-ui .preference-choice-pill {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  color: var(--auth-muted) !important;
+  display: inline-flex;
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 7px 12px;
+}
+
+body.imagnus-auth-ui .preference-choice-card .form-check-input {
+  accent-color: var(--auth-accent);
+  flex: 0 0 18px;
+  height: 18px;
+  margin-top: 4px;
+  width: 18px;
+}
+
+body.imagnus-auth-ui .preference-actions {
+  margin-top: 20px;
+}
+
+body.imagnus-auth-ui #pref_submit_btn {
+  align-items: center;
+  display: inline-flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+@media (max-width: 991px) {
+  body.imagnus-auth-ui .preference-choice-label {
+    gap: 12px;
+  }
+}
+
+body.imagnus-auth-ui .auth-back-link {
+  align-items: center;
+  background: rgba(7, 17, 31, 0.68);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  color: var(--auth-muted) !important;
+  display: inline-flex;
+  gap: 10px;
+  left: 24px;
+  padding: 10px 16px;
+  position: fixed;
+  text-decoration: none !important;
+  top: 20px;
+  transition: border-color 0.24s ease, background 0.24s ease, color 0.24s ease, transform 0.24s ease;
+  z-index: 3;
+}
+
+body.imagnus-auth-ui .auth-back-link:hover {
+  background: rgba(46, 167, 255, 0.12);
+  border-color: rgba(46, 167, 255, 0.22);
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+
+body.imagnus-auth-ui .login-14 {
+  align-items: center !important;
+  display: flex !important;
+  min-height: 100vh;
+  padding: 56px 20px 36px !important;
+}
+
+body.imagnus-auth-ui .login-14 .container {
+  max-width: 1180px;
+}
+
+body.imagnus-auth-ui .login-14 .row.login-box,
+body.imagnus-auth-ui .login-14 .login-box {
+  align-items: stretch;
+  max-width: 1160px !important;
+  min-height: 680px !important;
+}
+
+body.imagnus-auth-ui .login-14 .bg-img {
+  background:
+    linear-gradient(160deg, rgba(11, 24, 40, 0.2), rgba(11, 24, 40, 0.7)),
+    radial-gradient(circle at top left, rgba(46, 167, 255, 0.3), transparent 40%),
+    radial-gradient(circle at bottom right, rgba(124, 58, 237, 0.25), transparent 40%) !important;
+  background-size: 200% 200%;
+  animation: gradientShift 10s ease infinite;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  min-height: 100%;
+  position: relative;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+body.imagnus-auth-ui .login-14 .info {
+  display: flex;
+  flex: 1 1 auto;
+}
+
+body.imagnus-auth-ui .auth-showcase {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 30px;
+  justify-content: center;
+  min-height: 100%;
+  padding: 56px 48px;
+}
+
+body.imagnus-auth-ui .auth-switcher {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+body.imagnus-auth-ui .login-14 .btn-section,
+body.imagnus-auth-ui .auth-switcher-inline {
+  display: inline-flex !important;
+  float: none !important;
+  margin-bottom: 2px;
+  position: static !important;
+  right: auto !important;
+  top: auto !important;
+  width: fit-content;
+}
+
+body.imagnus-auth-ui .login-14 .link-btn {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: none !important;
+  color: var(--auth-text) !important;
+  display: inline-flex !important;
+  gap: 8px;
+  justify-content: center;
+  min-width: 152px;
+  padding: 13px 18px !important;
+}
+
+body.imagnus-auth-ui .login-14 .link-btn:hover,
+body.imagnus-auth-ui .login-14 .link-btn.active,
+body.imagnus-auth-ui .login-14 .link-btn.default-bg {
+  background: rgba(46, 167, 255, 0.14) !important;
+  border-color: rgba(46, 167, 255, 0.24) !important;
+  color: #ffffff !important;
+}
+
+body.imagnus-auth-ui .auth-showcase-copy {
+  max-width: 480px;
+  padding: 0;
+}
+
+body.imagnus-auth-ui .auth-showcase-title {
+  color: var(--auth-text) !important;
+  font-family: "Space Grotesk", sans-serif !important;
+  font-size: clamp(2.2rem, 3.8vw, 3.55rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.04;
+  margin: 0 0 16px;
+  max-width: 11ch;
+  text-wrap: balance;
+}
+
+body.imagnus-auth-ui .auth-showcase-title span {
+  color: #ffffff;
+  display: inline;
+}
+
+body.imagnus-auth-ui .auth-showcase-meta {
+  color: var(--auth-muted) !important;
+  font-size: 0.98rem;
+  line-height: 1.82;
+  margin: 0;
+  max-width: 420px;
+}
+
+body.imagnus-auth-ui .auth-benefit-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+body.imagnus-auth-ui .auth-benefit-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 22px;
+  padding: 18px 18px 16px;
+  box-shadow: 0 18px 40px rgba(0, 8, 20, 0.16);
+  transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
+}
+
+body.imagnus-auth-ui .auth-benefit-card:hover {
+  border-color: rgba(46, 167, 255, 0.22);
+  box-shadow: 0 24px 54px rgba(0, 8, 20, 0.24);
+  transform: translateY(-2px);
+}
+
+body.imagnus-auth-ui .auth-benefit-label {
+  color: var(--auth-text) !important;
+  display: block;
+  font-family: "Space Grotesk", sans-serif !important;
+  font-size: 0.98rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+body.imagnus-auth-ui .auth-benefit-card p {
+  color: var(--auth-muted) !important;
+  font-size: 0.88rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+body.imagnus-auth-ui .login-14 .bg-color-16 {
+  align-items: center;
+  display: flex !important;
+  padding: 52px 44px !important;
+}
+
+body.imagnus-auth-ui .login-inner-form {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 26px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  padding: 26px 28px 28px;
+  width: 100%;
+}
+
+body.imagnus-auth-ui .form-section {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 26px;
+  justify-content: center;
+  width: 100%;
+}
+
+body.imagnus-auth-ui .form-section::before {
+  display: none !important;
+}
+
+body.imagnus-auth-ui .auth-page-intro {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 0;
+}
+
+body.imagnus-auth-ui .auth-form-grid {
+  display: grid;
+  gap: 20px;
+}
+
+body.imagnus-auth-ui .auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+body.imagnus-auth-ui .auth-field-label {
+  color: var(--auth-text) !important;
+  font-size: 0.84rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+body.imagnus-auth-ui .auth-field-helper {
+  color: var(--auth-muted) !important;
+  font-size: 0.82rem;
+  line-height: 1.65;
+  margin: 0;
+}
+
+body.imagnus-auth-ui .login-14 .login-inner-form::before {
+  content: none !important;
+  display: none !important;
+}
+
+body.imagnus-auth-ui .login-14 .form-group {
+  margin-bottom: 0 !important;
+}
+
+body.imagnus-auth-ui .login-14 .form-box {
+  position: relative;
+}
+
+body.imagnus-auth-ui .login-14 input[type="tel"],
+body.imagnus-auth-ui .login-14 input[type="password"],
+body.imagnus-auth-ui .login-14 input[type="text"],
+body.imagnus-auth-ui .login-14 input[type="email"],
+body.imagnus-auth-ui .login-14 input.input-text,
+body.imagnus-auth-ui .login-14 .form-box input {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid var(--auth-border) !important;
+  border-radius: 16px !important;
+  color: var(--auth-text) !important;
+  min-height: 54px;
+  padding: 14px 48px 14px 16px !important;
+}
+
+body.imagnus-auth-ui .login-14 input:focus,
+body.imagnus-auth-ui .login-14 .form-box input:focus {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(46, 167, 255, 0.34) !important;
+  box-shadow: 0 0 0 4px rgba(46, 167, 255, 0.14) !important;
+}
+
+body.imagnus-auth-ui .login-14 .form-box i.right-icon,
+body.imagnus-auth-ui .login-14 .form-box .flaticon-password {
+  color: #7c93af !important;
+  font-size: 1rem;
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+body.imagnus-auth-ui .auth-inline-row {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+body.imagnus-auth-ui .auth-inline-row .checkbox {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin: 0 !important;
+  text-align: left !important;
+  width: 100%;
+}
+
+body.imagnus-auth-ui .auth-inline-row .checkbox-theme {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  margin: 0;
+}
+
+body.imagnus-auth-ui .auth-inline-row .form-check-input {
+  margin-top: 0;
+}
+
+body.imagnus-auth-ui .auth-inline-row .form-check-label {
+  color: var(--auth-muted) !important;
+  font-size: 0.84rem !important;
+  line-height: 1.6;
+}
+
+body.imagnus-auth-ui .login-14 #forgot_password,
+body.imagnus-auth-ui .auth-inline-row a {
+  color: var(--auth-accent) !important;
+  cursor: pointer;
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+}
+
+body.imagnus-auth-ui .login-14 #forgot_password:hover,
+body.imagnus-auth-ui .auth-inline-row a:hover {
+  color: #ffffff !important;
+}
+
+body.imagnus-auth-ui .auth-submit {
+  margin-top: 10px;
+}
+
+body.imagnus-auth-ui .login-14 .btn-theme {
+  width: 100%;
+}
+
+body.imagnus-auth-ui .login-14 p.text {
+  color: var(--auth-muted) !important;
+  margin-top: 18px !important;
+  text-align: left;
+}
+
+body.imagnus-auth-ui .auth-form-state {
+  margin-top: 16px;
+}
+
+body.imagnus-auth-ui .auth-form-state[style*="display: none"] {
+  margin-top: 0;
+}
+
+body.imagnus-auth-ui .auth-form-hint-row {
+  align-items: center;
+  display: flex;
+  gap: 14px;
+  justify-content: space-between;
+}
+
+body.imagnus-auth-ui .auth-form-hint-row .auth-field-helper {
+  flex: 1 1 auto;
+  max-width: 300px;
+}
+
+body.imagnus-auth-ui .auth-form-hint-row #myTimer {
+  color: var(--danger) !important;
+}
+
+body.imagnus-auth-ui .auth-otp-timer {
+  align-items: center;
+  background: rgba(46, 167, 255, 0.12);
+  border: 1px solid rgba(46, 167, 255, 0.16);
+  border-radius: 999px;
+  color: var(--auth-accent) !important;
+  display: inline-flex;
+  font-family: inherit;
+  font-weight: 600;
+  justify-content: center;
+  margin-left: 10px;
+  min-width: 36px;
+  padding: 4px 8px;
+}
+
+body.imagnus-auth-ui .auth-shell-solo {
+  max-width: 560px;
+}
+
+body.imagnus-auth-ui .auth-input-disabled {
+  background: rgba(255, 255, 255, 0.025) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: #9fb2c8 !important;
+  cursor: not-allowed;
+}
+
+body.imagnus-auth-ui .auth-otp-pending {
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+@media (max-width: 1199px) {
+  body.imagnus-auth-ui .auth-showcase {
+    padding: 44px 36px;
+  }
+
+  body.imagnus-auth-ui .auth-benefit-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 991px) {
+  body.imagnus-auth-ui .login-14 .row.login-box,
+  body.imagnus-auth-ui .login-14 .login-box {
+    min-height: auto !important;
+  }
+
+  body.imagnus-auth-ui .login-14 .bg-img {
+    border-right: 0;
+    border-bottom: 1px solid var(--auth-border);
+  }
+
+  body.imagnus-auth-ui .auth-showcase {
+    gap: 24px;
+    padding: 36px 28px;
+  }
+
+  body.imagnus-auth-ui .login-14 .bg-color-16 {
+    padding: 36px 28px !important;
+  }
+
+  body.imagnus-auth-ui .auth-showcase-copy {
+    max-width: none;
+  }
+
+  body.imagnus-auth-ui .login-14 .row.login-box,
+  body.imagnus-auth-ui .login-14 .login-box {
+    border-radius: 28px !important;
+  }
+}
+
+@media (max-width: 767px) {
+  body.imagnus-auth-ui .login-14 {
+    padding: 70px 14px 24px !important;
+  }
+
+  body.imagnus-auth-ui .auth-back-link {
+    left: 14px;
+    top: 14px;
+  }
+
+  body.imagnus-auth-ui .auth-switcher,
+  body.imagnus-auth-ui .auth-form-hint-row,
+  body.imagnus-auth-ui .auth-inline-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  body.imagnus-auth-ui .login-14 .btn-section,
+  body.imagnus-auth-ui .auth-page-intro,
+  body.imagnus-auth-ui .auth-switcher-inline {
+    width: 100%;
+  }
+
+  body.imagnus-auth-ui .login-14 .link-btn,
+  body.imagnus-auth-ui .login-14 .btn-theme {
+    width: 100%;
+  }
+
+  body.imagnus-auth-ui .login-inner-form {
+    padding: 22px 20px;
+  }
+
+  body.imagnus-auth-ui .auth-showcase-title {
+    font-size: clamp(2rem, 9vw, 2.7rem);
+    max-width: none;
+  }
+}
+
+/* Login page refinement */
+body.imagnus-auth-ui .auth-back-link--login {
+  backdrop-filter: blur(12px);
+  border-radius: 999px;
+  font-family: "Space Grotesk", sans-serif !important;
+  font-size: 0.86rem;
+  font-weight: 600;
+  left: max(16px, calc(50% - 696px));
+  letter-spacing: 0.01em;
+  padding: 11px 18px;
+  top: 24px;
+}
+
+body.imagnus-auth-ui .auth-back-link--login span {
+  line-height: 1;
+}
+
+body.imagnus-auth-ui .auth-login-layout {
+  padding: 74px 24px 44px !important;
+}
+
+body.imagnus-auth-ui .auth-login-layout .container {
+  max-width: 1420px;
+}
+
+body.imagnus-auth-ui .auth-login-layout .row.login-box,
+body.imagnus-auth-ui .auth-login-layout .login-box {
+  max-width: 1392px !important;
+  min-height: 760px !important;
+}
+
+body.imagnus-auth-ui .auth-login-layout .auth-showcase {
+  gap: 36px;
+  justify-content: flex-start;
+  padding: 64px 56px 60px;
+}
+
+body.imagnus-auth-ui .auth-login-layout .auth-showcase-copy {
+  max-width: 620px;
+}
+
+body.imagnus-auth-ui .auth-login-layout .auth-showcase-title {
+  font-size: clamp(2.55rem, 3.3vw, 4.05rem);
+  line-height: 1.06;
+  margin-bottom: 18px;
+  max-width: 14ch;
+}
+
+body.imagnus-auth-ui .auth-login-layout .auth-showcase-meta {
+  font-size: 1.02rem;
+  line-height: 1.84;
+  max-width: 560px;
+}
+
+body.imagnus-auth-ui .auth-login-layout .auth-benefit-grid {
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: auto;
+}
+
+body.imagnus-auth-ui .auth-login-layout .auth-benefit-card {
+  min-height: 132px;
+  padding: 18px 20px 17px;
+}
+
+body.imagnus-auth-ui .auth-login-layout .auth-benefit-card p {
+  line-height: 1.72;
+}
+
+body.imagnus-auth-ui .auth-login-layout .auth-login-panel {
+  padding: 58px 50px !important;
+}
+
+body.imagnus-auth-ui .auth-login-layout .form-section {
+  gap: 30px;
+  margin: 0 auto;
+  max-width: 560px;
+}
+
+body.imagnus-auth-ui .auth-login-layout .auth-page-intro {
+  gap: 14px;
+}
+
+body.imagnus-auth-ui .auth-login-layout .auth-switcher-inline {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 16px;
+  display: inline-grid !important;
+  grid-template-columns: repeat(2, minmax(144px, 1fr));
+  padding: 4px;
+}
+
+body.imagnus-auth-ui .auth-login-layout .auth-switcher-inline .link-btn {
+  border: 1px solid transparent !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+  min-height: 48px;
+  min-width: 0;
+  padding: 10px 16px !important;
+}
+
+body.imagnus-auth-ui .auth-login-layout .auth-copy {
+  line-height: 1.78;
+  margin-top: 2px;
+  max-width: 520px;
+}
+
+body.imagnus-auth-ui .auth-login-layout .login-inner-form {
+  background: linear-gradient(180deg, rgba(14, 27, 46, 0.8), rgba(9, 20, 35, 0.92));
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 28px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 24px 50px rgba(0, 8, 20, 0.22);
+  padding: 30px;
+}
+
+body.imagnus-auth-ui .auth-login-layout .auth-form-grid {
+  gap: 18px;
+}
+
+body.imagnus-auth-ui .auth-login-layout .auth-field-label {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+}
+
+body.imagnus-auth-ui .auth-login-layout .auth-field-helper {
+  font-size: 0.83rem;
+  line-height: 1.7;
+}
+
+body.imagnus-auth-ui .auth-login-layout .auth-form-hint-row {
+  align-items: flex-start;
+  gap: 12px;
+}
+
+body.imagnus-auth-ui .auth-login-layout .auth-form-hint-row .auth-field-helper {
+  max-width: none;
+}
+
+body.imagnus-auth-ui .auth-login-layout #forgot_password {
+  line-height: 1.35;
+  margin-left: auto;
+  min-width: 96px;
+  text-align: right;
+}
+
+body.imagnus-auth-ui .auth-login-layout .auth-submit {
+  margin-top: 12px;
+}
+
+body.imagnus-auth-ui .auth-login-layout .btn-theme {
+  min-height: 56px;
+}
+
+@media (max-width: 1399px) {
+  body.imagnus-auth-ui .auth-back-link--login {
+    left: 22px;
+  }
+
+  body.imagnus-auth-ui .auth-login-layout .row.login-box,
+  body.imagnus-auth-ui .auth-login-layout .login-box {
+    max-width: 1280px !important;
+    min-height: 724px !important;
+  }
+
+  body.imagnus-auth-ui .auth-login-layout .auth-showcase {
+    padding: 58px 48px 54px;
+  }
+
+  body.imagnus-auth-ui .auth-login-layout .auth-login-panel {
+    padding: 52px 44px !important;
+  }
+
+  body.imagnus-auth-ui .auth-login-layout .auth-showcase-title {
+    font-size: clamp(2.34rem, 3.1vw, 3.62rem);
+  }
+}
+
+@media (max-width: 1199px) {
+  body.imagnus-auth-ui .auth-login-layout {
+    padding-top: 84px !important;
+  }
+
+  body.imagnus-auth-ui .auth-login-layout .row.login-box,
+  body.imagnus-auth-ui .auth-login-layout .login-box {
+    min-height: 698px !important;
+  }
+
+  body.imagnus-auth-ui .auth-login-layout .auth-showcase {
+    padding: 48px 38px 46px;
+  }
+
+  body.imagnus-auth-ui .auth-login-layout .auth-benefit-grid {
+    grid-template-columns: 1fr;
+  }
+
+  body.imagnus-auth-ui .auth-login-layout .auth-benefit-card {
+    min-height: 0;
+  }
+
+  body.imagnus-auth-ui .auth-login-layout .auth-login-panel {
+    padding: 44px 36px !important;
+  }
+}
+
+@media (max-width: 991px) {
+  body.imagnus-auth-ui .auth-login-layout {
+    padding: 82px 18px 26px !important;
+  }
+
+  body.imagnus-auth-ui .auth-login-layout .auth-showcase {
+    gap: 24px;
+    padding: 36px 30px;
+  }
+
+  body.imagnus-auth-ui .auth-login-layout .auth-showcase-title {
+    max-width: 16ch;
+  }
+
+  body.imagnus-auth-ui .auth-login-layout .auth-login-panel {
+    padding: 36px 30px !important;
+  }
+
+  body.imagnus-auth-ui .auth-login-layout .form-section {
+    max-width: none;
+  }
+}
+
+@media (max-width: 767px) {
+  body.imagnus-auth-ui .auth-back-link--login {
+    left: 12px;
+    top: 12px;
+  }
+
+  body.imagnus-auth-ui .auth-login-layout {
+    padding: 66px 12px 22px !important;
+  }
+
+  body.imagnus-auth-ui .auth-login-layout .auth-showcase {
+    padding: 28px 22px;
+  }
+
+  body.imagnus-auth-ui .auth-login-layout .auth-showcase-title {
+    font-size: clamp(2.1rem, 9vw, 2.95rem);
+    max-width: none;
+  }
+
+  body.imagnus-auth-ui .auth-login-layout .auth-login-panel {
+    padding: 28px 22px !important;
+  }
+
+  body.imagnus-auth-ui .auth-login-layout .auth-switcher-inline {
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+
+  body.imagnus-auth-ui .auth-login-layout .login-inner-form {
+    border-radius: 24px;
+    padding: 24px 20px;
+  }
+
+  body.imagnus-auth-ui .auth-login-layout .auth-form-hint-row {
+    align-items: stretch;
+  }
+
+  body.imagnus-auth-ui .auth-login-layout #forgot_password {
+    min-width: 0;
+    text-align: left;
+  }
+}
+
+/* New Enhancements */
+body.imagnus-auth-ui .auth-showcase-visual {
+  margin-bottom: 24px;
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+body.imagnus-auth-ui .auth-kicker-shimmer {
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(46, 167, 255, 0.4);
+  box-shadow: 0 0 12px rgba(46, 167, 255, 0.2);
+}
+
+body.imagnus-auth-ui .auth-kicker-shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  100% { left: 200%; }
+}
+
+body.imagnus-auth-ui .auth-feature-chips {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+body.imagnus-auth-ui .auth-chip {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--auth-text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+body.imagnus-auth-ui .auth-chip i {
+  color: var(--auth-accent);
+}
+
+body.imagnus-auth-ui .auth-chip:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(46, 167, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+body.imagnus-auth-ui .auth-brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+body.imagnus-auth-ui .auth-brand-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #2ea7ff, #7c3aed);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 12px rgba(46, 167, 255, 0.3);
+}
+
+body.imagnus-auth-ui .auth-brand-logo span {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+
+body.imagnus-auth-ui .auth-switcher-pill {
+  display: flex;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 99px;
+  padding: 4px;
+  position: relative;
+  width: fit-content;
+  margin-bottom: 16px;
+}
+
+body.imagnus-auth-ui .pill-tab {
+  padding: 10px 24px;
+  border-radius: 99px;
+  color: var(--auth-muted);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none !important;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+  transition: color 0.3s ease;
+  outline: none !important;
+}
+
+body.imagnus-auth-ui .pill-tab.active {
+  color: #fff;
+}
+
+body.imagnus-auth-ui .pill-indicator {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  background: linear-gradient(135deg, rgba(46, 167, 255, 0.4), rgba(46, 167, 255, 0.15));
+  border: 1px solid rgba(46, 167, 255, 0.4);
+  border-radius: 99px;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+  box-shadow: 0 4px 12px rgba(46, 167, 255, 0.2);
+}
+
+body.imagnus-auth-ui .login-14 .auth-field-floating .form-box {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+body.imagnus-auth-ui .login-14 .auth-field-floating .left-icon {
+  position: absolute !important;
+  left: 18px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  color: #7c93af !important;
+  font-size: 1.15rem !important;
+  z-index: 10 !important;
+  width: 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  pointer-events: none !important;
+  transition: color 0.2s ease !important;
+}
+
+body.imagnus-auth-ui .login-14 .auth-field-floating .float-input {
+  padding: 26px 16px 6px 48px !important;
+  text-align: left !important;
+  min-height: 60px !important;
+  z-index: 1 !important;
+}
+
+/* Floating label state: Top when focused or has content */
+body.imagnus-auth-ui .login-14 .auth-field-floating .float-input:focus ~ .float-label,
+body.imagnus-auth-ui .login-14 .auth-field-floating .float-input:not(:placeholder-shown) ~ .float-label,
+body.imagnus-auth-ui .login-14 .auth-field-floating .float-input:-webkit-autofill ~ .float-label,
+body.imagnus-auth-ui .login-14 .auth-field-floating .float-input:valid ~ .float-label {
+  top: 6px !important;
+  transform: translateY(0) !important;
+  font-size: 0.7rem !important;
+  font-weight: 700 !important;
+  color: var(--auth-accent) !important;
+  opacity: 1 !important;
+}
+
+body.imagnus-auth-ui .login-14 .auth-field-floating .float-input:focus ~ .left-icon {
+  color: var(--auth-accent) !important;
+}
+
+/* Initial middle state */
+body.imagnus-auth-ui .login-14 .auth-field-floating .float-label {
+  position: absolute !important;
+  left: 48px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  color: var(--auth-muted) !important;
+  font-size: 0.95rem !important;
+  pointer-events: none !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  z-index: 3 !important;
+  margin: 0 !important;
+  opacity: 0.8;
+}
+
+
+
+body.imagnus-auth-ui .subtle-forgot-link {
+  color: var(--auth-muted) !important;
+  font-size: 0.85rem;
+  text-decoration: underline !important;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease;
+}
+
+body.imagnus-auth-ui .subtle-forgot-link:hover {
+  color: var(--auth-accent) !important;
+}
+
+body.imagnus-auth-ui .btn-shimmer {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #2ea7ff, #1d8ee6) !important;
+  border: none !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+body.imagnus-auth-ui .btn-shimmer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+body.imagnus-auth-ui .btn-shimmer:hover::before {
+  left: 100%;
+}
+
+body.imagnus-auth-ui .loading-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: none;
+}
+
+body.imagnus-auth-ui .btn-shimmer.loading .loading-spinner {
+  display: inline-block;
+}
+
+body.imagnus-auth-ui .btn-shimmer.loading .btn-text,
+body.imagnus-auth-ui .btn-shimmer.loading i {
+  display: none;
+}
+
+body.imagnus-auth-ui .auth-field-helper {
+  display: block;
+  margin-top: 10px;
+  color: var(--auth-muted);
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  body.imagnus-auth-ui .login-14 .bg-color-16 {
+    padding: 32px 24px !important;
+  }
+  
+  body.imagnus-auth-ui .auth-switcher-pill {
+    margin-bottom: 24px;
+  }
+}
+
+body.imagnus-auth-ui .auth-login-panel {
+  position: relative;
+}
+
+body.imagnus-auth-ui .auth-login-panel::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 10%;
+  bottom: 10%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  pointer-events: none;
+}
+
+@media (max-width: 991px) {
+  body.imagnus-auth-ui .auth-login-panel::before {
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    width: auto;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  }
+}
+
+/* Force override browser autofill background */
+/* Force override browser autofill background */
+body.imagnus-auth-ui .login-14 input:-webkit-autofill,
+body.imagnus-auth-ui .login-14 input:-webkit-autofill:hover,
+body.imagnus-auth-ui .login-14 input:-webkit-autofill:focus,
+body.imagnus-auth-ui .login-14 input:-webkit-autofill:active {
+  -webkit-text-fill-color: #ffffff !important;
+  -webkit-box-shadow: 0 0 0 1000px #0e1726 inset !important;
+  box-shadow: 0 0 0 1000px #0e1726 inset !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+  border: 1px solid rgba(46, 167, 255, 0.4) !important;
+}
+
+body.imagnus-auth-ui .login-14 .form-check-input {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  width: 18px !important;
+  height: 18px !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  position: relative !important;
+  vertical-align: middle !important;
+  margin-right: 8px !important;
+  transition: all 0.2s ease !important;
+}
+
+body.imagnus-auth-ui .login-14 .form-check-input:checked {
+  background-color: var(--auth-accent) !important;
+  border-color: var(--auth-accent) !important;
+  box-shadow: 0 0 10px rgba(46, 167, 255, 0.4) !important;
+}
+
+body.imagnus-auth-ui .login-14 .form-check-input:checked::after {
+  content: "\f00c" !important;
+  font-family: "FontAwesome" !important;
+  color: #ffffff !important;
+  font-size: 10px !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  font-weight: 900 !important;
+}
+
+body.imagnus-auth-ui .login-14 .form-check-input:focus {
+  border-color: var(--auth-accent) !important;
+  box-shadow: 0 0 0 3px rgba(46, 167, 255, 0.2) !important;
+  outline: none !important;
+}
+
+/* Kill conflicting legacy theme checkbox styles */
+body.imagnus-auth-ui .login-14 .form-check label::before,
+body.imagnus-auth-ui .login-14 .form-check label::after,
+body.imagnus-auth-ui .login-14 .checkbox-theme label::before,
+body.imagnus-auth-ui .login-14 .checkbox-theme label::after,
+body.imagnus-auth-ui .login-14 .form-check-label::before,
+body.imagnus-auth-ui .login-14 .form-check-label::after {
+  content: none !important;
+  display: none !important;
+}
+
+body.imagnus-auth-ui .login-14 .form-check-label {
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+  cursor: pointer !important;
+}

@@ -131,8 +131,227 @@
         user-select: none; /* Standard syntax */
       }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+      /* ==========================================================
+         I-MAGNUS MODERN DASHBOARD SYSTEM (PREMIUM DARK)
+         ========================================================== */
+      :root {
+        --bg-dark: #0f0f13;
+        --bg-card: #1a1a24;
+        --bg-sidebar: #13131d;
+        --accent-purple: #7c3aed;
+        --accent-purple-glow: rgba(124, 58, 237, 0.4);
+        --text-main: #f1f5f9;
+        --text-muted: #94a3b8;
+        --border-glass: rgba(255, 255, 255, 0.08);
+      }
+
+      body {
+        background-color: var(--bg-dark) !important;
+        color: var(--text-main) !important;
+        font-family: 'Inter', sans-serif !important;
+        background-image:
+          linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px) !important;
+        background-size: 40px 40px !important;
+      }
+
+      /* --- Header --- */
+      .header {
+        background: var(--bg-dark) !important;
+        border-bottom: 1px solid var(--border-glass) !important;
+        box-shadow: none !important;
+      }
+      .header .logo { filter: brightness(0) invert(1); height: 32px !important; }
+      .option_links i, .uil-bars { color: var(--text-muted) !important; }
+      .noti_count { background: var(--accent-purple) !important; }
+
+      /* --- Sidebar --- */
+      .vertical_nav {
+        background: var(--bg-sidebar) !important;
+        border-right: 1px solid var(--border-glass) !important;
+      }
+      .menu--link {
+        color: var(--text-muted) !important;
+        font-family: 'Space Grotesk', sans-serif !important;
+        font-weight: 500 !important;
+        transition: all 0.3s ease !important;
+        border-radius: 12px !important;
+        margin: 4px 12px !important;
+      }
+      .menu--link:hover, .menu--link.active {
+        background: rgba(124, 58, 237, 0.1) !important;
+        color: var(--accent-purple) !important;
+      }
+      .menu--link.active {
+        background: var(--accent-purple) !important;
+        color: #fff !important;
+        box-shadow: 0 4px 15px var(--accent-purple-glow) !important;
+      }
+      .menu--icon { font-size: 20px !important; }
+
+      /* --- Dashboard Content --- */
+      .sa4d25 { background: transparent !important; padding-top: 30px !important; }
+      .st_title, .title {
+        font-family: 'Space Grotesk', sans-serif !important;
+        font-weight: 700 !important;
+        color: var(--text-main) !important;
+        font-size: 24px !important;
+        margin-bottom: 25px !important;
+      }
+      .st_title i, .title i { color: var(--accent-purple) !important; margin-right: 10px; }
+
+      /* --- Dashboard Stats Cards --- */
+      .card_dash {
+        background: var(--bg-card) !important;
+        border: 1px solid var(--border-glass) !important;
+        border-radius: 18px !important;
+        padding: 24px !important;
+        transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+        margin-bottom: 24px !important;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .card_dash:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.4) !important;
+        border-color: rgba(124, 58, 237, 0.3) !important;
+      }
+      .card_dash_left h5 { color: var(--text-muted) !important; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+      .card_dash_left h2 { color: var(--text-main) !important; font-weight: 800; font-family: 'Space Grotesk', sans-serif; font-size: 32px; margin: 10px 0; }
+      .card_dash_right img { width: 50px; opacity: 0.8; }
+
+      /* Stat Badges */
+      .crdbg_1, .crdbg_2, .crdbg_3, .crdbg_4 {
+        background: rgba(255,255,255,0.05) !important;
+        color: var(--text-muted) !important;
+        padding: 4px 12px !important;
+        border-radius: 6px !important;
+        font-size: 11px !important;
+        border: 1px solid var(--border-glass) !important;
+      }
+
+      /* --- Category Blocks & Lists --- */
+      .top_countries {
+        background: var(--bg-card) !important;
+        border: 1px solid var(--border-glass) !important;
+        border-radius: 18px !important;
+        padding: 0 !important;
+        overflow: hidden;
+      }
+      .card_category {
+        padding: 20px !important;
+        background: rgba(255,255,255,0.02) !important;
+        border-bottom: 1px solid var(--border-glass) !important;
+      }
+      .card_category h5 { color: var(--text-main) !important; font-weight: 600; }
+
+      .country_list { padding: 10px 0 !important; }
+      .country_item {
+        padding: 12px 20px !important;
+        border: none !important;
+        transition: background 0.2s;
+      }
+      .country_item:hover { background: rgba(255,255,255,0.03); }
+      .country_item_left span, .country_item_left a {
+        color: var(--text-muted) !important;
+        font-size: 14px;
+        text-decoration: none !important;
+      }
+      .country_item_left i { color: var(--accent-purple) !important; margin-right: 10px; width: 20px; }
+      .country_item_right span { color: var(--accent-purple) !important; font-weight: 600; }
+
+      /* --- Video/Lecture Cards --- */
+      .card_dashh {
+        border-radius: 12px !important;
+        overflow: hidden;
+        border: 1px solid var(--border-glass) !important;
+      }
+      .card_dashh img { transition: transform 0.5s; }
+      .card_dashh:hover img { transform: scale(1.05); }
+
+      /* --- Generic UI Elements --- */
+      .footer {
+        background: var(--bg-dark) !important;
+        border-top: 1px solid var(--border-glass) !important;
+        padding: 30px 0 !important;
+        color: var(--text-muted) !important;
+      }
+      .footer_logo img { filter: brightness(0) invert(1); opacity: 0.5; }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: var(--bg-dark); }
+      ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+      ::-webkit-scrollbar-thumb:hover { background: var(--accent-purple); }
+
+      /* Night mode switch removal - we are always in night mode now */
+      .night_mode_switch__btn { display: none !important; }
+
+      /* Account Dropdown */
+      .dropdown_account {
+        background: var(--bg-card) !important;
+        border: 1px solid var(--border-glass) !important;
+        border-radius: 12px !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+      }
+      .pd_content h6 { color: var(--text-main) !important; }
+      .pd_content span a { color: var(--text-muted) !important; }
+
+      /* --- Additional Dashboard Elements --- */
+      .review_all120 { margin-bottom: 20px !important; border-bottom: 1px solid var(--border-glass) !important; padding-bottom: 10px !important; }
+      .review_item_course_title a { color: var(--text-main) !important; font-family: 'Space Grotesk', sans-serif !important; font-size: 20px !important; font-weight: 600 !important; }
+
+      .clr_brown { color: var(--accent-purple) !important; }
+      .clr_red { color: #f87171 !important; font-size: 13px !important; }
+      .text-danger { color: #f87171 !important; }
+      .card_dash_left h6 { color: var(--text-main) !important; font-weight: 600 !important; font-size: 16px !important; }
+      .center { color: var(--text-muted) !important; text-align: center !important; width: 100% !important; }
+
+      /* Buttons */
+      .upload_btn, .btn-theme, .btn-primary {
+        background: linear-gradient(135deg, var(--accent-purple), #6d28d9) !important;
+        border: none !important;
+        color: #fff !important;
+        border-radius: 8px !important;
+        font-family: 'Space Grotesk', sans-serif !important;
+        font-weight: 600 !important;
+        padding: 10px 20px !important;
+        display: inline-block !important;
+        transition: all 0.3s ease !important;
+      }
+      .upload_btn:hover, .btn-theme:hover {
+        box-shadow: 0 4px 15px var(--accent-purple-glow) !important;
+        transform: translateY(-2px);
+        color: #fff !important;
+      }
+
+      /* Pagination */
+      .pagination { margin-top: 30px !important; justify-content: flex-end !important; }
+      .page-item .page-link {
+        background: var(--bg-card) !important;
+        border: 1px solid var(--border-glass) !important;
+        color: var(--text-muted) !important;
+        margin: 0 4px !important;
+        border-radius: 6px !important;
+        transition: all 0.2s ease !important;
+      }
+      .page-item.active .page-link, .page-item .page-link:hover {
+        background: var(--accent-purple) !important;
+        border-color: var(--accent-purple) !important;
+        color: #fff !important;
+      }
+      .page-item.disabled .page-link { opacity: 0.5; pointer-events: none; }
+      .dataTables_info { color: var(--text-muted) !important; margin-top: 35px !important; }
+
+    </style>
+    <link href="/static/ui_refresh/theme-foundation.css?v=3" rel="stylesheet" />
+    <link href="/static/ui_refresh/student-dashboard-ui.css?v=5" rel="stylesheet" />
   </head>
-  <body>
+  <body class="imagnus-dashboard-ui">
     <noscript>
       <strong>JavaScript is required to view this page.</strong>
       <!-- You can also display a message instead of redirecting -->
@@ -286,7 +505,7 @@
           <ul>
             <li class="menu--item">
               <a
-                href="/student/new-dashboard/"
+                href="/student/dashboard/"
                 class="menu--link {{'active' if active else ''}}"
                 title="Switch Course"
               >

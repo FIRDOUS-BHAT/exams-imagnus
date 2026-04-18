@@ -23,6 +23,8 @@
     />
     <!-- Custom CSS -->
     <link href="/static/courses_assets/css/styles.css" rel="stylesheet" />
+    <link href="/static/ui_refresh/theme-foundation.css?v=3" rel="stylesheet" />
+    <link href="/static/ui_refresh/public-ui.css?v=6" rel="stylesheet" />
 
     <!-- Custom Color Option -->
     <link href="/static/courses_assets/css/colors.css" rel="stylesheet" />
@@ -30,7 +32,7 @@
       var options = {};
     </script>
   </head>
-  <body class="red-skin">
+  <body class="red-skin imagnus-public-ui">
     <!-- ============================================================== -->
     <!-- Preloader - style you can find in spinners.css -->
     <!-- ============================================================== -->
@@ -91,10 +93,10 @@
                     <span class="submenu-indicator"></span
                   ></a>
                   <ul class="nav-dropdown nav-submenu">
-                    <li><a href="/student/new-dashboard/">Dashboard </a></li>
+                    <li><a href="/student/dashboard/">Dashboard </a></li>
                     <li><a href="/student/my-account/">Profile </a></li>
                     <li><a href="/student/my-orders/">Payment History </a></li>
-                    <li style="cursor: pointer">
+                    <li class="nav-cursor-link">
                       <a
                         ><form id="logout_form" action="/logout/" method="post">
                           <span
@@ -153,7 +155,7 @@
               <img
                 src="/static/courses_assets/img/home-promo.png"
                 alt="imagnus academy online coaching classes"
-                style="height: 270px"
+                class="newsletter-art"
               />
             </div>
           </div>
@@ -169,7 +171,7 @@
               <div class="col-lg-3 col-md-3">
                 <div class="footer-widget">
                   <div class="logo">
-                    <h2 style="color: #fff">I-Magnus</h2>
+                    <h2 class="footer-brand-mark">I-Magnus</h2>
                   </div>
                   <div class="footer-add">
                     <ul>

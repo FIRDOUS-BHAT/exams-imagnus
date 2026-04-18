@@ -319,114 +319,69 @@ async def my_account(request: Request, user: str = Depends(get_current_user)):
         )
 
 
-@router.get("/student/new-dashboard/", responses={404: {"model": HTTPNotFoundError}})
+@router.get("/student/dashboard/", responses={404: {"model": HTTPNotFoundError}})
 async def student_dashboard(request: Request, user=Depends(get_current_user)):
     try:
-
-        course_exist = await PaymentRecords.exists(student__id=user)
-        course_count = 0
-        std_m_count = 0
-        test_series_count = 0
         tz = pytz.timezone("Asia/Kolkata")
         now = datetime.now(tz)
 
-        if course_exist:
-            course_count = await PaymentRecords.filter(student__id=user).count()
-            # subscriptions = await StudentChoice_Pydantic.from_queryset(
-            #     StudentChoices.filter(student__id=user, expiry_date__gte=now)
-            # )
-            subscriptions = await StudentChoices.filter(
-                student__id=user, expiry_date__gte=now, payment__payment_status=2
-            ).values(
-                subscription_id="subscription__id",
-                web_icon="course__web_icon",
-                preference_name="course__preference__name",
-                course_name="course__name",
-                plan_price="subscription__plan_price",
-                course_id="course__id",
-                payment_status="payment__payment_status",
-            )
-        else:
-            subscriptions = None
-        std_m_exist = await StudyMaterialOrderInstance.exists(
-            student__id=user, package_mode=1
+        subscriptions = await StudentChoices.filter(
+            student__id=user,
+            expiry_date__gte=now,
+            payment__payment_status=2,
+            is_active=True,
+        ).values(
+            subscription_id="subscription__id",
+            web_icon="course__web_icon",
+            preference_name="course__preference__name",
+            course_name="course__name",
+            plan_price="subscription__plan_price",
+            course_id="course__id",
+            payment_status="payment__payment_status",
         )
-        if await StudyMaterialOrderInstance.exists(student__id=user, package_mode=1):
-            std_m_count = await StudyMaterialOrderInstance.filter(
-                student__id=user
-            ).count()
-            # std_m = await StudyMaterialOrderInstance_Pydantic.from_queryset(
-            #     StudyMaterialOrderInstance.filter(student__id=user)
-            # )
-            std_m = await StudyMaterialOrderItems.filter(
-                order__student__id=user
-            ).values(
-                web_icon="item_id__web_icon",
-                course_title="item_id__name",
-                discount_price="item_id__discount_price",
-            )
 
-        elif await StudyMaterialOrderInstance.exists(student__id=user, package_mode=2):
-            std_m_count = await StudyMaterialOrderInstance.filter(
-                student__id=user
-            ).count()
-            # std_m = await StudyMaterialOrderInstance_Pydantic.from_queryset(
-            #     StudyMaterialOrderInstance.filter(student__id=user)
-            # )
-            std_m = await StudyMaterialOrderItems.filter(
-                order__student__id=user
-            ).values(
-                web_icon="item_id__web_icon",
-                course_title="item_id__name",
-                discount_price="item_id__discount_price",
-            )
+        std_m = await StudyMaterialOrderItems.filter(
+            order__student__id=user,
+            order__payment_status=2,
+        ).values(
+            id="item_id__id",
+            web_icon="item_id__web_icon",
+            course_title="item_id__name",
+            discount_price="item_id__discount_price",
+        )
 
-        else:
-            std_m = None
-        test_series = await TestSeriesOrders.exists(student__id=user)
-        if test_series:
-            test_series_count = await TestSeriesOrders.filter(student__id=user).count()
-            testseries = await TestSeriesOrders.filter(student__id=user).values(
-                "razorpay_order_id",
-                "razorpay_payment_id",
-                "bill_amount",
-                "created_at",
-                student_fullname="student__fullname",
-                student_mobile="student__mobile",
-                test_series_course_preference_name="test_series__course__preference__name",
-                test_series_course_name="test_series__course__name",
-                test_series_web_icon="test_series__web_icon",
-            )
+        testseries = await TestSeriesOrders.filter(
+            student__id=user,
+            payment_status=2,
+        ).values(
+            "razorpay_order_id",
+            "razorpay_payment_id",
+            "bill_amount",
+            "created_at",
+            student_fullname="student__fullname",
+            student_mobile="student__mobile",
+            test_series_course_preference_name="test_series__course__preference__name",
+            test_series_course_name="test_series__course__name",
+            test_series_web_icon="test_series__web_icon",
+        )
 
-        else:
-            testseries = None
+        course_count = len(subscriptions)
+        std_m_count = len(std_m)
+        test_series_count = len(testseries)
         total_order_count = course_count + std_m_count + test_series_count
-        if course_exist or std_m_exist:
-            # return std_m
-            return templates.TemplateResponse(
-                "new-dashboard.html",
-                context={
-                    "request": request,
-                    "total_order_count": total_order_count,
-                    "subscription_count": course_count,
-                    "std_m_count": std_m_count,
-                    "subscriptions": subscriptions,
-                    "std_ms": std_m,
-                    "testseries": testseries,
-                },
-            )
-        else:
-            return templates.TemplateResponse(
-                "new-dashboard.html",
-                context={
-                    "request": request,
-                    "total_order_count": total_order_count,
-                    "subscription_count": course_count,
-                    "std_m_count": std_m_count,
-                    "subscriptions": subscriptions,
-                    "std_ms": std_m,
-                },
-            )
+        return templates.TemplateResponse(
+            "dashboard.html",
+            context={
+                "request": request,
+                "total_order_count": total_order_count,
+                "subscription_count": course_count,
+                "std_m_count": std_m_count,
+                "test_series_count": test_series_count,
+                "subscriptions": subscriptions,
+                "std_ms": std_m,
+                "testseries": testseries,
+            },
+        )
     except Exception as ex:
 
         # return JSONResponse({"status": False, "message": str(ex)}, status_code=500)
@@ -908,7 +863,7 @@ async def confirm_order(request: Request, user=Depends(get_current_user)):
             resp = JSONResponse(
                 {
                     "status": True,
-                    "redirectUrl": "/student/new-dashboard/",
+                    "redirectUrl": "/student/dashboard/",
                     "message": "Order confirmed",
                 },
                 status_code=200,

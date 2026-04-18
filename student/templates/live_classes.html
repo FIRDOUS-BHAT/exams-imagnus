@@ -3,37 +3,68 @@
 
 
 
-         <div class="sa4d25">
+         <div class="sa4d25 dashboard-shell">
             <div class="container-fluid">
-               <div class="row">
-                  <div class="col-lg-12 title-icon">
-                     <h3 class="title"><i class="uil-telescope"></i>Live Classes </h3>
+               <div class="dashboard-page-head">
+                  <div>
+                     <div class="dashboard-page-kicker">Live Learning</div>
+                     <h1 class="dashboard-page-title">Live Classes</h1>
+                     <p class="dashboard-page-copy">
+                        Join upcoming and ongoing sessions with your instructors in a
+                        focused classroom view.
+                     </p>
+                  </div>
+                  <div class="dashboard-page-badges">
+                     <span class="dashboard-page-badge">
+                        {{ live_classes|length if live_classes else 0 }} available sessions
+                     </span>
                   </div>
                </div>
-               <div class="row">
-               {% if live_classes %}
-                {% for class in live_classes %}
-
-                  <div class="col-xl-4 col-lg-6 col-md-6">
-                    <a href="/student/view_live_lecture/{{cid}}/{{ class.id }}/">
-                     <div class="card_dashh">
-                           <img src="{{class.thumbnail}}" class="actives">
+               <div class="dashboard-content-card dashboard-section-card">
+                  <div class="review_all120">
+                     <div class="review_item_course_title">
+                        <a>Available live sessions</a>
                      </div>
-                     <div class="card_dash_left mt-10">
-                         <!-- <span class="crdbg_3">Polity</span> Hindi/English -->
-                           <h6 class="mt-10">{{ class.title }} </h6>
-                           <b class="clr_red">Lesson 1 • Started at {{ class.streaming_time }}</b>
-                           <h6 class="mt-20">By: {{ class.instructor.name }}</h6>
-                        </div>
-                    </a>
+                     <div class="dashboard-section-note">
+                        Upcoming and in-progress classes stay here so students can jump into the right session without extra navigation.
+                     </div>
                   </div>
-                  {% endfor %}
+                  <div class="row dashboard-collection-grid">
+                  {% if live_classes %}
+                   {% for class in live_classes %}
 
-               {% else %} 
-               <div class="center">No Live Class Yet.</div>  
-               {% endif %}
+                     <div class="col-xl-4 col-lg-6 col-md-6">
+                       <a
+                         href="/student/view_live_lecture/{{cid}}/{{ class.id }}/"
+                         class="dashboard-link-card dashboard-list-item"
+                       >
+                        <div class="card_dash dashboard-media-card">
+                           <div class="card_dashh">
+                                 <img src="{{class.thumbnail}}" class="actives">
+                           </div>
+                           <div class="card_dash_left">
+                                 <h6>{{ class.title }} </h6>
+                                 <span class="dashboard-item-meta">Lesson 1 • Started at {{ class.streaming_time }}</span>
+                                 <h6 class="dashboard-item-subtitle">By: {{ class.instructor.name }}</h6>
+                              </div>
+                        </div>
+                       </a>
+                     </div>
+                     {% endfor %}
 
-
+                  {% else %}
+                  <div class="col-12">
+                    <div class="dashboard-empty-state">
+                      <div class="dashboard-empty-icon"><i class="uil uil-kayak"></i></div>
+                      <h4>No live class yet</h4>
+                      <p>
+                        Your upcoming live sessions will show up here once your
+                        instructor schedules them for this course.
+                      </p>
+                    </div>
+                  </div>
+                  {% endif %}
+                  </div>
                </div>
                <!-- <div class="row mt-30">
                   <div class="col-lg-12 title-icon">

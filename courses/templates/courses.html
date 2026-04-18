@@ -9,14 +9,14 @@
 
 			 <!-- ============================ Page Title Start================================== -->
 			 <section class="page-title pt-0">
-			 <div class="image-cover ed_detail_head lg theme-ov" style="background:#f4f4f4 url(https://im.indiatimes.in/media/content/2018/Nov/national_exam_1542712309.jpg);" data-overlay="9">
+			 <div class="image-cover ed_detail_head lg theme-ov public-hero-default" data-overlay="9">
 				 <div class="container">
 					<div class="col-lg-12 col-md-12">
 							 <div class="breadcrumbs-wrap">
 								 <h1 class="breadcrumb-title">Courses</h1>
 								 <nav aria-label="breadcrumb">
 									 <ol class="breadcrumb">
-										 <li class="breadcrumb-item"><a href="#" class="text-white">Home </a></li>
+										 <li class="breadcrumb-item"><a href="https://imagnus.in">Home </a></li>
 										 <li class="breadcrumb-item active" aria-current="page">Courses </li>
 									 </ol>
 								 </nav>
@@ -29,77 +29,84 @@
 
 			
 			 <!-- ============================ Full Width Courses  ================================== -->
-			 <section class="pt-0">
+			 <section class="pt-0 public-section-shell">
 				 <div class="container">
-					 <!-- Row -->
-					 <div class="row">	
-						
-						 <div class="col-lg-12 col-md-12 col-sm-12">
-							 <div class="row">
-							    <div class="col-lg-12 col-md-6 section-head style-1 text-center mb-30">
-					               <h6 class="sub-title bgl-primary m-b20 text-primary"> Examinations </h6>
-					               <h4 class="title">Our Special E-Course Examinations</h4>
-				             </div>
-								 <!-- Cource Grid 1 -->
-								 {% for course in courses %}
-								 
-								 <div class="col-lg-4 col-md-6">
-									 <div class="education_block_grid style_2">
-										
-										 <div class="education_block_thumb n-shadow">
-											 <a href="/student/course_details/{{ preference_slug }}/{{ course.slug }}/"><img src="{{ course.web_icon }}" class="img-fluid" alt="" /></a>
-										 </div>
-										
-										<div class="cources_facts">
-											 <ul class="cources_facts_list">
-												 <li class="facts-1">State Govt. Exam </li>
-												 <li class="facts-2">English - Hindi (mixed) </li>
-											 </ul>
-										 </div>
-										
-										 <div class="education_block_body">
-											 <h4 class="bl-title"><a href="/student/course_details/{{ preference_slug }}/{{ course.slug }}/"> {{ course.name }}</a></h4>
-										 </div>
-										
-										 <div class="cources_info">
-											 <div class="cources_info_first">
-{{course.description}}										 </div>
-										 </div>
-										 
-										 <div class="cources_info_style3">
-											 <ul>
-												 {% for category in course.categories %}
-												 {% for topics in category.categories_topics %}
-
-												
-
-												 {% endfor %}
-												 {% endfor %}
-										      <li><i class="ti-control-forward"></i> {{ lec_count }} Lectures </li>
-											  <li><i class="ti-file"></i> 10 - 20 weeks </li>
-										      <li><i class="ti-files"></i> 54 Test Series </li>
-									         </ul>
-										 </div>
-										
-										
-										 <div class="education_block_footer">
-											 <div class="education_block_author">
-												 <div class="foot_lecture"><i class="ti-user"></i> {{ course.enrolled_students }} Student Enrolled </div>
-											 </div>
-											 <div class="lecture">
-											   <a href="/student/course_details/{{ preference_slug }}/{{ course.slug }}/" class="btn btn-primary btn-md">view course</a>
-											 </div>
-										 </div>
-										
-									 </div>	
-								 </div>
-								{% endfor %}
-
-								
+					<div class="public-page-intro">
+						<span class="public-kicker">Exam Programs</span>
+						<h2 class="public-title">Professional course pages for every exam category</h2>
+						<p class="public-subtitle">
+							Explore structured preparation tracks with lecture access, notes, test
+							series, and enrollment-ready course cards in one consistent learning
+							experience.
+						</p>
+						<div class="public-stats">
+							<div class="public-stat">
+								<strong>{{ courses|length }}</strong>
+								<span>Courses available</span>
+							</div>
+							<div class="public-stat">
+								<strong>Live + Recorded</strong>
+								<span>Blended learning model</span>
+							</div>
+							<div class="public-stat">
+								<strong>Structured Prep</strong>
+								<span>Lectures, tests, and notes</span>
+							</div>
+						</div>
+					</div>
+					 <div class="public-panel course-grid-shell">
+						 <div class="course-grid-head">
+							 <div>
+								 <span class="course-card-kicker">Available exam tracks</span>
+								 <h3 class="course-grid-title">Choose a course and move into a structured dark-theme learning flow</h3>
+							 </div>
+							 <p class="course-grid-copy">
+								 Every course below follows the same lecture, notes, and test-series system so students can move between programs without relearning the interface.
+							 </p>
 						 </div>
-					
+
+						 <div class="row course-card-grid">
+							 {% for course in courses %}
+							 <div class="col-lg-4 col-md-6">
+								 <article class="education_block_grid style_2 course-card-grid-item">
+									 <div class="education_block_thumb n-shadow">
+										 <a href="/student/course_details/{{ preference_slug }}/{{ course.slug }}/"><img src="{{ course.web_icon }}" class="img-fluid" alt="" /></a>
+									 </div>
+
+									<div class="cources_facts">
+										 <ul class="cources_facts_list">
+											 <li class="facts-1">State Govt. Exam </li>
+											 <li class="facts-2">English - Hindi (mixed) </li>
+										 </ul>
+									 </div>
+
+									 <div class="education_block_body">
+										 <span class="course-card-kicker">Structured exam prep</span>
+										 <h4 class="bl-title line-clamp-2"><a href="/student/course_details/{{ preference_slug }}/{{ course.slug }}/"> {{ course.name }}</a></h4>
+										 <p class="course-card-description line-clamp-3">{{ course.description }}</p>
+									 </div>
+
+									 <div class="cources_info_style3 course-card-meta">
+										 <ul>
+									      <li><i class="ti-user"></i> {{ course.enrolled_students }} enrolled learners </li>
+										  <li><i class="ti-agenda"></i> {{ course.categories|length }} course modules </li>
+									      <li><i class="ti-control-forward"></i> Live + recorded access </li>
+								         </ul>
+									 </div>
+
+									 <div class="education_block_footer course-card-footer">
+										 <div class="education_block_author">
+											 <div class="foot_lecture"><i class="ti-user"></i> {{ course.enrolled_students }} Student Enrolled </div>
+										 </div>
+										 <div class="lecture">
+										   <a href="/student/course_details/{{ preference_slug }}/{{ course.slug }}/" class="btn btn-primary btn-md">View Course</a>
+										 </div>
+									 </div>
+								 </article>
+							 </div>
+							 {% endfor %}
+						 </div>
 					 </div>
-					 <!-- Row -->
 					
 				 </div>
 			 </section>
@@ -107,4 +114,3 @@
 			
 
 		 {% endblock %}
-

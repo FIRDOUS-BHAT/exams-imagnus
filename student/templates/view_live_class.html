@@ -1,18 +1,34 @@
- {% extends "student_dashboard_base.html" %}
-         {% block content %}
+{% extends "student_dashboard_base.html" %}
+{% block content %}
 
-         <div class="container mt-20">
-            <div class="card" style="padding: 10px;">
-               <div class="row">
-                  <div class="col-md-12">
-                     <div class="card">
-                        <div style="position: relative; padding-top: 56.25%;"><iframe
-                              src="https://www.youtube.com/embed/{{web_url}}"
-                              loading="lazy" style="border: none; position: absolute; top: 0; height: 100%; width: 100%;"
-                              allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
-                              allowfullscreen="true"></iframe></div>
-                     </div>
-                  </div>
-               </div>
+<div class="sa4d25 dashboard-shell">
+  <div class="container-fluid">
+    <div class="dashboard-page-head">
+      <div>
+        <div class="dashboard-page-kicker">Live Classroom</div>
+        <h1 class="dashboard-page-title">Streaming Session</h1>
+        <p class="dashboard-page-copy">
+          Attend the class in a focused full-width player with fewer visual
+          distractions.
+        </p>
+      </div>
+      <div class="dashboard-page-badges">
+        <span class="dashboard-page-badge">Live session</span>
+        <span class="dashboard-page-badge">Classroom view</span>
+      </div>
+    </div>
 
-       {% endblock %}
+    <div class="dashboard-video-shell dashboard-player-shell">
+      <div class="media-frame-16x9">
+        <iframe
+          src="https://www.youtube.com/embed/{{web_url}}"
+          loading="lazy"
+          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+          allowfullscreen="true"
+        ></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

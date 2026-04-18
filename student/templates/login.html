@@ -1,167 +1,290 @@
 {% extends "base.html" %} {% block content %}
 
 <div class="page_loader"></div>
-<a href="https://imagnus.in/"
-  ><img src="/static/credential_assets/img/back.png" class="back mt-20"
-/></a>
+<a href="https://imagnus.in/" class="auth-back-link auth-back-link--login">
+  <i class="fa fa-arrow-left" aria-hidden="true"></i>
+  <span>Back to Home</span>
+</a>
 <!-- Login 14 start -->
-<div class="login-14">
+<div class="login-14 auth-login-layout">
   <div class="container">
     <div class="row login-box">
-      <div class="col-lg-8 col-md-12 bg-img align-self-center">
+      <div class="col-xl-7 col-lg-6 col-md-12 bg-img align-self-center auth-login-hero order-2 order-lg-1">
         <div class="info">
-          <div class="btn-section clearfix">
-            <a href="#" class="link-btn active btn-1 default-bg"
-              >Student Login
-            </a>
-            <div class="clearfix"></div>
-            <a
-              href="/student/registration/?returnURL={{returnURL}}"
-              class="link-btn btn-1"
-              >Register
-            </a>
-            <div class="clearfix"></div>
+          <div class="auth-showcase">
+            <div class="auth-showcase-visual">
+              <svg width="56" height="56" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L2 7l10 5 10-5-10-5z" fill="url(#grad1)"/>
+                <path d="M2 17l10 5 10-5M2 12l10 5 10-5" stroke="url(#grad2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <defs>
+                  <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#2ea7ff" stop-opacity="0.9"/>
+                    <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.9"/>
+                  </linearGradient>
+                  <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#2ea7ff" />
+                    <stop offset="100%" stop-color="#7c3aed" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <div class="auth-showcase-copy">
+              <span class="auth-kicker auth-kicker-shimmer">Learning Command Center</span>
+              <h2 class="auth-showcase-title">
+                Keep every class, note, and mock test in one
+                <span>focused study workspace.</span>
+              </h2>
+              <p class="auth-showcase-meta">
+                Sign in to continue with live classes, recorded lectures,
+                topic-wise notes, and practice tests from the same student hub.
+              </p>
+            </div>
+
+            <div class="auth-feature-chips">
+              <span class="auth-chip"><i class="fa fa-video-camera"></i> Live Classes</span>
+              <span class="auth-chip"><i class="fa fa-pencil-square-o"></i> Mock Tests</span>
+              <span class="auth-chip"><i class="fa fa-book"></i> Notes</span>
+            </div>
           </div>
         </div>
       </div>
-      <div class="col-lg-4 col-md-12 bg-color-16 align-self-center">
+      <div class="col-xl-5 col-lg-6 col-md-12 bg-color-16 align-self-center auth-login-panel order-1 order-lg-2">
         <div class="form-section">
-          <h3 id="login_title">Login</h3>
-          <div class="login-inner-form">
+          <div class="auth-page-intro">
+            <div class="auth-brand-logo">
+              <div class="auth-brand-icon">
+                <i class="fa fa-graduation-cap"></i>
+              </div>
+              <span>I-Magnus</span>
+            </div>
+            <div class="auth-switcher-pill">
+              <button type="button" class="pill-tab active" id="tab_login" onclick="toggleAuth('login')">
+                Student Login
+              </button>
+              <button type="button" class="pill-tab" id="tab_register" onclick="toggleAuth('register')">
+                Register
+              </button>
+              <div class="pill-indicator"></div>
+            </div>
+            <div class="auth-title-wrapper">
+              <h3 id="auth_title">Login</h3>
+              <p class="auth-copy" id="auth_copy">
+                Enter the credentials attached to your student account to continue where you left off.
+              </p>
+            </div>
+          </div>
+          <div class="login-inner-form" id="login_container">
             <form id="login_form" action="/student/secure_login/" method="POST">
-              <div class="form-group form-box">
-                <input
-                  type="tel"
-                  maxlength="10"
-                  id="login_mobile"
-                  name="username"
-                  class="input-text"
-                  placeholder="+91 | Phone Number"
-                  required
-                />
-                <i class="fa fa-mobile"></i>
+              <div class="auth-form-grid">
+                <div class="auth-field auth-field-floating">
+                  <div class="form-group form-box">
+                    <i class="fa fa-phone left-icon"></i>
+                    <input
+                      type="tel"
+                      maxlength="10"
+                      id="login_mobile"
+                      name="username"
+                      class="input-text float-input"
+                      placeholder=" "
+                      required
+                    />
+                    <label class="float-label" for="login_mobile">Phone Number</label>
+                  </div>
+                </div>
+                <input type="hidden" name="return_url" value="{{ returnURL }}" />
+                <div class="auth-field auth-field-floating">
+                  <div class="auth-form-hint-row align-right">
+                    <a id="forgot_password" role="button" class="subtle-forgot-link">Forgot Password?</a>
+                  </div>
+                  <div class="form-group form-box">
+                    <i class="fa fa-lock left-icon"></i>
+                    <input
+                      type="password"
+                      name="password"
+                      id="login_password"
+                      class="input-text float-input"
+                      placeholder=" "
+                      required
+                    />
+                    <label class="float-label" for="login_password">Password</label>
+                  </div>
+                </div>
+                <div class="form-group mb-20 auth-submit">
+                  <button type="submit" class="btn-md btn-theme btn-block btn-shimmer">
+                    <span class="btn-text">Login</span>
+                    <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+                    <div class="loading-spinner"></div>
+                  </button>
+                </div>
               </div>
-              <input type="hidden" name="return_url" value="{{ returnURL }}" />
-              <div class="form-group form-box">
-                <input
-                  type="password"
-                  name="password"
-                  id="login_password"
-                  class="input-text"
-                  placeholder="Enter Password"
-                  required
-                />
-                <i class="flaticon-password"></i>
-              </div>
-              <div class="checkbox clearfix">
-                <!-- <div class="form-check checkbox-theme">
-                                     <input class="form-check-input" type="checkbox" value="" id="rememberMe" />
-                                     <label class="form-check-label" for="rememberMe">
-                                        Remember me
-                                     </label>
-                                 </div> -->
-                <a id="forgot_password" style="cursor: pointer"
-                  >Forgot Password
-                </a>
-              </div>
-              <div class="form-group mb-20">
-                <button type="submit" class="btn-md btn-theme btn-block">
-                  Login
-                  <i
-                    class="fa fa-arrow-circle-right float-right"
-                    aria-hidden="true"
-                    style="margin-top: 2px"
-                  ></i>
-                </button>
-              </div>
-              <!-- <span>Or  <a>login with </a><br>
-					             <a href=""><img src="{{ app_url }}/static/credential_assets/img/g.png" alt=""></a>
-					             <a href=""><img src="{{ app_url }}/static/credential_assets/img/fb.png" alt=""></a>
-							 </span> -->
             </form>
+          </div>
+
+          <div class="login-inner-form" id="register_container" style="display: none;">
+            <form id="register_form" action="/student/register/" method="POST">
+              <div class="auth-form-grid">
+                <div class="auth-field auth-field-floating">
+                  <div class="form-group form-box">
+                    <i class="fa fa-user left-icon"></i>
+                    <input
+                      type="text"
+                      id="register_fullname"
+                      name="fullname"
+                      class="input-text float-input"
+                      placeholder=" "
+                      required
+                    />
+                    <label class="float-label" for="register_fullname">Full Name</label>
+                  </div>
+                </div>
+                <div class="auth-field auth-field-floating">
+                  <div class="form-group form-box">
+                    <i class="fa fa-phone left-icon"></i>
+                    <input
+                      type="tel"
+                      maxlength="10"
+                      id="register_mobile"
+                      name="mobile"
+                      class="input-text float-input"
+                      placeholder=" "
+                      required
+                    />
+                    <label class="float-label" for="register_mobile">Phone Number</label>
+                  </div>
+                </div>
+                <div class="auth-field auth-field-floating">
+                  <div class="form-group form-box">
+                    <i class="fa fa-envelope left-icon"></i>
+                    <input
+                      type="email"
+                      id="register_email"
+                      name="email"
+                      class="input-text float-input"
+                      placeholder=" "
+                      required
+                    />
+                    <label class="float-label" for="register_email">Email Address</label>
+                  </div>
+                </div>
+                <input type="hidden" name="return_url" value="{{ returnURL }}" />
+                <div class="auth-field auth-field-floating">
+                  <div class="form-group form-box">
+                    <i class="fa fa-lock left-icon"></i>
+                    <input
+                      type="password"
+                      name="password"
+                      id="register_password"
+                      class="input-text float-input"
+                      placeholder=" "
+                      required
+                    />
+                    <label class="float-label" for="register_password">Password</label>
+                  </div>
+                  <small class="auth-field-helper">Use at least 6 characters.</small>
+                </div>
+                <div class="auth-inline-row">
+                  <div class="checkbox-theme">
+                    <input class="form-check-input" type="checkbox" id="termsAgree" required />
+                    <label class="form-check-label" for="termsAgree">
+                      I agree to the <a href="https://imagnus.in/terms-conditions" target="_blank">terms of service</a>
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group mb-0 auth-submit">
+                  <button type="submit" class="btn-md btn-theme btn-block btn-shimmer">
+                    <span class="btn-text">Register Account</span>
+                    <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+                    <div class="loading-spinner"></div>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
             <form
               id="otp_form"
+              class="auth-form-state"
               style="display: none; visibility: hidden"
               autocomplete="off"
             >
-              <div class="form-group form-box">
-                <input
-                  type="tel"
-                  maxlength="10"
-                  id="otp_mobile"
-                  class="input-text"
-                  placeholder="Enter 10 digit registered phone number"
-                  value=""
-                  required
-                />
-                <i class="fa fa-mobile"></i>
-              </div>
-              <div
-                class="form-group form-box"
-                id="otp_div"
-                style="display: none; visibility: hidden"
-              >
-                <input
-                  type="password"
-                  id="login_otp"
-                  name="login_otp"
-                  class="input-text"
-                  placeholder="Enter OTP"
-                />
-                <i class="flaticon-password"></i>
-              </div>
-              <div class="form-group">
-                <button
-                  type="button"
-                  id="send_otp"
-                  class="btn-md btn-theme btn-block"
+              <div class="auth-form-grid">
+                <div class="auth-field">
+                  <label class="auth-field-label" for="otp_mobile">Registered Mobile</label>
+                  <div class="form-group form-box">
+                    <input
+                      type="tel"
+                      maxlength="10"
+                      id="otp_mobile"
+                      class="input-text"
+                      placeholder="Enter 10 digit registered phone number"
+                      value=""
+                      required
+                    />
+                    <i class="fa fa-mobile"></i>
+                  </div>
+                </div>
+                <div
+                  class="auth-field"
+                  id="otp_div"
+                  style="display: none; visibility: hidden"
                 >
-                  <span id="resend_otp_text">Send OTP</span>
-                  <i
-                    class="fa fa float-right"
-                    aria-hidden="true"
-                    style="margin-top: 2px"
-                    ><span
-                      id="myTimer"
-                      style="
-                        font-weight: 600;
-                        font-family: inherit;
-                        color: #ed2a26;
-                      "
-                    ></span
-                  ></i>
-                </button>
+                  <label class="auth-field-label" for="login_otp">One Time Password</label>
+                  <div class="form-group form-box">
+                    <input
+                      type="password"
+                      id="login_otp"
+                      name="login_otp"
+                      class="input-text"
+                      placeholder="Enter OTP"
+                    />
+                    <i class="flaticon-password"></i>
+                  </div>
+                </div>
+                <div class="form-group auth-submit">
+                  <button
+                    type="button"
+                    id="send_otp"
+                    class="btn-md btn-theme btn-block"
+                  >
+                    <span id="resend_otp_text">Send OTP</span>
+                    <span id="myTimer" class="auth-otp-timer"></span>
+                  </button>
+                </div>
               </div>
             </form>
             <form
               id="new_password_form"
+              class="auth-form-state"
               style="display: none; visibility: hidden"
               autocomplete="off"
             >
-              <div class="form-group form-box">
-                <input
-                  type="password"
-                  id="new_password"
-                  name="new_password"
-                  class="input-text"
-                  placeholder="Enter New Password"
-                />
-                <input type="hidden" id="reset_password_token" value="" />
-                <i class="flaticon-password"></i>
-              </div>
-              <div class="form-group">
-                <button
-                  type="button"
-                  id="submit_password"
-                  class="btn-md btn-theme btn-block"
-                >
-                  Reset Password
-                  <i
-                    class="fa fa-arrow-circle-right float-right"
-                    aria-hidden="true"
-                    style="margin-top: 8px"
-                  ></i>
-                </button>
+              <div class="auth-form-grid">
+                <div class="auth-field">
+                  <label class="auth-field-label" for="new_password">New Password</label>
+                  <div class="form-group form-box">
+                    <input
+                      type="password"
+                      id="new_password"
+                      name="new_password"
+                      class="input-text"
+                      placeholder="Enter New Password"
+                    />
+                    <input type="hidden" id="reset_password_token" value="" />
+                    <i class="flaticon-password"></i>
+                  </div>
+                  <small class="auth-field-helper">
+                    Choose a password with at least 6 characters.
+                  </small>
+                </div>
+                <div class="form-group auth-submit">
+                  <button
+                    type="button"
+                    id="submit_password"
+                    class="btn-md btn-theme btn-block"
+                  >
+                    Reset Password
+                    <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+                  </button>
+                </div>
               </div>
             </form>
           </div>
@@ -171,4 +294,44 @@
   </div>
 </div>
 <!-- Login 14 end -->
+{% endblock %}
+
+{% block scripts %}
+<script>
+function toggleAuth(type) {
+  const loginBtn = document.getElementById('tab_login');
+  const registerBtn = document.getElementById('tab_register');
+  const loginContainer = document.getElementById('login_container');
+  const registerContainer = document.getElementById('register_container');
+  const title = document.getElementById('auth_title');
+  const copy = document.getElementById('auth_copy');
+  const indicator = document.querySelector('.pill-indicator');
+
+  if (type === 'register') {
+    loginBtn.classList.remove('active');
+    registerBtn.classList.add('active');
+    loginContainer.style.display = 'none';
+    registerContainer.style.display = 'block';
+    indicator.style.transform = 'translateX(100%)';
+    title.innerText = 'Create Account';
+    copy.innerText = 'Set up your student access once and use it across course purchases and live classes.';
+  } else {
+    registerBtn.classList.remove('active');
+    loginBtn.classList.add('active');
+    registerContainer.style.display = 'none';
+    loginContainer.style.display = 'block';
+    indicator.style.transform = 'translateX(0)';
+    title.innerText = 'Login';
+    copy.innerText = 'Enter the credentials attached to your student account to continue where you left off.';
+  }
+}
+
+// Check URL params to default to register if needed
+window.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (window.location.pathname.includes('registration') || urlParams.get('mode') === 'register') {
+    toggleAuth('register');
+  }
+});
+</script>
 {% endblock %}

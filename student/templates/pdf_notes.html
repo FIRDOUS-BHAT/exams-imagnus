@@ -1,24 +1,43 @@
 {% extends "student_dashboard_base.html" %} {% block content %}
 
-<div class="sa4d25">
+<div class="sa4d25 dashboard-shell">
   <div class="container-fluid">
+    <div class="dashboard-page-head">
+      <div>
+        <div class="dashboard-page-kicker">Revision Library</div>
+        <h1 class="dashboard-page-title">PDF Notes</h1>
+        <p class="dashboard-page-copy">
+          Open concise notes organized by topic so revision stays fast and
+          predictable before class or exam time.
+        </p>
+      </div>
+      <div class="dashboard-page-badges">
+        <span class="dashboard-page-badge">{{ data_count }} note groups</span>
+        <span class="dashboard-page-badge">Topic-wise navigation</span>
+      </div>
+    </div>
     {% for each_course_obj in course_cat_obj%}
-    <div class="row">
+    <div class="row dashboard-listing-head">
       <div class="col-lg-12 title-icon">
         <h3 class="title">
           <i class="uil uil-play"></i>{{ each_course_obj.category.name }} - PDF
           Notes
         </h3>
+        <p class="dashboard-listing-copy">
+          Browse revision notes grouped by topic so last-mile preparation stays clean and predictable inside each category.
+        </p>
       </div>
     </div>
 
-    <div class="row">
+    {% if each_course_obj.notes|length %}
+    <div class="row dashboard-collection-grid">
       {% for each_topic in each_course_obj.notes %}
       <div class="col-xl-3 col-lg-6 col-md-6">
         <a
           href="/student/view_notes/{{cid}}/{{ each_topic.topic.id }}/{{ each_course_obj.category.slug }}/{{ each_topic.topic.slug }}/"
+          class="dashboard-link-card"
         >
-          <div class="card_dash activee mb-30">
+          <div class="card_dash activee mb-30 dashboard-topic-card">
             <div class="card_dash_left">
               <h5>
                 <b class="clr_brown">{{ loop.index }}.</b> {{
@@ -34,10 +53,20 @@
 
       {% endfor %}
     </div>
+    {% else %}
+    <div class="dashboard-empty-state">
+      <div class="dashboard-empty-icon"><i class="uil uil-book-alt"></i></div>
+      <h4>No PDF notes available</h4>
+      <p>
+        This category does not have published revision notes yet. Check another
+        category or return later.
+      </p>
+    </div>
+    {% endif %}
 
     {% endfor %}
 
-    <div class="row">
+    <div class="row dashboard-pagination-shell">
       <div class="col-sm-12 col-md-5">
         <div
           class="dataTables_info"

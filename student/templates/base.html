@@ -129,8 +129,58 @@
       type="text/css"
       href="/static/admin/css/js-snackbar.css?v=1.3"
     />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+      body {
+        background: #0f0f13 !important;
+        background-image: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px) !important;
+        background-size: 36px 36px !important;
+        font-family: 'Inter', sans-serif !important;
+        min-height: 100vh;
+      }
+      .page_loader { background: #0f0f13 !important; }
+      .back { filter: brightness(0) invert(1) !important; opacity: .45; position: relative; z-index: 10; }
+      .login-14 { min-height: 100vh; display: flex !important; align-items: center !important; justify-content: center !important; padding: 40px 20px !important; }
+      .login-14 .row.login-box, .login-14 .login-box { background: #1a1a24 !important; border: 1px solid rgba(255,255,255,.08) !important; border-radius: 20px !important; overflow: hidden !important; box-shadow: 0 24px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.04) !important; max-width: 1000px !important; width: 100% !important; min-height: 520px !important; }
+      .login-14 .bg-img { border-radius: 20px 0 0 20px !important; overflow: hidden !important; }
+      .login-14 .bg-color-16 { background: #13131d !important; padding: 48px 44px !important; display: flex !important; flex-direction: column !important; justify-content: center !important; }
+      .login-14 .form-section, .login-14 .form-section h3, .login-14 .login-inner-form { text-align: left !important; }
+      .login-14 .form-section::before { content: '✦ I-MAGNUS ACADEMY'; display: block; font-family: 'Space Grotesk', sans-serif; font-size: .65rem; font-weight: 700; letter-spacing: 2.5px; color: #a78bfa; background: rgba(124,58,237,.1); border: 1px solid rgba(124,58,237,.25); padding: 5px 12px; border-radius: 6px; width: fit-content; margin-bottom: 20px; }
+      .login-14 .form-section h3 { font-family: 'Space Grotesk', sans-serif !important; font-weight: 700 !important; font-size: 1.6rem !important; color: #f1f5f9 !important; margin-bottom: 4px !important; }
+      .login-14 .form-section h3::after { content: 'Enter your credentials to continue'; display: block; font-family: 'Inter', sans-serif; font-size: .82rem; font-weight: 400; color: #64748b; margin-top: 6px; }
+      .login-14 .login-inner-form::before { content: ''; display: block; height: 1px; background: rgba(255,255,255,.07); margin: 22px 0; }
+      .login-14 input[type="tel"], .login-14 input[type="password"], .login-14 input[type="text"], .login-14 input.input-text, .login-14 .form-box input { width: 100% !important; background: rgba(255,255,255,.04) !important; background-color: rgba(255,255,255,.04) !important; border: 1px solid rgba(255,255,255,.1) !important; color: #f1f5f9 !important; border-radius: 10px !important; padding: 13px 44px 13px 16px !important; font-family: 'Inter', sans-serif !important; font-size: .9rem !important; transition: all .25s ease !important; box-sizing: border-box !important; -webkit-appearance: none !important; }
+      .login-14 input:focus, .login-14 .form-box input:focus { border-color: #7c3aed !important; box-shadow: 0 0 0 3px rgba(124,58,237,.15) !important; background: rgba(255,255,255,.06) !important; background-color: rgba(255,255,255,.06) !important; outline: none !important; color: #fff !important; }
+      .login-14 input::placeholder { color: #475569 !important; }
+      .login-14 input:-webkit-autofill, .login-14 input:-webkit-autofill:hover, .login-14 input:-webkit-autofill:focus { -webkit-text-fill-color: #f1f5f9 !important; -webkit-box-shadow: 0 0 0 1000px #1a1a2e inset !important; border: 1px solid rgba(255,255,255,.1) !important; transition: background-color 5000s ease-in-out 0s !important; }
+      .login-14 .form-box i, .login-14 .form-box .flaticon-password { color: #475569 !important; }
+      .login-14 .form-group { margin-bottom: 14px !important; }
+
+      /* Checkbox & Terms */
+      .login-14 .checkbox { margin: 2px 0 18px !important; text-align: right !important; }
+      .login-14 .form-check-label { color: #94a3b8 !important; font-size: 0.85rem !important; }
+      .login-14 .text-primary { color: #a78bfa !important; text-decoration: none !important; }
+      .login-14 .text-primary:hover { color: #fff !important; }
+
+      .login-14 #forgot_password { color: #a78bfa !important; font-size: .82rem !important; font-weight: 500 !important; transition: color .2s !important; }
+      .login-14 #forgot_password:hover { color: #c4b5fd !important; }
+
+      /* Subtext (Already a member?) */
+      .login-14 p.text { color: #94a3b8 !important; text-align: center !important; margin-top: 20px !important; font-size: 0.9rem !important; }
+      .login-14 p.text a { color: #a78bfa !important; font-weight: 600 !important; text-decoration: none !important; transition: color 0.2s; }
+      .login-14 p.text a:hover { color: #fff !important; }
+      .login-14 .btn-theme { background: linear-gradient(135deg, #7c3aed, #6d28d9) !important; border: none !important; border-radius: 10px !important; color: #fff !important; font-family: 'Space Grotesk', sans-serif !important; font-weight: 700 !important; font-size: .95rem !important; letter-spacing: .5px !important; padding: 14px 24px !important; transition: all .3s ease !important; box-shadow: 0 4px 16px rgba(124,58,237,.35) !important; text-align: center !important; }
+      .login-14 .btn-theme:hover { background: linear-gradient(135deg, #6d28d9, #5b21b6) !important; box-shadow: 0 6px 28px rgba(124,58,237,.55) !important; transform: translateY(-1px) !important; }
+      .login-14 .btn-theme .fa-arrow-circle-right { display: none !important; }
+      .login-14 .link-btn { background: rgba(255,255,255,.1) !important; border: 1px solid rgba(255,255,255,.18) !important; color: rgba(255,255,255,.9) !important; border-radius: 10px !important; font-family: 'Space Grotesk', sans-serif !important; font-weight: 600 !important; font-size: .88rem !important; backdrop-filter: blur(8px) !important; transition: all .25s ease !important; }
+      .login-14 .link-btn:hover, .login-14 .link-btn.active, .login-14 .link-btn.default-bg { background: #7c3aed !important; border-color: #7c3aed !important; color: #fff !important; box-shadow: 0 4px 18px rgba(124,58,237,.5) !important; }
+      #myTimer { color: #f87171 !important; }
+      @media (max-width: 991px) { .login-14 .login-box { min-height: auto !important; } .login-14 .bg-img { border-radius: 20px 20px 0 0 !important; } .login-14 .bg-color-16 { padding: 32px 24px !important; border-radius: 0 0 20px 20px !important; } }
+    </style>
+    <link href="/static/ui_refresh/theme-foundation.css?v=3" rel="stylesheet" />
+    <link href="/static/ui_refresh/auth-ui.css?v=12" rel="stylesheet" />
   </head>
-  <body>
+  <body class="imagnus-auth-ui">
     {% block content %}{% endblock %}
 
     <!-- External JS libraries -->
@@ -204,7 +254,7 @@
               if (response.status) {
                 //  sendOtp(mobile)
                 $("#otp_mobile").prop("disabled", true);
-                $("#otp_mobile").css("background-color", "#eaeaea");
+                $("#otp_mobile").addClass("auth-input-disabled");
                 $("#otp_div").css("display", "block");
                 $("#otp_div").css("visibility", "visible");
                 showSnackbar(response.message, "success");
@@ -214,12 +264,8 @@
                 var sec = 15;
                 var myTimer = document.getElementById("myTimer");
                 var myBtn = document.getElementById("resend_otp_text");
-                $(this).css("background-color", "#eaeaea");
+                $("#send_otp").addClass("auth-otp-pending");
                 myBtn.innerHTML = "Resend OTP";
-                $("#myTimer").css("border", "1px");
-                $("#myTimer").css("border-radius", "40px");
-                $("#myTimer").css("background", "#472ec3");
-                $("#myTimer").css("padding", "2px");
                 $(this).prop("disabled", true);
                 countDown();
                 function countDown() {
@@ -231,12 +277,8 @@
                   if (sec <= 0) {
                     // $("#myTimer").fadeTo(1500, 0);
                     $("#myTimer").text(" ");
-                    $("#myTimer").css("border", "");
-                    $("#myTimer").css("border-radius", "");
-                    $("#myTimer").css("background", "");
-                    $("#myTimer").css("padding", "");
                     $("#send_otp").prop("disabled", false);
-                    $("#send_otp").css("background-color", "#ff5269");
+                    $("#send_otp").removeClass("auth-otp-pending");
                     // $("#myBtn").removeClass().addClass("btnEnable");
 
                     return;
@@ -277,7 +319,7 @@
               if (response.status) {
                 //  sendOtp(mobile)
                 $("#otp_mobile").prop("disabled", true);
-                $("#otp_mobile").css("background-color", "grey");
+                $("#otp_mobile").addClass("auth-input-disabled");
                 $("#reset_password_token").val(response.token);
                 showSnackbar(response.message, "success");
                 $("#otp_form").css("display", "none");
@@ -294,6 +336,9 @@
 
       $(document).on("click", "#forgot_password", function (e) {
         $("#otp_form").trigger("reset");
+        $("#otp_mobile").prop("disabled", false).removeClass("auth-input-disabled");
+        $("#send_otp").prop("disabled", false).removeClass("auth-otp-pending");
+        $("#myTimer").text("");
         $("#login_form").hide();
         $("#login_title").text("Forgot Password");
         $("#otp_form").css("display", "block");
@@ -352,5 +397,6 @@
     </script>
 
     {% endif %}
+    {% block scripts %}{% endblock %}
   </body>
 </html>

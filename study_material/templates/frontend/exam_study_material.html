@@ -64,6 +64,24 @@
 			<!-- ============================ Featured Courses Start ================================== -->
 			<section>
 				<div class="container">
+					<div class="public-page-intro">
+						<span class="public-kicker">Study Resources</span>
+						<h2 class="public-title">Exam-ready notes and test material in one clean catalog</h2>
+						<p class="public-subtitle">
+							Students can browse available exam resources faster with a more polished
+							library layout, clearer cards, and stronger section hierarchy.
+						</p>
+						<div class="public-stats">
+							<div class="public-stat">
+								<strong>{{ category_course|length }}</strong>
+								<span>Exam groups listed</span>
+							</div>
+							<div class="public-stat">
+								<strong>{{ "PDF Notes" if flag == "pdf-notes" else "Test Series" }}</strong>
+								<span>Current resource mode</span>
+							</div>
+						</div>
+					</div>
 
 					<div class="row justify-content-center">
 					    <div class="col-lg-12 col-md-6 section-head style-1 text-center mb-30">

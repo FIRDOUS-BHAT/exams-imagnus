@@ -1,102 +1,157 @@
 {% extends "base.html" %} {% block content %}
 
 <div class="page_loader"></div>
-<a href="https://imagnus.in/"
-  ><img
-    src="{{ app_url }}/static/credential_assets/img/back.png"
-    class="back mt-20"
-/></a>
+<a href="https://imagnus.in/" class="auth-back-link">
+  <i class="fa fa-arrow-left" aria-hidden="true"></i>
+  <span>Back to Home</span>
+</a>
 <!-- Login 14 start -->
 <div class="login-14">
   <div class="container">
     <div class="row login-box">
-      <div class="col-lg-8 col-md-12 bg-img align-self-center">
+      <div class="col-lg-6 col-md-12 bg-img align-self-center">
         <div class="info">
-          <div class="btn-section clearfix">
-            <a href="/student/login/" class="link-btn active btn-1"
-              >Student Login
-            </a>
-            <div class="clearfix"></div>
-            <a href="#" class="link-btn btn-1 default-bg">Register </a>
-            <div class="clearfix"></div>
+          <div class="auth-showcase">
+            <div class="auth-showcase-copy">
+              <span class="auth-kicker">New Student Onboarding</span>
+              <h2 class="auth-showcase-title">
+                Create your account and enter a
+                <span>premium dark study workspace.</span>
+              </h2>
+              <p class="auth-showcase-meta">
+                Register once to manage exam packages, access live and recorded
+                classes, open notes, and practice with topic-wise tests.
+              </p>
+            </div>
+
+            <div class="auth-benefit-grid">
+              <div class="auth-benefit-card">
+                <span class="auth-benefit-label">One Login</span>
+                <p>Use one student profile across course dashboards, study material, and test access.</p>
+              </div>
+              <div class="auth-benefit-card">
+                <span class="auth-benefit-label">Instant Access</span>
+                <p>Move from payment to learning without switching tools or leaving the platform flow.</p>
+              </div>
+              <div class="auth-benefit-card">
+                <span class="auth-benefit-label">Clean Progress</span>
+                <p>Organize lectures, notes, and mock tests from one account attached to your mobile number.</p>
+              </div>
+              <div class="auth-benefit-card">
+                <span class="auth-benefit-label">Exam Focused</span>
+                <p>Built for structured preparation instead of generic classroom software.</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <div class="col-lg-4 col-md-12 bg-color-16 align-self-center">
+      <div class="col-lg-6 col-md-12 bg-color-16 align-self-center">
         <div class="form-section">
-          <h3>Create an account</h3>
+          <div class="auth-page-intro">
+            <div class="btn-section clearfix auth-switcher auth-switcher-inline">
+              <a href="/student/login/" class="link-btn btn-1">
+                Student Login
+              </a>
+              <a href="/student/registration/?returnURL={{returnURL}}" class="link-btn btn-1 active default-bg">Register</a>
+            </div>
+            <span class="auth-kicker">Create Student Account</span>
+            <h3>Create an account</h3>
+            <p class="auth-copy">
+              Set up your student access once and use it across course purchases, live classes, and revision material.
+            </p>
+          </div>
           <div class="login-inner-form">
             <form action="/student/register/" method="POST">
-              <div class="form-group form-box">
-                <input
-                  type="text"
-                  name="fullname"
-                  class="input-text"
-                  placeholder="Full Name"
-                  required
-                />
-                <i class="flaticon-user"></i>
-              </div>
-              <div class="form-group form-box">
-                <input
-                  type="tel"
-                  name="mobile"
-                  maxlength="10"
-                  class="input-text"
-                  placeholder="+91 | Phone Number"
-                  required
-                />
-                <i class="fa fa-phone"></i>
-              </div>
-              <div class="form-group form-box">
-                <input
-                  type="email"
-                  name="email"
-                  class="input-text"
-                  placeholder="Email Address"
-                  required
-                />
-                <i class="flaticon-mail-2"></i>
-              </div>
-              <input type="hidden" name="return_url" value="{{ returnURL }}" />
-              <div class="form-group form-box">
-                <input
-                  type="password"
-                  name="password"
-                  class="input-text"
-                  placeholder="Password"
-                  required
-                />
-                <i class="flaticon-password"></i>
-              </div>
-              <div class="checkbox clearfix">
-                <div class="form-check checkbox-theme">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="rememberMe"
-                    required
-                  />
-                  <label class="form-check-label" for="rememberMe">
-                    I agree to the
-                    <a
-                      class="text-primary"
-                      href="https://imagnus.in/terms-conditions"
-                      >terms of service
-                    </a>
-                  </label>
+              <div class="auth-form-grid">
+                <div class="auth-field">
+                  <label class="auth-field-label" for="register_fullname">Full Name</label>
+                  <div class="form-group form-box">
+                    <input
+                      type="text"
+                      id="register_fullname"
+                      name="fullname"
+                      class="input-text"
+                      placeholder="Full Name"
+                      required
+                    />
+                    <i class="flaticon-user"></i>
+                  </div>
                 </div>
-              </div>
-              <div class="form-group mb-0">
-                <button type="submit" class="btn-md btn-theme btn-block">
-                  Register
-                  <i
-                    class="fa fa-arrow-circle-right float-right"
-                    aria-hidden="true"
-                    style="margin-top: 2px"
-                  ></i>
-                </button>
+                <div class="auth-field">
+                  <label class="auth-field-label" for="register_mobile">Phone Number</label>
+                  <div class="form-group form-box">
+                    <input
+                      type="tel"
+                      id="register_mobile"
+                      name="mobile"
+                      maxlength="10"
+                      class="input-text"
+                      placeholder="+91 | Phone Number"
+                      required
+                    />
+                    <i class="fa fa-phone"></i>
+                  </div>
+                </div>
+                <div class="auth-field">
+                  <label class="auth-field-label" for="register_email">Email Address</label>
+                  <div class="form-group form-box">
+                    <input
+                      type="email"
+                      id="register_email"
+                      name="email"
+                      class="input-text"
+                      placeholder="Email Address"
+                      required
+                    />
+                    <i class="flaticon-mail-2"></i>
+                  </div>
+                </div>
+                <input type="hidden" name="return_url" value="{{ returnURL }}" />
+                <div class="auth-field">
+                  <label class="auth-field-label" for="register_password">Password</label>
+                  <div class="form-group form-box">
+                    <input
+                      type="password"
+                      id="register_password"
+                      name="password"
+                      class="input-text"
+                      placeholder="Password"
+                      required
+                    />
+                    <i class="flaticon-password"></i>
+                  </div>
+                  <small class="auth-field-helper">
+                    Use at least 6 characters so your account stays secure.
+                  </small>
+                </div>
+                <div class="auth-inline-row">
+                  <div class="checkbox clearfix">
+                    <div class="form-check checkbox-theme">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        value=""
+                        id="rememberMe"
+                        required
+                      />
+                      <label class="form-check-label" for="rememberMe">
+                        I agree to the
+                        <a
+                          class="text-primary"
+                          href="https://imagnus.in/terms-conditions"
+                        >
+                          terms of service
+                        </a>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group mb-0 auth-submit">
+                  <button type="submit" class="btn-md btn-theme btn-block">
+                    Register
+                    <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+                  </button>
+                </div>
               </div>
               <p class="text">
                 Already a member? <a href="/student/login/"> Login here </a>

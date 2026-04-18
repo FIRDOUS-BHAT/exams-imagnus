@@ -446,7 +446,7 @@ async def create_test_series_order(request: Request, user=Depends(get_current_us
 
         )
         return {"status": True, "detail": 'order placed successfully',
-                'redirectUrl': '/student/new-dashboard/'}
+                'redirectUrl': '/student/dashboard/'}
     except Exception as ex:
 
         return JSONResponse({"status": False, "message": str(ex)}, status_code=208)
@@ -504,7 +504,7 @@ async def create_razorpay_order(request: Request,
                     )
 
                     return {"status": True, "detail": 'order placed successfully',
-                            'redirectUrl': '/student/new-dashboard/'}
+                            'redirectUrl': '/student/dashboard/'}
 
             else:
                 return JSONResponse({"status": False,

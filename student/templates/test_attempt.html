@@ -16,8 +16,23 @@ $(window).unload(function(){
 });
 });
 </script>
-  <div id="enterFullscreen" class="sa4d25">
+  <div id="enterFullscreen" class="sa4d25 dashboard-shell">
             <div class="container-fluid">
+               <div class="dashboard-page-head">
+                  <div>
+                     <div class="dashboard-page-kicker">Assessment Mode</div>
+                     <h1 class="dashboard-page-title">{{ title }}</h1>
+                     <p class="dashboard-page-copy">
+                        Stay focused in a distraction-free practice environment with
+                        visible timing and question progress.
+                     </p>
+                  </div>
+                  <div class="dashboard-page-badges">
+                     <span class="dashboard-page-badge">{{ qstn_nos }} questions</span>
+                     <span class="dashboard-page-badge">{{ time_duration }} minutes</span>
+                     <span class="dashboard-page-badge">{{ category_name }}</span>
+                  </div>
+               </div>
                <div class="row">
                   <div class="col-12">
                      <div class="all_msg_bg">

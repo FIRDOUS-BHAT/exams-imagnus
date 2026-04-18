@@ -197,7 +197,7 @@ mode = payu_config('mode', cast=str)
 #                                 '========================user here========================')
 #                             # return {"stop here"}
 #                             return RedirectResponse(
-#                                 url='/student/new-dashboard/',
+#                                 url='/student/dashboard/',
 #                                 status_code=status.HTTP_303_SEE_OTHER)
 #                         else:
 #                             return {"Order error"}

@@ -290,7 +290,7 @@ async def home_page(
 
             if student:
                 return RedirectResponse(
-                    url="/student/new-dashboard/", status_code=status.HTTP_302_FOUND
+                    url="/student/dashboard/", status_code=status.HTTP_302_FOUND
                 )
 
             else:
@@ -365,7 +365,7 @@ async def login_page(
 
                 if student:
                     return RedirectResponse(
-                        url="/student/new-dashboard/", status_code=status.HTTP_302_FOUND
+                        url="/student/dashboard/", status_code=status.HTTP_302_FOUND
                     )
             elif await UserToken.filter(
                 token=token, expires_at__lt=datetime.now(tz)
@@ -613,7 +613,7 @@ async def login(
 
     access_token = await create_access_token_for_user(user)
 
-    redirect_url = return_url if return_url != "None" else "/student/new-dashboard/"
+    redirect_url = return_url if return_url != "None" else "/student/dashboard/"
     resp = RedirectResponse(
         url=redirect_url, status_code=status.HTTP_302_FOUND)
     resp.set_cookie(key=settings.cookie_name, value=access_token,
@@ -884,7 +884,7 @@ async def student_dashboard(request: Request, cid: str, user=Depends(get_current
         check = await authenticate_student_subscription(cid=cid, user=user)
         if not check:
             return RedirectResponse(
-                url="student/new-dashboard/", status_code=status.HTTP_302_FOUND
+                url="student/dashboard/", status_code=status.HTTP_302_FOUND
             )
 
         if not await Course.exists(id=cid):

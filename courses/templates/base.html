@@ -107,6 +107,247 @@
 
       /* Add more styling as per your design requirements */
 
+      /* ====================================================
+         GLOBAL DARK THEME — applies to all pages
+         ==================================================== */
+
+      /* === Base === */
+      body {
+        background-color: #0f0f13 !important;
+        color: #cbd5e1 !important;
+        font-family: 'Inter', sans-serif !important;
+      }
+      #main-wrapper { background: #0f0f13 !important; }
+
+      /* Grid background on all sections */
+      section, .bg-light, .bg-white, .gray-simple, .gray, .mid-bg {
+        background: #0f0f13 !important;
+        background-image:
+          linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px) !important;
+        background-size: 36px 36px !important;
+      }
+
+      /* === Typography === */
+      h1,h2,h3,h4,h5,h6 {
+        color: #f1f5f9 !important;
+        font-family: 'Space Grotesk', sans-serif !important;
+      }
+      p, li, span, small { color: #94a3b8; }
+      a { color: #a78bfa; }
+      a:hover { color: #fff; }
+      strong { color: #f1f5f9; }
+
+      /* === Page title / hero banners === */
+      .image-cover.ed_detail_head,
+      .page-title {
+        background: linear-gradient(135deg, #1a0533 0%, #0c1a33 100%) !important;
+        border-bottom: 1px solid rgba(255,255,255,.07) !important;
+        position: relative;
+      }
+      .ed_detail_head::before {
+        content: '';
+        position: absolute; inset: 0;
+        background: rgba(9,9,19,.75) !important;
+      }
+      .breadcrumb-title { color: #fff !important; }
+      .breadcrumb-item a, .breadcrumb-item { color: #94a3b8 !important; }
+      .breadcrumb-item.active { color: #a78bfa !important; }
+      .breadcrumb { background: transparent !important; }
+      .ed_title { color: #fff !important; }
+      .ed_detail_wrap h4 { color: #cbd5e1 !important; }
+      .ed_detail_wrap ul li { color: #94a3b8 !important; }
+      .cources_facts_list .facts-1,
+      .cources_facts_list .facts-5 {
+        background: rgba(139,92,246,.15) !important;
+        color: #a78bfa !important;
+        border: 1px solid rgba(139,92,246,.3) !important;
+      }
+
+      /* === Cards === */
+      .card, .edu_wraper, .ed_view_box, .education_block_grid,
+      .dashboard_container, .fcrse_3 {
+        background: #1a1a24 !important;
+        border: 1px solid rgba(255,255,255,.07) !important;
+        border-radius: 14px !important;
+        color: #cbd5e1 !important;
+      }
+      .card-header {
+        background: rgba(255,255,255,.03) !important;
+        border-bottom: 1px solid rgba(255,255,255,.07) !important;
+      }
+      .card-body { background: transparent !important; }
+
+      /* === Accordion === */
+      .accordion.shadow { box-shadow: none !important; }
+      .collapsible-link.text-dark {
+        color: #e2e8f0 !important;
+        background: transparent !important;
+      }
+      .collapsible-link:hover { color: #fff !important; }
+      .accordion_title { color: #e2e8f0 !important; }
+      .collapse.show .card-body { color: #94a3b8 !important; }
+
+      /* === Nav Pills / Tabs === */
+      .nav-pills .nav-link {
+        color: #94a3b8 !important;
+        background: rgba(255,255,255,.04) !important;
+        border: 1px solid rgba(255,255,255,.07) !important;
+        border-radius: 8px !important;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 500;
+        margin-right: 6px;
+        transition: all .2s;
+      }
+      .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+        background: #7c3aed !important;
+        color: #fff !important;
+        border-color: #7c3aed !important;
+        box-shadow: 0 4px 14px rgba(124,58,237,.4) !important;
+      }
+      .nav-pills .nav-link:hover:not(.active) {
+        background: rgba(255,255,255,.08) !important;
+        color: #fff !important;
+      }
+
+      /* === Lectures List === */
+      .lectures_lists li {
+        background: rgba(255,255,255,.03) !important;
+        border: 1px solid rgba(255,255,255,.06) !important;
+        border-radius: 8px !important;
+        color: #cbd5e1 !important;
+        margin-bottom: 6px !important;
+        padding: 10px 14px !important;
+      }
+      .lectures_lists li:hover { background: rgba(255,255,255,.07) !important; }
+      .lectures_lists li.unview { opacity: .5; }
+      .lectures_lists_title { color: #a78bfa !important; }
+      .lectures_lists_title i { color: #38bdf8 !important; }
+
+      /* === Course detail sidebar === */
+      .ed_view_box { padding: 24px !important; }
+      .ed_author_box h4 { color: #fff !important; }
+      .ed_author_box span { color: #94a3b8 !important; }
+      .ed_view_price .theme-cl { color: #a78bfa !important; }
+      .ed_view_price span { color: #94a3b8 !important; }
+      .ed_view_features span { color: #94a3b8 !important; font-size:.85rem; }
+      .ed_view_features ul li { color: #cbd5e1 !important; border-bottom: 1px solid rgba(255,255,255,.06) !important; padding: 8px 0 !important; }
+      .edu_list.right li { color: #cbd5e1 !important; border-bottom: 1px solid rgba(255,255,255,.06) !important; padding: 8px 0 !important; }
+      .edu_list li i { color: #a78bfa !important; }
+
+      /* === Enroll / CTA Buttons === */
+      .btn-theme, .enroll-btn, .btn-primary {
+        background: #7c3aed !important;
+        border-color: #7c3aed !important;
+        color: #fff !important;
+        border-radius: 8px !important;
+        font-family: 'Space Grotesk', sans-serif !important;
+        font-weight: 600 !important;
+        transition: all .25s !important;
+      }
+      .btn-theme:hover, .enroll-btn:hover, .btn-primary:hover {
+        background: #6d28d9 !important;
+        box-shadow: 0 4px 20px rgba(124,58,237,.5) !important;
+        color: #fff !important;
+      }
+      .btn-outline-primary {
+        border-color: rgba(124,58,237,.5) !important;
+        color: #a78bfa !important;
+      }
+      .btn-outline-primary:hover {
+        background: #7c3aed !important;
+        color: #fff !important;
+      }
+
+      /* === Forms / inputs === */
+      .form-control {
+        background: rgba(255,255,255,.05) !important;
+        border: 1px solid rgba(255,255,255,.1) !important;
+        color: #f1f5f9 !important;
+        border-radius: 8px !important;
+      }
+      .form-control:focus {
+        background: rgba(255,255,255,.08) !important;
+        border-color: #7c3aed !important;
+        box-shadow: 0 0 0 3px rgba(124,58,237,.2) !important;
+        color: #fff !important;
+      }
+      .form-control::placeholder { color: #64748b !important; }
+      label { color: #94a3b8 !important; font-size: .88rem; }
+
+      /* === Modals === */
+      .modal-content {
+        background: #1a1a24 !important;
+        border: 1px solid rgba(255,255,255,.08) !important;
+        border-radius: 16px !important;
+      }
+      .modal-header {
+        border-bottom: 1px solid rgba(255,255,255,.07) !important;
+      }
+      .modal-footer {
+        border-top: 1px solid rgba(255,255,255,.07) !important;
+      }
+      .close { color: #94a3b8 !important; }
+
+      /* === Course listing (courses.html) === */
+      .education_block_body h4 a { color: #f1f5f9 !important; }
+      .education_block_body h4 a:hover { color: #a78bfa !important; }
+      .education_block_footer { border-top: 1px solid rgba(255,255,255,.07) !important; background: transparent !important; }
+      .cources_info_style3 ul li { color: #94a3b8 !important; }
+      .education_block_thumb img { border-radius: 10px; }
+
+      /* === Section headings === */
+      .section-head .sub-title.bgl-primary {
+        background: rgba(139,92,246,.12) !important;
+        color: #a78bfa !important;
+        border: 1px solid rgba(139,92,246,.25) !important;
+        border-radius: 6px !important;
+        padding: 5px 14px !important;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: .75rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+      .section-head h4.title { color: #f1f5f9 !important; }
+      .theme-cl { color: #a78bfa !important; }
+
+      /* === Dashboard === */
+      .dashboard_container_header {
+        background: rgba(255,255,255,.03) !important;
+        border-bottom: 1px solid rgba(255,255,255,.07) !important;
+      }
+      .dashboard_container_header h4,
+      .dashboard_fl_1 h4 { color: #f1f5f9 !important; }
+
+      /* === Star rating colours === */
+      .fas.fa-star.filled { color: #f59e0b !important; }
+      .listing-rating .ti-star.active { color: #f59e0b !important; }
+      .rating-overview-box-total { color: #f1f5f9 !important; }
+
+      /* === Footer override === */
+      footer.dark-footer { background: #09090b !important; border-top: 1px solid rgba(255,255,255,.07) !important; }
+      .footer-bottom { background: rgba(255,255,255,.02) !important; border-top: 1px solid rgba(255,255,255,.06) !important; }
+      .footer-bottom p { color: #64748b !important; }
+      .footer-bottom-social li a { color: #64748b !important; }
+      .footer-bottom-social li a:hover { color: #a78bfa !important; }
+      .footer-widget h4.widget-title { color: #f1f5f9 !important; }
+      .footer-widget ul li a { color: #94a3b8 !important; }
+      .footer-widget ul li a:hover { color: #a78bfa !important; }
+      .footer-add ul li, .footer-add ul li span { color: #94a3b8 !important; }
+      .footer-add ul li a { color: #94a3b8 !important; }
+
+      /* === Bottom newsletter bar === */
+      section.newsletter.themes-bg { background: linear-gradient(135deg, #1e0a3c 0%, #0c1a33 100%) !important; border-top: 1px solid rgba(255,255,255,.07) !important; }
+      section.newsletter.themes-bg .sup-form .form-control { background: rgba(255,255,255,.08) !important; color: #fff !important; }
+      section.newsletter.themes-bg h2 { color: #fff !important; }
+      section.newsletter.themes-bg p { color: #94a3b8 !important; }
+
+      /* === Scrollbar === */
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: #0f0f13; }
+      ::-webkit-scrollbar-thumb { background: #3f3f4e; border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: #7c3aed; }
+
       /* ======================================
          DARK NAVBAR OVERRIDE
          ====================================== */
@@ -219,8 +460,10 @@
         background-image: url('/static/courses_assets/img/loader.svg');
       }
     </style>
+    <link href="/static/ui_refresh/theme-foundation.css?v=3" rel="stylesheet" />
+    <link href="/static/ui_refresh/public-ui.css?v=6" rel="stylesheet" />
   </head>
-  <body>
+  <body class="imagnus-public-ui">
     <!-- ============================================================== -->
     <!-- Preloader - style you can find in spinners.css -->
     <!-- ============================================================== -->
@@ -283,10 +526,10 @@
                     <span class="submenu-indicator"></span
                   ></a>
                   <ul class="nav-dropdown nav-submenu">
-                    <li><a href="/student/new-dashboard/">Dashboard </a></li>
+                    <li><a href="/student/dashboard/">Dashboard </a></li>
                     <li><a href="/student/my-account/">Profile </a></li>
                     <li><a href="/student/my-orders/">Payment History </a></li>
-                    <li style="cursor: pointer">
+                    <li class="nav-cursor-link">
                       <a
                         ><form id="logout_form" action="/logout/" method="post">
                           <span
@@ -346,7 +589,7 @@
               <img
                 src="/static/courses_assets/img/home-promo.png"
                 alt="imagnus academy online coaching classes"
-                style="height: 270px"
+                class="newsletter-art"
               />
             </div>
           </div>
@@ -362,7 +605,7 @@
               <div class="col-lg-3 col-md-3">
                 <div class="footer-widget">
                   <div class="logo">
-                    <h2 style="color: #fff">I-Magnus</h2>
+                    <h2 class="footer-brand-mark">I-Magnus</h2>
                   </div>
                   <div class="footer-add">
                     <ul>
@@ -564,24 +807,27 @@
       }
 
       $(document).on("click", ".video_url", function (e) {
-        let link = e.target.getAttribute("data-video_url");
-        let title = e.target.getAttribute("data-video_title");
+        const trigger = e.target.closest(".video_url") || e.currentTarget;
+        let link = trigger.getAttribute("data-video_url");
+        let title = trigger.getAttribute("data-video_title");
 
         $("#sample_video_lecture").attr("src", link);
         $("#sample_video_title").text(title);
       });
 
       $(document).on("click", ".show_sample_notes", function (e) {
-        let notes_url = e.target.getAttribute("data-notes_url");
-        let title = e.target.getAttribute("data-notes_title");
+        const trigger = e.target.closest(".show_sample_notes") || e.currentTarget;
+        let notes_url = trigger.getAttribute("data-notes_url");
+        let title = trigger.getAttribute("data-notes_title");
 
         $("#notes_url").attr("src", notes_url);
         $("#notes_title").text(title);
       });
 
       $(document).on("click", ".download_material", function (e) {
-        mat_id = e.target.getAttribute("data-mat-id");
-        index = e.target.getAttribute("data-index");
+        const trigger = e.target.closest(".download_material") || e.currentTarget;
+        mat_id = trigger.getAttribute("data-mat-id");
+        index = trigger.getAttribute("data-index");
         if (mat_id) {
           data = {
             mid: mat_id,

@@ -1,547 +1,560 @@
- {% extends "base.html" %}
-         {% block content %}
-
-
-			 <div class="clearfix"></div>
-			 <!-- ============================================================== -->
-			 <!-- Top header  -->
-			 <!-- ============================================================== -->
-
-			 <!-- ============================ Course Header Info Start================================== -->
-			 <div class="image-cover ed_detail_head lg theme-ov" style="background:#f4f4f4 url(https://im.indiatimes.in/media/content/2018/Nov/national_exam_1542712309.jpg);" data-overlay="9">
-				 <div class="container">
-					 <div class="row">
-
-						 <div class="col-lg-7 col-md-9">
-							 <div class="ed_detail_wrap light">
-								 <ul class="cources_facts_list">
-									 <li class="facts-1">State Govt. Exams</li>
-									 <li class="facts-5">Recruitment Examinations </li>
-								 </ul>
-								 <div class="ed_header_caption">
-									 <h2 class="ed_title">{{ course_name }} </h2>
-									 <h4>India's largest learning platform</h4>
-									 <ul>
-										 <li><i class="ti-calendar"></i>10 - 20 weeks </li>
-										 <li><i class="ti-control-forward"></i>{{lecture_count}} Lectures </li>
-										 <li><i class="ti-user"></i>{{enrolled}} Students Enrolled </li>
-									 </ul>
-								 </div>
-
-								 <div class="ed_rate_info">
-									 <div class="star_info">
-										 <i class="fas fa-star filled"></i>
-										 <i class="fas fa-star filled"></i>
-										 <i class="fas fa-star filled"></i>
-										 <i class="fas fa-star filled"></i>
-										 <i class="fas fa-star"></i>
-									 </div>
-									 <div class="review_counter">
-										 <strong class="good">4.5 </strong> 3572 Reviews
-									 </div>
-								 </div>
-
-							 </div>
-						 </div>
-					 </div>
-				 </div>
-			 </div>
-			 <!-- ============================ Course Header Info End ================================== -->
-
-			 <!-- ============================ Course Detail ================================== -->
-			 <section class="bg-light pt-0">
-				 <div class="container">
-					 <div class="row">
-
-						 <div class="col-lg-8 col-md-8 pt-5">
-							 <!-- All Info Show in Tab -->
-							 <div class="tab_box_info mt-4">
-								 <ul class="nav nav-pills mb-3 light" id="pills-tab" role="tablist">
-									 <li class="nav-item">
-										 <a class="nav-link active" id="overview-tab" data-toggle="pill" href="#overview" role="tab" aria-controls="overview" aria-selected="true">Overview </a>
-									 </li>
-									 <li class="nav-item">
-										 <a class="nav-link" id="curriculum-tab" data-toggle="pill" href="#curriculum" role="tab" aria-controls="curriculum" aria-selected="false">Lectures </a>
-									 </li>
-									 <li class="nav-item">
-										 <a class="nav-link" id="notes-tab" data-toggle="pill" href="#notes" role="tab" aria-controls="testseries" aria-selected="false"> PDF Notes </a>
-									 </li>
-									 <li class="nav-item">
-										<a class="nav-link" id="testseries-tab" data-toggle="pill" href="#testseries" role="tab" aria-controls="testseries" aria-selected="false"> Test Series</a>
-									</li>
-									 <li class="nav-item">
-										 <a class="nav-link" id="instructor-tab" data-toggle="pill" href="#instructor" role="tab" aria-controls="instructor" aria-selected="false">Instructor </a>
-									 </li>
-									 <!-- <li class="nav-item">
-										 <a class="nav-link" id="reviews-tab" data-toggle="pill" href="#reviews" role="tab" aria-controls="reviews" aria-selected="false">Reviews </a>
-									 </li> -->
-								 </ul>
-
-								 <div class="tab-content" id="pills-tabContent">
-
-									 <!-- Overview Detail -->
-									 <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
-										 <!-- Overview -->
-										 <div class="edu_wraper">
-											 <h4 class="edu_title">Course Overview </h4>
-											 {% if overview %}
-											 <p>{{ overview.overview }} </p>
-											 {% else %}
-											 <p style="text-align:center;">No data available </p>
-											 {% endif %}
-											 <h6>Examinations </h6>
-											 <ul class="lists-3">
-												 {% if overview %}
-												 {% set exams = overview.examination.split('|') %}
-												 {% for exam in exams %}
-												 <li>{{ exam }} </li>
-												 {% endfor %}
-												 {% else %}
-											 <p style="text-align:center;">No data available </p>
-											 {% endif %}
-
-											 </ul>
-										 </div>
-
-										 <!-- Overview -->
-										 {% if course_name %}
-										 <div class="edu_wraper">
-											 <h4 class="edu_title">{{ course_name }} Syllabus</h4>
-											 <p>{{ overview.syllabus }}</p>
-										 </div>
-
-											 {% endif %}
-									 </div>
-									  <!-- Curriculum Detail -->
-									 <div class="tab-pane fade" id="curriculum" role="tabpanel" aria-labelledby="curriculum-tab">
-										 <div class="edu_wraper">
-											 <h4 class="edu_title">Course Circullum </h4>
-											 <div  class="accordion shadow circullum">
-
-												 <!-- Part 1 -->
-												 {% for cat in course_objs %}
-
-												 <div class="card">
-												   <div id="headingOne" class="card-header bg-white shadow-sm border-0">
-													 <h6 class="mb-0 accordion_title">
-														 <a href="#" data-toggle="collapse" data-target="#l{{ cat.id }}"
-																						 aria-expanded="true" aria-controls="collapseOne"
-																						 class="d-block position-relative text-dark collapsible-link py-2">
-														  {{ loop.index }}: {{ cat.category.name }}
-													 </a></h6>
-												   </div>
-												   <div id="l{{ cat.id }}" aria-labelledby="headingOne" data-parent="#accordionExample" class="collapse {{ 'show' if loop.index==1 else ''}}">
-													  <div class="card-body pl-3 pr-3">
-														 <ul class="lectures_lists">
-															 {% for lecs in cat.categories_topics %}
-															 {% for lec in lecs.CategoryLectures %}
-
-															   {% if loop.index == 1 %}
-															 <li data-toggle="modal" class="video_url" data-target="#myModal" data-video_title="{{ lec.title }}" data-video_url="{{ lec.web_video_url }}">
-																 <div class="lectures_lists_title">
-																 <i class="ti-video-camera"></i>{{ lecs.topic.name }} -  </div>{{ lec.title }} </li>
-
-															  {% else %}
-																<a href="/students/subscription_plans/course/{{ c_slug }}/">
- 																<li class="unview">
-																	<div class="lectures_lists_title">
-																		<i class="ti-video-camera"></i>{{ lecs.topic.name }} - </div>{{ lec.title }} </li></a>
-															   {% endif %}
-															 {% endfor %}
-															 {% endfor %}
-
-
-														 </ul>
-													 </div>
-												   </div>
-												 </div>
-
-												 {% endfor %}
-
-
-											 </div>
-										 </div>
-									 </div>
-
-									  <!-- Test Series Detail -->
-									 <div class="tab-pane fade" id="notes" role="tabpanel" aria-labelledby="notes-tab">
-										 <div class="edu_wraper">
-											 <h4 class="edu_title">Notes </h4>
-											 <div id="accordionExample" class="accordion shadow testseries">
-
-												 <!-- Part 1 -->
-												  {% for cat in course_objs %}
-												
-												 <div class="card">
-												   <div id="headingx" class="card-header bg-white shadow-sm border-0">
-													 <h6 class="mb-0 accordion_title">
-														 <a href="#" data-toggle="collapse" data-target="#n{{cat.id}}" aria-expanded="true"
-															aria-controls="collapsex" class="d-block position-relative text-dark collapsible-link py-2">
-															Paper 0{{ loop.index }}: {{ cat.category.name }}</a></h6>
-												   </div>
-												   <div id="n{{ cat.id }}" aria-labelledby="headingx" data-parent="#accordionExample" class="collapse {{ 'show' if loop.index==1 else ''}}">
-													  <div class="card-body pl-3 pr-3">
-														  <ul class="lectures_lists">
-															{% for lecs in cat.categories_topics %}
-															  {% for lec in lecs.CategoryNotes %}
-
-															{% if loop.index == 1 %}
-															 <li data-toggle="modal" class="show_sample_notes" data-notes_url="{{ lec.notes_url }}" data-notes_title="{{ lec.title }}" data-target="#pdf"><div class="lectures_lists_title"><i class="ti-files"></i> Notes - 0{{ loop.index }} </div>{{ lecs.topic.name }} </li>
-															 {% else %}
-															 <li class="unview"><div class="lectures_lists_title"><i class="ti-files"></i> Notes - 0{{ loop.index }} </div>{{ lecs.topic.name }} </li>
-															 {% endif %}
-
-															 {% endfor %}
-															 {% endfor %}
-															 </ul>
-													 </div>
-												   </div>
-												 </div>		
-												 {% endfor %}
-
-
-
-
-											 </div>
-										 </div>
-									 </div>
-
-									  <!-- Test Series Detail -->
-									  <div class="tab-pane fade" id="testseries" role="tabpanel" aria-labelledby="testseries-tab">
-										<div class="edu_wraper">
-											<h4 class="edu_title">Test Series </h4>
-											<div id="accordionExample" class="accordion shadow testseries">
-
-												<!-- Part 1 -->
-												 {% for cat in course_objs %}
-											   
-												<div class="card">
-												  <div id="headingx" class="card-header bg-white shadow-sm border-0">
-													<h6 class="mb-0 accordion_title">
-														<a href="#" data-toggle="collapse" data-target="#t{{cat.id}}" aria-expanded="true"
-														   aria-controls="collapsex" class="d-block position-relative text-dark collapsible-link py-2">
-														   Paper 0{{ loop.index }}: {{ cat.category.name }}</a></h6>
-												  </div>
-												  <div id="t{{ cat.id }}" aria-labelledby="headingx" data-parent="#accordionExample" class="collapse {{ 'show' if loop.index==1 else ''}}">
-													 <div class="card-body pl-3 pr-3">
-														 <ul class="lectures_lists">
-														   {% for lecs in cat.categories_topics %}
-															 {% for lec in lecs.CategoryTestSeries %}
-
-														  
-															<li class="unview"><div class="lectures_lists_title"><i class="ti-files"></i> Test Series - 0{{ loop.index }} </div>{{ lecs.topic.name }} </li>
-														
-
-															{% endfor %}
-															{% endfor %}
-															</ul>
-													</div>
-												  </div>
-												</div>		
-												{% endfor %}
-
-
-
-
-											</div>
-										</div>
-									</div>
-									 <!-- Instructor Detail -->
-
-									 {% for instructor in instructors %}
-									 <div class="tab-pane fade" id="instructor" role="tabpanel" aria-labelledby="instructor-tab">
-										 <div class="single_instructor">
-											 <div class="single_instructor_thumb">
-												 <a href="#"><img src="{{ instructor.image_url }}" class="img-fluid" alt="" /></a>
-											 </div>
-											 <div class="single_instructor_caption">
-												 <h4><a href="#">{{ instructor.name }} </a></h4>
-												 <ul class="instructor_info">
-													 <li><i class="ti-video-camera"></i>72 Videos </li>
-													 <li><i class="ti-control-forward"></i>102 Lectures </li>
-													 <li><i class="ti-user"></i>Exp. 4 Year </li>
-												 </ul>
-												 <p>{{ instructor.bio }}</p>
-												 <ul class="social_info">
-													 <li><a href="#"><i class="ti-facebook"></i></a></li>
-													 <li><a href="#"><i class="ti-twitter"></i></a></li>
-													 <li><a href="#"><i class="ti-linkedin"></i></a></li>
-													 <li><a href="#"><i class="ti-instagram"></i></a></li>
-												 </ul>
-											 </div>
-										 </div>
-									 </div>
-
-									 {% endfor %}
-
-									 <!-- Reviews Detail -->
-									 <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
-
-										 <!-- Overall Reviews -->
-										 <div class="rating-overview">
-											 <div class="rating-overview-box">
-												 <span class="rating-overview-box-total">4.2 </span>
-												 <span class="rating-overview-box-percent">out of 5.0 </span>
-												 <div class="star-rating" data-rating="5"><i class="ti-star"></i><i class="ti-star"></i><i class="ti-star"></i><i class="ti-star"></i><i class="ti-star"></i>
-												 </div>
-											 </div>
-
-											 <div class="rating-bars">
-												 <div class="rating-bars-item">
-													 <span class="rating-bars-name">5 Star </span>
-													 <span class="rating-bars-inner">
-														 <span class="rating-bars-rating high" data-rating="4.7">
-															 <span class="rating-bars-rating-inner" style="width: 85%;"></span>
-														 </span>
-														 <strong>85% </strong>
-													 </span>
-												 </div>
-												 <div class="rating-bars-item">
-													 <span class="rating-bars-name">4 Star </span>
-													 <span class="rating-bars-inner">
-														 <span class="rating-bars-rating good" data-rating="3.9">
-															 <span class="rating-bars-rating-inner" style="width: 75%;"></span>
-														 </span>
-														 <strong>75% </strong>
-													 </span>
-												 </div>
-												 <div class="rating-bars-item">
-													 <span class="rating-bars-name">3 Star </span>
-													 <span class="rating-bars-inner">
-														 <span class="rating-bars-rating mid" data-rating="3.2">
-															 <span class="rating-bars-rating-inner" style="width: 52.2%;"></span>
-														 </span>
-														 <strong>53% </strong>
-													 </span>
-												 </div>
-												 <div class="rating-bars-item">
-													 <span class="rating-bars-name">1 Star </span>
-													 <span class="rating-bars-inner">
-														 <span class="rating-bars-rating poor" data-rating="2.0">
-															 <span class="rating-bars-rating-inner" style="width:20%;"></span>
-														 </span>
-														 <strong>20% </strong>
-													 </span>
-												 </div>
-											 </div>
-										 </div>
-
-										 <!-- Reviews -->
-										 <div class="list-single-main-item fl-wrap">
-											 <div class="list-single-main-item-title fl-wrap">
-												 <h3>Item Reviews -   <span> 3  </span></h3>
-											 </div>
-											 <div class="reviews-comments-wrap">
-												 <!-- reviews-comments-item -->
-												 <div class="reviews-comments-item">
-													 <div class="review-comments-avatar">
-														 <img src="/static/courses_assets/img/user-1.jpg" class="img-fluid" alt="" />
-													 </div>
-													 <div class="reviews-comments-item-text">
-														 <h4><a href="#">Josaph Manrty </a><span class="reviews-comments-item-date"><i class="ti-calendar theme-cl"></i>27 Oct 2019 </span></h4>
-
-														 <div class="listing-rating high" data-starrating2="5"><i class="ti-star active"></i><i class="ti-star active"></i><i class="ti-star active"></i><i class="ti-star active"></i><i class="ti-star active"></i><span class="review-count">4.9 </span>  </div>
-														 <div class="clearfix"></div>
-														 <p>" Commodo est luctus ____. Proin in nunc laoreet _____ volutpat blandit enim. Sem _____, ullamcorper vel aliquam non, ______ eget justo. Duis quis ____ tellus sollicitudin mauris. " </p>
-														 <div class="pull-left reviews-reaction">
-															 <a href="#" class="comment-like active"><i class="ti-thumb-up"></i> 12 </a>
-															 <a href="#" class="comment-dislike active"><i class="ti-thumb-down"></i> 1 </a>
-															 <a href="#" class="comment-love active"><i class="ti-heart"></i> 07 </a>
-														 </div>
-													 </div>
-												 </div>
-												 <!--reviews-comments-item end-->
-
-												 <!-- reviews-comments-item -->
-												 <div class="reviews-comments-item">
-													 <div class="review-comments-avatar">
-														 <img src="/static/courses_assets/img/user-2.jpg" class="img-fluid" alt="" />
-													 </div>
-													 <div class="reviews-comments-item-text">
-														 <h4><a href="#">Rita Chawla </a><span class="reviews-comments-item-date"><i class="ti-calendar theme-cl"></i>2 Nov May 2019 </span></h4>
-
-														 <div class="listing-rating mid" data-starrating2="5"><i class="ti-star active"></i><i class="ti-star active"></i><i class="ti-star active"></i><i class="ti-star active"></i><i class="ti-star"></i><span class="review-count">3.7 </span>  </div>
-														 <div class="clearfix"></div>
-														 <p>" Commodo est luctus ____. Proin in nunc laoreet _____ volutpat blandit enim. Sem _____, ullamcorper vel aliquam non, ______ eget justo. Duis quis ____ tellus sollicitudin mauris. " </p>
-														 <div class="pull-left reviews-reaction">
-															 <a href="#" class="comment-like active"><i class="ti-thumb-up"></i> 12 </a>
-															 <a href="#" class="comment-dislike active"><i class="ti-thumb-down"></i> 1 </a>
-															 <a href="#" class="comment-love active"><i class="ti-heart"></i> 07 </a>
-														 </div>
-													 </div>
-												 </div>
-												 <!--reviews-comments-item end-->
-
-												 <!-- reviews-comments-item -->
-												 <div class="reviews-comments-item">
-													 <div class="review-comments-avatar">
-														 <img src="/static/courses_assets/img/user-3.jpg" class="img-fluid" alt="" />
-													 </div>
-													 <div class="reviews-comments-item-text">
-														 <h4><a href="#">Adam Wilsom </a><span class="reviews-comments-item-date"><i class="ti-calendar theme-cl"></i>10 Nov 2019 </span></h4>
-
-														 <div class="listing-rating good" data-starrating2="5"><i class="ti-star active"></i><i class="ti-star active"></i><i class="ti-star active"></i><i class="ti-star active"></i><i class="ti-star"></i>  <span class="review-count">4.2 </span>  </div>
-														 <div class="clearfix"></div>
-														 <p>" Commodo est luctus ____. Proin in nunc laoreet _____ volutpat blandit enim. Sem _____, ullamcorper vel aliquam non, ______ eget justo. Duis quis ____ tellus sollicitudin mauris. " </p>
-														 <div class="pull-left reviews-reaction">
-															 <a href="#" class="comment-like active"><i class="ti-thumb-up"></i> 12 </a>
-															 <a href="#" class="comment-dislike active"><i class="ti-thumb-down"></i> 1 </a>
-															 <a href="#" class="comment-love active"><i class="ti-heart"></i> 07 </a>
-														 </div>
-													 </div>
-												 </div>
-												 <!--reviews-comments-item end-->
-
-											 </div>
-										 </div>
-
-										 <!-- Submit Reviews -->
-										 <!-- <div class="edu_wraper">
-											 <h4 class="edu_title">Submit Reviews </h4>
-											 <div class="review-form-box form-submit">
-												 <form>
-													 <div class="row">
-
-														 <div class="col-lg-6 col-md-6 col-sm-12">
-															 <div class="form-group">
-																 <label>Name </label>
-																 <input class="form-control" type="text" placeholder="Your Name" />
-															 </div>
-														 </div>
-
-														 <div class="col-lg-6 col-md-6 col-sm-12">
-															 <div class="form-group">
-																 <label>Email </label>
-																 <input class="form-control" type="email" placeholder="Your Email" />
-															 </div>
-														 </div>
-
-														 <div class="col-lg-12 col-md-12 col-sm-12">
-															 <div class="form-group">
-																 <label>Review </label>
-																 <textarea class="form-control ht-140" placeholder="Review"></textarea>
-															 </div>
-														 </div>
-
-														 <div class="col-lg-12 col-md-12 col-sm-12">
-															 <div class="form-group">
-																 <button type="submit" class="btn btn-theme">Submit Review </button>
-															 </div>
-														 </div>
-
-													 </div>
-												 </form>
-											 </div>
-										 </div> -->
-
-									 </div>
-
-								 </div>
-							 </div>
-
-						 </div>
-
-						 <div class="col-lg-4 col-md-4">
-
-							 <!-- Course info -->
-							 <div class="ed_view_box style_2 overlio">
-
-								 <div class="ed_author">
-									 <div class="ed_author_thumb">
-										 <img class="img-fluid" src="/static/courses_assets/img/user-1.jpg" alt="1.jpg" />
-									 </div>
-									 <div class="ed_author_box">
-										 <h4>{{ student_name }} </h4>
-										 <span>{{ course_name }} </span>
-									 </div>
-								 </div>
-
-								 <div class="ed_view_price pl-4">
-									 <span>Starting Price </span>
-									 <h2 class="theme-cl"> ₹ {{ plan_price}} </h2>
-								 </div>
-								 <div class="ed_view_features pl-4">
-									 <span>Course Features </span>
-									 <ul>
-										 <li><i class="ti-angle-right"></i>Live Videos Lectures </li>
-										 <li><i class="ti-angle-right"></i>All Exams covered </li>
-										 <li><i class="ti-angle-right"></i>Designed by Experts </li>
-										 <li><i class="ti-angle-right"></i>Performance Analysis </li>
-										 <li><i class="ti-angle-right"></i>Unlimited Videos </li>
-										 <li><i class="ti-angle-right"></i>24x7 Support </li>
-									 </ul>
-								 </div>
-								 <div class="ed_view_link">
-									 <a href="/students/subscription_plans/course/{{ c_slug }}/" class="btn btn-theme enroll-btn">Enroll Now <i class="ti-angle-right"></i></a>
-								 </div>
-
-							 </div>
-
-							 <div class="edu_wraper">
-								 <h4 class="edu_title">Course Features </h4>
-								 <ul class="edu_list right">
-									 <li><i class="ti-user"></i>Student Enrolled: <strong>{{enrolled}} </strong></li>
-									 <li><i class="ti-files"></i>lectures: <strong>{{lecture_count}} </strong></li>
-									 <!-- <li><i class="ti-game"></i>Quizzes: <strong>0 </strong></li> -->
-									 <li><i class="ti-time"></i>Duration: <strong>60 hours </strong></li>
-									 <li><i class="ti-tag"></i>Skill Level: <strong>Beginner </strong></li>
-									 <li><i class="ti-flag-alt"></i>Language: <strong>Hindi & English </strong></li>
-									 <li><i class="ti-shine"></i>Assessment: <strong>Yes </strong></li>
-								 </ul>
-							 </div>
-
-
-						 </div>
-
-					 </div>
-
-				 </div>
-			 </section>
-			 <!-- ============================ Course Detail ================================== -->
-
-
-         			 <!-- Modal for pdf notes-->
-<div id="pdf" class="modal fade" role="dialog">
-  <div class="modal-dialog" style="max-width: 922px;">
-
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
-      <div class="modal-body">
-        <h4 id="notes_title"></h4>
-	<object data='URL.pdf' type='application/pdf' width='100%' height='100%'></object>
-	<embed id="notes_url" style="width:100%;height:550px;" type="application/pdf">
-			</div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-
-  </div>
-</div>
-
- 			 <!-- Modal for lectures-->
-<div id="myModal" class="modal fade" role="dialog">
-  <div class="modal-dialog" style="max-width: 922px;">
-
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
-      <div class="modal-body">
-        <h4 id="sample_video_title"></h4>
-		  <div style="position: relative; padding-top: 56.25%;"><iframe id="sample_video_lecture" loading="lazy" style="border: none; position: absolute; top: 0; height: 100%; width: 100%;" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowfullscreen="true"></iframe></div>
+{% extends "base.html" %}
+{% block content %}
+
+<div class="image-cover ed_detail_head lg theme-ov public-hero-default" data-overlay="9">
+  <div class="container">
+    <div class="row align-items-end">
+      <div class="col-xl-8 col-lg-9">
+        <div class="ed_detail_wrap light course-hero-copy">
+          <span class="public-kicker">✦ PREMIUM EXAM COURSE</span>
+          <ul class="cources_facts_list">
+            <li class="facts-1">State Govt. Exams</li>
+            <li class="facts-5">Recruitment Examinations</li>
+          </ul>
+
+          <div class="ed_header_caption">
+            <h1 class="ed_title course-detail-title">{{ course_name }}</h1>
+            <p class="course-hero-subtitle">
+              {% if overview and overview.overview %}
+              {{ overview.overview[:220] }}{% if overview.overview|length > 220 %}...{% endif %}
+              {% else %}
+              Structured preparation with recorded classes, notes, and practice
+              resources designed to keep exam prep focused and easy to navigate.
+              {% endif %}
+            </p>
+            <ul class="course-hero-meta">
+              <li><i class="ti-calendar"></i>10 - 20 weeks</li>
+              <li><i class="ti-control-forward"></i>{{ lecture_count }} lectures</li>
+              <li><i class="ti-user"></i>{{ enrolled }} students enrolled</li>
+            </ul>
+          </div>
+
+          <div class="course-hero-rating">
+            <div class="star_info">
+              <i class="fas fa-star filled"></i>
+              <i class="fas fa-star filled"></i>
+              <i class="fas fa-star filled"></i>
+              <i class="fas fa-star filled"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="review_counter">
+              <strong class="good">4.5</strong> 3572 Reviews
+            </div>
+          </div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="pt-0 course-detail-shell">
+  <div class="container">
+    <div class="course-content-layout">
+      <div class="course-main-shell">
+        <div class="public-panel course-main-frame">
+        <div class="tab_box_info course-tabs-shell">
+          <ul class="nav nav-pills course-tab-nav" id="pills-tab" role="tablist">
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                id="overview-tab"
+                data-toggle="pill"
+                href="#overview"
+                role="tab"
+                aria-controls="overview"
+                aria-selected="true"
+              >
+                Overview
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                id="curriculum-tab"
+                data-toggle="pill"
+                href="#curriculum"
+                role="tab"
+                aria-controls="curriculum"
+                aria-selected="false"
+              >
+                Lectures
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                id="notes-tab"
+                data-toggle="pill"
+                href="#notes"
+                role="tab"
+                aria-controls="notes"
+                aria-selected="false"
+              >
+                PDF Notes
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                id="testseries-tab"
+                data-toggle="pill"
+                href="#testseries"
+                role="tab"
+                aria-controls="testseries"
+                aria-selected="false"
+              >
+                Test Series
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                id="instructor-tab"
+                data-toggle="pill"
+                href="#instructor"
+                role="tab"
+                aria-controls="instructor"
+                aria-selected="false"
+              >
+                Instructor
+              </a>
+            </li>
+          </ul>
+
+          <div class="tab-content course-tab-content" id="pills-tabContent">
+            <div
+              class="tab-pane fade show active course-pane"
+              id="overview"
+              role="tabpanel"
+              aria-labelledby="overview-tab"
+            >
+              <div class="course-tab-panel">
+                <div class="edu_wraper">
+                  <h4 class="edu_title">Course Overview</h4>
+                  {% if overview and overview.overview %}
+                  <p>{{ overview.overview }}</p>
+                  {% else %}
+                  <div class="public-empty course-empty">
+                    <h4>No overview available yet</h4>
+                    <p>Course summary content will appear here once it is published.</p>
+                  </div>
+                  {% endif %}
+                </div>
+
+                <div class="edu_wraper">
+                  <h4 class="edu_title">Examinations Covered</h4>
+                  {% if overview and overview.examination %}
+                  <ul class="lists-3">
+                    {% set exams = overview.examination.split('|') %}
+                    {% for exam in exams %}
+                    {% if exam.strip() %}
+                    <li>{{ exam }}</li>
+                    {% endif %}
+                    {% endfor %}
+                  </ul>
+                  {% else %}
+                  <div class="public-empty course-empty">
+                    <h4>No examinations listed</h4>
+                    <p>Exam coverage details will be added here soon.</p>
+                  </div>
+                  {% endif %}
+                </div>
+
+                <div class="edu_wraper">
+                  <h4 class="edu_title">{{ course_name }} Syllabus</h4>
+                  {% if overview and overview.syllabus %}
+                  <p>{{ overview.syllabus }}</p>
+                  {% else %}
+                  <div class="public-empty course-empty">
+                    <h4>No syllabus available yet</h4>
+                    <p>The syllabus section will appear here once the course team adds it.</p>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="tab-pane fade course-pane"
+              id="curriculum"
+              role="tabpanel"
+              aria-labelledby="curriculum-tab"
+            >
+              <div class="course-tab-panel">
+                <div class="edu_wraper">
+                  <h4 class="edu_title">Video Lectures</h4>
+                  {% if course_objs %}
+                  <div class="accordion shadow circullum course-accordion" id="curriculumAccordion">
+                    {% for cat in course_objs %}
+                    <div class="card">
+                      <div
+                        id="curriculum-heading-{{ cat.id }}"
+                        class="card-header shadow-sm border-0"
+                      >
+                        <h6 class="mb-0 accordion_title">
+                          <a
+                            href="#curriculum-panel-{{ cat.id }}"
+                            data-toggle="collapse"
+                            data-target="#curriculum-panel-{{ cat.id }}"
+                            aria-expanded="{{ 'true' if loop.first else 'false' }}"
+                            aria-controls="curriculum-panel-{{ cat.id }}"
+                            class="d-block position-relative collapsible-link"
+                          >
+                            <span>
+                              <span class="course-accordion-label">Module {{ loop.index }}</span>
+                              {{ cat.category.name }}
+                            </span>
+                          </a>
+                        </h6>
+                      </div>
+                      <div
+                        id="curriculum-panel-{{ cat.id }}"
+                        aria-labelledby="curriculum-heading-{{ cat.id }}"
+                        data-parent="#curriculumAccordion"
+                        class="collapse {{ 'show' if loop.first else '' }}"
+                      >
+                        <div class="card-body">
+                          <ul class="lectures_lists">
+                            {% set ns = namespace(has_lectures=false) %}
+                            {% for lecs in cat.categories_topics %}
+                            {% for lec in lecs.CategoryLectures %}
+                            {% set ns.has_lectures = true %}
+                            {% if loop.first %}
+                            <li
+                              data-toggle="modal"
+                              class="video_url"
+                              data-target="#myModal"
+                              data-video_title="{{ lec.title }}"
+                              data-video_url="{{ lec.web_video_url }}"
+                            >
+                              <div class="lectures_lists_title">
+                                <i class="ti-video-camera"></i>{{ lecs.topic.name }} -
+                              </div>
+                              {{ lec.title }}
+                            </li>
+                            {% else %}
+                            <li class="unview">
+                              <a href="/students/subscription_plans/course/{{ c_slug }}/">
+                                <div class="lectures_lists_title">
+                                  <i class="ti-video-camera"></i>{{ lecs.topic.name }} -
+                                </div>
+                                {{ lec.title }}
+                              </a>
+                            </li>
+                            {% endif %}
+                            {% endfor %}
+                            {% endfor %}
+                            {% if not ns.has_lectures %}
+                            <li class="unview">No lectures available in this module yet.</li>
+                            {% endif %}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    {% endfor %}
+                  </div>
+                  {% else %}
+                  <div class="public-empty course-empty">
+                    <h4>No lecture modules available</h4>
+                    <p>Recorded lecture sections will appear here once the course is populated.</p>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="tab-pane fade course-pane"
+              id="notes"
+              role="tabpanel"
+              aria-labelledby="notes-tab"
+            >
+              <div class="course-tab-panel">
+                <div class="edu_wraper">
+                  <h4 class="edu_title">PDF Notes</h4>
+                  {% if course_objs %}
+                  <div class="accordion shadow testseries course-accordion" id="notesAccordion">
+                    {% for cat in course_objs %}
+                    <div class="card">
+                      <div
+                        id="notes-heading-{{ cat.id }}"
+                        class="card-header shadow-sm border-0"
+                      >
+                        <h6 class="mb-0 accordion_title">
+                          <a
+                            href="#notes-panel-{{ cat.id }}"
+                            data-toggle="collapse"
+                            data-target="#notes-panel-{{ cat.id }}"
+                            aria-expanded="{{ 'true' if loop.first else 'false' }}"
+                            aria-controls="notes-panel-{{ cat.id }}"
+                            class="d-block position-relative collapsible-link"
+                          >
+                            <span>
+                              <span class="course-accordion-label">Module {{ loop.index }}</span>
+                              {{ cat.category.name }}
+                            </span>
+                          </a>
+                        </h6>
+                      </div>
+                      <div
+                        id="notes-panel-{{ cat.id }}"
+                        aria-labelledby="notes-heading-{{ cat.id }}"
+                        data-parent="#notesAccordion"
+                        class="collapse {{ 'show' if loop.first else '' }}"
+                      >
+                        <div class="card-body">
+                          <ul class="lectures_lists">
+                            {% set ns = namespace(has_notes=false) %}
+                            {% for lecs in cat.categories_topics %}
+                            {% for lec in lecs.CategoryNotes %}
+                            {% set ns.has_notes = true %}
+                            {% if loop.first %}
+                            <li
+                              data-toggle="modal"
+                              class="show_sample_notes"
+                              data-notes_url="{{ lec.notes_url }}"
+                              data-notes_title="{{ lec.title }}"
+                              data-target="#pdf"
+                            >
+                              <div class="lectures_lists_title">
+                                <i class="ti-files"></i> Notes - 0{{ loop.index }}
+                              </div>
+                              {{ lecs.topic.name }}
+                            </li>
+                            {% else %}
+                            <li class="unview">
+                              <div class="lectures_lists_title">
+                                <i class="ti-files"></i> Notes - 0{{ loop.index }}
+                              </div>
+                              {{ lecs.topic.name }}
+                            </li>
+                            {% endif %}
+                            {% endfor %}
+                            {% endfor %}
+                            {% if not ns.has_notes %}
+                            <li class="unview">No notes available in this module yet.</li>
+                            {% endif %}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    {% endfor %}
+                  </div>
+                  {% else %}
+                  <div class="public-empty course-empty">
+                    <h4>No notes available</h4>
+                    <p>PDF notes will appear here once the instructor uploads them.</p>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="tab-pane fade course-pane"
+              id="testseries"
+              role="tabpanel"
+              aria-labelledby="testseries-tab"
+            >
+              <div class="course-tab-panel">
+                <div class="edu_wraper">
+                  <h4 class="edu_title">Test Series</h4>
+                  {% if course_objs %}
+                  <div class="accordion shadow testseries course-accordion" id="testSeriesAccordion">
+                    {% for cat in course_objs %}
+                    <div class="card">
+                      <div
+                        id="tests-heading-{{ cat.id }}"
+                        class="card-header shadow-sm border-0"
+                      >
+                        <h6 class="mb-0 accordion_title">
+                          <a
+                            href="#tests-panel-{{ cat.id }}"
+                            data-toggle="collapse"
+                            data-target="#tests-panel-{{ cat.id }}"
+                            aria-expanded="{{ 'true' if loop.first else 'false' }}"
+                            aria-controls="tests-panel-{{ cat.id }}"
+                            class="d-block position-relative collapsible-link"
+                          >
+                            <span>
+                              <span class="course-accordion-label">Module {{ loop.index }}</span>
+                              {{ cat.category.name }}
+                            </span>
+                          </a>
+                        </h6>
+                      </div>
+                      <div
+                        id="tests-panel-{{ cat.id }}"
+                        aria-labelledby="tests-heading-{{ cat.id }}"
+                        data-parent="#testSeriesAccordion"
+                        class="collapse {{ 'show' if loop.first else '' }}"
+                      >
+                        <div class="card-body">
+                          <ul class="lectures_lists">
+                            {% set ns = namespace(has_tests=false) %}
+                            {% for lecs in cat.categories_topics %}
+                            {% for lec in lecs.CategoryTestSeries %}
+                            {% set ns.has_tests = true %}
+                            <li class="unview">
+                              <div class="lectures_lists_title">
+                                <i class="ti-files"></i> Test Series - 0{{ loop.index }}
+                              </div>
+                              {{ lecs.topic.name }}
+                            </li>
+                            {% endfor %}
+                            {% endfor %}
+                            {% if not ns.has_tests %}
+                            <li class="unview">No test series available in this module yet.</li>
+                            {% endif %}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    {% endfor %}
+                  </div>
+                  {% else %}
+                  <div class="public-empty course-empty">
+                    <h4>No practice tests available</h4>
+                    <p>Test series will appear here when the course team publishes them.</p>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="tab-pane fade course-pane"
+              id="instructor"
+              role="tabpanel"
+              aria-labelledby="instructor-tab"
+            >
+              <div class="course-tab-panel">
+                {% if instructors %}
+                <div class="course-instructor-grid">
+                  {% for instructor in instructors %}
+                  <div class="single_instructor course-instructor-card">
+                    <div class="single_instructor_thumb">
+                      <img src="{{ instructor.image_url }}" class="img-fluid" alt="" />
+                    </div>
+                    <div class="single_instructor_caption">
+                      <h4><span>{{ instructor.name }}</span></h4>
+                      <p>{{ instructor.bio }}</p>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+                {% else %}
+                <div class="public-empty course-empty">
+                  <h4>No instructor profile available</h4>
+                  <p>Instructor information will be added to this course page soon.</p>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+
+      <aside class="course-sidebar-stack">
+        <div class="ed_view_box style_2 overlio course-price-card">
+          <span class="course-price-label">Starting Price</span>
+          <h2 class="theme-cl course-price-figure">₹ {{ plan_price }}</h2>
+          <p class="course-price-copy">
+            Choose a subscription plan to unlock full course access, live content,
+            notes, and practice resources.
+          </p>
+
+          <ul class="course-feature-list">
+            <li><span><i class="ti-angle-right"></i>Live video lectures</span></li>
+            <li><span><i class="ti-angle-right"></i>All exams covered</span></li>
+            <li><span><i class="ti-angle-right"></i>Designed by experts</span></li>
+            <li><span><i class="ti-angle-right"></i>Performance analysis</span></li>
+            <li><span><i class="ti-angle-right"></i>Unlimited videos</span></li>
+            <li><span><i class="ti-angle-right"></i>24x7 support</span></li>
+          </ul>
+
+          <div class="course-cta">
+            <a href="/students/subscription_plans/course/{{ c_slug }}/" class="btn btn-theme btn-shimmer enroll-btn">
+              <span class="btn-text">Choose a Plan</span> <i class="ti-angle-right"></i>
+              <div class="shimmer"></div>
+            </a>
+          </div>
+        </div>
+
+        <div class="edu_wraper course-snapshot-card">
+          <h4 class="edu_title">Course Snapshot</h4>
+          <ul class="course-meta-list edu_list right">
+            <li>
+              <span><i class="ti-user"></i>Student Enrolled</span>
+              <strong>{{ enrolled }}</strong>
+            </li>
+            <li>
+              <span><i class="ti-files"></i>Lectures</span>
+              <strong>{{ lecture_count }}</strong>
+            </li>
+            <li>
+              <span><i class="ti-time"></i>Duration</span>
+              <strong>60 hours</strong>
+            </li>
+            <li>
+              <span><i class="ti-tag"></i>Skill Level</span>
+              <strong>Beginner</strong>
+            </li>
+            <li>
+              <span><i class="ti-flag-alt"></i>Language</span>
+              <strong>Hindi &amp; English</strong>
+            </li>
+            <li>
+              <span><i class="ti-shine"></i>Assessment</span>
+              <strong>Yes</strong>
+            </li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<div id="pdf" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-dialog-centered modal-xl course-modal-dialog">
+    <div class="modal-content course-modal-shell">
+      <div class="modal-header">
+        <h4 id="notes_title" class="course-modal-title"></h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <embed id="notes_url" class="course-pdf-embed" type="application/pdf" />
+      </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
       </div>
     </div>
-
   </div>
 </div>
 
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-dialog-centered modal-xl course-modal-dialog">
+    <div class="modal-content course-modal-shell">
+      <div class="modal-header">
+        <h4 id="sample_video_title" class="course-modal-title"></h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="media-frame-16x9">
+          <iframe
+            id="sample_video_lecture"
+            loading="lazy"
+            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+            allowfullscreen="true"
+          ></iframe>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-		 {% endblock %}
+{% endblock %}

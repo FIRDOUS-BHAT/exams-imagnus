@@ -1,145 +1,108 @@
- {% extends "base.html" %}
-         {% block content %}
+{% extends "base.html" %}
+{% block content %}
 
-			 <!-- ============================ Page Title Start================================== -->
-			<section class="page-title pt-0">
-			 <div class="image-cover ed_detail_head lg theme-ov" style="background:#f4f4f4 url(https://im.indiatimes.in/media/content/2018/Nov/national_exam_1542712309.jpg);" data-overlay="9">
-				 <div class="container">
-					<div class="col-lg-12 col-md-12">
-							 <div class="breadcrumbs-wrap">
-								 <h1 class="breadcrumb-title">Subscription Plans</h1>
-								 <nav aria-label="breadcrumb">
-									 <ol class="breadcrumb">
-										 <li class="breadcrumb-item"><a href="#" class="text-white">Home </a></li>
-										 <li class="breadcrumb-item active" aria-current="page">Courses </li>
-										 <li class="breadcrumb-item active" aria-current="page">Subscription Plan </li>
-									 </ol>
-								 </nav>
-							 </div>
-						 </div>
-				 </div>
-			 </div>
-			 </section>
-			 <!-- ============================ Page Title End ================================== -->
+<section class="page-title pt-0">
+  <div class="image-cover ed_detail_head lg theme-ov public-hero-default" data-overlay="9">
+    <div class="container">
+      <div class="col-lg-12 col-md-12">
+        <div class="breadcrumbs-wrap">
+          <h1 class="breadcrumb-title">Subscription Plans</h1>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="/student/preference/">Courses</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Subscription Plans</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-			 <!-- ============================ Pricing Start ================================== -->
-			 <section class="pt-0">
+<section class="subscription-page pt-0">
+  <div class="container">
+    <div class="public-panel subscription-hero-shell">
+      <div class="public-page-intro public-page-intro--wide subscription-page-intro">
+        <span class="public-kicker">Plan Selection</span>
+        <h2 class="public-title">Choose the access plan that matches your study rhythm</h2>
+        <p class="public-subtitle">
+          Every plan is shaped for structured exam preparation with course access,
+          notes, and practice resources inside the same dark-theme learning workspace.
+        </p>
+      </div>
+    </div>
 
-				 <div class="container">
+    <div class="row subscription-grid justify-content-center">
+      {% if plans %}
+      {% for plan in plans %}
+      <div class="col-xl-4 col-lg-5 col-md-6">
+        <article class="card subscription-card {% if loop.first %}recommended{% endif %}">
+          <div class="subscription-card-header">
+            <div class="subscription-icon">
+              <i class="{{ plan.SubscriptionPlan.icon_image }}"></i>
+            </div>
+            <div>
+              <h3 class="subscription-title">{{ plan.SubscriptionPlan.name }}</h3>
+              <p class="subscription-subtitle">{{ plan.SubscriptionPlan.sub_title }}</p>
+            </div>
+          </div>
 
-					 <div class="row">
-						{% if plans %}
+          <div class="subscription-price">
+            <strong>₹{{ "{:,}".format(plan.plan_price) }}</strong>
+            <span>one-time plan</span>
+          </div>
 
-						 <!-- Single Package -->
-						 {% for plan in plans %}
-						 <div class="col-lg-4 col-md-4">
-							 <div class="packages_wrapping">
+          <ul class="subscription-features">
+            <li><i class="ti-check"></i>100+ hours of learning content</li>
+            {% if plan.live_classes_access %}
+            <li><i class="ti-check"></i>Live and recorded lectures</li>
+            {% endif %}
+            <li><i class="ti-check"></i>{{ plan.no_of_videos }} practice tests</li>
+            <li><i class="ti-check"></i>{{ plan.no_of_notes }} PDF notes</li>
+            <li><i class="ti-check"></i>{{ plan.validity }} month validity</li>
+          </ul>
 
-								 <div class="packages_headers">
-									 <i class="{{ plan.SubscriptionPlan.icon_image }}"></i>
-									 <h4 class="packages_pr_title">{{ plan.SubscriptionPlan.name }} </h4>
-									 <span class="packages_price-subtitle">{{ plan.SubscriptionPlan.sub_title }} </span>
+          <div class="subscription-actions">
+            <a href="/students/subscription_plan/{{ plan.id }}/checkout/" class="btn btn-primary">
+              Choose Plan
+            </a>
+          </div>
+        </article>
+      </div>
+      {% endfor %}
+      {% else %}
+      <div class="col-12">
+        <div class="public-empty subscription-empty">
+          <div class="purchase-empty-icon"><i class="fa fa-exclamation-triangle"></i></div>
+          <h4>No subscription plans available right now</h4>
+          <p>
+            This course does not have an active subscription plan published yet.
+            Please check back shortly or contact the team for access help.
+          </p>
+        </div>
+      </div>
+      {% endif %}
 
-								 </div>
-								 <div class="packages_price">
-									 <h4 class="value">₹{{  "{:,}".format(plan.plan_price) }} </h4>
-								 </div>
-								 <div class="packages_middlebody">
-									 <ul>
+      <div class="col-12">
+        <div class="public-panel subscription-help">
+          <div class="subscription-help-layout">
+            <div>
+              <h4>Need help choosing the right plan?</h4>
+              <p>
+                If you’re comparing access durations or deciding between live and recorded
+                prep, start with the plan that matches how consistently you’ll study each week.
+              </p>
+            </div>
+            <div class="subscription-help-actions">
+              <a href="https://imagnus.in/contact-us" class="btn btn-outline-primary">
+                Talk to the Team
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-
-										 <li>100+ Hours of content</li>
-										 {% if plan.live_classes_access %}
-										 <li>Live & Recorded Lectures </li>
-										 {% endif %}
-										 <li>Test Series: {{ plan.no_of_videos }} </li>
-										 <li>PDF Notes: {{ plan.no_of_notes }} </li>
-										 <li>{{ plan.validity }} Month Validity </li>
-
-									 </ul>
-								 </div>
-								 <div class="packages_bottombody">
-									 <a href="/students/subscription_plan/{{ plan.id }}/checkout/" class="btn-pricing">Choose Plan </a>
-								 </div>
-
-							 </div>
-						 </div>
-						{% endfor %}
-
-						{% else %}
-						 <div class="col-lg-12 col-md-12">
-							 <div class="packages_wrapping">
-								 <div class="packages_headers">
-									 <i class="fa fa-exclamation-triangle"></i>
-									 <h4 class="packages_pr_title">No Subscription Plans Available </h4>
-								 </div>
-							 </div>
-						 </div>
-
-						{% endif %}
-						 <!-- Single Package -->
-<!--						 <div class="col-lg-4 col-md-4">-->
-<!--							 <div class="packages_wrapping recommended">-->
-
-<!--								 <div class="packages_headers">-->
-<!--									 <i class="lni-diamond"></i>-->
-<!--									 <h4 class="packages_pr_title">Platinum Package </h4>-->
-<!--									 <span class="packages_price-subtitle">Start With Platinum Package </span>-->
-<!--								 </div>-->
-<!--								 <div class="packages_price">-->
-<!--									 <h4 class="value text-white">₹6,500  </h4>-->
-<!--								 </div>-->
-<!--								 <div class="packages_middlebody">-->
-<!--									 <ul>-->
-<!--										 <li>5+ Listings </li>-->
-<!--										 <li>Contact With Agent </li>-->
-<!--										 <li>3 Month Validity </li>-->
-<!--									 </ul>-->
-<!--								 </div>-->
-<!--								 <div class="packages_bottombody">-->
-<!--									 <a href="checkout.html" class="btn-pricing">Choose Plan </a>-->
-<!--								 </div>-->
-
-<!--							 </div>-->
-<!--						 </div>-->
-
-<!--						 &lt;!&ndash; Single Package &ndash;&gt;-->
-<!--						 <div class="col-lg-4 col-md-4">-->
-<!--							 <div class="packages_wrapping">-->
-
-<!--								 <div class="packages_headers">-->
-<!--									 <i class="lni-invention"></i>-->
-<!--									 <h4 class="packages_pr_title">Standard Package </h4>-->
-<!--									 <span class="packages_price-subtitle">Start With Standard Package </span>-->
-<!--								 </div>-->
-<!--								 <div class="packages_price">-->
-<!--									 <h4 class="pr-value">₹8,500  </h4>-->
-<!--								 </div>-->
-<!--								 <div class="packages_middlebody">-->
-<!--									 <ul>-->
-<!--										 <li>5+ Listings </li>-->
-<!--										 <li>Contact With Agent </li>-->
-<!--										 <li>3 Month Validity </li>-->
-<!--									 </ul>-->
-<!--								 </div>-->
-<!--								 <div class="packages_bottombody">-->
-<!--									 <a href="checkout.html" class="btn-pricing">Choose Plan </a>-->
-<!--								 </div>-->
-
-<!--							 </div>-->
-<!--						 </div>-->
-
-					 </div>
-
-				 </div>
-
-			 </section>
-			 <!-- ============================ Pricing End ================================== -->
-
-
-
-		 <!-- ============================================================== -->
-		 <!-- End Wrapper -->
-		 <!-- ============================================================== -->
-
-		 {% endblock %}
+{% endblock %}

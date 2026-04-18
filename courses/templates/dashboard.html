@@ -1,0 +1,326 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="pt-0 purchase-dashboard">
+  <div class="container">
+    <div class="purchase-hero-grid">
+      <div class="purchase-hero-copy">
+        <span class="public-kicker">✦ STUDENT DASHBOARD</span>
+        <h1 class="purchase-hero-title">Your learning purchases, ready to access</h1>
+        <p class="purchase-hero-subtitle">
+          Open active courses, download purchased study material, and review
+          test-series access from one cleaner workspace without digging through
+          multiple sections.
+        </p>
+        <div class="purchase-hero-actions">
+          <a class="btn btn-primary btn-shimmer" href="/student/preference/">
+            <span class="btn-text">Explore Courses</span> <i class="ti-angle-double-right"></i>
+            <div class="shimmer"></div>
+          </a>
+          <a class="btn btn-outline-primary" href="/exam_study_material/pdf-notes/">
+            <i class="ti-book"></i> Study Material
+          </a>
+          <a class="btn btn-outline-primary" href="/exam_study_material/test-series/">
+            <i class="ti-pencil-alt"></i> Test Series
+          </a>
+        </div>
+      </div>
+
+      <div class="public-panel purchase-summary-panel">
+        <div class="purchase-summary-head">
+          <span class="purchase-summary-kicker">Active Access Overview</span>
+          <p class="purchase-summary-copy">
+            Counts below match what is currently available inside each tab.
+          </p>
+        </div>
+        <div class="purchase-summary-grid">
+          <div class="purchase-summary-tile">
+            <strong>{{ total_order_count }}</strong>
+            <span>Total active items</span>
+          </div>
+          <div class="purchase-summary-tile">
+            <strong>{{ subscription_count }}</strong>
+            <span>Exam courses</span>
+          </div>
+          <div class="purchase-summary-tile">
+            <strong>{{ std_m_count }}</strong>
+            <span>Study materials</span>
+          </div>
+          <div class="purchase-summary-tile">
+            <strong>{{ test_series_count }}</strong>
+            <span>Test series</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="public-panel purchase-panel">
+      <div class="purchase-panel-head">
+        <div>
+          <h3 class="purchase-panel-title">Manage all purchases</h3>
+          <p class="purchase-panel-copy">
+            Switch between course access, downloadable resources, and test-series
+            purchases without leaving the dashboard.
+          </p>
+        </div>
+        <div class="purchase-panel-meta">
+          <span class="purchase-chip">Synced with active access</span>
+        </div>
+      </div>
+
+      <div class="purchase-tabs-wrap">
+        <ul class="nav nav-tabs purchase-tabs" id="myTab" role="tablist">
+          <li class="nav-item">
+            <a
+              class="nav-link active"
+              id="general-tab"
+              data-toggle="tab"
+              href="#general"
+              role="tab"
+              aria-controls="general"
+              aria-selected="true"
+            >
+              My Exam Courses
+              <span class="purchase-tab-count">{{ subscription_count }}</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              id="payment-tab"
+              data-toggle="tab"
+              href="#payment"
+              role="tab"
+              aria-controls="payment"
+              aria-selected="false"
+            >
+              My Study Material
+              <span class="purchase-tab-count">{{ std_m_count }}</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              id="upgrade-tab"
+              data-toggle="tab"
+              href="#upgrade"
+              role="tab"
+              aria-controls="upgrade"
+              aria-selected="false"
+            >
+              My Test Series
+              <span class="purchase-tab-count">{{ test_series_count }}</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="tab-content purchase-tab-content" id="myTabContent">
+          <div
+            class="tab-pane fade show active"
+            id="general"
+            role="tabpanel"
+            aria-labelledby="general-tab"
+          >
+            <div class="purchase-tab-pane">
+            {% if subscriptions %}
+            <div class="purchase-list">
+              {% for subscription in subscriptions %}
+              <article class="purchase-item-card">
+                <div class="purchase-item-media">
+                  <img
+                    src="{{ subscription.web_icon }}"
+                    class="purchase-item-thumb"
+                    alt="{{ subscription.course_name }}"
+                  />
+                </div>
+                <div class="purchase-item-body">
+                  <div class="purchase-item-head">
+                    <div>
+                      <span class="purchase-item-eyebrow">{{ subscription.preference_name }}</span>
+                      <h4 class="purchase-item-title">{{ subscription.course_name }}</h4>
+                    </div>
+                    <div class="purchase-item-price">₹{{ subscription.plan_price }}</div>
+                  </div>
+                  <div class="purchase-item-meta">
+                    <span class="purchase-chip">Active access</span>
+                    <span class="purchase-chip">Course dashboard ready</span>
+                  </div>
+                  <div class="purchase-item-actions">
+                    <a
+                      href="/student/dashboard/{{ subscription.course_id }}/"
+                      class="btn btn-primary btn-md"
+                    >
+                      Open Course <i class="ti-angle-double-right"></i>
+                    </a>
+                  </div>
+                </div>
+              </article>
+              {% endfor %}
+            </div>
+            {% else %}
+            <div class="public-empty purchase-empty">
+              <div class="purchase-empty-icon"><i class="ti-agenda"></i></div>
+              <h4>No active exam courses yet</h4>
+              <p>
+                Start with a course package and it will appear here with direct
+                dashboard access.
+              </p>
+              <div class="purchase-empty-actions">
+                <a class="btn btn-primary btn-lg" href="/student/preference/">
+                  Explore Courses <i class="ti-angle-double-right"></i>
+                </a>
+              </div>
+            </div>
+            {% endif %}
+            </div>
+          </div>
+
+          <div
+            class="tab-pane fade"
+            id="payment"
+            role="tabpanel"
+            aria-labelledby="payment-tab"
+          >
+            <div class="purchase-tab-pane">
+            {% if std_ms %}
+            <div class="purchase-list">
+              {% for items in std_ms %}
+              <article class="purchase-item-card">
+                <div class="purchase-item-media">
+                  <img
+                    src="{{ items.web_icon }}"
+                    class="purchase-item-thumb"
+                    alt="{{ items.course_title }}"
+                  />
+                </div>
+                <div class="purchase-item-body">
+                  <div class="purchase-item-head">
+                    <div>
+                      <span class="purchase-item-eyebrow">Study Material</span>
+                      <h4 class="purchase-item-title">{{ items.course_title }}</h4>
+                    </div>
+                    <div class="purchase-item-price">₹{{ items.discount_price }}</div>
+                  </div>
+                  <div class="purchase-item-meta">
+                    <span class="purchase-chip">Download ready</span>
+                    <span class="purchase-chip">Purchased resource</span>
+                  </div>
+                  <div class="purchase-download-row">
+                    <div class="purchase-download-status">
+                      <label>
+                        <span id="show_percentage{{ loop.index }}">0</span>% downloaded
+                      </label>
+                      <div class="start-download" id="start-download{{ loop.index }}">
+                        Preparing your file...
+                      </div>
+                      <div id="download-ui-container{{ loop.index }}">
+                        <div
+                          class="download-progress-container"
+                          id="download-progress-container{{ loop.index }}"
+                        >
+                          <div
+                            class="download-progress"
+                            id="download-progress{{ loop.index }}"
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="purchase-item-actions">
+                      <button
+                        id="download-button{{ loop.index }}"
+                        data-index="{{ loop.index }}"
+                        data-mat-id="{{ items.id }}"
+                        class="btn btn-primary btn-md download_material"
+                      >
+                        Download Now <i class="ti-download" data-mat-id="{{ items.id }}"></i>
+                      </button>
+                      <a class="btn btn-outline-primary btn-md save-file" id="save-file{{ loop.index }}">
+                        Save File
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </article>
+              {% endfor %}
+            </div>
+            {% else %}
+            <div class="public-empty purchase-empty">
+              <div class="purchase-empty-icon"><i class="ti-files"></i></div>
+              <h4>No study material purchases yet</h4>
+              <p>
+                Buy exam notes or downloadable resources and manage them from this
+                section.
+              </p>
+              <div class="purchase-empty-actions">
+                <a class="btn btn-primary btn-lg" href="/exam_study_material/pdf-notes/">
+                  Browse Study Material <i class="ti-angle-double-right"></i>
+                </a>
+              </div>
+            </div>
+            {% endif %}
+            </div>
+          </div>
+
+          <div
+            class="tab-pane fade"
+            id="upgrade"
+            role="tabpanel"
+            aria-labelledby="upgrade-tab"
+          >
+            <div class="purchase-tab-pane">
+            {% if testseries %}
+            <div class="purchase-list">
+              {% for test in testseries %}
+              <article class="purchase-item-card">
+                <div class="purchase-item-media">
+                  <img
+                    src="{{ test.test_series_web_icon }}"
+                    class="purchase-item-thumb"
+                    alt="{{ test.test_series_course_name }}"
+                  />
+                </div>
+                <div class="purchase-item-body">
+                  <div class="purchase-item-head">
+                    <div>
+                      <span class="purchase-item-eyebrow">{{ test.test_series_course_preference_name }}</span>
+                      <h4 class="purchase-item-title">{{ test.test_series_course_name }} Test Series</h4>
+                    </div>
+                    <div class="purchase-item-price">₹{{ test.bill_amount }}</div>
+                  </div>
+                  <div class="purchase-item-meta">
+                    <span class="purchase-chip">Purchased bundle</span>
+                    <span class="purchase-chip">Ready to attempt</span>
+                  </div>
+                  <div class="purchase-item-actions">
+                    <a href="/exam_study_material/test-series/" class="btn btn-primary btn-md">
+                      View Test Series <i class="ti-angle-double-right"></i>
+                    </a>
+                  </div>
+                </div>
+              </article>
+              {% endfor %}
+            </div>
+            {% else %}
+            <div class="public-empty purchase-empty">
+              <div class="purchase-empty-icon"><i class="ti-write"></i></div>
+              <h4>No test series purchases yet</h4>
+              <p>
+                Mock tests you purchase will appear here so you can jump back in
+                quickly.
+              </p>
+              <div class="purchase-empty-actions">
+                <a class="btn btn-primary btn-lg" href="/exam_study_material/test-series/">
+                  Explore Test Series <i class="ti-angle-double-right"></i>
+                </a>
+              </div>
+            </div>
+            {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
