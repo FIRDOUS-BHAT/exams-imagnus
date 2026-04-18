@@ -12,8 +12,12 @@ services:
         value: "false"
       - key: ALLOWED_HOST
         value: "*"
+      - key: APP_URL
+        sync: false
       - key: DB_CONNECTION
         value: postgres
+      - key: DB_PORT
+        value: "5432"
       # The following should be set in the Render Dashboard for security
       - key: SECRET_KEY
         generateValue: true
@@ -26,6 +30,8 @@ services:
       - key: DB_DATABASE
         sync: false
       - key: REDIS_URL
+        sync: false
+      - key: SLACK_WEBHOOK_URL
         sync: false
       - key: RAZORPAY_KEY
         sync: false

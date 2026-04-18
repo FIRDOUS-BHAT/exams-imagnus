@@ -5,13 +5,11 @@ import os
 class Setting(BaseSettings):
     db_connection: str
     db_host: str
-    db_port: str
+    db_port: str = "5432"
     db_database: str
     db_username: str
     db_password: str
     db_sslmode: Optional[str] = None
-    app_url: str
-    slack_webhook_url: str
 
     class Config:
         if os.path.exists('.env'):

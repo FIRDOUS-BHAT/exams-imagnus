@@ -9,7 +9,7 @@ import uvicorn
 from hypercorn.config import Config
 from hypercorn.asyncio import serve
 from fastapi import status, FastAPI, Request, Response, HTTPException
-from starlette.responses import JSONResponse, Response, RedirectResponse
+from starlette.responses import JSONResponse, Response
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from typing import Callable, List
 from fastapi.routing import APIRoute
@@ -101,11 +101,16 @@ SLACK_WEBHOOK_URL = settings.slack_webhook_url
 
 class SlackHandler(logging.Handler):
     def emit(self, record):
+        if not SLACK_WEBHOOK_URL:
+            return
         log_entry = self.format(record)
         payload = {
             "text": f"```{log_entry}```",
         }
-        httpx.post(SLACK_WEBHOOK_URL, json=payload)
+        try:
+            httpx.post(SLACK_WEBHOOK_URL, json=payload, timeout=5.0)
+        except Exception:
+            pass
 
 
 session = None
@@ -120,27 +125,8 @@ slack_handler = SlackHandler()
 formatter = logging.Formatter(
     "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 slack_handler.setFormatter(formatter)
-logger.addHandler(slack_handler)
-
-
-class RedirectMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request: Request, call_next):
-        # Check if the incoming request is from exams.imagnus.in and not targeting /api/*
-        if (
-            "exams.imagnus.in" in request.headers.get("host", "")
-            and not request.url.path.startswith("/api/")
-            and not request.url.path.startswith("/v1/scholarship/")
-            and not request.url.path.startswith("/get_students_rank/")
-        ):
-            # Redirect to study.imagnus.in
-            # Preserve the path and query string from the original request
-            new_url = f"https://study.imagnus.in{request.url.path}"
-            if request.url.query:
-                new_url += f"?{request.url.query}"
-            return RedirectResponse(url=new_url)
-
-        # If the request is from exams.imagnus.in but targets /api/*, or from another domain, just proceed normally
-        return await call_next(request)
+if SLACK_WEBHOOK_URL:
+    logger.addHandler(slack_handler)
 
 
 @asynccontextmanager
@@ -205,8 +191,6 @@ async def global_exception_handler(request: Request, exc: Exception):
     logger.error(formatted_log)
     return JSONResponse(status_code=500, content={"message": "Internal Server Error"})
 
-
-app.add_middleware(RedirectMiddleware)
 
 app.add_middleware(SessionMiddleware, secret_key="secret")
 

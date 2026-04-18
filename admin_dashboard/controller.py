@@ -51,7 +51,6 @@ from aws_services.s3.upload import upload_file_to_bucket
 from aws_services.settings import settings
 from checkout.models import PaymentRecords, PaymentRecords_Pydantic
 from configs import appinfo
-from configs.connection import db_config
 from scholarship_tests.models import ScholarshipTestSeries, ScholarshipTestSeriesQuestions, \
     ScholarshipTestSeries_Pydantic
 from send_mails.models import StudentEnquiry_Pydantic, StudentEnquiry
@@ -340,7 +339,6 @@ async def get_course_page(request: Request, user=Depends(get_current_user)):
         if await check_login_auth():
             if user is None:
                 return RedirectResponse(url="/administrator/login/", status_code=status.HTTP_302_FOUND)
-            app_url = db_config().app_url
             pref_obj = await Preference_Pydantic.from_queryset(Preference.all())
             course_obj = await Course_Pydantic.from_queryset(Course.all())
             category_obj = await Category_Pydantic.from_queryset(Category.all())
@@ -523,7 +521,6 @@ async def edit_category(s3: BaseClient = Depends(s3_auth), cat_name: str = Form(
 async def get_category_page(request: Request, user=Depends(get_current_user)):
     if user is None:
         return RedirectResponse(url="/administrator/login/", status_code=status.HTTP_302_FOUND)
-    app_url = db_config().app_url
     course_obj = await Course.all()
 
     course_cat_obj = await Course_Pydantic.from_queryset(
@@ -984,7 +981,6 @@ async def fire_push_notification(course_obj, category_obj, topic_obj, saved_obj,
     #     "cg8qvl2dT-22NhhHwqO3ve:REDACTED_FCM_TOKEN"]
 
     registration_ids = new_list
-    message_icon = "https://exams.imagnus.in/static/courses_assets/css/fonts/ic_launcher.png"
     if message == 'video':
         message_title = "New Lecture Added"
         requested_url = str(app_url) + \
@@ -1160,7 +1156,7 @@ async def add_lectures_in_background(s3, course_id, category_id, topic_id, cours
 
         app_thumbnail = await upload_images(s3, folder='videothumbnails/' + category_obj.slug + '/' + topic_obj.slug,
                                             image=video_thumbnail, mimetype=None)
-        # app_thumbnail = "https://exams.imagnus.in/static/admin/images/logo.png"
+        # app_thumbnail = f"{app_url}/static/admin/images/logo.png"
 
         n_url = app_thumbnail
         new_url = "https://ik.imagekit.io/imagnus/videothumbnails/" + \
@@ -1246,7 +1242,7 @@ async def add_category_lecture(background_tasks: BackgroundTasks, request: Reque
     video_id = None
     app_thumbnail = await upload_images(s3, folder='videothumbnails/' + category_obj.slug + '/' + topic_obj.slug,
                                         image=video_thumbnail, mimetype=None)
-    # app_thumbnail = "https://exams.imagnus.in/static/admin/images/logo.png"
+    # app_thumbnail = f"{app_url}/static/admin/images/logo.png"
     print(app_thumbnail)
     n_url = app_thumbnail
     # new_url = "https://ik.imagekit.io/imagnus/videothumbnails/" + \

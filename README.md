@@ -1,1 +1,1 @@
-# exams.imagnus.in
+# I-Magnus Exams

@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 import os
 
 class Setting(BaseSettings):
-    app_url: str
+    app_url: str = ""
     app_name: str
     app_version: str
     debug: str
@@ -22,7 +22,7 @@ class Setting(BaseSettings):
     admin_login: str
     ws_url: str
     cache_time: int
-    slack_webhook_url: str
+    slack_webhook_url: str = ""
     app_type: str
     sms_api_key: str
     

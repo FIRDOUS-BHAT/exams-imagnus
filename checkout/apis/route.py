@@ -878,7 +878,7 @@ async def add_pre_target_batch_to_mains_students(_=Depends(get_current_user)):
                 # res = await place_target_batch_orders(data)
 
                 # async with httpx.AsyncClient() as client:
-                #     content_obj = await client.post('https://exams.imagnus.in/api/place_order',
+                #     content_obj = await client.post(f'{app_url}/api/place_order',
                 #                                     json=jsonable_encoder(data))
 
                 #     if content_obj.status_code == 200:
