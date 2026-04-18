@@ -41,5 +41,9 @@ services:
         sync: false
       - key: AWS_SERVER_SECRET_KEY
         sync: false
+      - key: IMAGEKIT_PRIVATE_KEY
+        sync: false
+      - key: IMAGEKIT_PUBLIC_KEY
+        sync: false
       - key: AWS_SERVER_REGION
         value: ap-south-1

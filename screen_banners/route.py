@@ -1,7 +1,6 @@
 from typing import List
 
 from fastapi import APIRouter, Depends
-from imagekitio import ImageKit
 from pydantic import BaseModel
 try:
     from tortoise.contrib.fastapi import HTTPNotFoundError  # removed in newer tortoise
@@ -10,8 +9,6 @@ except ImportError:
 
     class HTTPNotFoundError(BaseModel):
         detail: str = "Not found"
-
-from aws_services.settings import settings
 from screen_banners.models import ScreenBanners, ScreenBanners_Pydantic
 from utils.util import get_current_user
 
@@ -20,13 +17,6 @@ router = APIRouter()
 
 class Status(BaseModel):
     message: str
-
-
-imagekit = ImageKit(
-    private_key=settings.IMAGEKIT_PRIVATE_KEY,
-    public_key=settings.IMAGEKIT_PUBLIC_KEY,
-    url_endpoint='https://ik.imagekit.io/imagnus/'
-)
 
 
 # @router.post('/add_screen_banners', )

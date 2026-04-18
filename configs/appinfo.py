@@ -13,8 +13,8 @@ class Setting(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int
     razorpay_key: str
     razorpay_secret: str
-    AWS_SERVER_PUBLIC_KEY: str
-    AWS_SERVER_SECRET_KEY: str
+    AWS_SERVER_PUBLIC_KEY: str = ""
+    AWS_SERVER_SECRET_KEY: str = ""
     AWS_SERVER_REGION: str
     bunny_library_id: str
     bunny_cdn_host: str

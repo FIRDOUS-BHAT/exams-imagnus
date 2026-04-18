@@ -48,7 +48,7 @@ from FCM.route import push_service
 from admin_dashboard.models import *
 from aws_services.deps import s3_auth
 from aws_services.s3.upload import upload_file_to_bucket
-from aws_services.settings import settings
+from aws_services.settings import get_imagekit_client
 from checkout.models import PaymentRecords, PaymentRecords_Pydantic
 from configs import appinfo
 from scholarship_tests.models import ScholarshipTestSeries, ScholarshipTestSeriesQuestions, \
@@ -65,12 +65,6 @@ from utils import util
 from fastapi.responses import JSONResponse
 tz = pytz.timezone('Asia/Kolkata')
 updated_at = datetime.now(tz)
-
-imagekit = ImageKit(
-    private_key=settings.IMAGEKIT_PRIVATE_KEY,
-    public_key=settings.IMAGEKIT_PUBLIC_KEY,
-    url_endpoint='https://ik.imagekit.io/imagnus/'
-)
 
 router = APIRouter()
 app = FastAPI(debug=True)
@@ -376,6 +370,9 @@ async def add_preference(request: Request, pref_name: str = Form(...), user=Depe
 
 
 async def upload_images(s3, folder, image: UploadFile, mimetype, user=Depends(get_current_user)):
+    imagekit = get_imagekit_client()
+    if imagekit is None:
+        raise HTTPException(status_code=503, detail="ImageKit is not configured")
     dt = datetime.now()
     image_name = (image.filename).split('.')
     ts = datetime.timestamp(dt)
@@ -402,6 +399,9 @@ async def upload_images(s3, folder, image: UploadFile, mimetype, user=Depends(ge
 
 
 async def upload_pdf_notes(s3, folder, image: UploadFile, mimetype, user=Depends(get_current_user)):
+    imagekit = get_imagekit_client()
+    if imagekit is None:
+        raise HTTPException(status_code=503, detail="ImageKit is not configured")
     upload_obj = upload_file_to_bucket(s3_client=s3, file_obj=image.file,
                                        bucket='testing-bucket-s3-uploader',
                                        folder=folder,
