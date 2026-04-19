@@ -6,18 +6,34 @@ services:
     region: singapore # Change to your preferred region
     healthCheckPath: /api/
     envVars:
+      - key: APP_NAME
+        value: I-Magnus Exams
+      - key: APP_VERSION
+        value: 1.0.0
       - key: APP_TYPE
         value: production
       - key: DEBUG
         value: "false"
       - key: ALLOWED_HOST
         value: "*"
+      - key: COOKIE_NAME
+        value: imagnus_session
+      - key: ADMIN_LOGIN
+        value: admin_session
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "1440"
       - key: APP_URL
+        sync: false
+      - key: WS_URL
         sync: false
       - key: DB_CONNECTION
         value: postgres
       - key: DB_PORT
         value: "5432"
+      - key: CACHE_TIME
+        value: "3600"
       # The following should be set in the Render Dashboard for security
       - key: SECRET_KEY
         generateValue: true
@@ -28,6 +44,8 @@ services:
       - key: DB_PASSWORD
         sync: false
       - key: DB_DATABASE
+        sync: false
+      - key: DB_SSLMODE
         sync: false
       - key: REDIS_URL
         sync: false
@@ -44,6 +62,26 @@ services:
       - key: IMAGEKIT_PRIVATE_KEY
         sync: false
       - key: IMAGEKIT_PUBLIC_KEY
+        sync: false
+      - key: BUNNY_LIBRARY_ID
+        sync: false
+      - key: BUNNY_CDN_HOST
+        sync: false
+      - key: BUNNY_ACCESS_KEY
+        sync: false
+      - key: SMS_API_KEY
+        sync: false
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: MAIL_FROM
+        sync: false
+      - key: MAIL_PORT
+        sync: false
+      - key: MAIL_SERVER
+        sync: false
+      - key: MAIL_FROM_NAME
         sync: false
       - key: AWS_SERVER_REGION
         value: ap-south-1

@@ -52,12 +52,13 @@ ENV PATH="/app/.venv/bin:$PATH" \
 
 # Health check — verifies the app is responding
 HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
-    CMD curl -f http://localhost:8000/api/ || exit 1
+    CMD sh -c "curl -f http://127.0.0.1:${PORT:-8000}/api/ || exit 1"
 
 EXPOSE 8000
 
 # Switch to non-root user
 USER appuser
 
-# Run with uvicorn in production mode
-CMD uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers --forwarded-allow-ips "*" --workers 4
+# Run with uvicorn in production mode. Render's free plan has 512Mi memory,
+# so default to a single worker unless WEB_CONCURRENCY is explicitly set.
+CMD uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers --forwarded-allow-ips "*" --workers ${WEB_CONCURRENCY:-1}
