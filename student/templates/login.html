@@ -18,12 +18,12 @@
                 <path d="M2 17l10 5 10-5M2 12l10 5 10-5" stroke="url(#grad2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 <defs>
                   <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#2ea7ff" stop-opacity="0.9"/>
-                    <stop offset="100%" stop-color="#7c3aed" stop-opacity="0.9"/>
+                    <stop offset="0%" stop-color="#4aa3ff" stop-opacity="0.9"/>
+                    <stop offset="100%" stop-color="#22c6a5" stop-opacity="0.9"/>
                   </linearGradient>
                   <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#2ea7ff" />
-                    <stop offset="100%" stop-color="#7c3aed" />
+                    <stop offset="0%" stop-color="#4aa3ff" />
+                    <stop offset="100%" stop-color="#22c6a5" />
                   </linearGradient>
                 </defs>
               </svg>
@@ -303,9 +303,21 @@ function toggleAuth(type) {
   const registerBtn = document.getElementById('tab_register');
   const loginContainer = document.getElementById('login_container');
   const registerContainer = document.getElementById('register_container');
+  const otpForm = document.getElementById('otp_form');
+  const newPasswordForm = document.getElementById('new_password_form');
   const title = document.getElementById('auth_title');
   const copy = document.getElementById('auth_copy');
   const indicator = document.querySelector('.pill-indicator');
+
+  if (otpForm) {
+    otpForm.style.display = 'none';
+    otpForm.style.visibility = 'hidden';
+  }
+
+  if (newPasswordForm) {
+    newPasswordForm.style.display = 'none';
+    newPasswordForm.style.visibility = 'hidden';
+  }
 
   if (type === 'register') {
     loginBtn.classList.remove('active');

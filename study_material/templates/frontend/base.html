@@ -14,6 +14,29 @@
       I-Magnus Academy | Best Online Coaching for Competitive and Recruitment
       Exams Preparation | Elearning
     </title>
+    <script>
+      (function () {
+        var storageKey = "imagnus-theme";
+        var legacyKey = "gmtNightMode";
+        var theme = "light";
+        try {
+          var savedTheme = window.localStorage.getItem(storageKey);
+          if (savedTheme === "light" || savedTheme === "dark") {
+            theme = savedTheme;
+          } else if (window.localStorage.getItem(legacyKey)) {
+            theme = "dark";
+          } else if (
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+          ) {
+            theme = "dark";
+          }
+        } catch (error) {}
+        document.documentElement.setAttribute("data-theme", theme);
+        document.documentElement.style.colorScheme = theme;
+        document.documentElement.classList.toggle("night-mode", theme === "dark");
+      })();
+    </script>
     <!-- favicon
 		============================================ -->
     <link
@@ -23,8 +46,8 @@
     />
     <!-- Custom CSS -->
     <link href="/static/courses_assets/css/styles.css" rel="stylesheet" />
-    <link href="/static/ui_refresh/theme-foundation.css?v=3" rel="stylesheet" />
-    <link href="/static/ui_refresh/public-ui.css?v=6" rel="stylesheet" />
+    <link href="/static/ui_refresh/theme-foundation.css?v=5" rel="stylesheet" />
+    <link href="/static/ui_refresh/public-ui.css?v=8" rel="stylesheet" />
 
     <!-- Custom Color Option -->
     <link href="/static/courses_assets/css/colors.css" rel="stylesheet" />
@@ -87,6 +110,17 @@
               </ul>
 
               <ul class="nav-menu nav-menu-social align-to-right">
+                <li class="theme-toggle-navitem">
+                  <button type="button" class="imagnus-theme-toggle" data-theme-toggle>
+                    <span class="imagnus-theme-toggle__copy">
+                      <span class="imagnus-theme-toggle__eyebrow">Theme</span>
+                      <span class="imagnus-theme-toggle__label" data-theme-label>Light theme</span>
+                    </span>
+                    <span class="imagnus-theme-toggle__track" aria-hidden="true">
+                      <span class="imagnus-theme-toggle__thumb"></span>
+                    </span>
+                  </button>
+                </li>
                 <li>
                   <a href="#"
                     ><i class="ti-user"></i> My Account
@@ -358,6 +392,7 @@
       type="text/javascript"
       src="/static/courses_assets/js/FileSaver.js"
     ></script>
+    <script src="/static/ui_refresh/theme-controller.js?v=2"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- ============================================================== -->

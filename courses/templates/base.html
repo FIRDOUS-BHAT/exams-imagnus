@@ -10,6 +10,29 @@
       I-Magnus Academy | Best Online Coaching for Competitive and Recruitment
       Exams Preparation | Elearning
     </title>
+    <script>
+      (function () {
+        var storageKey = "imagnus-theme";
+        var legacyKey = "gmtNightMode";
+        var theme = "light";
+        try {
+          var savedTheme = window.localStorage.getItem(storageKey);
+          if (savedTheme === "light" || savedTheme === "dark") {
+            theme = savedTheme;
+          } else if (window.localStorage.getItem(legacyKey)) {
+            theme = "dark";
+          } else if (
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+          ) {
+            theme = "dark";
+          }
+        } catch (error) {}
+        document.documentElement.setAttribute("data-theme", theme);
+        document.documentElement.style.colorScheme = theme;
+        document.documentElement.classList.toggle("night-mode", theme === "dark");
+      })();
+    </script>
     <!-- favicon
 		============================================ -->
     <link
@@ -31,28 +54,27 @@
 
     <style>
       .start-download {
-        text-align: center;
         display: none;
+        text-align: center;
       }
 
       .download-progress-container {
-        /* border: 1px solid #cccccc; */
-        padding: 4px;
         display: none;
         height: 20px;
+        padding: 4px;
       }
 
       .download-progress {
-        background-color: #2980b9;
+        background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-strong));
         display: inline-block;
         height: 100%;
       }
 
       .save-file {
-        color: #2980b9;
-        text-decoration: none;
+        color: var(--brand-primary);
         display: none;
         text-align: center;
+        text-decoration: none;
       }
 
       .no-ul-list {
@@ -61,407 +83,55 @@
       }
 
       .no-ul-list li {
+        background: var(--layer-1);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
         margin-bottom: 10px;
         padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        transition: all 0.3s ease;
+        transition:
+          background-color 0.24s ease,
+          border-color 0.24s ease;
       }
 
       .no-ul-list li:hover {
-        background-color: #f5f5f5;
+        background: var(--layer-2);
       }
 
       .no-ul-list li.active {
-        background-color: #e0e0e0;
-        border-color: #007bff;
+        background: var(--accent-soft);
+        border-color: var(--accent-outline);
       }
 
       .checkbox-custom-label {
         cursor: pointer;
       }
 
-      .hidden-checkbox {
-        display: none;
-      }
+      .hidden-checkbox,
       .hidden {
         display: none;
       }
 
       .loader {
-        border: 2px solid #f3f3f3; /* Light grey */
-        border-top: 2px solid #3498db; /* Blue */
+        animation: spin 1s linear infinite;
+        border: 2px solid rgba(255, 255, 255, 0.25);
         border-radius: 50%;
-        width: 16px;
+        border-top: 2px solid var(--text-inverse);
         height: 16px;
-        animation: spin 2s linear infinite;
+        width: 16px;
       }
+
       @keyframes spin {
         0% {
           transform: rotate(0deg);
         }
+
         100% {
           transform: rotate(360deg);
         }
       }
-
-      /* Add more styling as per your design requirements */
-
-      /* ====================================================
-         GLOBAL DARK THEME — applies to all pages
-         ==================================================== */
-
-      /* === Base === */
-      body {
-        background-color: #0f0f13 !important;
-        color: #cbd5e1 !important;
-        font-family: 'Inter', sans-serif !important;
-      }
-      #main-wrapper { background: #0f0f13 !important; }
-
-      /* Grid background on all sections */
-      section, .bg-light, .bg-white, .gray-simple, .gray, .mid-bg {
-        background: #0f0f13 !important;
-        background-image:
-          linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px) !important;
-        background-size: 36px 36px !important;
-      }
-
-      /* === Typography === */
-      h1,h2,h3,h4,h5,h6 {
-        color: #f1f5f9 !important;
-        font-family: 'Space Grotesk', sans-serif !important;
-      }
-      p, li, span, small { color: #94a3b8; }
-      a { color: #a78bfa; }
-      a:hover { color: #fff; }
-      strong { color: #f1f5f9; }
-
-      /* === Page title / hero banners === */
-      .image-cover.ed_detail_head,
-      .page-title {
-        background: linear-gradient(135deg, #1a0533 0%, #0c1a33 100%) !important;
-        border-bottom: 1px solid rgba(255,255,255,.07) !important;
-        position: relative;
-      }
-      .ed_detail_head::before {
-        content: '';
-        position: absolute; inset: 0;
-        background: rgba(9,9,19,.75) !important;
-      }
-      .breadcrumb-title { color: #fff !important; }
-      .breadcrumb-item a, .breadcrumb-item { color: #94a3b8 !important; }
-      .breadcrumb-item.active { color: #a78bfa !important; }
-      .breadcrumb { background: transparent !important; }
-      .ed_title { color: #fff !important; }
-      .ed_detail_wrap h4 { color: #cbd5e1 !important; }
-      .ed_detail_wrap ul li { color: #94a3b8 !important; }
-      .cources_facts_list .facts-1,
-      .cources_facts_list .facts-5 {
-        background: rgba(139,92,246,.15) !important;
-        color: #a78bfa !important;
-        border: 1px solid rgba(139,92,246,.3) !important;
-      }
-
-      /* === Cards === */
-      .card, .edu_wraper, .ed_view_box, .education_block_grid,
-      .dashboard_container, .fcrse_3 {
-        background: #1a1a24 !important;
-        border: 1px solid rgba(255,255,255,.07) !important;
-        border-radius: 14px !important;
-        color: #cbd5e1 !important;
-      }
-      .card-header {
-        background: rgba(255,255,255,.03) !important;
-        border-bottom: 1px solid rgba(255,255,255,.07) !important;
-      }
-      .card-body { background: transparent !important; }
-
-      /* === Accordion === */
-      .accordion.shadow { box-shadow: none !important; }
-      .collapsible-link.text-dark {
-        color: #e2e8f0 !important;
-        background: transparent !important;
-      }
-      .collapsible-link:hover { color: #fff !important; }
-      .accordion_title { color: #e2e8f0 !important; }
-      .collapse.show .card-body { color: #94a3b8 !important; }
-
-      /* === Nav Pills / Tabs === */
-      .nav-pills .nav-link {
-        color: #94a3b8 !important;
-        background: rgba(255,255,255,.04) !important;
-        border: 1px solid rgba(255,255,255,.07) !important;
-        border-radius: 8px !important;
-        font-family: 'Space Grotesk', sans-serif;
-        font-weight: 500;
-        margin-right: 6px;
-        transition: all .2s;
-      }
-      .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
-        background: #7c3aed !important;
-        color: #fff !important;
-        border-color: #7c3aed !important;
-        box-shadow: 0 4px 14px rgba(124,58,237,.4) !important;
-      }
-      .nav-pills .nav-link:hover:not(.active) {
-        background: rgba(255,255,255,.08) !important;
-        color: #fff !important;
-      }
-
-      /* === Lectures List === */
-      .lectures_lists li {
-        background: rgba(255,255,255,.03) !important;
-        border: 1px solid rgba(255,255,255,.06) !important;
-        border-radius: 8px !important;
-        color: #cbd5e1 !important;
-        margin-bottom: 6px !important;
-        padding: 10px 14px !important;
-      }
-      .lectures_lists li:hover { background: rgba(255,255,255,.07) !important; }
-      .lectures_lists li.unview { opacity: .5; }
-      .lectures_lists_title { color: #a78bfa !important; }
-      .lectures_lists_title i { color: #38bdf8 !important; }
-
-      /* === Course detail sidebar === */
-      .ed_view_box { padding: 24px !important; }
-      .ed_author_box h4 { color: #fff !important; }
-      .ed_author_box span { color: #94a3b8 !important; }
-      .ed_view_price .theme-cl { color: #a78bfa !important; }
-      .ed_view_price span { color: #94a3b8 !important; }
-      .ed_view_features span { color: #94a3b8 !important; font-size:.85rem; }
-      .ed_view_features ul li { color: #cbd5e1 !important; border-bottom: 1px solid rgba(255,255,255,.06) !important; padding: 8px 0 !important; }
-      .edu_list.right li { color: #cbd5e1 !important; border-bottom: 1px solid rgba(255,255,255,.06) !important; padding: 8px 0 !important; }
-      .edu_list li i { color: #a78bfa !important; }
-
-      /* === Enroll / CTA Buttons === */
-      .btn-theme, .enroll-btn, .btn-primary {
-        background: #7c3aed !important;
-        border-color: #7c3aed !important;
-        color: #fff !important;
-        border-radius: 8px !important;
-        font-family: 'Space Grotesk', sans-serif !important;
-        font-weight: 600 !important;
-        transition: all .25s !important;
-      }
-      .btn-theme:hover, .enroll-btn:hover, .btn-primary:hover {
-        background: #6d28d9 !important;
-        box-shadow: 0 4px 20px rgba(124,58,237,.5) !important;
-        color: #fff !important;
-      }
-      .btn-outline-primary {
-        border-color: rgba(124,58,237,.5) !important;
-        color: #a78bfa !important;
-      }
-      .btn-outline-primary:hover {
-        background: #7c3aed !important;
-        color: #fff !important;
-      }
-
-      /* === Forms / inputs === */
-      .form-control {
-        background: rgba(255,255,255,.05) !important;
-        border: 1px solid rgba(255,255,255,.1) !important;
-        color: #f1f5f9 !important;
-        border-radius: 8px !important;
-      }
-      .form-control:focus {
-        background: rgba(255,255,255,.08) !important;
-        border-color: #7c3aed !important;
-        box-shadow: 0 0 0 3px rgba(124,58,237,.2) !important;
-        color: #fff !important;
-      }
-      .form-control::placeholder { color: #64748b !important; }
-      label { color: #94a3b8 !important; font-size: .88rem; }
-
-      /* === Modals === */
-      .modal-content {
-        background: #1a1a24 !important;
-        border: 1px solid rgba(255,255,255,.08) !important;
-        border-radius: 16px !important;
-      }
-      .modal-header {
-        border-bottom: 1px solid rgba(255,255,255,.07) !important;
-      }
-      .modal-footer {
-        border-top: 1px solid rgba(255,255,255,.07) !important;
-      }
-      .close { color: #94a3b8 !important; }
-
-      /* === Course listing (courses.html) === */
-      .education_block_body h4 a { color: #f1f5f9 !important; }
-      .education_block_body h4 a:hover { color: #a78bfa !important; }
-      .education_block_footer { border-top: 1px solid rgba(255,255,255,.07) !important; background: transparent !important; }
-      .cources_info_style3 ul li { color: #94a3b8 !important; }
-      .education_block_thumb img { border-radius: 10px; }
-
-      /* === Section headings === */
-      .section-head .sub-title.bgl-primary {
-        background: rgba(139,92,246,.12) !important;
-        color: #a78bfa !important;
-        border: 1px solid rgba(139,92,246,.25) !important;
-        border-radius: 6px !important;
-        padding: 5px 14px !important;
-        font-family: 'Space Grotesk', sans-serif;
-        font-size: .75rem;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-      }
-      .section-head h4.title { color: #f1f5f9 !important; }
-      .theme-cl { color: #a78bfa !important; }
-
-      /* === Dashboard === */
-      .dashboard_container_header {
-        background: rgba(255,255,255,.03) !important;
-        border-bottom: 1px solid rgba(255,255,255,.07) !important;
-      }
-      .dashboard_container_header h4,
-      .dashboard_fl_1 h4 { color: #f1f5f9 !important; }
-
-      /* === Star rating colours === */
-      .fas.fa-star.filled { color: #f59e0b !important; }
-      .listing-rating .ti-star.active { color: #f59e0b !important; }
-      .rating-overview-box-total { color: #f1f5f9 !important; }
-
-      /* === Footer override === */
-      footer.dark-footer { background: #09090b !important; border-top: 1px solid rgba(255,255,255,.07) !important; }
-      .footer-bottom { background: rgba(255,255,255,.02) !important; border-top: 1px solid rgba(255,255,255,.06) !important; }
-      .footer-bottom p { color: #64748b !important; }
-      .footer-bottom-social li a { color: #64748b !important; }
-      .footer-bottom-social li a:hover { color: #a78bfa !important; }
-      .footer-widget h4.widget-title { color: #f1f5f9 !important; }
-      .footer-widget ul li a { color: #94a3b8 !important; }
-      .footer-widget ul li a:hover { color: #a78bfa !important; }
-      .footer-add ul li, .footer-add ul li span { color: #94a3b8 !important; }
-      .footer-add ul li a { color: #94a3b8 !important; }
-
-      /* === Bottom newsletter bar === */
-      section.newsletter.themes-bg { background: linear-gradient(135deg, #1e0a3c 0%, #0c1a33 100%) !important; border-top: 1px solid rgba(255,255,255,.07) !important; }
-      section.newsletter.themes-bg .sup-form .form-control { background: rgba(255,255,255,.08) !important; color: #fff !important; }
-      section.newsletter.themes-bg h2 { color: #fff !important; }
-      section.newsletter.themes-bg p { color: #94a3b8 !important; }
-
-      /* === Scrollbar === */
-      ::-webkit-scrollbar { width: 6px; }
-      ::-webkit-scrollbar-track { background: #0f0f13; }
-      ::-webkit-scrollbar-thumb { background: #3f3f4e; border-radius: 4px; }
-      ::-webkit-scrollbar-thumb:hover { background: #7c3aed; }
-
-      /* ======================================
-         DARK NAVBAR OVERRIDE
-         ====================================== */
-      :root {
-        --nav-bg:      #0f0f13;
-        --nav-border:  rgba(255,255,255,0.07);
-        --nav-text:    #cbd5e1;
-        --nav-hover:   #fff;
-        --nav-accent:  #8b5cf6;
-        --nav-accent-glow: rgba(139,92,246,0.35);
-      }
-
-      /* Main bar */
-      .header.header-light {
-        background: var(--nav-bg) !important;
-        border-bottom: 1px solid var(--nav-border) !important;
-        box-shadow: none !important;
-      }
-
-      /* Logo sizing */
-      .header .logo { height: 38px; width: auto; }
-
-      /* Nav wrapper — horizontal flex, vertically centered */
-      .header.header-light .navigation { display: flex !important; align-items: center !important; }
-      .header.header-light .nav-header { display: flex !important; align-items: center !important; }
-      .nav-menus-wrapper { display: flex !important; align-items: center !important; height: 100% !important; }
-      .nav-menus-wrapper .nav-menu { display: flex !important; align-items: center !important; margin: 0 !important; }
-
-      /* Top-level links — keep original vertical padding so they stay centered */
-      .navigation .nav-menu > li > a {
-        color: var(--nav-text) !important;
-        font-family: 'Space Grotesk', sans-serif;
-        font-weight: 500;
-        font-size: .88rem;
-        letter-spacing: .3px;
-        transition: color .2s ease;
-        display: flex !important;
-        align-items: center !important;
-      }
-      .navigation .nav-menu > li > a:hover,
-      .navigation .nav-menu > li.active > a {
-        color: var(--nav-hover) !important;
-      }
-
-      /* Active link — Courses highlighted */
-      .navigation .nav-menu > li > a[href='/student/preference/'] {
-        color: #fff !important;
-      }
-
-      /* Submenu indicator arrows */
-      .navigation .submenu-indicator { border-color: var(--nav-text) transparent transparent; }
-      .navigation li:hover .submenu-indicator { border-color: var(--nav-hover) transparent transparent; }
-
-      /* Dropdown panel */
-      .nav-dropdown.nav-submenu {
-        background: #1a1a24 !important;
-        border: 1px solid var(--nav-border) !important;
-        border-radius: 12px !important;
-        box-shadow: 0 16px 40px rgba(0,0,0,0.5) !important;
-        padding: 8px !important;
-        min-width: 180px !important;
-        top: calc(100% + 8px) !important;
-      }
-      .nav-dropdown.nav-submenu li a {
-        color: var(--nav-text) !important;
-        font-family: 'Inter', sans-serif;
-        font-size: .87rem;
-        border-radius: 8px !important;
-        padding: 9px 14px !important;
-        display: block;
-        transition: background .18s, color .18s;
-      }
-      .nav-dropdown.nav-submenu li a:hover {
-        background: rgba(139,92,246,.15) !important;
-        color: #fff !important;
-      }
-
-      /* My Account icon + text */
-      .nav-menu-social .ti-user {
-        color: var(--nav-accent);
-        margin-right: 6px;
-      }
-      .nav-menu-social > li > a {
-        color: var(--nav-text) !important;
-        font-family: 'Space Grotesk', sans-serif;
-        font-weight: 500;
-        font-size: .88rem;
-        transition: color .2s;
-      }
-      .nav-menu-social > li > a:hover { color: #fff !important; }
-
-      /* Mobile hamburger toggle */
-      .nav-toggle { color: var(--nav-text); }
-      .nav-toggle span,
-      .nav-toggle span::before,
-      .nav-toggle span::after { background: var(--nav-text); }
-
-      /* Mobile menu panel */
-      @media (max-width: 991px) {
-        .nav-menus-wrapper {
-          background: #0f0f13 !important;
-          border-top: 1px solid var(--nav-border) !important;
-        }
-        .nav-menu > li > a { padding: 12px 20px !important; }
-      }
-
-      /* Preloader dark */
-      .preloader {
-        background-color: #0f0f13 !important;
-        background-image: url('/static/courses_assets/img/loader.svg');
-      }
     </style>
-    <link href="/static/ui_refresh/theme-foundation.css?v=3" rel="stylesheet" />
-    <link href="/static/ui_refresh/public-ui.css?v=6" rel="stylesheet" />
+    <link href="/static/ui_refresh/theme-foundation.css?v=5" rel="stylesheet" />
+    <link href="/static/ui_refresh/public-ui.css?v=8" rel="stylesheet" />
   </head>
   <body class="imagnus-public-ui">
     <!-- ============================================================== -->
@@ -520,6 +190,17 @@
               </ul>
 
               <ul class="nav-menu nav-menu-social align-to-right">
+                <li class="theme-toggle-navitem">
+                  <button type="button" class="imagnus-theme-toggle" data-theme-toggle>
+                    <span class="imagnus-theme-toggle__copy">
+                      <span class="imagnus-theme-toggle__eyebrow">Theme</span>
+                      <span class="imagnus-theme-toggle__label" data-theme-label>Light theme</span>
+                    </span>
+                    <span class="imagnus-theme-toggle__track" aria-hidden="true">
+                      <span class="imagnus-theme-toggle__thumb"></span>
+                    </span>
+                  </button>
+                </li>
                 <li>
                   <a href="#"
                     ><i class="ti-user"></i> My Account
@@ -792,6 +473,7 @@
     <script src="/static/courses_assets/js/custom.js"></script>
     <script src="/static/courses_assets/js/FileSaver.js"></script>
     <script src="/static/admin/js/js-snackbar.js"></script>
+    <script src="/static/ui_refresh/theme-controller.js?v=2"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <!-- <script src="/static/courses_assets/js/courses.js"></script> -->
     <!-- ============================================================== -->

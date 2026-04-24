@@ -11,9 +11,11 @@
           predictable before class or exam time.
         </p>
       </div>
-      <div class="dashboard-page-badges">
-        <span class="dashboard-page-badge">{{ data_count }} note groups</span>
-        <span class="dashboard-page-badge">Topic-wise navigation</span>
+      <div class="dashboard-page-side">
+        <div class="dashboard-page-badges">
+          <span class="dashboard-page-badge">{{ data_count }} note groups</span>
+          <span class="dashboard-page-badge">Page {{ page }}</span>
+        </div>
       </div>
     </div>
     {% for each_course_obj in course_cat_obj%}
@@ -43,9 +45,11 @@
                 <b class="clr_brown">{{ loop.index }}.</b> {{
                 each_topic.topic.name }}
               </h5>
-              <span class="crdbg_2"
-                >Total Notes - {{ each_topic.CategoryNotes|length }}</span
-              >
+              <span class="crdbg_2">{{ each_topic.CategoryNotes|length }} notes</span>
+              <div class="dashboard-card-footer">
+                <i class="uil uil-book-open"></i>
+                Open notes
+              </div>
             </div>
           </div>
         </a>
@@ -97,66 +101,18 @@
                 >Previous</a
               >
             </li>
-            <li class="paginate_button page-item active">
+            {% for number in range(page, page + 6) %}
+            <li class="paginate_button page-item {{ 'active' if number == page else '' }}">
               <a
-                href="/student/pdf_notes/{{cid}}/?page={{page}}"
+                href="/student/pdf_notes/{{cid}}/?page={{number}}"
                 aria-controls="example"
-                data-dt-idx="1"
+                data-dt-idx="{{ loop.index }}"
                 tabindex="0"
                 class="page-link"
-                >{{page}}</a
+                >{{number}}</a
               >
             </li>
-            <li class="paginate_button page-item">
-              <a
-                href="/student/pdf_notes/{{cid}}/?page={{page+1}}"
-                aria-controls="example"
-                data-dt-idx="1"
-                tabindex="0"
-                class="page-link"
-                >{{page+1}}</a
-              >
-            </li>
-            <li class="paginate_button page-item">
-              <a
-                href="/student/pdf_notes/{{cid}}/?page={{page+2}}"
-                aria-controls="example"
-                data-dt-idx="1"
-                tabindex="0"
-                class="page-link"
-                >{{page+2}}</a
-              >
-            </li>
-            <li class="paginate_button page-item">
-              <a
-                href="/student/pdf_notes/{{cid}}/?page={{page+3}}"
-                aria-controls="example"
-                data-dt-idx="1"
-                tabindex="0"
-                class="page-link"
-                >{{page+3}}</a
-              >
-            </li>
-            <li class="paginate_button page-item">
-              <a
-                href="/student/pdf_notes/{{cid}}/?page={{page+4}}"
-                aria-controls="example"
-                data-dt-idx="1"
-                tabindex="0"
-                class="page-link"
-                >{{page+4}}</a
-              >
-            </li>
-            <li class="paginate_button page-item">
-              <a
-                href="/student/pdf_notes/{{cid}}/?page={{page+5}}"
-                aria-controls="example"
-                data-dt-idx="1"
-                tabindex="0"
-                class="page-link"
-                >{{page+5}}</a
-              >
-            </li>
+            {% endfor %}
             <li class="paginate_button page-item next" id="example_next">
               <a
                 href="/student/pdf_notes/{{cid}}/?page={{page+6}}"

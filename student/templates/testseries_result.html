@@ -1,102 +1,89 @@
 {% extends "student_dashboard_base.html" %}
 {% block content %}
 
-         <div class="sa4d25">
-            <div class="container-fluid">
-               <div class="row">
-                  <div class="col-lg-12 title-icon">
-                     <h3 class="title"><i class="uil-clipboard-alt"></i>{{title}} - Test Series Results</h3>
-                  </div>
-               </div>
-               <div class="mb-30 mt-20">
-                  <div class="row">
-                     <div class="col-lg-5 col-md-6 col-sm-6">
-                        <div class="ground-list ground-hover-list mb-20">
-                           <div class="ground ground-list-single">
-                              <div class="card-test p-10">
-                                 <div class="btn-circle-40 btn-success"><i class="fa fa-check"></i></div>
-                                 <div class="ground-content mt-10">
-                                    <h6>Correct Answer</h6>
-                                    <small class="text-fade">{{summary.correct}}</small>
-                                 </div>
-                              </div>
-                              <div class="card-test p-10">
-                                 <div class="btn-circle-40 btn-danger"><i class="fa fa-close"></i></div>
-                                 <div class="ground-content mt-10">
-                                    <h6>Wrong Answer</h6>
-                                    <small class="text-fade">{{summary.wrong}}</small>
-                                 </div>
-                              </div>
-                              <div class="card-test p-10">
-                                 <div class="btn-circle-40 btn-warning"><i class="fa fa-info-circle text-white"></i></div>
-                                 <div class="ground-content mt-10">
-                                    <h6>Not Attempted</h6>
-                                    <small class="text-fade">{{summary.not_attempted}}</small>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                     <div class="col-lg-3 col-md-6 col-sm-6"></div>
-                     <div class="col-lg-4 col-md-6 col-sm-6">
-                        <div class="dashboard_stats_wrap-test widget-4">
-                           <div class="dashboard_stats_wrap_content">
-                              <h4>{{summary.correct}}/<span class="text-default">{{test_series_qstns|length}}</span></h4>
-                              <span>Total Score</span>
-                           </div>
-                           <div class="dashboard_stats_wrap-icon"><i class="fa fa-pie-chart"></i></div>
-                        </div>
-                     </div>
-					 </div>
-               
-                   {% for qstns in test_series_qstns%}
-					<div class="card_dash activee">
-					 <div class="row">
-                     <div class="col-md-8">
-                        <div class="user-status">
-                           <div class="ques_item">
-                              <div class="ques_title">
-                                 <span>Q. {{loop.index}}. :- </span>
-                                    {{qstns.question}}                              </div>
-                              <div class="card-tests">
-                                 <div class="card-body {{ question_state[loop.index-1]['opt_1'][1]}}">
-                                    <p class="{{ question_state[loop.index-1]['opt_1'][0]}}">[A]{{qstns.opt_1}} </p>
-                                 </div>
-                              </div>
-                              <div class="card-tests">
-                                 <div class="card-body {{ question_state[loop.index-1]['opt_2'][1]}}">
-                                    <p class="{{ question_state[loop.index-1]['opt_2'][0]}}">[B] {{qstns.opt_2}} </p>
-                                 </div>
-                              </div>
-                              <div class="card-tests">
-                                 <div class="card-body {{ question_state[loop.index-1]['opt_3'][1]}}">
-                                    <p class="{{ question_state[loop.index-1]['opt_3'][0]}}">[C] {{qstns.opt_3}} </p>
-                                 </div>
-                              </div>
-                              <div class="card-tests">
-                                 <div class="card-body  {{ question_state[loop.index-1]['opt_4'][1]}}">
-                                    <p  class="{{ question_state[loop.index-1]['opt_4'][0]}}">[D] {{qstns.opt_4}} </p>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-					 <div class="ques_item col-md-4">
-				          <h4 class="ques_title"><span>Solution: </span></h4>
-					   <div class="card-tests">
-                          <div class="card-body">
-                             <p>{{ qstns.solution}}</p>
-                          </div>
-                       </div>
-					 </div>
-                  </div>
-				  </div>
-				  
-				  {% endfor %}
-               </div>
-            </div>
-            
-         </div>
+<div class="sa4d25 dashboard-shell">
+  <div class="container-fluid">
+    <div class="dashboard-page-head">
+      <div>
+        <div class="dashboard-page-kicker">Result Review</div>
+        <h1 class="dashboard-page-title">{{ title }}</h1>
+        <p class="dashboard-page-copy">
+          Review your score, answer choices, and solutions in one clean test
+          analysis view.
+        </p>
+      </div>
+      <div class="dashboard-page-side">
+        <div class="dashboard-page-badges">
+          <span class="dashboard-page-badge">{{ test_series_qstns|length }} questions</span>
+          <span class="dashboard-page-badge">{{ summary.correct }} correct</span>
+        </div>
+        <div class="dashboard-page-actions">
+          <a href="/student/test_series/{{cid}}/" class="dashboard-action-button">
+            <i class="uil uil-clipboard-alt"></i>
+            More Tests
+          </a>
+        </div>
+      </div>
+    </div>
 
+    <div class="result-summary-grid">
+      <div class="result-metric-card">
+        <span>Total Score</span>
+        <strong>{{ summary.correct }}/{{ test_series_qstns|length }}</strong>
+      </div>
+      <div class="result-metric-card is-success">
+        <span>Correct</span>
+        <strong>{{ summary.correct }}</strong>
+      </div>
+      <div class="result-metric-card is-danger">
+        <span>Wrong</span>
+        <strong>{{ summary.wrong }}</strong>
+      </div>
+      <div class="result-metric-card is-warning">
+        <span>Not Attempted</span>
+        <strong>{{ summary.not_attempted }}</strong>
+      </div>
+    </div>
+
+    {% for qstns in test_series_qstns %}
+    <div class="result-question-card">
+      <div class="result-question-layout">
+        <div>
+          <div class="ques_title">
+            <span>Q. {{ loop.index }}.</span>
+            {{ qstns.question }}
+          </div>
+
+          <div class="answer-option-card">
+            <div class="card-body {{ question_state[loop.index-1]['opt_1'][1] }}">
+              <p class="{{ question_state[loop.index-1]['opt_1'][0] }}">[A] {{ qstns.opt_1 }}</p>
+            </div>
+          </div>
+          <div class="answer-option-card">
+            <div class="card-body {{ question_state[loop.index-1]['opt_2'][1] }}">
+              <p class="{{ question_state[loop.index-1]['opt_2'][0] }}">[B] {{ qstns.opt_2 }}</p>
+            </div>
+          </div>
+          <div class="answer-option-card">
+            <div class="card-body {{ question_state[loop.index-1]['opt_3'][1] }}">
+              <p class="{{ question_state[loop.index-1]['opt_3'][0] }}">[C] {{ qstns.opt_3 }}</p>
+            </div>
+          </div>
+          <div class="answer-option-card">
+            <div class="card-body {{ question_state[loop.index-1]['opt_4'][1] }}">
+              <p class="{{ question_state[loop.index-1]['opt_4'][0] }}">[D] {{ qstns.opt_4 }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="solution-panel">
+          <h4>Solution</h4>
+          <p>{{ qstns.solution }}</p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
 
 {% endblock %}

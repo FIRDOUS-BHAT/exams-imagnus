@@ -4,14 +4,47 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+      (function () {
+        var storageKey = "imagnus-theme";
+        var legacyKey = "gmtNightMode";
+        var theme = "light";
+        try {
+          var savedTheme = window.localStorage.getItem(storageKey);
+          if (savedTheme === "light" || savedTheme === "dark") {
+            theme = savedTheme;
+          } else if (window.localStorage.getItem(legacyKey)) {
+            theme = "dark";
+          } else if (
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+          ) {
+            theme = "dark";
+          }
+        } catch (error) {}
+        document.documentElement.setAttribute("data-theme", theme);
+        document.documentElement.style.colorScheme = theme;
+        document.documentElement.classList.toggle("night-mode", theme === "dark");
+      })();
+    </script>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-    <link href="/static/ui_refresh/public-ui.css?v=2" rel="stylesheet">
+    <link href="/static/ui_refresh/theme-foundation.css?v=5" rel="stylesheet">
+    <link href="/static/ui_refresh/public-ui.css?v=8" rel="stylesheet">
 
     <title>{% block title %}{% endblock title %}</title>
   </head>
   <body class="imagnus-public-ui">
+        <button type="button" class="imagnus-theme-toggle imagnus-theme-toggle--floating" data-theme-toggle>
+            <span class="imagnus-theme-toggle__copy">
+                <span class="imagnus-theme-toggle__eyebrow">Theme</span>
+                <span class="imagnus-theme-toggle__label" data-theme-label>Light theme</span>
+            </span>
+            <span class="imagnus-theme-toggle__track" aria-hidden="true">
+                <span class="imagnus-theme-toggle__thumb"></span>
+            </span>
+        </button>
 
         {% block maincontent %}
 
@@ -19,5 +52,6 @@
 
     <!-- Option 1: Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+    <script src="/static/ui_refresh/theme-controller.js?v=2"></script>
   </body>
 </html>

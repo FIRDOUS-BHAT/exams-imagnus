@@ -14,8 +14,10 @@
                         dashboard where you learn.
                      </p>
                   </div>
-                  <div class="dashboard-page-badges">
-                     <span class="dashboard-page-badge">{{ course_cat_obj|length }} course categories</span>
+                  <div class="dashboard-page-side">
+                     <div class="dashboard-page-badges">
+                        <span class="dashboard-page-badge">{{ course_cat_obj|length }} course categories</span>
+                     </div>
                   </div>
                </div>
                 {% for cat in course_cat_obj %}
@@ -40,6 +42,10 @@
                         <div class="card_dash_left">
                            <h5><b class="clr_brown">{{ loop.index }}.</b> {{ topic.topic.name }} </h5>
                            <span class="crdbg_2">Total Test Series - {{ topic.CategoryTestSeries|length }}</span>
+                           <div class="dashboard-card-footer">
+                              <i class="uil uil-clipboard-notes"></i>
+                              View papers
+                           </div>
                         </div>
                      </div>
                     </a>

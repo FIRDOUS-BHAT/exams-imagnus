@@ -8,12 +8,36 @@
 		 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
          <title>I-Magnus Academy | Best Online Coaching for Competitive and Recruitment Exams Preparation | Elearning   </title>
+       <script>
+          (function () {
+            var storageKey = "imagnus-theme";
+            var legacyKey = "gmtNightMode";
+            var theme = "light";
+            try {
+              var savedTheme = window.localStorage.getItem(storageKey);
+              if (savedTheme === "light" || savedTheme === "dark") {
+                theme = savedTheme;
+              } else if (window.localStorage.getItem(legacyKey)) {
+                theme = "dark";
+              } else if (
+                window.matchMedia &&
+                window.matchMedia("(prefers-color-scheme: dark)").matches
+              ) {
+                theme = "dark";
+              }
+            } catch (error) {}
+            document.documentElement.setAttribute("data-theme", theme);
+            document.documentElement.style.colorScheme = theme;
+            document.documentElement.classList.toggle("night-mode", theme === "dark");
+          })();
+       </script>
 		 <!-- favicon
 		============================================ -->
          <link rel="shortcut icon" type="image/x-icon" href="/static/courses_assets/img/fav.png">
          <!-- Custom CSS -->
          <link href="/static/courses_assets/css/styles.css" rel="stylesheet" />
-         <link href="/static/ui_refresh/public-ui.css?v=2" rel="stylesheet" />
+         <link href="/static/ui_refresh/theme-foundation.css?v=5" rel="stylesheet" />
+         <link href="/static/ui_refresh/public-ui.css?v=8" rel="stylesheet" />
 
 		 <!-- Custom Color Option -->
 		 <link href="/static/courses_assets/css/colors.css" rel="stylesheet" />
@@ -88,6 +112,15 @@
 
 </head>
 <body class="red-skin imagnus-public-ui imagnus-assessment-ui" oncontextmenu="return false;">
+    <button type="button" class="imagnus-theme-toggle imagnus-theme-toggle--floating" data-theme-toggle>
+      <span class="imagnus-theme-toggle__copy">
+        <span class="imagnus-theme-toggle__eyebrow">Theme</span>
+        <span class="imagnus-theme-toggle__label" data-theme-label>Light theme</span>
+      </span>
+      <span class="imagnus-theme-toggle__track" aria-hidden="true">
+        <span class="imagnus-theme-toggle__thumb"></span>
+      </span>
+    </button>
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WXXL594"
       height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -126,6 +159,7 @@
 		 <script src="/static/courses_assets/js/custom.js"></script>
 		 <script src="/static/courses_assets/js/FileSaver.js"></script>
       <script src="/static/admin/js/js-snackbar.js"></script>
+      <script src="/static/ui_refresh/theme-controller.js?v=2"></script>
 
 
 

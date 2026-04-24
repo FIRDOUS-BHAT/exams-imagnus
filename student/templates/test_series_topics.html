@@ -14,8 +14,10 @@
                         marks, and duration before you begin.
                      </p>
                   </div>
-                  <div class="dashboard-page-badges">
-                     <span class="dashboard-page-badge">{{ test_series_list|length }} tests available</span>
+                  <div class="dashboard-page-side">
+                     <div class="dashboard-page-badges">
+                        <span class="dashboard-page-badge">{{ test_series_list|length }} tests available</span>
+                     </div>
                   </div>
                </div>
                {% if test_series_list %}
@@ -24,7 +26,7 @@
                   {% for test_series in test_series_list %}
 
                   <div class="col-xl-6 col-lg-6 col-md-6">
-                     <div class="card_dash activee mb-30 dashboard-topic-card">
+                     <div class="card_dash activee mb-30 dashboard-topic-card dashboard-test-card">
                         <div class="card_dash_left">
                            <h5><b class="clr_brown">{{ loop.index }}.</b> {{ test_series.title }} </h5>
                            <ul class="country_list">

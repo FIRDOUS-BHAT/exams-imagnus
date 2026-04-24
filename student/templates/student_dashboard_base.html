@@ -3,9 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Student Login || I-Magnus</title>
+    <title>I-Magnus Student Workspace</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="UTF-8" />
+    <script>
+      (function () {
+        var storageKey = "imagnus-theme";
+        var legacyKey = "gmtNightMode";
+        var theme = "light";
+        try {
+          var savedTheme = window.localStorage.getItem(storageKey);
+          if (savedTheme === "light" || savedTheme === "dark") {
+            theme = savedTheme;
+          } else if (window.localStorage.getItem(legacyKey)) {
+            theme = "dark";
+          } else if (
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+          ) {
+            theme = "dark";
+          }
+        } catch (error) {}
+        document.documentElement.setAttribute("data-theme", theme);
+        document.documentElement.style.colorScheme = theme;
+        document.documentElement.classList.toggle("night-mode", theme === "dark");
+      })();
+    </script>
     <!-- External CSS libraries -->
     <link
       type="text/css"
@@ -124,232 +147,12 @@
     />
     <script src="https://unpkg.com/video.js/dist/video.js"></script>
     <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
-    <style>
-      body {
-        -webkit-user-select: none; /* Safari */
-        -ms-user-select: none; /* IE 10 and IE 11 */
-        user-select: none; /* Standard syntax */
-      }
-    </style>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-
-    <style>
-      /* ==========================================================
-         I-MAGNUS MODERN DASHBOARD SYSTEM (PREMIUM DARK)
-         ========================================================== */
-      :root {
-        --bg-dark: #0f0f13;
-        --bg-card: #1a1a24;
-        --bg-sidebar: #13131d;
-        --accent-purple: #7c3aed;
-        --accent-purple-glow: rgba(124, 58, 237, 0.4);
-        --text-main: #f1f5f9;
-        --text-muted: #94a3b8;
-        --border-glass: rgba(255, 255, 255, 0.08);
-      }
-
-      body {
-        background-color: var(--bg-dark) !important;
-        color: var(--text-main) !important;
-        font-family: 'Inter', sans-serif !important;
-        background-image:
-          linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px) !important;
-        background-size: 40px 40px !important;
-      }
-
-      /* --- Header --- */
-      .header {
-        background: var(--bg-dark) !important;
-        border-bottom: 1px solid var(--border-glass) !important;
-        box-shadow: none !important;
-      }
-      .header .logo { filter: brightness(0) invert(1); height: 32px !important; }
-      .option_links i, .uil-bars { color: var(--text-muted) !important; }
-      .noti_count { background: var(--accent-purple) !important; }
-
-      /* --- Sidebar --- */
-      .vertical_nav {
-        background: var(--bg-sidebar) !important;
-        border-right: 1px solid var(--border-glass) !important;
-      }
-      .menu--link {
-        color: var(--text-muted) !important;
-        font-family: 'Space Grotesk', sans-serif !important;
-        font-weight: 500 !important;
-        transition: all 0.3s ease !important;
-        border-radius: 12px !important;
-        margin: 4px 12px !important;
-      }
-      .menu--link:hover, .menu--link.active {
-        background: rgba(124, 58, 237, 0.1) !important;
-        color: var(--accent-purple) !important;
-      }
-      .menu--link.active {
-        background: var(--accent-purple) !important;
-        color: #fff !important;
-        box-shadow: 0 4px 15px var(--accent-purple-glow) !important;
-      }
-      .menu--icon { font-size: 20px !important; }
-
-      /* --- Dashboard Content --- */
-      .sa4d25 { background: transparent !important; padding-top: 30px !important; }
-      .st_title, .title {
-        font-family: 'Space Grotesk', sans-serif !important;
-        font-weight: 700 !important;
-        color: var(--text-main) !important;
-        font-size: 24px !important;
-        margin-bottom: 25px !important;
-      }
-      .st_title i, .title i { color: var(--accent-purple) !important; margin-right: 10px; }
-
-      /* --- Dashboard Stats Cards --- */
-      .card_dash {
-        background: var(--bg-card) !important;
-        border: 1px solid var(--border-glass) !important;
-        border-radius: 18px !important;
-        padding: 24px !important;
-        transition: transform 0.3s ease, box-shadow 0.3s ease !important;
-        margin-bottom: 24px !important;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      .card_dash:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.4) !important;
-        border-color: rgba(124, 58, 237, 0.3) !important;
-      }
-      .card_dash_left h5 { color: var(--text-muted) !important; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
-      .card_dash_left h2 { color: var(--text-main) !important; font-weight: 800; font-family: 'Space Grotesk', sans-serif; font-size: 32px; margin: 10px 0; }
-      .card_dash_right img { width: 50px; opacity: 0.8; }
-
-      /* Stat Badges */
-      .crdbg_1, .crdbg_2, .crdbg_3, .crdbg_4 {
-        background: rgba(255,255,255,0.05) !important;
-        color: var(--text-muted) !important;
-        padding: 4px 12px !important;
-        border-radius: 6px !important;
-        font-size: 11px !important;
-        border: 1px solid var(--border-glass) !important;
-      }
-
-      /* --- Category Blocks & Lists --- */
-      .top_countries {
-        background: var(--bg-card) !important;
-        border: 1px solid var(--border-glass) !important;
-        border-radius: 18px !important;
-        padding: 0 !important;
-        overflow: hidden;
-      }
-      .card_category {
-        padding: 20px !important;
-        background: rgba(255,255,255,0.02) !important;
-        border-bottom: 1px solid var(--border-glass) !important;
-      }
-      .card_category h5 { color: var(--text-main) !important; font-weight: 600; }
-
-      .country_list { padding: 10px 0 !important; }
-      .country_item {
-        padding: 12px 20px !important;
-        border: none !important;
-        transition: background 0.2s;
-      }
-      .country_item:hover { background: rgba(255,255,255,0.03); }
-      .country_item_left span, .country_item_left a {
-        color: var(--text-muted) !important;
-        font-size: 14px;
-        text-decoration: none !important;
-      }
-      .country_item_left i { color: var(--accent-purple) !important; margin-right: 10px; width: 20px; }
-      .country_item_right span { color: var(--accent-purple) !important; font-weight: 600; }
-
-      /* --- Video/Lecture Cards --- */
-      .card_dashh {
-        border-radius: 12px !important;
-        overflow: hidden;
-        border: 1px solid var(--border-glass) !important;
-      }
-      .card_dashh img { transition: transform 0.5s; }
-      .card_dashh:hover img { transform: scale(1.05); }
-
-      /* --- Generic UI Elements --- */
-      .footer {
-        background: var(--bg-dark) !important;
-        border-top: 1px solid var(--border-glass) !important;
-        padding: 30px 0 !important;
-        color: var(--text-muted) !important;
-      }
-      .footer_logo img { filter: brightness(0) invert(1); opacity: 0.5; }
-
-      /* Custom Scrollbar */
-      ::-webkit-scrollbar { width: 8px; }
-      ::-webkit-scrollbar-track { background: var(--bg-dark); }
-      ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
-      ::-webkit-scrollbar-thumb:hover { background: var(--accent-purple); }
-
-      /* Night mode switch removal - we are always in night mode now */
-      .night_mode_switch__btn { display: none !important; }
-
-      /* Account Dropdown */
-      .dropdown_account {
-        background: var(--bg-card) !important;
-        border: 1px solid var(--border-glass) !important;
-        border-radius: 12px !important;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
-      }
-      .pd_content h6 { color: var(--text-main) !important; }
-      .pd_content span a { color: var(--text-muted) !important; }
-
-      /* --- Additional Dashboard Elements --- */
-      .review_all120 { margin-bottom: 20px !important; border-bottom: 1px solid var(--border-glass) !important; padding-bottom: 10px !important; }
-      .review_item_course_title a { color: var(--text-main) !important; font-family: 'Space Grotesk', sans-serif !important; font-size: 20px !important; font-weight: 600 !important; }
-
-      .clr_brown { color: var(--accent-purple) !important; }
-      .clr_red { color: #f87171 !important; font-size: 13px !important; }
-      .text-danger { color: #f87171 !important; }
-      .card_dash_left h6 { color: var(--text-main) !important; font-weight: 600 !important; font-size: 16px !important; }
-      .center { color: var(--text-muted) !important; text-align: center !important; width: 100% !important; }
-
-      /* Buttons */
-      .upload_btn, .btn-theme, .btn-primary {
-        background: linear-gradient(135deg, var(--accent-purple), #6d28d9) !important;
-        border: none !important;
-        color: #fff !important;
-        border-radius: 8px !important;
-        font-family: 'Space Grotesk', sans-serif !important;
-        font-weight: 600 !important;
-        padding: 10px 20px !important;
-        display: inline-block !important;
-        transition: all 0.3s ease !important;
-      }
-      .upload_btn:hover, .btn-theme:hover {
-        box-shadow: 0 4px 15px var(--accent-purple-glow) !important;
-        transform: translateY(-2px);
-        color: #fff !important;
-      }
-
-      /* Pagination */
-      .pagination { margin-top: 30px !important; justify-content: flex-end !important; }
-      .page-item .page-link {
-        background: var(--bg-card) !important;
-        border: 1px solid var(--border-glass) !important;
-        color: var(--text-muted) !important;
-        margin: 0 4px !important;
-        border-radius: 6px !important;
-        transition: all 0.2s ease !important;
-      }
-      .page-item.active .page-link, .page-item .page-link:hover {
-        background: var(--accent-purple) !important;
-        border-color: var(--accent-purple) !important;
-        color: #fff !important;
-      }
-      .page-item.disabled .page-link { opacity: 0.5; pointer-events: none; }
-      .dataTables_info { color: var(--text-muted) !important; margin-top: 35px !important; }
-
-    </style>
-    <link href="/static/ui_refresh/theme-foundation.css?v=3" rel="stylesheet" />
-    <link href="/static/ui_refresh/student-dashboard-ui.css?v=5" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link href="/static/ui_refresh/theme-foundation.css?v=5" rel="stylesheet" />
+    <link href="/static/ui_refresh/student-dashboard-ui.css?v=8" rel="stylesheet" />
   </head>
   <body class="imagnus-dashboard-ui">
     <noscript>
@@ -359,24 +162,35 @@
     <header class="header clearfix">
       <div class="main_logo" id="logo">
         <a href="/student/dashboard/{{cid}}/"
-          ><img src="https://imagnus.in/images/logo.png" class="logo" alt=""
+          ><img src="https://imagnus.in/images/logo.png" class="logo" alt="I-Magnus"
         /></a>
         <a href="/student/dashboard/{{cid}}/"
           ><img
             class="logo-inverse logo"
             src="https://imagnus.in/images/logo.png"
-            alt=""
+            alt="I-Magnus"
         /></a>
       </div>
-      <button type="button" id="toggleMenu" class="toggle_menu">
+      <button type="button" id="toggleMenu" class="toggle_menu" aria-label="Open menu">
         <i class="uil uil-bars"></i>
       </button>
-      <button id="collapse_menu" class="collapse_menu">
+      <button id="collapse_menu" class="collapse_menu" aria-label="Collapse menu">
         <i class="uil uil-bars collapse_menu--icon"></i>
         <span class="collapse_menu--label"></span>
       </button>
       <div class="header_right">
         <ul>
+          <li class="theme-toggle-header-item">
+            <button type="button" class="imagnus-theme-toggle" data-theme-toggle data-theme-compact="true">
+              <span class="imagnus-theme-toggle__copy">
+                <span class="imagnus-theme-toggle__eyebrow">Theme</span>
+                <span class="imagnus-theme-toggle__label" data-theme-label>Light theme</span>
+              </span>
+              <span class="imagnus-theme-toggle__track" aria-hidden="true">
+                <span class="imagnus-theme-toggle__thumb"></span>
+              </span>
+            </button>
+          </li>
           <li class="ui dropdown">
             <a href="#" class="option_links" title="Notifications"
               ><i class="uil uil-bell"></i><span class="noti_count">0 </span></a
@@ -386,7 +200,7 @@
             <a href="#" class="opts_account" title="Account">
               <img
                 src="https://icon-library.com/images/student-icon-transparent/student-icon-transparent-27.jpg"
-                alt=""
+                alt="Student profile"
               />
             </a>
             <div class="menu dropdown_account">
@@ -394,7 +208,7 @@
                 <div class="profile_link">
                   <img
                     src="https://icon-library.com/images/student-icon-transparent/student-icon-transparent-27.jpg"
-                    alt=""
+                    alt="Student profile"
                   />
                   <div class="pd_content">
                     <div class="rhte85">
@@ -415,14 +229,6 @@
                 </div>
                 <!-- <a href="my_instructor_profile_view.html" class="dp_link_12">View Instructor Profile </a> -->
               </div>
-              <div class="night_mode_switch__btn">
-                <a href="#" id="night-mode" class="btn-night-mode">
-                  <i class="uil uil-moon"></i> Night mode
-                  <span class="btn-night-mode-switch">
-                    <span class="uk-switch-button"></span>
-                  </span>
-                </a>
-              </div>
               <!-- <a href="setting.html" class="item channel_item">Setting </a> -->
 
               <a
@@ -441,6 +247,7 @@
     <nav class="vertical_nav">
       <div class="left_section menu_left" id="js-menu">
         <div class="left_section">
+          <div class="dashboard-nav-label">Learn</div>
           <ul>
             <li class="menu--item">
               <a
@@ -502,6 +309,7 @@
           </ul>
         </div>
         <div class="left_section pt-2">
+          <div class="dashboard-nav-label">Account</div>
           <ul>
             <li class="menu--item">
               <a
@@ -569,8 +377,8 @@
     <script src="/static/student_assets/vendor/OwlCarousel/owl.carousel.js"></script>
     <script src="/static/student_assets/vendor/semantic/semantic.min.js"></script>
     <script src="/static/student_assets/js/custom1.js"></script>
-    <script src="/static/student_assets/js/night-mode.js"></script>
     <script src="/static/admin/js/js-snackbar.js"></script>
+    <script src="/static/ui_refresh/theme-controller.js?v=2"></script>
     <script src="/static/student_assets/js/core.js"></script>
     <script src="/static/student_assets/js/cipher-core.js"></script>
     <script src="/static/student_assets/js/aes.js"></script>

@@ -1,18 +1,15 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap");
 
 body.imagnus-auth-ui {
-  --auth-bg: #07111f;
-  --auth-panel: rgba(12, 23, 40, 0.94);
-  --auth-panel-soft: rgba(255, 255, 255, 0.04);
-  --auth-border: rgba(148, 163, 184, 0.18);
-  --auth-text: #edf3fb;
-  --auth-muted: #95abc4;
-  --auth-accent: #2ea7ff;
-  --auth-shadow: 0 28px 70px rgba(0, 8, 20, 0.44);
-  background:
-    radial-gradient(circle at top left, rgba(46, 167, 255, 0.16), transparent 34%),
-    radial-gradient(circle at bottom right, rgba(38, 198, 180, 0.12), transparent 30%),
-    linear-gradient(180deg, #07111f 0%, #0a1728 100%) !important;
+  --auth-bg: var(--bg-app);
+  --auth-panel: var(--surface-gradient-strong);
+  --auth-panel-soft: var(--layer-1);
+  --auth-border: var(--border-color);
+  --auth-text: var(--text-primary);
+  --auth-muted: var(--text-secondary);
+  --auth-accent: var(--brand-primary);
+  --auth-shadow: var(--shadow-medium);
+  background: var(--backdrop-gradient) !important;
   color: var(--auth-text);
   font-family: "Inter", sans-serif !important;
 }
@@ -22,8 +19,8 @@ body.imagnus-auth-ui::before {
   position: fixed;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.026) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px);
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
   background-size: 40px 40px;
   opacity: 0.3;
   pointer-events: none;
@@ -40,12 +37,12 @@ body.imagnus-auth-ui .page_loader {
 
 body.imagnus-auth-ui .login-14 .row.login-box,
 body.imagnus-auth-ui .login-14 .login-box {
-  background: linear-gradient(180deg, rgba(12, 23, 40, 0.65), rgba(9, 19, 33, 0.75)) !important;
+  background: var(--auth-panel) !important;
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--auth-border) !important;
   border-radius: 40px !important;
-  box-shadow: 0 32px 80px rgba(0, 8, 20, 0.6) !important;
+  box-shadow: var(--auth-shadow) !important;
   overflow: hidden;
   position: relative;
 }
@@ -57,9 +54,9 @@ body.imagnus-auth-ui .login-14 .bg-color-16 {
 body.imagnus-auth-ui .form-section h3 {
   color: var(--auth-text) !important;
   font-family: "Space Grotesk", sans-serif !important;
-  font-size: clamp(2rem, 3vw, 2.6rem);
+  font-size: 2.35rem;
   font-weight: 700;
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
   margin: 0;
 }
 
@@ -87,8 +84,8 @@ body.imagnus-auth-ui .auth-kicker {
   align-items: center;
   gap: 8px;
   border-radius: 999px;
-  background: rgba(46, 167, 255, 0.12);
-  border: 1px solid rgba(46, 167, 255, 0.2);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-outline);
   color: var(--auth-accent);
   font-family: "Space Grotesk", sans-serif;
   font-size: 0.76rem;
@@ -121,8 +118,8 @@ body.imagnus-auth-ui .preference-choice-card {
 }
 
 body.imagnus-auth-ui .preference-choice-card:hover {
-  border-color: rgba(46, 167, 255, 0.34);
-  box-shadow: 0 18px 36px rgba(0, 8, 20, 0.24);
+  border-color: var(--accent-outline);
+  box-shadow: var(--shadow-soft);
   transform: translateY(-2px);
 }
 
@@ -160,8 +157,8 @@ body.imagnus-auth-ui .preference-choice-pills {
 }
 
 body.imagnus-auth-ui .preference-choice-pill {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--layer-1);
+  border: 1px solid var(--border-color);
   border-radius: 999px;
   color: var(--auth-muted) !important;
   display: inline-flex;
@@ -197,8 +194,8 @@ body.imagnus-auth-ui #pref_submit_btn {
 
 body.imagnus-auth-ui .auth-back-link {
   align-items: center;
-  background: rgba(7, 17, 31, 0.68);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--surface-glass);
+  border: 1px solid var(--border-color);
   border-radius: 999px;
   color: var(--auth-muted) !important;
   display: inline-flex;
@@ -213,9 +210,9 @@ body.imagnus-auth-ui .auth-back-link {
 }
 
 body.imagnus-auth-ui .auth-back-link:hover {
-  background: rgba(46, 167, 255, 0.12);
-  border-color: rgba(46, 167, 255, 0.22);
-  color: #ffffff !important;
+  background: var(--accent-soft);
+  border-color: var(--accent-outline);
+  color: var(--auth-text) !important;
   transform: translateY(-1px);
 }
 
@@ -239,12 +236,12 @@ body.imagnus-auth-ui .login-14 .login-box {
 
 body.imagnus-auth-ui .login-14 .bg-img {
   background:
-    linear-gradient(160deg, rgba(11, 24, 40, 0.2), rgba(11, 24, 40, 0.7)),
-    radial-gradient(circle at top left, rgba(46, 167, 255, 0.3), transparent 40%),
-    radial-gradient(circle at bottom right, rgba(124, 58, 237, 0.25), transparent 40%) !important;
+    linear-gradient(160deg, rgba(var(--brand-primary-rgb), 0.08), rgba(var(--brand-primary-rgb), 0.18)),
+    radial-gradient(circle at top left, rgba(var(--brand-primary-rgb), 0.24), transparent 40%),
+    radial-gradient(circle at bottom right, rgba(var(--brand-accent-rgb), 0.2), transparent 40%) !important;
   background-size: 200% 200%;
   animation: gradientShift 10s ease infinite;
-  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  border-right: 1px solid var(--border-color);
   display: flex;
   min-height: 100%;
   position: relative;
@@ -317,9 +314,9 @@ body.imagnus-auth-ui .auth-showcase-copy {
 body.imagnus-auth-ui .auth-showcase-title {
   color: var(--auth-text) !important;
   font-family: "Space Grotesk", sans-serif !important;
-  font-size: clamp(2.2rem, 3.8vw, 3.55rem);
+  font-size: 3.25rem;
   font-weight: 700;
-  letter-spacing: -0.04em;
+  letter-spacing: 0;
   line-height: 1.04;
   margin: 0 0 16px;
   max-width: 11ch;
@@ -671,7 +668,7 @@ body.imagnus-auth-ui .auth-otp-pending {
   }
 
   body.imagnus-auth-ui .auth-showcase-title {
-    font-size: clamp(2rem, 9vw, 2.7rem);
+    font-size: 2.35rem;
     max-width: none;
   }
 }
@@ -718,7 +715,7 @@ body.imagnus-auth-ui .auth-login-layout .auth-showcase-copy {
 }
 
 body.imagnus-auth-ui .auth-login-layout .auth-showcase-title {
-  font-size: clamp(2.55rem, 3.3vw, 4.05rem);
+  font-size: 3.65rem;
   line-height: 1.06;
   margin-bottom: 18px;
   max-width: 14ch;
@@ -851,7 +848,7 @@ body.imagnus-auth-ui .auth-login-layout .btn-theme {
   }
 
   body.imagnus-auth-ui .auth-login-layout .auth-showcase-title {
-    font-size: clamp(2.34rem, 3.1vw, 3.62rem);
+    font-size: 3.2rem;
   }
 }
 
@@ -920,7 +917,7 @@ body.imagnus-auth-ui .auth-login-layout .btn-theme {
   }
 
   body.imagnus-auth-ui .auth-login-layout .auth-showcase-title {
-    font-size: clamp(2.1rem, 9vw, 2.95rem);
+    font-size: 2.4rem;
     max-width: none;
   }
 
@@ -1023,8 +1020,8 @@ body.imagnus-auth-ui .auth-brand-logo {
 body.imagnus-auth-ui .auth-brand-icon {
   width: 40px;
   height: 40px;
-  background: linear-gradient(135deg, #2ea7ff, #7c3aed);
-  border-radius: 12px;
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-accent));
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1038,7 +1035,7 @@ body.imagnus-auth-ui .auth-brand-logo span {
   font-size: 1.4rem;
   font-weight: 700;
   color: #fff;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
 }
 
 body.imagnus-auth-ui .auth-switcher-pill {
@@ -1166,7 +1163,7 @@ body.imagnus-auth-ui .subtle-forgot-link:hover {
 body.imagnus-auth-ui .btn-shimmer {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, #2ea7ff, #1d8ee6) !important;
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-strong)) !important;
   border: none !important;
   display: flex;
   align-items: center;
@@ -1323,4 +1320,116 @@ body.imagnus-auth-ui .login-14 .form-check-label {
   padding-left: 0 !important;
   margin-left: 0 !important;
   cursor: pointer !important;
+}
+
+body.imagnus-auth-ui .imagnus-theme-toggle--auth {
+  left: auto;
+  max-width: calc(100vw - 32px);
+  min-width: 0;
+  right: 24px;
+  top: 20px;
+  width: auto;
+  z-index: 5;
+}
+
+body.imagnus-auth-ui .imagnus-theme-toggle--auth .imagnus-theme-toggle__eyebrow {
+  display: none;
+}
+
+html[data-theme="light"] body.imagnus-auth-ui .auth-showcase-title span,
+html[data-theme="light"] body.imagnus-auth-ui .login-14 #forgot_password:hover,
+html[data-theme="light"] body.imagnus-auth-ui .auth-inline-row a:hover {
+  color: var(--brand-primary-strong) !important;
+}
+
+html[data-theme="light"] body.imagnus-auth-ui .login-14 .row.login-box,
+html[data-theme="light"] body.imagnus-auth-ui .login-14 .login-box,
+html[data-theme="light"] body.imagnus-auth-ui .login-inner-form,
+html[data-theme="light"] body.imagnus-auth-ui .auth-benefit-card,
+html[data-theme="light"] body.imagnus-auth-ui .otp-input {
+  box-shadow: var(--shadow-soft) !important;
+}
+
+html[data-theme="light"] body.imagnus-auth-ui .login-14 .bg-img {
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.48), rgba(255, 255, 255, 0.12)),
+    radial-gradient(circle at top left, rgba(var(--brand-primary-rgb), 0.18), transparent 40%),
+    radial-gradient(circle at bottom right, rgba(var(--brand-accent-rgb), 0.14), transparent 40%) !important;
+}
+
+html[data-theme="light"] body.imagnus-auth-ui .auth-benefit-card,
+html[data-theme="light"] body.imagnus-auth-ui .login-inner-form {
+  background: var(--surface-gradient) !important;
+  border-color: var(--border-color) !important;
+}
+
+html[data-theme="light"] body.imagnus-auth-ui .auth-benefit-card:hover {
+  border-color: var(--accent-outline);
+  box-shadow: var(--shadow-medium) !important;
+}
+
+html[data-theme="light"] body.imagnus-auth-ui .login-14 input:-webkit-autofill,
+html[data-theme="light"] body.imagnus-auth-ui .login-14 input:-webkit-autofill:hover,
+html[data-theme="light"] body.imagnus-auth-ui .login-14 input:-webkit-autofill:focus,
+html[data-theme="light"] body.imagnus-auth-ui .login-14 input:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--text-primary) !important;
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+  box-shadow: 0 0 0 1000px #ffffff inset !important;
+  border: 1px solid var(--accent-outline) !important;
+}
+
+html[data-theme="light"] body.imagnus-auth-ui .login-14 .form-box i.right-icon,
+html[data-theme="light"] body.imagnus-auth-ui .login-14 .form-box .flaticon-password {
+  color: var(--text-muted) !important;
+}
+
+html[data-theme="light"] body.imagnus-auth-ui .login-14 .form-check-input {
+  background-color: rgba(21, 34, 53, 0.03) !important;
+  border-color: rgba(21, 34, 53, 0.18) !important;
+}
+
+html[data-theme="light"] body.imagnus-auth-ui .login-14 .form-check-input:checked {
+  box-shadow: 0 0 10px rgba(var(--brand-primary-rgb), 0.24) !important;
+}
+
+@media (max-width: 991px) {
+  body.imagnus-auth-ui .imagnus-theme-toggle--auth {
+    left: auto;
+    right: 18px;
+    top: 18px;
+  }
+}
+
+@media (max-width: 767px) {
+  body.imagnus-auth-ui .imagnus-theme-toggle--auth {
+    right: 12px;
+    top: 12px;
+  }
+}
+
+body.imagnus-auth-ui .login-14 .row.login-box,
+body.imagnus-auth-ui .login-14 .login-box {
+  border-radius: 12px !important;
+}
+
+body.imagnus-auth-ui .login-inner-form,
+body.imagnus-auth-ui .auth-benefit-card,
+body.imagnus-auth-ui .preference-choice-card {
+  border-radius: 8px !important;
+}
+
+body.imagnus-auth-ui .auth-brand-icon,
+body.imagnus-auth-ui .login-14 input[type="tel"],
+body.imagnus-auth-ui .login-14 input[type="password"],
+body.imagnus-auth-ui .login-14 input[type="text"],
+body.imagnus-auth-ui .login-14 input[type="email"],
+body.imagnus-auth-ui .login-14 input.input-text,
+body.imagnus-auth-ui .login-14 .form-box input {
+  border-radius: 8px !important;
+}
+
+body.imagnus-auth-ui .auth-showcase-title,
+body.imagnus-auth-ui .auth-login-layout .auth-showcase-title {
+  letter-spacing: 0;
+  text-wrap: balance;
 }

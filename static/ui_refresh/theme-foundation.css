@@ -1,47 +1,151 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap");
+
+:root {
+  --bg-app: #f5f8fb;
+  --bg-surface: #ffffff;
+  --bg-elevated: #fcfdff;
+  --bg-soft: #eef4f7;
+  --text-primary: #10202f;
+  --text-secondary: #345064;
+  --text-muted: #61788a;
+  --text-inverse: #ffffff;
+  --border-color: rgba(16, 33, 50, 0.14);
+  --border-strong: rgba(16, 33, 50, 0.22);
+  --brand-primary: #1769d8;
+  --brand-primary-strong: #0d4fb7;
+  --brand-accent: #0aa58f;
+  --success: #12845f;
+  --warning: #d18b11;
+  --danger: #cf3f5d;
+  --brand-primary-rgb: 23, 105, 216;
+  --brand-accent-rgb: 10, 165, 143;
+  --success-rgb: 18, 132, 95;
+  --warning-rgb: 209, 139, 17;
+  --danger-rgb: 207, 63, 93;
+  --shadow-soft: 0 14px 34px rgba(15, 23, 42, 0.08);
+  --shadow-medium: 0 22px 48px rgba(15, 23, 42, 0.13);
+  --surface-gradient: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+  --surface-gradient-strong: linear-gradient(180deg, #ffffff 0%, #eef4fb 100%);
+  --surface-glass: rgba(249, 252, 255, 0.96);
+  --backdrop-gradient:
+    radial-gradient(circle at top left, rgba(23, 105, 216, 0.1), transparent 34%),
+    radial-gradient(circle at top right, rgba(10, 165, 143, 0.08), transparent 28%),
+    radial-gradient(circle at bottom left, rgba(209, 139, 17, 0.05), transparent 30%),
+    linear-gradient(180deg, #f7fafe 0%, #eef4f9 100%);
+  --hero-gradient:
+    radial-gradient(circle at top left, rgba(23, 105, 216, 0.1), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(10, 165, 143, 0.08), transparent 28%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(238, 244, 251, 0.97));
+  --grid-line: rgba(17, 24, 39, 0.04);
+  --layer-1: #f8fbff;
+  --layer-2: #ffffff;
+  --layer-3: #edf3fa;
+  --layer-hover: rgba(34, 118, 230, 0.06);
+  --layer-active: rgba(34, 118, 230, 0.1);
+  --accent-soft: rgba(34, 118, 230, 0.08);
+  --accent-soft-strong: rgba(34, 118, 230, 0.14);
+  --accent-outline: rgba(34, 118, 230, 0.18);
+  --success-soft: rgba(18, 147, 109, 0.12);
+  --warning-soft: rgba(216, 138, 20, 0.12);
+  --danger-soft: rgba(214, 69, 93, 0.12);
+  --table-stripe: rgba(16, 33, 50, 0.03);
+  --focus-ring: 0 0 0 4px rgba(34, 118, 230, 0.18);
+  --muted-veil: rgba(16, 33, 50, 0.06);
+  --bg-section: var(--bg-surface);
+  --bg-card: var(--bg-surface);
+  --border-color-strong: var(--border-strong);
+  --radius-sm: 8px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  --bg-app: #07111f;
+  --bg-surface: rgba(11, 24, 41, 0.86);
+  --bg-elevated: rgba(8, 20, 36, 0.96);
+  --bg-soft: rgba(15, 28, 48, 0.72);
+  --text-primary: #edf3fb;
+  --text-secondary: #d7e3f1;
+  --text-muted: #93a9c2;
+  --text-inverse: #ffffff;
+  --border-color: rgba(148, 163, 184, 0.18);
+  --border-strong: rgba(255, 255, 255, 0.08);
+  --brand-primary: #4aa3ff;
+  --brand-primary-strong: #2483ec;
+  --brand-accent: #22c6a5;
+  --success: #28c39a;
+  --warning: #f6be4f;
+  --danger: #ff8f8f;
+  --brand-primary-rgb: 74, 163, 255;
+  --brand-accent-rgb: 34, 198, 165;
+  --success-rgb: 40, 195, 154;
+  --warning-rgb: 246, 190, 79;
+  --danger-rgb: 255, 143, 143;
+  --shadow-soft: 0 24px 64px rgba(1, 8, 20, 0.38);
+  --shadow-medium: 0 32px 78px rgba(1, 8, 20, 0.5);
+  --surface-gradient: linear-gradient(180deg, rgba(14, 27, 46, 0.94), rgba(8, 19, 34, 0.92));
+  --surface-gradient-strong: linear-gradient(180deg, rgba(17, 34, 58, 0.96), rgba(10, 22, 38, 0.92));
+  --surface-glass: rgba(7, 17, 31, 0.86);
+  --backdrop-gradient:
+    radial-gradient(circle at top left, rgba(74, 163, 255, 0.16), transparent 34%),
+    radial-gradient(circle at top right, rgba(34, 198, 165, 0.14), transparent 30%),
+    radial-gradient(circle at bottom left, rgba(246, 190, 79, 0.08), transparent 28%),
+    linear-gradient(180deg, #07111f 0%, #091728 100%);
+  --hero-gradient:
+    radial-gradient(circle at top left, rgba(74, 163, 255, 0.18), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(34, 198, 165, 0.16), transparent 28%),
+    linear-gradient(135deg, rgba(9, 18, 34, 0.94), rgba(8, 20, 36, 0.88));
+  --grid-line: rgba(255, 255, 255, 0.025);
+  --layer-1: rgba(255, 255, 255, 0.05);
+  --layer-2: rgba(255, 255, 255, 0.08);
+  --layer-3: rgba(255, 255, 255, 0.12);
+  --layer-hover: rgba(46, 167, 255, 0.12);
+  --layer-active: rgba(46, 167, 255, 0.18);
+  --accent-soft: rgba(46, 167, 255, 0.12);
+  --accent-soft-strong: rgba(46, 167, 255, 0.18);
+  --accent-outline: rgba(46, 167, 255, 0.24);
+  --success-soft: rgba(40, 195, 154, 0.14);
+  --warning-soft: rgba(246, 190, 79, 0.16);
+  --danger-soft: rgba(255, 143, 143, 0.16);
+  --table-stripe: rgba(255, 255, 255, 0.025);
+  --focus-ring: 0 0 0 4px rgba(46, 167, 255, 0.18);
+  --muted-veil: rgba(255, 255, 255, 0.04);
+  color-scheme: dark;
+}
+
+html {
+  background: var(--bg-app);
+  scroll-behavior: smooth;
+}
+
 body.imagnus-public-ui,
 body.imagnus-auth-ui,
 body.imagnus-dashboard-ui,
 body.imagnus-student-public {
-  --bg-app: #07111f;
-  --bg-section: rgba(10, 23, 40, 0.82);
-  --bg-card: #0f1c31;
-  --bg-elevated: rgba(8, 20, 36, 0.96);
-  --border-color: rgba(148, 163, 184, 0.18);
-  --border-color-strong: rgba(255, 255, 255, 0.08);
-  --text-primary: #edf3fb;
-  --text-secondary: #d7e3f1;
-  --text-muted: #93a9c2;
-  --brand-primary: #2ea7ff;
-  --brand-primary-strong: #1786f8;
-  --brand-accent: #7c3aed;
-  --success: #28c39a;
-  --warning: #f6be4f;
-  --danger: #ff8f8f;
-  --shadow-soft: 0 24px 64px rgba(1, 8, 20, 0.38);
-  --radius-sm: 14px;
-  --radius-md: 20px;
-  --radius-lg: 28px;
-  --bs-body-bg: var(--bg-app);
-  --bs-body-color: var(--text-primary);
-  --bs-border-color: var(--border-color);
-  --bs-border-color-translucent: var(--border-color-strong);
-  --bs-primary: var(--brand-primary);
-  --bs-primary-rgb: 46, 167, 255;
-  --bs-secondary-color: var(--text-muted);
-  --bs-emphasis-color: var(--text-primary);
-  --bs-link-color: var(--brand-primary);
-  --bs-link-hover-color: #ffffff;
-  --bs-card-bg: transparent;
-  --bs-card-color: var(--text-primary);
-  --bs-modal-bg: transparent;
-  --bs-modal-color: var(--text-primary);
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  accent-color: var(--brand-primary);
+  font-family: "Inter", sans-serif;
+  min-height: 100vh;
 }
 
 body.imagnus-public-ui *,
 body.imagnus-auth-ui *,
 body.imagnus-dashboard-ui *,
 body.imagnus-student-public * {
-  scrollbar-color: rgba(46, 167, 255, 0.42) rgba(255, 255, 255, 0.04);
+  scrollbar-color: rgba(var(--brand-primary-rgb), 0.35) transparent;
+}
+
+body.imagnus-public-ui ::selection,
+body.imagnus-auth-ui ::selection,
+body.imagnus-dashboard-ui ::selection,
+body.imagnus-student-public ::selection {
+  background: rgba(var(--brand-primary-rgb), 0.22);
+  color: var(--text-primary);
 }
 
 body.imagnus-public-ui .bg-white,
@@ -52,7 +156,7 @@ body.imagnus-dashboard-ui .bg-white,
 body.imagnus-dashboard-ui .bg-light,
 body.imagnus-student-public .bg-white,
 body.imagnus-student-public .bg-light {
-  background: transparent !important;
+  background: var(--bg-soft) !important;
 }
 
 body.imagnus-public-ui .text-dark,
@@ -66,7 +170,7 @@ body.imagnus-public-ui .text-white,
 body.imagnus-auth-ui .text-white,
 body.imagnus-dashboard-ui .text-white,
 body.imagnus-student-public .text-white {
-  color: #ffffff !important;
+  color: var(--text-inverse) !important;
 }
 
 body.imagnus-public-ui .text-muted,
@@ -76,11 +180,31 @@ body.imagnus-student-public .text-muted {
   color: var(--text-muted) !important;
 }
 
+body.imagnus-public-ui a,
+body.imagnus-auth-ui a,
+body.imagnus-dashboard-ui a,
+body.imagnus-student-public a {
+  color: var(--brand-primary);
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+body.imagnus-public-ui a:hover,
+body.imagnus-auth-ui a:hover,
+body.imagnus-dashboard-ui a:hover,
+body.imagnus-student-public a:hover {
+  color: var(--brand-primary-strong);
+}
+
 body.imagnus-public-ui .card,
 body.imagnus-auth-ui .card,
 body.imagnus-dashboard-ui .card,
 body.imagnus-student-public .card {
-  background: linear-gradient(180deg, rgba(14, 27, 46, 0.94), rgba(8, 19, 34, 0.92)) !important;
+  background: var(--surface-gradient) !important;
   border: 1px solid var(--border-color) !important;
   border-radius: var(--radius-md) !important;
   box-shadow: var(--shadow-soft) !important;
@@ -95,8 +219,8 @@ body.imagnus-dashboard-ui .card-header,
 body.imagnus-dashboard-ui .card-footer,
 body.imagnus-student-public .card-header,
 body.imagnus-student-public .card-footer {
-  background: rgba(255, 255, 255, 0.03) !important;
-  border-color: var(--border-color-strong) !important;
+  background: var(--layer-1) !important;
+  border-color: var(--border-strong) !important;
   color: var(--text-primary) !important;
 }
 
@@ -113,21 +237,40 @@ body.imagnus-student-public input[type="submit"] {
   font-weight: 700 !important;
   min-height: 48px;
   transition:
-    background 0.24s ease,
+    background-color 0.24s ease,
     border-color 0.24s ease,
     box-shadow 0.24s ease,
+    color 0.24s ease,
     transform 0.24s ease;
 }
 
-body.imagnus-public-ui .btn:focus,
-body.imagnus-auth-ui .btn:focus,
-body.imagnus-dashboard-ui .btn:focus,
-body.imagnus-student-public .btn:focus,
-body.imagnus-public-ui input[type="submit"]:focus,
-body.imagnus-auth-ui input[type="submit"]:focus,
-body.imagnus-dashboard-ui input[type="submit"]:focus,
-body.imagnus-student-public input[type="submit"]:focus {
-  box-shadow: 0 0 0 4px rgba(46, 167, 255, 0.14) !important;
+body.imagnus-public-ui .btn:focus-visible,
+body.imagnus-auth-ui .btn:focus-visible,
+body.imagnus-dashboard-ui .btn:focus-visible,
+body.imagnus-student-public .btn:focus-visible,
+body.imagnus-public-ui input[type="submit"]:focus-visible,
+body.imagnus-auth-ui input[type="submit"]:focus-visible,
+body.imagnus-dashboard-ui input[type="submit"]:focus-visible,
+body.imagnus-student-public input[type="submit"]:focus-visible,
+body.imagnus-public-ui .form-control:focus-visible,
+body.imagnus-auth-ui .form-control:focus-visible,
+body.imagnus-dashboard-ui .form-control:focus-visible,
+body.imagnus-student-public .form-control:focus-visible,
+body.imagnus-public-ui .form-select:focus-visible,
+body.imagnus-auth-ui .form-select:focus-visible,
+body.imagnus-dashboard-ui .form-select:focus-visible,
+body.imagnus-student-public .form-select:focus-visible,
+body.imagnus-public-ui textarea:focus-visible,
+body.imagnus-auth-ui textarea:focus-visible,
+body.imagnus-dashboard-ui textarea:focus-visible,
+body.imagnus-student-public textarea:focus-visible,
+body.imagnus-public-ui a:focus-visible,
+body.imagnus-auth-ui a:focus-visible,
+body.imagnus-dashboard-ui a:focus-visible,
+body.imagnus-student-public a:focus-visible,
+.imagnus-theme-toggle:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring) !important;
 }
 
 body.imagnus-public-ui .btn-block,
@@ -153,9 +296,9 @@ body.imagnus-auth-ui input[type="submit"],
 body.imagnus-dashboard-ui input[type="submit"],
 body.imagnus-student-public input[type="submit"] {
   background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-strong)) !important;
-  border: 1px solid rgba(46, 167, 255, 0.34) !important;
-  box-shadow: 0 18px 38px rgba(30, 133, 255, 0.24) !important;
-  color: #ffffff !important;
+  border: 1px solid rgba(var(--brand-primary-rgb), 0.34) !important;
+  box-shadow: 0 18px 38px rgba(var(--brand-primary-rgb), 0.24) !important;
+  color: var(--text-inverse) !important;
 }
 
 body.imagnus-public-ui .btn-primary:hover,
@@ -172,8 +315,8 @@ body.imagnus-public-ui input[type="submit"]:hover,
 body.imagnus-auth-ui input[type="submit"]:hover,
 body.imagnus-dashboard-ui input[type="submit"]:hover,
 body.imagnus-student-public input[type="submit"]:hover {
-  box-shadow: 0 24px 42px rgba(30, 133, 255, 0.34) !important;
-  color: #ffffff !important;
+  box-shadow: 0 24px 42px rgba(var(--brand-primary-rgb), 0.3) !important;
+  color: var(--text-inverse) !important;
   transform: translateY(-2px);
 }
 
@@ -181,7 +324,7 @@ body.imagnus-public-ui .btn-outline-primary,
 body.imagnus-auth-ui .btn-outline-primary,
 body.imagnus-dashboard-ui .btn-outline-primary,
 body.imagnus-student-public .btn-outline-primary {
-  background: rgba(255, 255, 255, 0.04) !important;
+  background: var(--layer-1) !important;
   border: 1px solid var(--border-color) !important;
   color: var(--text-secondary) !important;
 }
@@ -190,9 +333,9 @@ body.imagnus-public-ui .btn-outline-primary:hover,
 body.imagnus-auth-ui .btn-outline-primary:hover,
 body.imagnus-dashboard-ui .btn-outline-primary:hover,
 body.imagnus-student-public .btn-outline-primary:hover {
-  background: rgba(46, 167, 255, 0.12) !important;
-  border-color: rgba(46, 167, 255, 0.2) !important;
-  color: #ffffff !important;
+  background: var(--accent-soft) !important;
+  border-color: var(--accent-outline) !important;
+  color: var(--text-primary) !important;
 }
 
 body.imagnus-public-ui .form-control,
@@ -207,7 +350,7 @@ body.imagnus-dashboard-ui textarea,
 body.imagnus-student-public .form-control,
 body.imagnus-student-public .form-select,
 body.imagnus-student-public textarea {
-  background: rgba(255, 255, 255, 0.04) !important;
+  background: var(--layer-1) !important;
   border: 1px solid var(--border-color) !important;
   border-radius: 16px !important;
   box-shadow: none !important;
@@ -231,7 +374,7 @@ body.imagnus-dashboard-ui .form-control::placeholder,
 body.imagnus-dashboard-ui .form-select::placeholder,
 body.imagnus-student-public .form-control::placeholder,
 body.imagnus-student-public .form-select::placeholder {
-  color: #6d849f !important;
+  color: var(--text-muted) !important;
 }
 
 body.imagnus-public-ui .form-control:focus,
@@ -246,9 +389,9 @@ body.imagnus-dashboard-ui textarea:focus,
 body.imagnus-student-public .form-control:focus,
 body.imagnus-student-public .form-select:focus,
 body.imagnus-student-public textarea:focus {
-  background: rgba(255, 255, 255, 0.06) !important;
-  border-color: rgba(46, 167, 255, 0.32) !important;
-  box-shadow: 0 0 0 4px rgba(46, 167, 255, 0.14) !important;
+  background: var(--bg-surface) !important;
+  border-color: var(--accent-outline) !important;
+  box-shadow: var(--focus-ring) !important;
   color: var(--text-primary) !important;
 }
 
@@ -257,17 +400,16 @@ body.imagnus-auth-ui .input-group-text,
 body.imagnus-dashboard-ui .input-group-text,
 body.imagnus-student-public .input-group-text {
   align-items: center;
-  background: rgba(255, 255, 255, 0.05) !important;
+  background: var(--layer-1) !important;
   border: 1px solid var(--border-color) !important;
-  border-radius: 16px !important;
-  color: var(--text-muted) !important;
+  color: var(--text-secondary) !important;
 }
 
 body.imagnus-public-ui .form-check-input,
 body.imagnus-auth-ui .form-check-input,
 body.imagnus-dashboard-ui .form-check-input,
 body.imagnus-student-public .form-check-input {
-  background-color: rgba(255, 255, 255, 0.04) !important;
+  background-color: var(--layer-1) !important;
   border-color: var(--border-color) !important;
   box-shadow: none !important;
 }
@@ -284,31 +426,36 @@ body.imagnus-public-ui .form-check-input:focus,
 body.imagnus-auth-ui .form-check-input:focus,
 body.imagnus-dashboard-ui .form-check-input:focus,
 body.imagnus-student-public .form-check-input:focus {
-  border-color: rgba(46, 167, 255, 0.3) !important;
-  box-shadow: 0 0 0 4px rgba(46, 167, 255, 0.12) !important;
+  border-color: var(--accent-outline) !important;
+  box-shadow: 0 0 0 4px rgba(var(--brand-primary-rgb), 0.12) !important;
 }
 
 body.imagnus-public-ui .nav-tabs,
-body.imagnus-dashboard-ui .nav-tabs,
-body.imagnus-student-public .nav-tabs,
 body.imagnus-public-ui .nav-pills,
+body.imagnus-auth-ui .nav-tabs,
+body.imagnus-auth-ui .nav-pills,
+body.imagnus-dashboard-ui .nav-tabs,
 body.imagnus-dashboard-ui .nav-pills,
+body.imagnus-student-public .nav-tabs,
 body.imagnus-student-public .nav-pills {
   border-bottom: 0 !important;
-  gap: 10px;
+  display: flex;
   flex-wrap: wrap;
+  gap: 10px;
 }
 
 body.imagnus-public-ui .nav-tabs .nav-link,
 body.imagnus-public-ui .nav-pills .nav-link,
+body.imagnus-auth-ui .nav-tabs .nav-link,
+body.imagnus-auth-ui .nav-pills .nav-link,
 body.imagnus-dashboard-ui .nav-tabs .nav-link,
 body.imagnus-dashboard-ui .nav-pills .nav-link,
 body.imagnus-student-public .nav-tabs .nav-link,
 body.imagnus-student-public .nav-pills .nav-link {
-  background: rgba(255, 255, 255, 0.04) !important;
+  background: var(--layer-1) !important;
   border: 1px solid var(--border-color) !important;
   border-radius: 999px !important;
-  color: var(--text-muted) !important;
+  color: var(--text-secondary) !important;
   font-family: "Space Grotesk", sans-serif !important;
   font-size: 0.9rem;
   font-weight: 700 !important;
@@ -320,6 +467,10 @@ body.imagnus-public-ui .nav-tabs .nav-link.active,
 body.imagnus-public-ui .nav-tabs .nav-link:hover,
 body.imagnus-public-ui .nav-pills .nav-link.active,
 body.imagnus-public-ui .nav-pills .nav-link:hover,
+body.imagnus-auth-ui .nav-tabs .nav-link.active,
+body.imagnus-auth-ui .nav-tabs .nav-link:hover,
+body.imagnus-auth-ui .nav-pills .nav-link.active,
+body.imagnus-auth-ui .nav-pills .nav-link:hover,
 body.imagnus-dashboard-ui .nav-tabs .nav-link.active,
 body.imagnus-dashboard-ui .nav-tabs .nav-link:hover,
 body.imagnus-dashboard-ui .nav-pills .nav-link.active,
@@ -328,9 +479,49 @@ body.imagnus-student-public .nav-tabs .nav-link.active,
 body.imagnus-student-public .nav-tabs .nav-link:hover,
 body.imagnus-student-public .nav-pills .nav-link.active,
 body.imagnus-student-public .nav-pills .nav-link:hover {
-  background: rgba(46, 167, 255, 0.12) !important;
-  border-color: rgba(46, 167, 255, 0.2) !important;
-  color: #ffffff !important;
+  background: var(--accent-soft) !important;
+  border-color: var(--accent-outline) !important;
+  color: var(--text-primary) !important;
+}
+
+body.imagnus-public-ui .btn:disabled,
+body.imagnus-public-ui .btn.disabled,
+body.imagnus-public-ui .form-control:disabled,
+body.imagnus-public-ui .form-select:disabled,
+body.imagnus-public-ui textarea:disabled,
+body.imagnus-auth-ui .btn:disabled,
+body.imagnus-auth-ui .btn.disabled,
+body.imagnus-auth-ui .form-control:disabled,
+body.imagnus-auth-ui .form-select:disabled,
+body.imagnus-auth-ui textarea:disabled,
+body.imagnus-dashboard-ui .btn:disabled,
+body.imagnus-dashboard-ui .btn.disabled,
+body.imagnus-dashboard-ui .form-control:disabled,
+body.imagnus-dashboard-ui .form-select:disabled,
+body.imagnus-dashboard-ui textarea:disabled,
+body.imagnus-student-public .btn:disabled,
+body.imagnus-student-public .btn.disabled,
+body.imagnus-student-public .form-control:disabled,
+body.imagnus-student-public .form-select:disabled,
+body.imagnus-student-public textarea:disabled {
+  background: var(--muted-veil) !important;
+  border-color: var(--border-color) !important;
+  box-shadow: none !important;
+  color: var(--text-muted) !important;
+  cursor: not-allowed !important;
+  opacity: 0.72;
+}
+
+body.imagnus-public-ui .btn:disabled:hover,
+body.imagnus-public-ui .btn.disabled:hover,
+body.imagnus-auth-ui .btn:disabled:hover,
+body.imagnus-auth-ui .btn.disabled:hover,
+body.imagnus-dashboard-ui .btn:disabled:hover,
+body.imagnus-dashboard-ui .btn.disabled:hover,
+body.imagnus-student-public .btn:disabled:hover,
+body.imagnus-student-public .btn.disabled:hover {
+  box-shadow: none !important;
+  transform: none !important;
 }
 
 body.imagnus-public-ui .dropdown-menu,
@@ -341,10 +532,10 @@ body.imagnus-public-ui .modal-content,
 body.imagnus-auth-ui .modal-content,
 body.imagnus-dashboard-ui .modal-content,
 body.imagnus-student-public .modal-content {
-  background: linear-gradient(180deg, rgba(13, 26, 44, 0.96), rgba(8, 20, 36, 0.96)) !important;
+  background: var(--surface-gradient) !important;
   border: 1px solid var(--border-color) !important;
   border-radius: var(--radius-md) !important;
-  box-shadow: var(--shadow-soft) !important;
+  box-shadow: var(--shadow-medium) !important;
   color: var(--text-primary) !important;
 }
 
@@ -352,9 +543,8 @@ body.imagnus-public-ui .dropdown-item,
 body.imagnus-auth-ui .dropdown-item,
 body.imagnus-dashboard-ui .dropdown-item,
 body.imagnus-student-public .dropdown-item {
-  border-radius: 12px !important;
-  color: var(--text-muted) !important;
-  transition: background 0.2s ease, color 0.2s ease;
+  border-radius: 12px;
+  color: var(--text-secondary) !important;
 }
 
 body.imagnus-public-ui .dropdown-item:hover,
@@ -365,8 +555,8 @@ body.imagnus-dashboard-ui .dropdown-item:hover,
 body.imagnus-dashboard-ui .dropdown-item:focus,
 body.imagnus-student-public .dropdown-item:hover,
 body.imagnus-student-public .dropdown-item:focus {
-  background: rgba(46, 167, 255, 0.12) !important;
-  color: #ffffff !important;
+  background: var(--accent-soft) !important;
+  color: var(--text-primary) !important;
 }
 
 body.imagnus-public-ui .modal-header,
@@ -377,7 +567,7 @@ body.imagnus-dashboard-ui .modal-header,
 body.imagnus-dashboard-ui .modal-footer,
 body.imagnus-student-public .modal-header,
 body.imagnus-student-public .modal-footer {
-  border-color: var(--border-color-strong) !important;
+  border-color: var(--border-color) !important;
 }
 
 body.imagnus-public-ui .modal-title,
@@ -385,108 +575,112 @@ body.imagnus-auth-ui .modal-title,
 body.imagnus-dashboard-ui .modal-title,
 body.imagnus-student-public .modal-title {
   color: var(--text-primary) !important;
-  font-family: "Space Grotesk", sans-serif !important;
-  font-weight: 700 !important;
 }
 
 body.imagnus-public-ui .close,
 body.imagnus-auth-ui .close,
 body.imagnus-dashboard-ui .close,
 body.imagnus-student-public .close {
-  color: var(--text-muted) !important;
-  opacity: 1 !important;
-  text-shadow: none !important;
-}
-
-body.imagnus-public-ui .close:hover,
-body.imagnus-public-ui .close:focus,
-body.imagnus-auth-ui .close:hover,
-body.imagnus-auth-ui .close:focus,
-body.imagnus-dashboard-ui .close:hover,
-body.imagnus-dashboard-ui .close:focus,
-body.imagnus-student-public .close:hover,
-body.imagnus-student-public .close:focus {
-  color: #ffffff !important;
+  color: var(--text-secondary) !important;
+  opacity: 1;
 }
 
 body.imagnus-public-ui .table,
+body.imagnus-auth-ui .table,
 body.imagnus-dashboard-ui .table,
 body.imagnus-student-public .table,
 body.imagnus-public-ui table,
+body.imagnus-auth-ui table,
 body.imagnus-dashboard-ui table,
 body.imagnus-student-public table {
-  --bs-table-bg: transparent;
-  --bs-table-color: var(--text-primary);
-  --bs-table-border-color: var(--border-color-strong);
   color: var(--text-primary) !important;
 }
 
-body.imagnus-public-ui .table th,
+body.imagnus-public-ui .table thead th,
+body.imagnus-auth-ui .table thead th,
+body.imagnus-dashboard-ui .table thead th,
+body.imagnus-student-public .table thead th,
+body.imagnus-public-ui table th,
+body.imagnus-auth-ui table th,
+body.imagnus-dashboard-ui table th,
+body.imagnus-student-public table th {
+  background: var(--layer-1);
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
 body.imagnus-public-ui .table td,
-body.imagnus-dashboard-ui .table th,
+body.imagnus-public-ui .table th,
+body.imagnus-public-ui table td,
+body.imagnus-public-ui table th,
+body.imagnus-auth-ui .table td,
+body.imagnus-auth-ui .table th,
+body.imagnus-auth-ui table td,
+body.imagnus-auth-ui table th,
 body.imagnus-dashboard-ui .table td,
+body.imagnus-dashboard-ui .table th,
+body.imagnus-dashboard-ui table td,
+body.imagnus-dashboard-ui table th,
+body.imagnus-student-public .table td,
 body.imagnus-student-public .table th,
-body.imagnus-student-public .table td {
-  border-color: var(--border-color-strong) !important;
-  vertical-align: middle;
+body.imagnus-student-public table td,
+body.imagnus-student-public table th {
+  border-color: var(--border-color) !important;
+}
+
+body.imagnus-public-ui .table-striped tbody tr:nth-of-type(odd),
+body.imagnus-auth-ui .table-striped tbody tr:nth-of-type(odd),
+body.imagnus-dashboard-ui .table-striped tbody tr:nth-of-type(odd),
+body.imagnus-student-public .table-striped tbody tr:nth-of-type(odd) {
+  background: var(--table-stripe) !important;
 }
 
 body.imagnus-public-ui .alert,
+body.imagnus-auth-ui .alert,
 body.imagnus-dashboard-ui .alert,
 body.imagnus-student-public .alert {
-  background: rgba(255, 255, 255, 0.04) !important;
   border: 1px solid var(--border-color) !important;
   border-radius: var(--radius-sm) !important;
-  color: var(--text-secondary) !important;
+  box-shadow: none !important;
 }
 
 body.imagnus-public-ui .badge,
 body.imagnus-auth-ui .badge,
 body.imagnus-dashboard-ui .badge,
 body.imagnus-student-public .badge {
-  border-radius: 999px !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.02em;
-  padding: 0.45rem 0.7rem !important;
-}
-
-body.imagnus-public-ui .pagination,
-body.imagnus-dashboard-ui .pagination,
-body.imagnus-student-public .pagination {
-  gap: 8px;
-  flex-wrap: wrap;
+  border-radius: 999px;
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
 }
 
 body.imagnus-public-ui .page-link,
+body.imagnus-auth-ui .page-link,
 body.imagnus-dashboard-ui .page-link,
 body.imagnus-student-public .page-link {
-  background: rgba(255, 255, 255, 0.04) !important;
+  background: var(--layer-1) !important;
   border: 1px solid var(--border-color) !important;
-  border-radius: var(--radius-sm) !important;
-  color: var(--text-muted) !important;
-  min-width: 44px;
-  text-align: center;
+  color: var(--text-secondary) !important;
+  border-radius: 12px !important;
 }
 
 body.imagnus-public-ui .page-item.active .page-link,
 body.imagnus-public-ui .page-link:hover,
+body.imagnus-auth-ui .page-item.active .page-link,
+body.imagnus-auth-ui .page-link:hover,
 body.imagnus-dashboard-ui .page-item.active .page-link,
 body.imagnus-dashboard-ui .page-link:hover,
 body.imagnus-student-public .page-item.active .page-link,
 body.imagnus-student-public .page-link:hover {
-  background: rgba(46, 167, 255, 0.14) !important;
-  border-color: rgba(46, 167, 255, 0.22) !important;
-  color: #ffffff !important;
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-strong)) !important;
+  border-color: rgba(var(--brand-primary-rgb), 0.4) !important;
+  color: var(--text-inverse) !important;
 }
 
 body.imagnus-public-ui .page-item.disabled .page-link,
+body.imagnus-auth-ui .page-item.disabled .page-link,
 body.imagnus-dashboard-ui .page-item.disabled .page-link,
 body.imagnus-student-public .page-item.disabled .page-link {
-  background: rgba(255, 255, 255, 0.03) !important;
-  border-color: var(--border-color-strong) !important;
-  color: rgba(147, 169, 194, 0.55) !important;
-  cursor: default;
-  opacity: 0.72;
+  opacity: 0.56;
 }
 
 body.imagnus-public-ui .border,
@@ -501,7 +695,7 @@ body.imagnus-dashboard-ui .border-bottom,
 body.imagnus-student-public .border,
 body.imagnus-student-public .border-top,
 body.imagnus-student-public .border-bottom {
-  border-color: var(--border-color-strong) !important;
+  border-color: var(--border-color) !important;
 }
 
 body.imagnus-public-ui .shadow,
@@ -518,56 +712,69 @@ body.imagnus-student-public .shadow-sm {
 body.imagnus-public-ui .theme-surface,
 body.imagnus-dashboard-ui .theme-surface,
 body.imagnus-student-public .theme-surface {
-  background: linear-gradient(180deg, rgba(14, 27, 46, 0.94), rgba(8, 19, 34, 0.92));
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-soft);
+  background: var(--surface-gradient) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: var(--shadow-soft) !important;
 }
 
 body.imagnus-public-ui .empty-state-card,
+body.imagnus-auth-ui .empty-state-card,
 body.imagnus-dashboard-ui .empty-state-card,
 body.imagnus-student-public .empty-state-card {
-  align-items: center;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px dashed var(--border-color);
-  border-radius: var(--radius-md);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 36px 28px;
-  text-align: center;
+  background: var(--surface-gradient) !important;
+  border: 1px dashed var(--border-strong) !important;
+  border-radius: var(--radius-md) !important;
+  color: var(--text-secondary) !important;
 }
 
 body.imagnus-public-ui .empty-state-icon,
+body.imagnus-auth-ui .empty-state-icon,
 body.imagnus-dashboard-ui .empty-state-icon,
 body.imagnus-student-public .empty-state-icon {
   align-items: center;
-  background: rgba(46, 167, 255, 0.12);
-  border: 1px solid rgba(46, 167, 255, 0.18);
-  border-radius: 22px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-outline);
+  border-radius: 999px;
   color: var(--brand-primary);
   display: inline-flex;
-  font-size: 1.7rem;
   height: 72px;
   justify-content: center;
   width: 72px;
 }
 
 body.imagnus-public-ui .media-frame-16x9,
+body.imagnus-auth-ui .media-frame-16x9,
 body.imagnus-dashboard-ui .media-frame-16x9,
 body.imagnus-student-public .media-frame-16x9 {
-  border-radius: var(--radius-md);
+  background: var(--surface-gradient) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--radius-md) !important;
   overflow: hidden;
-  padding-top: 56.25%;
   position: relative;
-  width: 100%;
+}
+
+body.imagnus-public-ui .media-frame-16x9::before,
+body.imagnus-auth-ui .media-frame-16x9::before,
+body.imagnus-dashboard-ui .media-frame-16x9::before,
+body.imagnus-student-public .media-frame-16x9::before {
+  content: "";
+  display: block;
+  padding-top: 56.25%;
 }
 
 body.imagnus-public-ui .media-frame-16x9 iframe,
-body.imagnus-dashboard-ui .media-frame-16x9 iframe,
-body.imagnus-student-public .media-frame-16x9 iframe,
 body.imagnus-public-ui .media-frame-16x9 embed,
-body.imagnus-student-public .media-frame-16x9 embed {
+body.imagnus-public-ui .media-frame-16x9 video,
+body.imagnus-auth-ui .media-frame-16x9 iframe,
+body.imagnus-auth-ui .media-frame-16x9 embed,
+body.imagnus-auth-ui .media-frame-16x9 video,
+body.imagnus-dashboard-ui .media-frame-16x9 iframe,
+body.imagnus-dashboard-ui .media-frame-16x9 embed,
+body.imagnus-dashboard-ui .media-frame-16x9 video,
+body.imagnus-student-public .media-frame-16x9 iframe,
+body.imagnus-student-public .media-frame-16x9 embed,
+body.imagnus-student-public .media-frame-16x9 video {
   border: 0;
   height: 100%;
   inset: 0;
@@ -576,19 +783,114 @@ body.imagnus-student-public .media-frame-16x9 embed {
 }
 
 body.imagnus-public-ui .line-clamp-2,
+body.imagnus-auth-ui .line-clamp-2,
 body.imagnus-dashboard-ui .line-clamp-2,
 body.imagnus-student-public .line-clamp-2 {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
   overflow: hidden;
 }
 
 body.imagnus-public-ui .line-clamp-3,
+body.imagnus-auth-ui .line-clamp-3,
 body.imagnus-dashboard-ui .line-clamp-3,
 body.imagnus-student-public .line-clamp-3 {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
   overflow: hidden;
+}
+
+.imagnus-theme-toggle {
+  align-items: center;
+  background: var(--surface-glass);
+  backdrop-filter: blur(18px);
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  box-shadow: var(--shadow-soft);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: inline-flex;
+  gap: 12px;
+  justify-content: space-between;
+  min-height: 46px;
+  padding: 9px 10px 9px 14px;
+  text-align: left;
+}
+
+.imagnus-theme-toggle:hover {
+  background: var(--bg-surface);
+  border-color: var(--accent-outline);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+.imagnus-theme-toggle__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.imagnus-theme-toggle__eyebrow {
+  color: var(--text-muted);
+  font-family: "Inter", sans-serif;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.imagnus-theme-toggle__label {
+  color: var(--text-primary);
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.imagnus-theme-toggle__track {
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-outline);
+  border-radius: 999px;
+  flex: 0 0 auto;
+  height: 26px;
+  position: relative;
+  width: 48px;
+}
+
+.imagnus-theme-toggle__thumb {
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-strong));
+  border-radius: 999px;
+  box-shadow: 0 6px 16px rgba(var(--brand-primary-rgb), 0.28);
+  height: 18px;
+  left: 3px;
+  position: absolute;
+  top: 3px;
+  transition: transform 0.2s ease;
+  width: 18px;
+}
+
+html[data-theme="dark"] .imagnus-theme-toggle__thumb {
+  transform: translateX(22px);
+}
+
+.imagnus-theme-toggle--floating {
+  position: fixed;
+  right: 24px;
+  top: 20px;
+  z-index: 1105;
+}
+
+@media (max-width: 991px) {
+  .imagnus-theme-toggle {
+    width: 100%;
+  }
+
+  .imagnus-theme-toggle--floating {
+    left: 16px;
+    right: 16px;
+    top: 16px;
+  }
 }

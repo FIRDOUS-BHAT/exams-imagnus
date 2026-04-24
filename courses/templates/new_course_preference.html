@@ -1,449 +1,4 @@
 {% extends "base.html" %} {% block content %}
-
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-
-<style>
-/* ============================================
-   PAGE VARIABLES & RESETS
-   ============================================ */
-:root {
-  --c-bg:        #0f0f13;
-  --c-surface:   #1a1a24;
-  --c-border:    rgba(255,255,255,0.07);
-  --c-primary:   #7c3aed;
-  --c-primary-lt:#a78bfa;
-  --c-sky:       #38bdf8;
-  --c-green:     #34d399;
-  --c-red:       #f87171;
-  --c-text:      #f1f5f9;
-  --c-muted:     #94a3b8;
-  --font-head:   'Space Grotesk', sans-serif;
-  --font-body:   'Inter', sans-serif;
-}
-
-/* Page wrapper forces dark bg under the whole content block */
-.pref-page-root {
-  background: var(--c-bg);
-  font-family: var(--font-body);
-}
-
-/* Override any light backgrounds bleeding in */
-.pref-page-root section,
-.pref-page-root .bg-light,
-.pref-page-root .bg-white { background: transparent !important; }
-
-/* ============================================
-   HERO
-   ============================================ */
-.ph-hero {
-  position: relative;
-  overflow: hidden;
-  padding: 90px 0 70px;
-  background: var(--c-bg);
-  border-bottom: 1px solid var(--c-border);
-}
-
-/* noise + grid overlay */
-.ph-hero::before {
-  content: '';
-  position: absolute; inset: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,.028) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px);
-  background-size: 36px 36px;
-  pointer-events: none;
-}
-
-.ph-orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(90px);
-  pointer-events: none;
-}
-.ph-orb-1 { width:480px;height:480px;top:-140px;left:-120px; background:radial-gradient(circle,#7c3aed 0%,transparent 70%); opacity:.45; }
-.ph-orb-2 { width:380px;height:380px;bottom:-100px;right:-80px; background:radial-gradient(circle,#0ea5e9 0%,transparent 70%); opacity:.35; }
-
-.ph-hero-inner { position:relative; z-index:2; }
-
-.ph-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(124,58,237,.15);
-  border: 1px solid rgba(124,58,237,.35);
-  color: var(--c-primary-lt);
-  font-family: var(--font-head);
-  font-size: .72rem;
-  font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  padding: 6px 14px;
-  border-radius: 6px;
-  margin-bottom: 24px;
-}
-.ph-eyebrow span.dot {
-  width:6px;height:6px;border-radius:50%;
-  background:var(--c-primary-lt);
-  display:inline-block;
-  animation: pulse-dot 2s ease-in-out infinite;
-}
-@keyframes pulse-dot {
-  0%,100%{opacity:1;transform:scale(1)}
-  50%{opacity:.4;transform:scale(1.4)}
-}
-
-.ph-title {
-  font-family: var(--font-head);
-  font-size: clamp(2.4rem, 5vw, 3.8rem);
-  font-weight: 800;
-  line-height: 1.08;
-  letter-spacing: -1.5px;
-  color: #fff;
-  margin-bottom: 22px;
-}
-.ph-title .grad {
-  background: linear-gradient(90deg, #a78bfa, #38bdf8);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.ph-subtitle {
-  font-size: 1.05rem;
-  color: var(--c-muted);
-  line-height: 1.7;
-  max-width: 480px;
-  margin-bottom: 36px;
-}
-
-.ph-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-head);
-  font-weight: 600;
-  font-size: .9rem;
-  letter-spacing: .5px;
-  padding: 13px 28px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  transition: all .25s ease;
-  text-decoration: none;
-}
-.ph-btn-primary {
-  background: var(--c-primary);
-  color: #fff;
-  box-shadow: 0 4px 20px rgba(124,58,237,.45);
-}
-.ph-btn-primary:hover {
-  background: #6d28d9;
-  box-shadow: 0 6px 28px rgba(124,58,237,.65);
-  transform: translateY(-1px);
-  color: #fff;
-}
-.ph-btn-ghost {
-  background: rgba(255,255,255,.06);
-  border: 1px solid var(--c-border);
-  color: var(--c-text);
-}
-.ph-btn-ghost:hover {
-  background: rgba(255,255,255,.1);
-  color: #fff;
-}
-
-/* Hero stats chips */
-.ph-stats {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  margin-top: 36px;
-}
-.ph-stat {
-  background: rgba(255,255,255,.04);
-  border: 1px solid var(--c-border);
-  border-radius: 10px;
-  padding: 10px 18px;
-  text-align: center;
-}
-.ph-stat strong {
-  display: block;
-  font-family: var(--font-head);
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: #fff;
-}
-.ph-stat span { font-size:.78rem; color:var(--c-muted); }
-
-.ph-img-wrap {
-  position: relative;
-  z-index:2;
-}
-.ph-img-wrap img {
-  border-radius: 24px;
-  filter: drop-shadow(0 0 48px rgba(124,58,237,.4));
-  max-height: 420px;
-  transition: transform .5s ease;
-}
-.ph-img-wrap:hover img { transform: translateY(-8px); }
-
-/* ============================================
-   COURSES SECTION
-   ============================================ */
-.ph-courses-section {
-  background: var(--c-bg);
-  background-image:
-    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
-  background-size: 36px 36px;
-  padding: 72px 0 80px;
-}
-
-.ph-section-tag {
-  display: inline-block;
-  background: rgba(56,189,248,.1);
-  border: 1px solid rgba(56,189,248,.25);
-  color: var(--c-sky);
-  font-family: var(--font-head);
-  font-size: .72rem;
-  font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  padding: 5px 14px;
-  border-radius: 6px;
-  margin-bottom: 12px;
-}
-
-.ph-section-title {
-  font-family: var(--font-head);
-  font-size: 2.2rem;
-  font-weight: 800;
-  color: #fff;
-  letter-spacing: -.5px;
-  margin-bottom: 8px;
-}
-.ph-section-title .accent { color: var(--c-primary-lt); }
-
-.ph-section-sub {
-  color: var(--c-muted);
-  font-size: .95rem;
-}
-
-/* ---- Sidebar ---- */
-.ph-sidebar {
-  background: var(--c-surface);
-  border: 1px solid var(--c-border);
-  border-radius: 16px;
-  overflow: hidden;
-  position: sticky;
-  top: 100px;
-}
-.ph-sidebar-header {
-  padding: 18px 20px;
-  border-bottom: 1px solid var(--c-border);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.ph-sidebar-header h5 {
-  font-family: var(--font-head);
-  font-size: 1rem;
-  font-weight: 700;
-  color: #fff;
-  margin: 0;
-}
-.ph-sidebar-header .icon-box {
-  width:34px;height:34px;
-  background:rgba(124,58,237,.15);
-  border:1px solid rgba(124,58,237,.3);
-  border-radius:8px;
-  display:flex;align-items:center;justify-content:center;
-  color:var(--c-primary-lt);
-  font-size:.9rem;
-}
-
-.ph-pref-list { padding:14px 14px 14px; list-style:none; margin:0; }
-.ph-pref-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 13px 16px;
-  border-radius: 10px;
-  cursor: pointer;
-  margin-bottom: 6px;
-  color: var(--c-muted);
-  font-family: var(--font-head);
-  font-size: .9rem;
-  font-weight: 500;
-  border: 1px solid transparent;
-  transition: all .22s ease;
-}
-.ph-pref-item .pref-icon {
-  width:32px;height:32px;
-  border-radius:8px;
-  background:rgba(255,255,255,.04);
-  display:flex;align-items:center;justify-content:center;
-  font-size:.85rem;
-  flex-shrink:0;
-  transition:all .22s ease;
-}
-.ph-pref-item:hover {
-  background:rgba(255,255,255,.05);
-  color:#fff;
-}
-.ph-pref-item.active {
-  background: rgba(124,58,237,.12);
-  border-color: rgba(124,58,237,.35);
-  color: #fff;
-}
-.ph-pref-item.active .pref-icon {
-  background:rgba(124,58,237,.2);
-  color:var(--c-primary-lt);
-}
-.ph-pref-item .pref-arrow {
-  margin-left:auto;
-  opacity:0;
-  font-size:.75rem;
-  transition:opacity .2s;
-  color:var(--c-primary-lt);
-}
-.ph-pref-item.active .pref-arrow,
-.ph-pref-item:hover .pref-arrow { opacity:1; }
-
-/* ---- Course Cards ---- */
-.ph-card-link { text-decoration:none; display:block; height:100%; }
-.ph-course-card {
-  background: var(--c-surface);
-  border: 1px solid var(--c-border);
-  border-radius: 16px;
-  padding: 24px;
-  height:100%;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  position: relative;
-  overflow: hidden;
-  transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
-  margin-bottom: 24px;
-}
-.ph-course-card::after {
-  content:'';
-  position:absolute;
-  inset:0;
-  background:linear-gradient(135deg,rgba(124,58,237,.05) 0%,transparent 60%);
-  opacity:0;
-  transition:opacity .3s;
-}
-.ph-course-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(124,58,237,.4);
-  box-shadow: 0 16px 40px rgba(124,58,237,.2);
-}
-.ph-course-card:hover::after { opacity:1; }
-
-.ph-card-top { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
-.ph-card-icon {
-  width:52px;height:52px;
-  background:rgba(255,255,255,.05);
-  border:1px solid var(--c-border);
-  border-radius:12px;
-  display:flex;align-items:center;justify-content:center;
-  padding:8px; flex-shrink:0;
-}
-.ph-card-icon img { width:100%;height:100%;object-fit:contain; }
-
-.ph-card-badge {
-  font-family:var(--font-head);
-  font-size:.7rem;font-weight:700;
-  letter-spacing:1px;text-transform:uppercase;
-  padding:4px 10px;border-radius:20px;
-  flex-shrink:0;
-}
-.badge-hot  { background:rgba(248,113,113,.12);color:var(--c-red);  border:1px solid rgba(248,113,113,.25); }
-.badge-new  { background:rgba(52,211,153,.12); color:var(--c-green);border:1px solid rgba(52,211,153,.25);  }
-
-.ph-card-title {
-  font-family:var(--font-head);
-  font-size:1.1rem;font-weight:700;
-  color:#fff;line-height:1.35;
-  margin:0;
-}
-.ph-card-meta {
-  display:flex;align-items:center;gap:6px;
-  font-size:.83rem;color:var(--c-muted);
-}
-.ph-card-meta i { color:var(--c-sky); }
-
-.ph-card-cta {
-  margin-top:auto;
-  background:rgba(255,255,255,.05);
-  border:1px solid var(--c-border);
-  border-radius:8px;
-  color:var(--c-text);
-  font-family:var(--font-head);
-  font-size:.82rem;font-weight:600;
-  letter-spacing:.5px;text-transform:uppercase;
-  padding:10px 0;text-align:center;
-  transition:all .25s ease;
-}
-.ph-course-card:hover .ph-card-cta {
-  background:var(--c-primary);
-  border-color:var(--c-primary);
-  color:#fff;
-  box-shadow:0 4px 14px rgba(124,58,237,.5);
-}
-
-/* ---- Animations ---- */
-@keyframes fadeUp {
-  from{opacity:0;transform:translateY(18px)}
-  to{opacity:1;transform:translateY(0)}
-}
-.ph-course-list.visible .ph-col-item {
-  animation: fadeUp .55s cubic-bezier(.16,1,.3,1) both;
-}
-.ph-course-list.visible .ph-col-item:nth-child(1){animation-delay:.04s}
-.ph-course-list.visible .ph-col-item:nth-child(2){animation-delay:.12s}
-.ph-course-list.visible .ph-col-item:nth-child(3){animation-delay:.20s}
-.ph-course-list.visible .ph-col-item:nth-child(4){animation-delay:.28s}
-.ph-course-list.visible .ph-col-item:nth-child(5){animation-delay:.36s}
-.ph-course-list.visible .ph-col-item:nth-child(6){animation-delay:.44s}
-
-/* ============================================
-   FEATURES / WHY SECTION
-   ============================================ */
-.ph-why-section {
-  background: var(--c-surface);
-  border-top: 1px solid var(--c-border);
-  padding: 72px 0;
-}
-.ph-feat-card {
-  background: rgba(255,255,255,.03);
-  border: 1px solid var(--c-border);
-  border-radius: 14px;
-  padding: 28px;
-  height: 100%;
-  transition: border-color .25s, background .25s;
-}
-.ph-feat-card:hover {
-  background: rgba(255,255,255,.055);
-  border-color: rgba(124,58,237,.3);
-}
-.ph-feat-icon {
-  width:48px;height:48px;border-radius:12px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.3rem;margin-bottom:16px;
-}
-.ph-feat-card h5 {
-  font-family:var(--font-head);
-  font-size:1.05rem;font-weight:700;
-  color:#fff;margin-bottom:8px;
-}
-.ph-feat-card p { font-size:.88rem;color:var(--c-muted);margin:0;line-height:1.6; }
-
-/* Override base light footer/nav borders that bleed */
-.pref-page-root + .newsletter,
-.pref-page-root + footer { border-top: 1px solid var(--c-border) !important; }
-</style>
-
 <div class="pref-page-root">
 
 <!-- ===== HERO ===== -->
@@ -456,7 +11,7 @@
         <div class="ph-eyebrow"><span class="dot"></span>I-Magnus Academy</div>
         <h1 class="ph-title">Courses Built for<br><span class="grad">The Next Gen.</span></h1>
         <p class="ph-subtitle">High-signal, zero-noise study material in Hindi & English — designed to get you from preparation to selection, fast.</p>
-        <div class="d-flex flex-wrap gap-3" style="gap:14px;">
+        <div class="d-flex flex-wrap ph-hero-actions">
           <a href="#courses-section" class="ph-btn ph-btn-primary">
             <i class="ti-arrow-down"></i> Browse Courses
           </a>
@@ -528,7 +83,8 @@
                 <div class="ph-card-top">
                   <div class="ph-card-icon">
                     <img src="{{ course.web_icon }}" alt="{{ course.name }}"
-                         onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\'ti-book\' style=\'font-size:1.4rem;color:#a78bfa\'></i>'">
+                         onerror="this.parentElement.classList.add('has-fallback')">
+                    <i class="ti-book ph-card-icon-fallback" aria-hidden="true"></i>
                   </div>
                   {% if loop.index == 1 %}
                   <span class="ph-card-badge badge-hot">🔥 Hot</span>
@@ -558,14 +114,14 @@
   <div class="container">
     <div class="row justify-content-center mb-40">
       <div class="col-lg-7 text-center">
-        <span class="ph-section-tag" style="background:rgba(52,211,153,.1);border-color:rgba(52,211,153,.25);color:var(--c-green);">Why I-Magnus</span>
+        <span class="ph-section-tag ph-section-tag--success">Why I-Magnus</span>
         <h2 class="ph-section-title">Built for <span class="accent">Serious</span> Aspirants</h2>
       </div>
     </div>
     <div class="row">
       <div class="col-lg-4 col-md-6 mb-4">
         <div class="ph-feat-card">
-          <div class="ph-feat-icon" style="background:rgba(124,58,237,.15);color:#a78bfa;">
+          <div class="ph-feat-icon ph-feat-icon--primary">
             <i class="ti-agenda"></i>
           </div>
           <h5>Always Up-to-Date</h5>
@@ -574,7 +130,7 @@
       </div>
       <div class="col-lg-4 col-md-6 mb-4">
         <div class="ph-feat-card">
-          <div class="ph-feat-icon" style="background:rgba(56,189,248,.12);color:#38bdf8;">
+          <div class="ph-feat-icon ph-feat-icon--info">
             <i class="ti-bolt"></i>
           </div>
           <h5>Concept-First Learning</h5>
@@ -583,7 +139,7 @@
       </div>
       <div class="col-lg-4 col-md-6 mb-4">
         <div class="ph-feat-card">
-          <div class="ph-feat-icon" style="background:rgba(52,211,153,.12);color:#34d399;">
+          <div class="ph-feat-icon ph-feat-icon--success">
             <i class="ti-cup"></i>
           </div>
           <h5>Proven Track Record</h5>

@@ -11,49 +11,72 @@
           notes from one clean study hub.
         </p>
       </div>
-      <div class="dashboard-page-badges">
-        <span class="dashboard-page-badge">{{ live_class_count }} live sessions</span>
-        <span class="dashboard-page-badge">{{ lectures_count }} recorded lectures</span>
-        <span class="dashboard-page-badge">{{ test_series_count }} practice tests</span>
+      <div class="dashboard-page-side">
+        <div class="dashboard-page-badges">
+          <span class="dashboard-page-badge">{{ live_class_count }} live sessions</span>
+          <span class="dashboard-page-badge">{{ lectures_count }} recorded lectures</span>
+          <span class="dashboard-page-badge">{{ test_series_count }} practice tests</span>
+        </div>
+        <div class="dashboard-page-actions">
+          <a href="/student/video_lectures/{{cid}}/?page=1" class="dashboard-action-button">
+            <i class="uil uil-play"></i>
+            Continue Learning
+          </a>
+          <a href="/student/test_series/{{cid}}/" class="dashboard-action-button">
+            <i class="uil uil-clipboard-alt"></i>
+            Practice Now
+          </a>
+        </div>
       </div>
     </div>
     <div class="row">
       <div class="col-xl-3 col-lg-6 col-md-6">
-        <div class="card_dash">
+        <a href="/student/live_classes/{{cid}}/" class="dashboard-link-card">
+        <div class="card_dash dashboard-stat-card">
           <div class="card_dash_left">
+            <div class="dashboard-stat-icon"><i class="uil uil-kayak"></i></div>
             <h5>Live Classes</h5>
             <h2>{{ live_class_count }}</h2>
-            <span class="crdbg_1"
-              >New Live Classes - {{today_live_class_count}}</span
-            >
+            <div class="dashboard-stat-trend">
+              <span class="crdbg_1">{{today_live_class_count}} new</span>
+              <small>Today</small>
+            </div>
           </div>
           <div class="card_dash_right">
             <img src="/static/student_assets/images/promotion.svg" alt="" />
           </div>
         </div>
+        </a>
       </div>
       <div class="col-xl-3 col-lg-6 col-md-6">
-        <div class="card_dash">
+        <a href="/student/video_lectures/{{cid}}/?page=1" class="dashboard-link-card">
+        <div class="card_dash dashboard-stat-card">
           <div class="card_dash_left">
+            <div class="dashboard-stat-icon"><i class="uil uil-play"></i></div>
             <h5>Lectures</h5>
             <h2>{{ lectures_count }}</h2>
-            <span class="crdbg_2"
-              >New lectures - {{today_lectures_count}}
-            </span>
+            <div class="dashboard-stat-trend">
+              <span class="crdbg_2">{{today_lectures_count}} new</span>
+              <small>Today</small>
+            </div>
           </div>
           <div class="card_dash_right">
             <img src="/static/student_assets/images/online-course.svg" alt="" />
           </div>
         </div>
+        </a>
       </div>
       <div class="col-xl-3 col-lg-6 col-md-6">
-        <div class="card_dash">
+        <a href="/student/test_series/{{cid}}/" class="dashboard-link-card">
+        <div class="card_dash dashboard-stat-card">
           <div class="card_dash_left">
+            <div class="dashboard-stat-icon"><i class="uil uil-clipboard-alt"></i></div>
             <h5>Test Series</h5>
             <h2>{{ test_series_count }}</h2>
-            <span class="crdbg_3"
-              >New Test Series - {{today_test_series_count}}
-            </span>
+            <div class="dashboard-stat-trend">
+              <span class="crdbg_3">{{today_test_series_count}} new</span>
+              <small>Today</small>
+            </div>
           </div>
           <div class="card_dash_right">
             <img
@@ -62,18 +85,25 @@
             />
           </div>
         </div>
+        </a>
       </div>
       <div class="col-xl-3 col-lg-6 col-md-6">
-        <div class="card_dash">
+        <a href="/student/pdf_notes/{{cid}}/?page=1" class="dashboard-link-card">
+        <div class="card_dash dashboard-stat-card">
           <div class="card_dash_left">
+            <div class="dashboard-stat-icon"><i class="uil uil-book-alt"></i></div>
             <h5>PDF Notes</h5>
             <h2>{{ notes_count }}</h2>
-            <span class="crdbg_4">New PDF Notes - {{today_notes_count}} </span>
+            <div class="dashboard-stat-trend">
+              <span class="crdbg_4">{{today_notes_count}} new</span>
+              <small>Today</small>
+            </div>
           </div>
           <div class="card_dash_right">
             <img src="/static/student_assets/images/knowledge.svg" alt="" />
           </div>
         </div>
+        </a>
       </div>
     </div>
 
@@ -103,6 +133,10 @@
                 <h6>{{ class.title }}</h6>
                 <span class="dashboard-item-meta">Lesson 1 • Started at {{ class.streaming_time }}</span>
                 <h6 class="dashboard-item-subtitle">By: {{ class.instructor.name }}</h6>
+                <div class="dashboard-card-footer">
+                  <i class="uil uil-video"></i>
+                  Join class
+                </div>
               </div>
             </div>
           </a>
@@ -137,7 +171,7 @@
         {% for content in records %}
 
         <div class="col-lg-4 col-md-12">
-          <div class="top_countries">
+          <div class="top_countries dashboard-category-card">
             <div class="card_category">
               <div class="card_dash_left">
                 <h5>{{ content.category.name }}</h5>

@@ -35,7 +35,7 @@ $(window).unload(function(){
                </div>
                <div class="row">
                   <div class="col-12">
-                     <div class="all_msg_bg">
+                     <div class="all_msg_bg test-shell">
                         <div class="row no-gutters">
                            <div class="col-xl-8 col-lg-7 col-md-12">
                               <div class="chatbox_right">
@@ -56,9 +56,11 @@ $(window).unload(function(){
                                     <div class="simplebar-content-wrapper activee">
                                        <div class="user-status">
                                           <div class="ques_item">
-                                             <div class="ques_title">
-                                                <span>Q. <span id="new_qsn_no">1</span> :- </span>
-                                                <span id="new_qsn">{{ qstns[0].question }}</span>
+                                             <div class="test-question-header">
+                                                <div class="ques_title">
+                                                   <span class="test-question-count">Q <span id="new_qsn_no">1</span></span>
+                                                   <span id="new_qsn">{{ qstns[0].question }}</span>
+                                                </div>
                                              </div>
                                              <div class="ui form">
                                                 <div class="grouped fields">
@@ -92,8 +94,10 @@ $(window).unload(function(){
                                        </div>
                                     </div>
                                  </div>
-                                 <button class="upload_btn" data-callback="/student/submit/testSeriesQstns/{{cid}}/{{tid}}/{{qstns[counter].id}}/{{qstns[counter+1].id}}/{{counter}}/" id="submit_question" title="submit" style="margin-left: 10px;">Save & Next</button>
-                                 <button class="upload_btn sbmit" data-callback="/student/test/view_summary/{{cid}}/{{tid}}/" title="submit" data-toggle="modal" id="view_test" data-target="#myModal">Submit Test</button>
+                                 <div class="test-action-bar">
+                                    <button class="upload_btn" data-callback="/student/submit/testSeriesQstns/{{cid}}/{{tid}}/{{qstns[counter].id}}/{{qstns[counter+1].id}}/{{counter}}/" id="submit_question" title="submit">Save & Next</button>
+                                    <button class="upload_btn sbmit" data-callback="/student/test/view_summary/{{cid}}/{{tid}}/" title="submit" data-toggle="modal" id="view_test" data-target="#myModal">Submit Test</button>
+                                 </div>
 
 
                               </div>
@@ -103,7 +107,7 @@ $(window).unload(function(){
                                  <div class="ui search focus">
                                     <div class="ui left icon input swdh11 swdh15">
                                        <div class="certi_form rght1528">
-                                          <div class="test_timer_bg">
+                                          <div class="test_timer_bg test-timer-card">
                                              <ul class="test_timer_left">
                                                 <li>
                                                    <div class="timer_time">
@@ -128,9 +132,11 @@ $(window).unload(function(){
                                  <div class="group_messages">
                                     <div class="chat__message__dt active">
                                        <div class="user-status">
+                                          <div class="steps-grid">
                                           {% for i in range(qstn_nos) %}
                                           <button class="btn btn-default steps_btn submit_question" data-callback="/student/submit/testSeriesQstns/{{cid}}/{{tid}}/{{qstns[i-1].id}}/{{qstns[i].id}}/{{i-1}}/" >{{i+1}}</button>
                                           {% endfor%}
+                                          </div>
 
 
                                        </div>

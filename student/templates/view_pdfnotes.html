@@ -1,100 +1,128 @@
-   {% extends "student_dashboard_base.html" %}
-         {% block content %}
+{% extends "student_dashboard_base.html" %}
+{% block content %}
 
-   <div class="sa4d25">
-            <div class="container-fluid">
+<div class="sa4d25 dashboard-shell">
+  <div class="container-fluid">
+    <div class="dashboard-page-head">
+      <div>
+        <div class="dashboard-page-kicker">Notes Reader</div>
+        <h1 class="dashboard-page-title">{{ topic_name }}</h1>
+        <p class="dashboard-page-copy">
+          {{ category_name }} notes are arranged in a focused reader with the full
+          topic list beside the document.
+        </p>
+      </div>
+      <div class="dashboard-page-side">
+        <div class="dashboard-page-badges">
+          <span class="dashboard-page-badge">{{ category_name }}</span>
+          <span class="dashboard-page-badge">{{ notes_list|length }} notes</span>
+        </div>
+      </div>
+    </div>
 
-               <div class="row">
-                  <div class="col-12">
-                     <div class="all_msg_bg">
-                        <div class="row no-gutters">
-                            <div class="col-xl-8 col-lg-7 col-md-12">
-                              <div class="chatbox_right">
-                                 <div class="chat_header">
-                                    <div class="user-status">
-                                       <div class="user">
-                                          <img src="{{category_image}}" class="catg" alt="">
-                                       </div>
-                                       <p class="user-status-title"><span class="bold">{{category_name}}: <span id="new_title">{{ notes_list[0].title }}  </span> </span></p>
-                                       <p class="user-status-tag online">{{category_name}}</p>
-                                       <p class="user-status-tag online">{{topic_name}} </p>
-                                    </div>
-                                 </div>
-                                 <div class="messages-line simplebar-content-wrapper2 scrollstyle_4">
-                                     <!-- <div class='embed-responsive' style='padding-bottom:150%'>
-                                    <object data='URL.pdf' type='application/pdf' width='100%' height='100%'></object>
-                                    <embed id="new_url" src="" type="application/pdf">
-                                    </div> -->
-                                       
-
-                                    <div class="embed-responsive embed-responsive-21by9" style="height:100%">
-                                       <iframe class="embed-responsive-item" id="new_url" src="{{ notes_list[0].notes_url }}"></iframe>
-                                    </div>
-                                 </div>
-
-                              </div>
-                           </div>
-                           <div class="col-xl-4 col-lg-5 col-md-12">
-                              <div class="msg_search">
-                                 <div class="ui search focus">
-                                    <div class="ui left icon input swdh11 swdh15">
-                                       <input class="prompt srch_explore" type="text" placeholder="Search Lectures...">
-                                       <i class="uil uil-search-alt icon icon8"></i>
-                                    </div>
-                                 </div>
-                              </div>
-                              <div class="simplebar-content-wrapper">
-                                 <div class="group_messages">
-                                    <div class="chat__message__dt pdf_list active" data-url="{{ notes_list[0].notes_url }}"
-                                         data-title="{{ notes_list[0].title }}">
-                                       <div class="user-status" data-url="{{ notes_list[0].notes_url }}"
-                                         data-title="{{ notes_list[0].title }}">
-                                          <div class="user-avatar" data-url="{{ notes_list[0].notes_url }}"
-                                         data-title="{{ notes_list[0].title }}">
-                                             <img src="{{ notes_list[0].thumbnail }}" alt="" data-url="{{ notes_list[0].notes_url }}"
-                                         data-title="{{ notes_list[0].title }}">
-                                             <div class="msg__badge" data-url="{{ notes_list[0].notes_url }}"
-                                         data-title="{{ notes_list[0].title }}"> 1 </div>
-                                          </div>
-                                          <p class="user-status-title" data-url="{{ notes_list[0].notes_url }}"
-                                         data-title="{{ notes_list[0].title }}"><span class="bold" data-url="{{ notes_list[0].notes_url }}"
-                                         data-title="{{ notes_list[0].title }}">
-                                             {{ notes_list[0].title }}
-                                          </span></p>
-
-                                       </div>
-                                    </div>
-
-                                    {% for n in range(1, notes_list|length) %}
-                                    <div class="chat__message__dt pdf_list" data-url="{{ notes_list[n].notes_url }}"
-                                         data-title="{{ notes_list[n].title }}">
-                                       <div class="user-status" data-url="{{ notes_list[n].notes_url }}"
-                                         data-title="{{ notes_list[n].title }}">
-                                          <div class="user-avatar" data-url="{{ notes_list[n].notes_url }}"
-                                         data-title="{{ notes_list[n].title }}">
-                                             <img src="{{ notes_list[n].thumbnail }}" alt="" data-url="{{ notes_list[n].notes_url }}"
-                                         data-title="{{ notes_list[n].title }}">
-                                             <div class="msg__badge" data-url="{{ notes_list[n].notes_url }}"
-                                         data-title="{{ notes_list[n].title }}"> {{n+1}}  </div>
-                                          </div>
-                                          <p class="user-status-title" data-url="{{ notes_list[n].notes_url }}"
-                                         data-title="{{ notes_list[n].title }}"><span class="bold" data-url="{{ notes_list[n].notes_url }}"
-                                         data-title="{{ notes_list[n].title }}">
-                                            {{ notes_list[n].title }}
-                                          </span></p>
-                                       </div>
-                                    </div>
-                                    {% endfor %}
-
-                                 </div>
-                              </div>
-                           </div>
-
-                        </div>
-                     </div>
+    {% if notes_list %}
+    <div class="all_msg_bg dashboard-reader-shell">
+      <div class="row no-gutters">
+        <div class="col-xl-8 col-lg-7 col-md-12">
+          <div class="chatbox_right dashboard-player-shell">
+            <div class="chat_header">
+              <div class="user-status">
+                <div class="user">
+                  <img src="{{ category_image }}" class="catg" alt="" />
+                </div>
+                <div class="dashboard-player-meta">
+                  <p class="dashboard-player-title">
+                    {{ category_name }}:
+                    <span id="new_title">{{ notes_list[0].title }}</span>
+                  </p>
+                  <div class="dashboard-player-tags">
+                    <span class="dashboard-player-tag">{{ category_name }}</span>
+                    <span class="dashboard-player-tag">{{ topic_name }}</span>
+                    <span class="dashboard-player-tag">PDF Notes</span>
                   </div>
-               </div>
+                </div>
+              </div>
             </div>
-         </div>
+            <div class="messages-line simplebar-content-wrapper2 scrollstyle_4">
+              <div class="dashboard-pdf-frame">
+                <iframe id="new_url" src="{{ notes_list[0].notes_url }}"></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
 
-    {% endblock %}
+        <div class="col-xl-4 col-lg-5 col-md-12">
+          <div class="dashboard-playlist-panel">
+            <div class="msg_search">
+              <div class="ui search focus">
+                <div class="ui left icon input swdh11 swdh15">
+                  <input class="prompt srch_explore" type="text" placeholder="Search notes..." />
+                  <i class="uil uil-search-alt icon icon8"></i>
+                </div>
+              </div>
+            </div>
+            <div class="simplebar-content-wrapper">
+              <div class="group_messages">
+                {% for note in notes_list %}
+                <div
+                  class="chat__message__dt pdf_list {{ 'active' if loop.first else '' }}"
+                  data-url="{{ note.notes_url }}"
+                  data-title="{{ note.title }}"
+                >
+                  <div
+                    class="user-status"
+                    data-url="{{ note.notes_url }}"
+                    data-title="{{ note.title }}"
+                  >
+                    <div
+                      class="user-avatar"
+                      data-url="{{ note.notes_url }}"
+                      data-title="{{ note.title }}"
+                    >
+                      <img
+                        src="{{ note.thumbnail }}"
+                        alt=""
+                        data-url="{{ note.notes_url }}"
+                        data-title="{{ note.title }}"
+                      />
+                      <div
+                        class="msg__badge"
+                        data-url="{{ note.notes_url }}"
+                        data-title="{{ note.title }}"
+                      >
+                        {{ loop.index }}
+                      </div>
+                    </div>
+                    <p
+                      class="user-status-title"
+                      data-url="{{ note.notes_url }}"
+                      data-title="{{ note.title }}"
+                    >
+                      <span
+                        class="bold"
+                        data-url="{{ note.notes_url }}"
+                        data-title="{{ note.title }}"
+                      >
+                        {{ note.title }}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <div class="dashboard-empty-state">
+      <div class="dashboard-empty-icon"><i class="uil uil-book-alt"></i></div>
+      <h4>No notes available</h4>
+      <p>Published PDF notes for this topic will appear here.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}
