@@ -1,7 +1,7 @@
 {% extends "base.html" %} {% block content %}
 
 <div class="page_loader"></div>
-<a href="https://imagnus.in/" class="auth-back-link auth-back-link--login">
+<a href="https://imagnus.in/" id="login_back_home_link" class="auth-back-link auth-back-link--login">
   <i class="fa fa-arrow-left" aria-hidden="true"></i>
   <span>Back to Home</span>
 </a>
@@ -11,23 +11,10 @@
     <div class="row login-box">
       <div class="col-xl-7 col-lg-6 col-md-12 bg-img align-self-center auth-login-hero order-2 order-lg-1">
         <div class="info">
-          <div class="auth-showcase">
-            <div class="auth-showcase-visual">
-              <svg width="56" height="56" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2L2 7l10 5 10-5-10-5z" fill="url(#grad1)"/>
-                <path d="M2 17l10 5 10-5M2 12l10 5 10-5" stroke="url(#grad2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <defs>
-                  <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#4aa3ff" stop-opacity="0.9"/>
-                    <stop offset="100%" stop-color="#22c6a5" stop-opacity="0.9"/>
-                  </linearGradient>
-                  <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#4aa3ff" />
-                    <stop offset="100%" stop-color="#22c6a5" />
-                  </linearGradient>
-                </defs>
-              </svg>
-            </div>
+            <div class="auth-showcase">
+              <div class="auth-showcase-visual">
+                <i class="uil uil-layers"></i>
+              </div>
             <div class="auth-showcase-copy">
               <span class="auth-kicker auth-kicker-shimmer">Learning Command Center</span>
               <h2 class="auth-showcase-title">
@@ -58,10 +45,10 @@
               <span>I-Magnus</span>
             </div>
             <div class="auth-switcher-pill">
-              <button type="button" class="pill-tab active" id="tab_login" onclick="toggleAuth('login')">
+              <button type="button" class="pill-tab active" id="tab_login" data-auth-tab="login">
                 Student Login
               </button>
-              <button type="button" class="pill-tab" id="tab_register" onclick="toggleAuth('register')">
+              <button type="button" class="pill-tab" id="tab_register" data-auth-tab="register">
                 Register
               </button>
               <div class="pill-indicator"></div>
@@ -73,7 +60,7 @@
               </p>
             </div>
           </div>
-          <div class="login-inner-form" id="login_container">
+          <div class="login-inner-form" id="login_container" aria-hidden="false">
             <form id="login_form" action="/student/secure_login/" method="POST">
               <div class="auth-form-grid">
                 <div class="auth-field auth-field-floating">
@@ -94,7 +81,7 @@
                 <input type="hidden" name="return_url" value="{{ returnURL }}" />
                 <div class="auth-field auth-field-floating">
                   <div class="auth-form-hint-row align-right">
-                    <a id="forgot_password" role="button" class="subtle-forgot-link">Forgot Password?</a>
+                    <button type="button" id="forgot_password" class="subtle-forgot-link">Forgot Password?</button>
                   </div>
                   <div class="form-group form-box">
                     <i class="fa fa-lock left-icon"></i>
@@ -110,7 +97,7 @@
                   </div>
                 </div>
                 <div class="form-group mb-20 auth-submit">
-                  <button type="submit" class="btn-md btn-theme btn-block btn-shimmer">
+                  <button type="submit" id="login_submit_button" class="btn-md btn-theme btn-block btn-shimmer">
                     <span class="btn-text">Login</span>
                     <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
                     <div class="loading-spinner"></div>
@@ -120,7 +107,7 @@
             </form>
           </div>
 
-          <div class="login-inner-form" id="register_container" style="display: none;">
+          <div class="login-inner-form auth-form-hidden" id="register_container" aria-hidden="true">
             <form id="register_form" action="/student/register/" method="POST">
               <div class="auth-form-grid">
                 <div class="auth-field auth-field-floating">
@@ -186,12 +173,12 @@
                   <div class="checkbox-theme">
                     <input class="form-check-input" type="checkbox" id="termsAgree" required />
                     <label class="form-check-label" for="termsAgree">
-                      I agree to the <a href="https://imagnus.in/terms-conditions" target="_blank">terms of service</a>
+                      I agree to the <a href="https://imagnus.in/terms-conditions" id="login_terms_link" target="_blank">terms of service</a>
                     </label>
                   </div>
                 </div>
                 <div class="form-group mb-0 auth-submit">
-                  <button type="submit" class="btn-md btn-theme btn-block btn-shimmer">
+                  <button type="submit" id="register_submit_button" class="btn-md btn-theme btn-block btn-shimmer">
                     <span class="btn-text">Register Account</span>
                     <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
                     <div class="loading-spinner"></div>
@@ -202,8 +189,8 @@
           </div>
             <form
               id="otp_form"
-              class="auth-form-state"
-              style="display: none; visibility: hidden"
+              class="auth-form-state auth-form-hidden"
+              aria-hidden="true"
               autocomplete="off"
             >
               <div class="auth-form-grid">
@@ -223,9 +210,9 @@
                   </div>
                 </div>
                 <div
-                  class="auth-field"
+                  class="auth-field auth-form-hidden"
                   id="otp_div"
-                  style="display: none; visibility: hidden"
+                  aria-hidden="true"
                 >
                   <label class="auth-field-label" for="login_otp">One Time Password</label>
                   <div class="form-group form-box">
@@ -253,8 +240,8 @@
             </form>
             <form
               id="new_password_form"
-              class="auth-form-state"
-              style="display: none; visibility: hidden"
+              class="auth-form-state auth-form-hidden"
+              aria-hidden="true"
               autocomplete="off"
             >
               <div class="auth-form-grid">
@@ -323,7 +310,9 @@ function toggleAuth(type) {
     loginBtn.classList.remove('active');
     registerBtn.classList.add('active');
     loginContainer.style.display = 'none';
+    loginContainer.setAttribute('aria-hidden', 'true');
     registerContainer.style.display = 'block';
+    registerContainer.setAttribute('aria-hidden', 'false');
     indicator.style.transform = 'translateX(100%)';
     title.innerText = 'Create Account';
     copy.innerText = 'Set up your student access once and use it across course purchases and live classes.';
@@ -331,7 +320,9 @@ function toggleAuth(type) {
     registerBtn.classList.remove('active');
     loginBtn.classList.add('active');
     registerContainer.style.display = 'none';
+    registerContainer.setAttribute('aria-hidden', 'true');
     loginContainer.style.display = 'block';
+    loginContainer.setAttribute('aria-hidden', 'false');
     indicator.style.transform = 'translateX(0)';
     title.innerText = 'Login';
     copy.innerText = 'Enter the credentials attached to your student account to continue where you left off.';
@@ -341,6 +332,10 @@ function toggleAuth(type) {
 // Check URL params to default to register if needed
 window.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
+  document.querySelectorAll('[data-auth-tab]').forEach((tabButton) => {
+    tabButton.addEventListener('click', () => toggleAuth(tabButton.dataset.authTab));
+  });
+
   if (window.location.pathname.includes('registration') || urlParams.get('mode') === 'register') {
     toggleAuth('register');
   }

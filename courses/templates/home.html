@@ -1,0 +1,233 @@
+{% extends "base.html" %} {% block content %}
+
+<main class="public-home">
+  <section class="public-home-hero" aria-labelledby="public_home_title">
+    <img
+      src="/static/courses_assets/img/home-promo.png"
+      alt="Students preparing for online exam classes"
+      class="public-home-hero-media"
+    />
+    <div class="public-home-hero-scrim"></div>
+    <div class="container">
+      <div class="public-home-hero-content">
+        <span class="public-kicker">I-Magnus Learning Platform</span>
+        <h1 id="public_home_title">Exam Prep Courses</h1>
+        <p>
+          Live classes, recorded lectures, PDF notes, and mock tests organized
+          into one focused LMS for serious exam preparation.
+        </p>
+        <div class="public-home-actions">
+          <a
+            href="#course_streams"
+            id="public_home_explore_courses"
+            class="public-home-btn public-home-btn-primary"
+          >
+            <i class="ti-search"></i>
+            Explore Courses
+          </a>
+          <a
+            href="/student/login/"
+            id="public_home_student_login"
+            class="public-home-btn public-home-btn-secondary"
+          >
+            <i class="ti-user"></i>
+            Student Login
+          </a>
+        </div>
+        <div class="public-home-hero-stats" aria-label="I-Magnus content overview">
+          <div class="public-home-stat">
+            <strong>{{ stats.course_count }}</strong>
+            <span>Courses</span>
+          </div>
+          <div class="public-home-stat">
+            <strong>{{ stats.lecture_count }}</strong>
+            <span>Lectures</span>
+          </div>
+          <div class="public-home-stat">
+            <strong>{{ stats.test_count }}</strong>
+            <span>Tests</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="public-home-section public-home-overview" aria-labelledby="public_home_overview_title">
+    <div class="container">
+      <div class="public-home-section-head">
+        <span class="public-kicker">Study System</span>
+        <h2 id="public_home_overview_title">Everything a student needs before exam day</h2>
+        <p>
+          Start by choosing an exam stream, then move into a structured course
+          with classes, revision material, and test practice in one place.
+        </p>
+      </div>
+
+      <div class="row public-home-feature-grid">
+        <div class="col-lg-3 col-md-6">
+          <article class="public-home-feature">
+            <div class="public-home-feature-icon"><i class="ti-video-camera"></i></div>
+            <h3>Live Classes</h3>
+            <p>Join scheduled sessions and stay aligned with your batch plan.</p>
+          </article>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <article class="public-home-feature">
+            <div class="public-home-feature-icon"><i class="ti-control-play"></i></div>
+            <h3>Recorded Lectures</h3>
+            <p>Revise concepts at your pace with topic-wise lecture access.</p>
+          </article>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <article class="public-home-feature">
+            <div class="public-home-feature-icon"><i class="ti-write"></i></div>
+            <h3>Mock Tests</h3>
+            <p>Practice with structured test series and exam-style questions.</p>
+          </article>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <article class="public-home-feature">
+            <div class="public-home-feature-icon"><i class="ti-book"></i></div>
+            <h3>PDF Notes</h3>
+            <p>Use compact study notes for quick revision before class or test.</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="public-home-section" id="course_streams" aria-labelledby="public_home_streams_title">
+    <div class="container">
+      <div class="public-home-section-head public-home-section-head-split">
+        <div>
+          <span class="public-kicker">Course Catalog</span>
+          <h2 id="public_home_streams_title">Choose your exam stream</h2>
+        </div>
+        <p>
+          Each stream groups the course tracks students need for focused
+          preparation, from first lecture to final mock test.
+        </p>
+      </div>
+
+      {% if preferences %}
+      <div class="row public-home-stream-grid">
+        {% for preference in preferences %}
+        <div class="col-xl-4 col-lg-6">
+          <article class="public-home-stream">
+            <div class="public-home-stream-head">
+              <div class="public-home-stream-icon"><i class="ti-target"></i></div>
+              <div>
+                <h3>{{ preference.name }}</h3>
+                <span>{{ preference.course_count }} courses available</span>
+              </div>
+            </div>
+            {% if preference.courses %}
+            <ul class="public-home-stream-list">
+              {% set pref_loop = loop.index %}
+              {% for course in preference.courses %}
+              <li>
+                <a
+                  href="/student/login/?returnURL=/student/course_details/{{ preference.slug }}/{{ course.slug }}/"
+                  id="public_stream_{{ pref_loop }}_course_{{ loop.index }}"
+                >
+                  <span>{{ course.name }}</span>
+                  <small>
+                    {% if course.module_count %}{{ course.module_count }} modules{% else %}Course track{% endif %}
+                  </small>
+                </a>
+              </li>
+              {% endfor %}
+            </ul>
+            {% else %}
+            <div class="public-home-empty public-home-empty-compact">
+              <p>Courses for this stream will appear here soon.</p>
+            </div>
+            {% endif %}
+            <a
+              href="/student/login/?returnURL=/student/courses/{{ preference.slug }}/"
+              id="public_stream_{{ loop.index }}_browse"
+              class="public-home-stream-link"
+            >
+              Browse stream
+              <i class="ti-arrow-right"></i>
+            </a>
+          </article>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="public-home-empty">
+        <div class="public-home-empty-icon"><i class="ti-layout-grid2"></i></div>
+        <h3>No course streams are published yet</h3>
+        <p>Once exam streams are available, they will appear here for students to explore.</p>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="public-home-section public-home-featured" aria-labelledby="public_home_featured_title">
+    <div class="container">
+      <div class="public-home-section-head public-home-section-head-split">
+        <div>
+          <span class="public-kicker">Featured Courses</span>
+          <h2 id="public_home_featured_title">Start with a structured course</h2>
+        </div>
+        <p>
+          Pick a course to continue into the student LMS. Existing students can
+          sign in and jump straight to their learning dashboard.
+        </p>
+      </div>
+
+      {% if featured_courses %}
+      <div class="row public-home-course-grid">
+        {% for course in featured_courses %}
+        <div class="col-xl-4 col-lg-6">
+          <article class="public-home-course">
+            <div class="public-home-course-media">
+              {% if course.web_icon %}
+              <img src="{{ course.web_icon }}" alt="{{ course.name }}" />
+              {% else %}
+              <img src="/static/courses_assets/img/course-1.jpg" alt="{{ course.name }}" />
+              {% endif %}
+            </div>
+            <div class="public-home-course-body">
+              <span>{{ course.preference_name }}</span>
+              <h3>{{ course.name }}</h3>
+              <p>
+                {% if course.description %}
+                {{ course.description }}
+                {% else %}
+                Live classes, recorded lectures, PDF notes, and test practice for this exam track.
+                {% endif %}
+              </p>
+              <div class="public-home-course-meta">
+                <small><i class="ti-agenda"></i> {{ course.module_count }} modules</small>
+                {% if course.plan_price %}
+                <small><i class="ti-wallet"></i> Starts at Rs. {{ course.plan_price }}</small>
+                {% endif %}
+              </div>
+              <a
+                href="/student/login/?returnURL=/student/course_details/{{ course.preference_slug }}/{{ course.slug }}/"
+                id="public_featured_course_{{ loop.index }}"
+                class="public-home-course-link"
+              >
+                View Course
+                <i class="ti-arrow-right"></i>
+              </a>
+            </div>
+          </article>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="public-home-empty">
+        <div class="public-home-empty-icon"><i class="ti-book"></i></div>
+        <h3>No featured courses yet</h3>
+        <p>Published courses will appear here as soon as the catalog is ready.</p>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+</main>
+
+{% endblock %}

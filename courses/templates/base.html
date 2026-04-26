@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="author" content="www.frebsite.nl" />
 
     <title>
@@ -130,8 +131,8 @@
         }
       }
     </style>
-    <link href="/static/ui_refresh/theme-foundation.css?v=5" rel="stylesheet" />
-    <link href="/static/ui_refresh/public-ui.css?v=8" rel="stylesheet" />
+    <link href="/static/ui_refresh/theme-foundation.css?v=6" rel="stylesheet" />
+    <link href="/static/ui_refresh/public-ui.css?v=9" rel="stylesheet" />
   </head>
   <body class="imagnus-public-ui">
     <!-- ============================================================== -->
@@ -153,45 +154,52 @@
         <div class="container">
           <nav id="navigation" class="navigation navigation-landscape">
             <div class="nav-header">
-              <a class="nav-brand" href="https://imagnus.in">
+              <a class="nav-brand" id="public_nav_brand" href="/">
                 <img
-                  src="https://imagnus.in/images/logo.png"
-                  class="logo"
+                  src="/static/courses_assets/img/fav.png"
+                  class="logo public-nav-mark"
                   alt=""
                 />
+                <span class="public-nav-brand-text">I-Magnus</span>
               </a>
-              <div class="nav-toggle"></div>
+              <div
+                class="nav-toggle"
+                id="public_nav_toggle"
+                role="button"
+                tabindex="0"
+                aria-label="Open navigation menu"
+              ></div>
             </div>
-            <div class="nav-menus-wrapper" style="transition-property: none">
+            <div class="nav-menus-wrapper public-nav-menus-wrapper">
               <ul class="nav-menu">
                 <li class="">
-                  <a href="https://imagnus.in"
+                  <a href="/" id="public_nav_home"
                     >Home <span class="submenu-indicator"></span
                   ></a>
                 </li>
 
                 <li class="">
-                  <a href="https://imagnus.in/about_us">Why I-Magnus </a>
+                  <a href="https://imagnus.in/about_us" id="public_nav_why">Why I-Magnus </a>
                 </li>
 
-                <li><a href="/student/preference/">Courses </a></li>
+                <li><a href="/#course_streams" id="public_nav_courses">Courses </a></li>
 
                 <li>
-                  <a href="/exam_study_material/pdf-notes/">Study Material </a>
+                  <a href="/exam_study_material/pdf-notes/" id="public_nav_study_material">Study Material </a>
                 </li>
 
                 <li>
-                  <a href="/exam_study_material/test-series/">Test Series </a>
+                  <a href="/exam_study_material/test-series/" id="public_nav_test_series">Test Series </a>
                 </li>
 
-                <li><a href="/m/current_affairs/">Current Affairs </a></li>
+                <li><a href="/m/current_affairs/" id="public_nav_current_affairs">Current Affairs </a></li>
 
-                <li><a href="https://imagnus.in/contact-us">Contact Us</a></li>
+                <li><a href="https://imagnus.in/contact-us" id="public_nav_contact">Contact Us</a></li>
               </ul>
 
               <ul class="nav-menu nav-menu-social align-to-right">
                 <li class="theme-toggle-navitem">
-                  <button type="button" class="imagnus-theme-toggle" data-theme-toggle>
+                  <button type="button" id="public_theme_toggle" class="imagnus-theme-toggle" data-theme-toggle aria-label="Toggle theme">
                     <span class="imagnus-theme-toggle__copy">
                       <span class="imagnus-theme-toggle__eyebrow">Theme</span>
                       <span class="imagnus-theme-toggle__label" data-theme-label>Light theme</span>
@@ -202,23 +210,20 @@
                   </button>
                 </li>
                 <li>
-                  <a href="#"
+                  <a href="#" id="public_nav_account" aria-haspopup="true" aria-expanded="false"
                     ><i class="ti-user"></i> My Account
                     <span class="submenu-indicator"></span
                   ></a>
                   <ul class="nav-dropdown nav-submenu">
-                    <li><a href="/student/dashboard/">Dashboard </a></li>
-                    <li><a href="/student/my-account/">Profile </a></li>
-                    <li><a href="/student/my-orders/">Payment History </a></li>
+                    <li><a href="/student/dashboard/" id="public_nav_account_dashboard">Dashboard </a></li>
+                    <li><a href="/student/my-account/" id="public_nav_account_profile">Profile </a></li>
+                    <li><a href="/student/my-orders/" id="public_nav_account_orders">Payment History </a></li>
                     <li class="nav-cursor-link">
-                      <a
-                        ><form id="logout_form" action="/logout/" method="post">
-                          <span
-                            onclick="document.getElementById('logout_form').submit();"
-                            >Logout
-                          </span>
-                        </form></a
-                      >
+                      <form id="logout_form" class="public-nav-logout-form" action="/logout/" method="post">
+                        <button type="submit" id="public_nav_account_logout" class="public-nav-logout">
+                          Logout
+                        </button>
+                      </form>
                     </li>
                   </ul>
                 </li>
@@ -250,15 +255,17 @@
                   time. Schedule timely reminders and study in the comfort of
                   your home. Learn and compete with other students in real time.
                 </p>
-                <form class="sup-form">
+                <form id="public_newsletter_form" class="sup-form">
                   <input
                     type="text"
+                    id="public_newsletter_phone"
                     class="form-control sigmup-me"
                     placeholder="+91 | Phone Number"
                     required="required"
                   />
                   <input
                     type="submit"
+                    id="public_newsletter_submit"
                     class="btn btn-primary gradient"
                     value="Get Started"
                   />
@@ -293,7 +300,7 @@
                       <li>
                         <i class="fa fa-phone"></i>
                         <span
-                          ><a href="tel://+917524821440"
+                          ><a href="tel://+917524821440" id="public_footer_phone"
                             >+917524821440</a
                           > </span
                         ><br />
@@ -319,23 +326,23 @@
                 <div class="footer-widget">
                   <h4 class="widget-title">Our links</h4>
                   <ul class="text-white">
-                    <li><a href="https://imagnus.in">Home </a></li>
-                    <li><a href="https://imagnus.in/about_us">About Us </a></li>
+                    <li><a href="https://imagnus.in" id="public_footer_home">Home </a></li>
+                    <li><a href="https://imagnus.in/about_us" id="public_footer_about">About Us </a></li>
                     <li>
-                      <a href="https://imagnus.in/terms-conditions"
+                      <a href="https://imagnus.in/terms-conditions" id="public_footer_terms"
                         >terms and Conditions
                       </a>
                     </li>
                     <li>
-                      <a href="https://imagnus.in/privacy-policy"
+                      <a href="https://imagnus.in/privacy-policy" id="public_footer_privacy"
                         >Privacy Policy
                       </a>
                     </li>
                     <li>
-                      <a href="https://imagnus.in/disclaimer">Disclaimer </a>
+                      <a href="https://imagnus.in/disclaimer" id="public_footer_disclaimer">Disclaimer </a>
                     </li>
                     <li>
-                      <a href="https://imagnus.in/contact-us">Contacts</a>
+                      <a href="https://imagnus.in/contact-us" id="public_footer_contact">Contacts</a>
                     </li>
                   </ul>
                 </div>
@@ -348,48 +355,56 @@
                     <li>
                       <a
                         href="https://imagnus.in/best-online-mp-constable-coaching-classes-in-indore"
+                        id="public_footer_course_mp_constable"
                         >MP Constable
                       </a>
                     </li>
                     <li>
                       <a
                         href="https://imagnus.in/best-online-neet-coaching-classes-in-indore"
+                        id="public_footer_course_neet"
                         >NEET
                       </a>
                     </li>
                     <li>
                       <a
                         href="https://imagnus.in/best-online-nursing-coaching-classes-in-indore"
+                        id="public_footer_course_nursing"
                         >Nursing
                       </a>
                     </li>
                     <li>
                       <a
                         href="https://imagnus.in/best-online-bank-po-coaching-classes-in-indore"
+                        id="public_footer_course_bank_po"
                         >Bank PO</a
                       >
                     </li>
                     <li>
                       <a
                         href="https://imagnus.in/best-online-aiims-coaching-classes-in-indore"
+                        id="public_footer_course_aiims"
                         >AIIMS
                       </a>
                     </li>
                     <li>
                       <a
                         href="https://imagnus.in/best-online-iit-jee-coaching-classes-in-indore"
+                        id="public_footer_course_iit_jee"
                         >IIT-JEE
                       </a>
                     </li>
                     <li>
                       <a
                         href="https://imagnus.in/best-online-upsc-coaching-classes-in-indore"
+                        id="public_footer_course_upsc"
                         >UPSC
                       </a>
                     </li>
                     <li>
                       <a
                         href="https://imagnus.in/best-online-ssc-coaching-classes-in-indore"
+                        id="public_footer_course_ssc"
                         >SSC
                       </a>
                     </li>
@@ -400,7 +415,7 @@
               <div class="col-lg-3 col-md-12">
                 <div class="footer-widget">
                   <h4 class="widget-title">Download Apps</h4>
-                  <a href="#" class="other-store-link">
+                  <a href="#" id="public_footer_play_store" class="other-store-link" aria-label="Get I-Magnus on Google Play">
                     <div class="other-store-app">
                       <div class="os-app-icon">
                         <i class="lni-playstore theme-cl"></i>
@@ -411,7 +426,7 @@
                       </div>
                     </div>
                   </a>
-                  <a href="#" class="other-store-link">
+                  <a href="#" id="public_footer_app_store" class="other-store-link" aria-label="Get I-Magnus on the App Store">
                     <div class="other-store-app">
                       <div class="os-app-icon">
                         <i class="lni-apple theme-cl"></i>
@@ -440,16 +455,16 @@
               <div class="col-lg-6 col-md-6 text-right">
                 <ul class="footer-bottom-social">
                   <li>
-                    <a href="#"><i class="ti-facebook"></i></a>
+                    <a href="#" id="public_footer_facebook" aria-label="I-Magnus on Facebook"><i class="ti-facebook"></i></a>
                   </li>
                   <li>
-                    <a href="#"><i class="ti-twitter"></i></a>
+                    <a href="#" id="public_footer_twitter" aria-label="I-Magnus on Twitter"><i class="ti-twitter"></i></a>
                   </li>
                   <li>
-                    <a href="#"><i class="ti-instagram"></i></a>
+                    <a href="#" id="public_footer_instagram" aria-label="I-Magnus on Instagram"><i class="ti-instagram"></i></a>
                   </li>
                   <li>
-                    <a href="#"><i class="ti-linkedin"></i></a>
+                    <a href="#" id="public_footer_linkedin" aria-label="I-Magnus on LinkedIn"><i class="ti-linkedin"></i></a>
                   </li>
                 </ul>
               </div>
@@ -684,7 +699,7 @@
         document.getElementById("rzp-button1").onclick = function (e) {
           var button = document.getElementById("rzp-button1");
           button.innerHTML +=
-            '<div class="loader" style="display: inline-block; vertical-align: middle; margin-left: 5px;"></div>';
+            '<div class="loader checkout-button-loader"></div>';
           button.disabled = true;
 
           product_id = document.getElementById("cart_subscription_id");

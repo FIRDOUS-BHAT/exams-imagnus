@@ -18,11 +18,11 @@
           <span class="dashboard-page-badge">{{ test_series_count }} practice tests</span>
         </div>
         <div class="dashboard-page-actions">
-          <a href="/student/video_lectures/{{cid}}/?page=1" class="dashboard-action-button">
+          <a href="/student/video_lectures/{{cid}}/?page=1" id="dashboard_continue_learning_link" class="dashboard-action-button">
             <i class="uil uil-play"></i>
             Continue Learning
           </a>
-          <a href="/student/test_series/{{cid}}/" class="dashboard-action-button">
+          <a href="/student/test_series/{{cid}}/" id="dashboard_practice_now_link" class="dashboard-action-button">
             <i class="uil uil-clipboard-alt"></i>
             Practice Now
           </a>
@@ -31,7 +31,7 @@
     </div>
     <div class="row">
       <div class="col-xl-3 col-lg-6 col-md-6">
-        <a href="/student/live_classes/{{cid}}/" class="dashboard-link-card">
+        <a href="/student/live_classes/{{cid}}/" id="dashboard_live_classes_card_link" class="dashboard-link-card">
         <div class="card_dash dashboard-stat-card">
           <div class="card_dash_left">
             <div class="dashboard-stat-icon"><i class="uil uil-kayak"></i></div>
@@ -49,7 +49,7 @@
         </a>
       </div>
       <div class="col-xl-3 col-lg-6 col-md-6">
-        <a href="/student/video_lectures/{{cid}}/?page=1" class="dashboard-link-card">
+        <a href="/student/video_lectures/{{cid}}/?page=1" id="dashboard_video_lectures_card_link" class="dashboard-link-card">
         <div class="card_dash dashboard-stat-card">
           <div class="card_dash_left">
             <div class="dashboard-stat-icon"><i class="uil uil-play"></i></div>
@@ -67,7 +67,7 @@
         </a>
       </div>
       <div class="col-xl-3 col-lg-6 col-md-6">
-        <a href="/student/test_series/{{cid}}/" class="dashboard-link-card">
+        <a href="/student/test_series/{{cid}}/" id="dashboard_test_series_card_link" class="dashboard-link-card">
         <div class="card_dash dashboard-stat-card">
           <div class="card_dash_left">
             <div class="dashboard-stat-icon"><i class="uil uil-clipboard-alt"></i></div>
@@ -88,7 +88,7 @@
         </a>
       </div>
       <div class="col-xl-3 col-lg-6 col-md-6">
-        <a href="/student/pdf_notes/{{cid}}/?page=1" class="dashboard-link-card">
+        <a href="/student/pdf_notes/{{cid}}/?page=1" id="dashboard_pdf_notes_card_link" class="dashboard-link-card">
         <div class="card_dash dashboard-stat-card">
           <div class="card_dash_left">
             <div class="dashboard-stat-icon"><i class="uil uil-book-alt"></i></div>
@@ -110,7 +110,7 @@
     <div class="dashboard-content-card dashboard-section-card">
       <div class="review_all120">
         <div class="review_item_course_title">
-          <a>Live Classes </a>
+          <h2 class="dashboard-section-title">Live Classes</h2>
         </div>
         <div class="dashboard-section-note">
           Jump back into scheduled sessions and continue where your batch is
@@ -123,11 +123,12 @@
         <div class="col-xl-4 col-lg-6 col-md-6">
           <a
             href="/student/view_live_lecture/{{cid}}/{{ class.id }}/"
+            id="dashboard_live_class_{{ loop.index }}_link"
             class="dashboard-link-card dashboard-list-item"
           >
             <div class="card_dash dashboard-media-card">
               <div class="card_dashh">
-                <img src="{{class.thumbnail}}" class="actives" />
+                <img src="{{class.thumbnail}}" class="actives" alt="{{ class.title }}" />
               </div>
               <div class="card_dash_left">
                 <h6>{{ class.title }}</h6>
@@ -159,7 +160,7 @@
     <div class="dashboard-content-card dashboard-section-card">
       <div class="review_all120">
         <div class="review_item_course_title">
-          <a>Course Categories </a>
+          <h2 class="dashboard-section-title">Course Categories</h2>
         </div>
         <div class="dashboard-section-note">
           Everything is grouped by category so students can move between lectures,
@@ -190,6 +191,7 @@
                       ><i class="fa fa-file-video-o" aria-hidden="true"></i>
                       <a
                         href="/student/video_lectures/course/{{cid}}/category/{{content.category.id}}/?page=1"
+                        id="dashboard_category_{{ loop.index }}_lectures_link"
                       >
                         Video Lectures</a
                       >
@@ -209,6 +211,7 @@
                       ><i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                       <a
                         href="/student/pdf_notes/course/{{cid}}/category/{{content.category.id}}/?page=1"
+                        id="dashboard_category_{{ loop.index }}_notes_link"
                       >
                         PDF Notes
                       </a>
@@ -226,6 +229,7 @@
                       ><i class="fa fa-file-text-o" aria-hidden="true"></i>
                       <a
                         href="/student/test_series/course/{{cid}}/category/{{content.category.id}}/"
+                        id="dashboard_category_{{ loop.index }}_tests_link"
                       >
                         Test Series
                       </a>

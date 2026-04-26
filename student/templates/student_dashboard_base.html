@@ -151,8 +151,8 @@
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
-    <link href="/static/ui_refresh/theme-foundation.css?v=5" rel="stylesheet" />
-    <link href="/static/ui_refresh/student-dashboard-ui.css?v=8" rel="stylesheet" />
+    <link href="/static/ui_refresh/theme-foundation.css?v=6" rel="stylesheet" />
+    <link href="/static/ui_refresh/student-dashboard-ui.css?v=9" rel="stylesheet" />
   </head>
   <body class="imagnus-dashboard-ui">
     <noscript>
@@ -161,10 +161,10 @@
     </noscript>
     <header class="header clearfix">
       <div class="main_logo" id="logo">
-        <a href="/student/dashboard/{{cid}}/"
+        <a href="/student/dashboard/{{cid}}/" id="dashboard_header_logo_link"
           ><img src="https://imagnus.in/images/logo.png" class="logo" alt="I-Magnus"
         /></a>
-        <a href="/student/dashboard/{{cid}}/"
+        <a href="/student/dashboard/{{cid}}/" id="dashboard_header_logo_inverse_link"
           ><img
             class="logo-inverse logo"
             src="https://imagnus.in/images/logo.png"
@@ -181,7 +181,7 @@
       <div class="header_right">
         <ul>
           <li class="theme-toggle-header-item">
-            <button type="button" class="imagnus-theme-toggle" data-theme-toggle data-theme-compact="true">
+            <button type="button" id="student_theme_toggle" class="imagnus-theme-toggle" data-theme-toggle data-theme-compact="true" aria-label="Toggle dashboard theme">
               <span class="imagnus-theme-toggle__copy">
                 <span class="imagnus-theme-toggle__eyebrow">Theme</span>
                 <span class="imagnus-theme-toggle__label" data-theme-label>Light theme</span>
@@ -192,12 +192,12 @@
             </button>
           </li>
           <li class="ui dropdown">
-            <a href="#" class="option_links" title="Notifications"
+            <a href="#" id="student_notifications_link" class="option_links" title="Notifications" aria-label="Open notifications"
               ><i class="uil uil-bell"></i><span class="noti_count">0 </span></a
             >
           </li>
           <li class="ui dropdown">
-            <a href="#" class="opts_account" title="Account">
+            <a href="#" id="student_account_menu_button" class="opts_account" title="Account" aria-label="Open account menu">
               <img
                 src="https://icon-library.com/images/student-icon-transparent/student-icon-transparent-27.jpg"
                 alt="Student profile"
@@ -220,6 +220,7 @@
                     <span
                       ><a
                         href="../../cdn-cgi/l/email-protection.html"
+                        id="student_account_email_link"
                         class="__cf_email__"
                         data-cfemail="REDACTED_40_CHAR_SECRET"
                         >[{{student.email}}]
@@ -231,14 +232,11 @@
               </div>
               <!-- <a href="setting.html" class="item channel_item">Setting </a> -->
 
-              <a
-                ><form id="logout_form" action="/logout/" method="post">
-                  <span
-                    onclick="document.getElementById('logout_form').submit();"
-                    >Logout
-                  </span>
-                </form></a
-              >
+              <form id="logout_form" action="/logout/" method="post">
+                <button type="submit" id="student_logout_button" class="dashboard-account-logout">
+                  Logout
+                </button>
+              </form>
             </div>
           </li>
         </ul>
@@ -252,6 +250,7 @@
             <li class="menu--item">
               <a
                 href="/student/dashboard/{{cid}}/"
+                id="dashboard_nav_home"
                 class="menu--link {{'active' if home_active else ''}}"
                 title="Dashboard"
               >
@@ -263,6 +262,7 @@
             <li class="menu--item">
               <a
                 href="/student/live_classes/{{cid}}/"
+                id="dashboard_nav_live_classes"
                 class="menu--link {{'active' if live_classes_active else ''}}"
                 title="Courses"
               >
@@ -273,6 +273,7 @@
             <li class="menu--item">
               <a
                 href="/student/video_lectures/{{cid}}/?page=1"
+                id="dashboard_nav_video_lectures"
                 class="menu--link {{'active' if video_lectures else ''}}"
                 title="Video Lectures"
               >
@@ -283,6 +284,7 @@
             <li class="menu--item">
               <a
                 href="/student/test_series/{{cid}}/"
+                id="dashboard_nav_test_series"
                 class="menu--link {{'active' if test_series_active else ''}}"
                 title="Courses"
               >
@@ -293,6 +295,7 @@
             <li class="menu--item">
               <a
                 href="/student/pdf_notes/{{cid}}/?page=1"
+                id="dashboard_nav_pdf_notes"
                 class="menu--link {{'active' if pdf_notes_active else ''}}"
                 title="Courses"
               >
@@ -314,6 +317,7 @@
             <li class="menu--item">
               <a
                 href="/student/dashboard/"
+                id="dashboard_nav_switch_course"
                 class="menu--link {{'active' if active else ''}}"
                 title="Switch Course"
               >
@@ -343,7 +347,7 @@
                   <div class="col-md-6">
                     <ul class="fotb_left">
                       <li>
-                        <a href="index.html">
+                        <a href="index.html" id="dashboard_footer_logo_link">
                           <div class="footer_logo">
                             <img
                               src="/static/student_assets/images/fav.png"

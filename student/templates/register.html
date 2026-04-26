@@ -1,7 +1,7 @@
 {% extends "base.html" %} {% block content %}
 
 <div class="page_loader"></div>
-<a href="https://imagnus.in/" class="auth-back-link">
+<a href="https://imagnus.in/" id="register_back_home_link" class="auth-back-link">
   <i class="fa fa-arrow-left" aria-hidden="true"></i>
   <span>Back to Home</span>
 </a>
@@ -49,10 +49,10 @@
         <div class="form-section">
           <div class="auth-page-intro">
             <div class="btn-section clearfix auth-switcher auth-switcher-inline">
-              <a href="/student/login/" class="link-btn btn-1">
+              <a href="/student/login/" id="register_switch_login_link" class="link-btn btn-1">
                 Student Login
               </a>
-              <a href="/student/registration/?returnURL={{returnURL}}" class="link-btn btn-1 active default-bg">Register</a>
+              <a href="/student/registration/?returnURL={{returnURL}}" id="register_switch_register_link" class="link-btn btn-1 active default-bg">Register</a>
             </div>
             <span class="auth-kicker">Create Student Account</span>
             <h3>Create an account</h3>
@@ -138,6 +138,7 @@
                         I agree to the
                         <a
                           class="text-primary"
+                          id="register_terms_link"
                           href="https://imagnus.in/terms-conditions"
                         >
                           terms of service
@@ -147,14 +148,14 @@
                   </div>
                 </div>
                 <div class="form-group mb-0 auth-submit">
-                  <button type="submit" class="btn-md btn-theme btn-block">
+                  <button type="submit" id="register_page_submit_button" class="btn-md btn-theme btn-block">
                     Register
                     <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
                   </button>
                 </div>
               </div>
               <p class="text">
-                Already a member? <a href="/student/login/"> Login here </a>
+                Already a member? <a href="/student/login/" id="register_login_here_link"> Login here </a>
               </p>
             </form>
           </div>

@@ -100,6 +100,7 @@ algorithm = settings.algorithm
 sms_api_key = settings.sms_api_key
 
 templates = Jinja2Templates(directory="student/templates")
+public_templates = Jinja2Templates(directory="courses/templates")
 
 router = APIRouter()
 
@@ -278,65 +279,121 @@ async def home_page(
     returnURL: Optional[str] = None,
     message: Optional[str] = None,
 ):
+    async def public_home_response():
+        preferences = await Preference.filter(is_active=True).order_by("display_order")
+        preference_list = []
+
+        for preference in preferences:
+            courses = (
+                await Course.filter(preference__id=preference.id, is_active=True)
+                .order_by("display_order")
+                .limit(4)
+            )
+            course_list = []
+            for course in courses:
+                plan = (
+                    await CourseSubscriptionPlans.filter(course=course, is_active=True)
+                    .order_by("plan_price")
+                    .first()
+                )
+                course_list.append(
+                    {
+                        "name": course.name,
+                        "slug": course.slug,
+                        "description": course.description,
+                        "web_icon": course.web_icon,
+                        "module_count": await CourseCategories.filter(
+                            course=course, is_active=True
+                        ).count(),
+                        "plan_price": plan.plan_price if plan else None,
+                    }
+                )
+            preference_list.append(
+                {
+                    "name": preference.name,
+                    "slug": preference.slug,
+                    "course_count": await Course.filter(
+                        preference=preference, is_active=True
+                    ).count(),
+                    "courses": course_list,
+                }
+            )
+
+        featured_courses = []
+        featured_course_records = (
+            await Course.filter(is_active=True, preference__is_active=True)
+            .order_by("display_order")
+            .limit(6)
+            .prefetch_related("preference")
+        )
+        for course in featured_course_records:
+            plan = (
+                await CourseSubscriptionPlans.filter(course=course, is_active=True)
+                .order_by("plan_price")
+                .first()
+            )
+            featured_courses.append(
+                {
+                    "name": course.name,
+                    "slug": course.slug,
+                    "description": course.description,
+                    "web_icon": course.web_icon,
+                    "preference_name": course.preference.name,
+                    "preference_slug": course.preference.slug,
+                    "module_count": await CourseCategories.filter(
+                        course=course, is_active=True
+                    ).count(),
+                    "plan_price": plan.plan_price if plan else None,
+                }
+            )
+
+        stats = {
+            "course_count": await Course.filter(is_active=True).count(),
+            "stream_count": len(preference_list),
+            "lecture_count": await CourseCategoryLectures.all().count(),
+            "test_count": await CourseCategoryTestSeries.filter(is_active=True).count(),
+            "notes_count": await CourseCategoryNotes.all().count(),
+            "live_class_count": await LiveClasses.all().count(),
+        }
+
+        return public_templates.TemplateResponse(
+            "home.html",
+            context={
+                "request": request,
+                "preferences": preference_list,
+                "featured_courses": featured_courses,
+                "stats": stats,
+                "returnURL": returnURL,
+                "message": message or "",
+            },
+        )
+
     try:
         token = request.cookies.get(settings.cookie_name)
 
         if token:
-            payload = jwt.decode(token, secret_key, algorithms=[algorithm])
-            user: uuid.UUID = payload.get("sub")
+            token_is_active = await UserToken.filter(
+                token=token, expires_at__gt=datetime.now(tz)
+            ).exists()
+            if token_is_active:
+                payload = jwt.decode(token, secret_key, algorithms=[algorithm])
+                user: uuid.UUID = payload.get("sub")
+                student = await Student.exists(id=user)
 
-            exp = payload.get("exp")
-            student = await Student.exists(id=user)
+                if student:
+                    return RedirectResponse(
+                        url="/student/dashboard/", status_code=status.HTTP_302_FOUND
+                    )
 
-            if student:
-                return RedirectResponse(
-                    url="/student/dashboard/", status_code=status.HTTP_302_FOUND
-                )
-
-            else:
-                if "data" in request.session:
-                    message = request.session["data"]
-                else:
-                    message = ""
-                request.session.clear()
-                if message == "INVALID_SESSION":
-                    request.session["data"] = "Session Expired. Please login again."
-                return templates.TemplateResponse(
-                    "login.html",
-                    context={
-                        "request": request,
-                        "returnURL": returnURL,
-                        "message": message,
-                    },
-                )
-
-        else:
-            if "data" in request.session:
-                message = request.session["data"]
-            else:
-                message = ""
-            request.session.clear()
-            if message == "INVALID_SESSION":
-                request.session["data"] = "Session Expired. Please login again."
-            return templates.TemplateResponse(
-                "login.html",
-                context={
-                    "request": request,
-                    "returnURL": returnURL,
-                    "message": message,
-                },
-            )
-    except (jwt.ExpiredSignatureError, JWTError):
         if "data" in request.session:
             message = request.session["data"]
-        else:
-            message = ""
-        request.session.clear()
-        return templates.TemplateResponse(
-            "login.html",
-            context={"request": request,
-                     "returnURL": returnURL, "message": message},
-        )
+            request.session.clear()
+            if message == "INVALID_SESSION":
+                message = "Session Expired. Please login again."
+
+        return await public_home_response()
+    except (jwt.ExpiredSignatureError, JWTError):
+        return await public_home_response()
 
 
 tz = pytz.timezone("Asia/Kolkata")

@@ -156,14 +156,16 @@
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
-    <link href="/static/ui_refresh/theme-foundation.css?v=5" rel="stylesheet" />
-    <link href="/static/ui_refresh/auth-ui.css?v=14" rel="stylesheet" />
+    <link href="/static/ui_refresh/theme-foundation.css?v=6" rel="stylesheet" />
+    <link href="/static/ui_refresh/auth-ui.css?v=15" rel="stylesheet" />
   </head>
   <body class="imagnus-auth-ui">
     <button
       type="button"
+      id="auth_theme_toggle"
       class="imagnus-theme-toggle imagnus-theme-toggle--floating imagnus-theme-toggle--auth"
       data-theme-toggle
+      aria-label="Toggle auth page theme"
     >
       <span class="imagnus-theme-toggle__copy">
         <span class="imagnus-theme-toggle__eyebrow">Theme</span>
@@ -250,6 +252,7 @@
                 $("#otp_mobile").addClass("auth-input-disabled");
                 $("#otp_div").css("display", "block");
                 $("#otp_div").css("visibility", "visible");
+                $("#otp_div").attr("aria-hidden", "false");
                 showSnackbar(response.message, "success");
 
                 //Timer for resend otp
@@ -317,8 +320,10 @@
                 showSnackbar(response.message, "success");
                 $("#otp_form").css("display", "none");
                 $("#otp_form").css("visibility", "hidden");
+                $("#otp_form").attr("aria-hidden", "true");
                 $("#new_password_form").css("display", "block");
                 $("#new_password_form").css("visibility", "visible");
+                $("#new_password_form").attr("aria-hidden", "false");
               } else {
                 showSnackbar(response.message, "error");
               }
@@ -333,11 +338,15 @@
         $("#send_otp").prop("disabled", false).removeClass("auth-otp-pending");
         $("#myTimer").text("");
         $("#login_container").hide();
+        $("#login_container").attr("aria-hidden", "true");
         $("#register_container").hide();
+        $("#register_container").attr("aria-hidden", "true");
         $("#auth_title").text("Reset password");
         $("#auth_copy").text("Verify your registered mobile number and create a new password.");
         $("#otp_form").css("display", "block");
         $("#otp_form").css("visibility", "visible");
+        $("#otp_form").attr("aria-hidden", "false");
+        $("#new_password_form").attr("aria-hidden", "true");
       });
 
       $("#submit_password").click(function () {

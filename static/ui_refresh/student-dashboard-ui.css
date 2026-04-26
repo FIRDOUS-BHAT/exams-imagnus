@@ -289,8 +289,8 @@ body.imagnus-dashboard-ui .crdbg_1,
 body.imagnus-dashboard-ui .crdbg_2,
 body.imagnus-dashboard-ui .crdbg_3,
 body.imagnus-dashboard-ui .crdbg_4 {
-  background: rgba(46, 167, 255, 0.12) !important;
-  border: 1px solid rgba(46, 167, 255, 0.2) !important;
+  background: var(--accent-soft) !important;
+  border: 1px solid var(--accent-outline) !important;
   border-radius: 999px !important;
   color: var(--dash-accent) !important;
   display: inline-flex;
@@ -316,7 +316,7 @@ body.imagnus-dashboard-ui .top_countries {
 }
 
 body.imagnus-dashboard-ui .card_category {
-  background: rgba(255, 255, 255, 0.03) !important;
+  background: var(--layer-1) !important;
   border-bottom: 1px solid var(--dash-border-soft) !important;
   padding: 22px !important;
 }
@@ -327,7 +327,7 @@ body.imagnus-dashboard-ui .country_list {
 }
 
 body.imagnus-dashboard-ui .country_item {
-  background: rgba(255, 255, 255, 0.03) !important;
+  background: var(--layer-1) !important;
   border: 1px solid var(--dash-border-soft) !important;
   border-radius: 18px !important;
   margin-bottom: 10px;
@@ -348,7 +348,7 @@ body.imagnus-dashboard-ui .clr_brown {
 
 body.imagnus-dashboard-ui .clr_red,
 body.imagnus-dashboard-ui .text-danger {
-  color: #ff8f8f !important;
+  color: var(--danger) !important;
 }
 
 body.imagnus-dashboard-ui .upload_btn,
@@ -359,8 +359,8 @@ body.imagnus-dashboard-ui .btn-success {
   background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-strong)) !important;
   border: 1px solid rgba(var(--brand-primary-rgb), 0.32) !important;
   border-radius: 14px !important;
-  box-shadow: 0 18px 38px rgba(30, 133, 255, 0.26) !important;
-  color: #ffffff !important;
+  box-shadow: 0 18px 38px rgba(var(--brand-primary-rgb), 0.26) !important;
+  color: var(--text-inverse) !important;
   display: inline-flex;
   font-family: "Space Grotesk", sans-serif !important;
   font-weight: 700 !important;
@@ -374,7 +374,7 @@ body.imagnus-dashboard-ui .upload_btn:hover,
 body.imagnus-dashboard-ui .btn-primary:hover,
 body.imagnus-dashboard-ui .btn-info:hover,
 body.imagnus-dashboard-ui .btn-success:hover {
-  box-shadow: 0 22px 40px rgba(30, 133, 255, 0.34) !important;
+  box-shadow: 0 22px 40px rgba(var(--brand-primary-rgb), 0.34) !important;
   transform: translateY(-2px);
 }
 
@@ -388,7 +388,7 @@ body.imagnus-dashboard-ui .pagination {
 }
 
 body.imagnus-dashboard-ui .page-link {
-  background: rgba(255, 255, 255, 0.04) !important;
+  background: var(--layer-1) !important;
   border: 1px solid var(--dash-border) !important;
   border-radius: 14px !important;
   color: var(--dash-muted) !important;
@@ -396,9 +396,9 @@ body.imagnus-dashboard-ui .page-link {
 
 body.imagnus-dashboard-ui .page-item.active .page-link,
 body.imagnus-dashboard-ui .page-link:hover {
-  background: rgba(46, 167, 255, 0.14) !important;
-  border-color: rgba(46, 167, 255, 0.22) !important;
-  color: #ffffff !important;
+  background: var(--accent-soft-strong) !important;
+  border-color: var(--accent-outline) !important;
+  color: var(--text-primary) !important;
 }
 
 body.imagnus-dashboard-ui .all_msg_bg {
@@ -417,7 +417,7 @@ body.imagnus-dashboard-ui .chatbox_right {
 }
 
 body.imagnus-dashboard-ui .chat_header {
-  background: rgba(255, 255, 255, 0.03) !important;
+  background: var(--layer-1) !important;
   border-bottom: 1px solid var(--dash-border-soft) !important;
   padding: 18px 20px !important;
 }
@@ -448,7 +448,7 @@ body.imagnus-dashboard-ui .msg_search {
 
 body.imagnus-dashboard-ui .msg_search input,
 body.imagnus-dashboard-ui .prompt {
-  background: rgba(255, 255, 255, 0.04) !important;
+  background: var(--layer-1) !important;
   border: 1px solid var(--dash-border) !important;
   border-radius: 16px !important;
   color: var(--dash-text) !important;
@@ -459,7 +459,7 @@ body.imagnus-dashboard-ui .group_messages {
 }
 
 body.imagnus-dashboard-ui .chat__message__dt {
-  background: rgba(255, 255, 255, 0.03) !important;
+  background: var(--layer-1) !important;
   border: 1px solid var(--dash-border-soft) !important;
   border-radius: 18px !important;
   margin-bottom: 10px !important;
@@ -467,8 +467,8 @@ body.imagnus-dashboard-ui .chat__message__dt {
 }
 
 body.imagnus-dashboard-ui .chat__message__dt.active {
-  background: rgba(46, 167, 255, 0.12) !important;
-  border-color: rgba(46, 167, 255, 0.22) !important;
+  background: var(--accent-soft) !important;
+  border-color: var(--accent-outline) !important;
 }
 
 body.imagnus-dashboard-ui .user-avatar img {
@@ -482,14 +482,14 @@ body.imagnus-dashboard-ui .msg__badge {
 }
 
 body.imagnus-dashboard-ui .ques_item {
-  background: rgba(255, 255, 255, 0.03) !important;
+  background: var(--layer-1) !important;
   border: 1px solid var(--dash-border-soft) !important;
   border-radius: 22px !important;
   padding: 24px !important;
 }
 
 body.imagnus-dashboard-ui .ui.radio.checkbox label {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--layer-1);
   border: 1px solid var(--dash-border-soft);
   border-radius: 16px;
   color: var(--dash-muted) !important;
@@ -501,14 +501,14 @@ body.imagnus-dashboard-ui .ui.radio.checkbox label {
 
 body.imagnus-dashboard-ui .ui.radio.checkbox input:checked ~ label,
 body.imagnus-dashboard-ui .ui.radio.checkbox.checked label {
-  background: rgba(46, 167, 255, 0.12);
-  border-color: rgba(46, 167, 255, 0.22);
-  color: #ffffff !important;
+  background: var(--accent-soft);
+  border-color: var(--accent-outline);
+  color: var(--text-primary) !important;
 }
 
 body.imagnus-dashboard-ui .test_timer_bg,
 body.imagnus-dashboard-ui .timer_time {
-  background: rgba(255, 255, 255, 0.03) !important;
+  background: var(--layer-1) !important;
   border: 1px solid var(--dash-border-soft) !important;
   border-radius: 18px !important;
 }
@@ -519,7 +519,7 @@ body.imagnus-dashboard-ui .test_timer_bg {
 
 body.imagnus-dashboard-ui .steps_btn,
 body.imagnus-dashboard-ui .steps_btn_success {
-  background: rgba(255, 255, 255, 0.04) !important;
+  background: var(--layer-1) !important;
   border: 1px solid var(--dash-border) !important;
   border-radius: 14px !important;
   color: var(--dash-muted) !important;
@@ -530,9 +530,9 @@ body.imagnus-dashboard-ui .steps_btn_success {
 
 body.imagnus-dashboard-ui .steps_btn_success,
 body.imagnus-dashboard-ui .steps_btn:hover {
-  background: rgba(46, 167, 255, 0.14) !important;
-  border-color: rgba(46, 167, 255, 0.22) !important;
-  color: #ffffff !important;
+  background: var(--accent-soft-strong) !important;
+  border-color: var(--accent-outline) !important;
+  color: var(--text-primary) !important;
 }
 
 body.imagnus-dashboard-ui .table,
@@ -656,7 +656,7 @@ body.imagnus-dashboard-ui .dashboard-media-card .card_dash_left {
 }
 
 body.imagnus-dashboard-ui .dashboard-item-meta {
-  color: #ff8f8f !important;
+  color: var(--danger) !important;
   font-size: 0.85rem;
   font-weight: 600;
   line-height: 1.55;
@@ -690,7 +690,7 @@ body.imagnus-dashboard-ui .dashboard-topic-card .card_dash_left h5 {
 
 body.imagnus-dashboard-ui .dashboard-empty-state {
   align-items: center;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--layer-1);
   border: 1px dashed var(--dash-border);
   border-radius: 22px;
   display: flex;
@@ -703,8 +703,8 @@ body.imagnus-dashboard-ui .dashboard-empty-state {
 
 body.imagnus-dashboard-ui .dashboard-empty-icon {
   align-items: center;
-  background: rgba(46, 167, 255, 0.12);
-  border: 1px solid rgba(46, 167, 255, 0.18);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-outline);
   border-radius: 22px;
   color: var(--dash-accent) !important;
   display: inline-flex;
@@ -768,8 +768,8 @@ body.imagnus-dashboard-ui .dashboard-player-tags {
 }
 
 body.imagnus-dashboard-ui .dashboard-player-tag {
-  background: rgba(46, 167, 255, 0.12);
-  border: 1px solid rgba(46, 167, 255, 0.18);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-outline);
   border-radius: 999px;
   color: var(--dash-accent) !important;
   display: inline-flex;
@@ -872,11 +872,11 @@ body.imagnus-dashboard-ui .theme-toggle-header-item .imagnus-theme-toggle__label
 }
 
 html[data-theme="light"] body.imagnus-dashboard-ui .header {
-  background: rgba(248, 251, 255, 0.92) !important;
+  background: var(--surface-glass) !important;
 }
 
 html[data-theme="light"] body.imagnus-dashboard-ui .vertical_nav {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(237, 244, 252, 0.96)) !important;
+  background: var(--surface-gradient-strong) !important;
 }
 
 html[data-theme="light"] body.imagnus-dashboard-ui .dropdown_account,
@@ -1136,7 +1136,7 @@ body.imagnus-dashboard-ui .dashboard-reader-shell {
 }
 
 body.imagnus-dashboard-ui .dashboard-reader-frame {
-  background: #050b14;
+  background: var(--media-backdrop);
   border-radius: 8px;
   overflow: hidden;
 }
@@ -1400,5 +1400,992 @@ body.imagnus-dashboard-ui .dashboard-empty-state {
 
   body.imagnus-dashboard-ui .result-summary-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Premium dashboard refinement */
+body.imagnus-dashboard-ui .header {
+  border-bottom: 1px solid var(--dash-border) !important;
+  box-shadow: 0 18px 44px rgba(var(--brand-primary-rgb), 0.08);
+  height: 76px;
+  left: 0;
+  min-height: 76px;
+  overflow: visible;
+  padding: 0 18px 0 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 1000;
+}
+
+body.imagnus-dashboard-ui .header::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(var(--brand-primary-rgb), 0.26),
+    rgba(var(--brand-accent-rgb), 0.18),
+    transparent
+  );
+  bottom: -1px;
+  content: "";
+  height: 1px;
+  left: 240px;
+  position: absolute;
+  right: 0;
+}
+
+body.imagnus-dashboard-ui .main_logo {
+  border-right: 1px solid var(--dash-border-soft);
+  height: 100%;
+  margin: 0;
+  padding: 0 18px;
+  width: 240px;
+}
+
+body.imagnus-dashboard-ui .main_logo a {
+  border-radius: 16px;
+  padding: 8px 10px;
+}
+
+body.imagnus-dashboard-ui .main_logo a:hover {
+  background: var(--layer-hover);
+}
+
+body.imagnus-dashboard-ui .header .logo {
+  max-height: 42px;
+  object-fit: contain;
+}
+
+body.imagnus-dashboard-ui .toggle_menu,
+body.imagnus-dashboard-ui .collapse_menu {
+  align-items: center;
+  background: var(--layer-1) !important;
+  border: 1px solid var(--dash-border) !important;
+  border-radius: 16px !important;
+  box-shadow: none !important;
+  color: var(--dash-muted) !important;
+  height: 48px !important;
+  justify-content: center;
+  line-height: 1 !important;
+  margin: 0 14px;
+  transition:
+    background-color 0.24s ease,
+    border-color 0.24s ease,
+    box-shadow 0.24s ease,
+    transform 0.24s ease;
+  width: 48px !important;
+}
+
+body.imagnus-dashboard-ui .toggle_menu {
+  display: none;
+}
+
+body.imagnus-dashboard-ui .collapse_menu {
+  display: inline-flex;
+}
+
+body.imagnus-dashboard-ui .toggle_menu i,
+body.imagnus-dashboard-ui .collapse_menu .collapse_menu--icon {
+  background: transparent !important;
+  color: inherit !important;
+  float: none;
+  font-size: 1.25rem !important;
+  height: auto;
+  line-height: 1;
+  width: auto;
+}
+
+body.imagnus-dashboard-ui .toggle_menu:hover,
+body.imagnus-dashboard-ui .collapse_menu:hover,
+body.imagnus-dashboard-ui .option_links:hover,
+body.imagnus-dashboard-ui .opts_account:hover,
+body.imagnus-dashboard-ui .theme-toggle-header-item .imagnus-theme-toggle:hover {
+  background: var(--accent-soft) !important;
+  border-color: var(--accent-outline) !important;
+  box-shadow: 0 14px 30px rgba(var(--brand-primary-rgb), 0.12) !important;
+  color: var(--dash-text) !important;
+  transform: translateY(-1px);
+}
+
+body.imagnus-dashboard-ui .header_right {
+  padding-right: 0;
+}
+
+body.imagnus-dashboard-ui .header_right > ul {
+  gap: 10px;
+}
+
+body.imagnus-dashboard-ui .option_links,
+body.imagnus-dashboard-ui .opts_account,
+body.imagnus-dashboard-ui .theme-toggle-header-item .imagnus-theme-toggle {
+  background: var(--surface-glass-strong) !important;
+  border: 1px solid var(--dash-border) !important;
+  box-shadow: 0 12px 28px rgba(var(--brand-primary-rgb), 0.08);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+body.imagnus-dashboard-ui .option_links,
+body.imagnus-dashboard-ui .opts_account {
+  height: 48px;
+  width: 48px;
+}
+
+body.imagnus-dashboard-ui .option_links i {
+  font-size: 1.24rem;
+}
+
+body.imagnus-dashboard-ui .noti_count {
+  border: 2px solid var(--bg-app);
+  box-shadow: 0 8px 18px rgba(var(--brand-primary-rgb), 0.28);
+  font-family: "Space Grotesk", sans-serif;
+  height: 19px;
+  line-height: 15px;
+  right: 2px;
+  top: -2px;
+  width: 19px;
+}
+
+body.imagnus-dashboard-ui .opts_account img {
+  border-color: var(--accent-outline);
+  box-shadow: 0 8px 22px rgba(var(--brand-primary-rgb), 0.14);
+}
+
+body.imagnus-dashboard-ui .dropdown_account {
+  border-radius: 22px !important;
+  margin-top: 14px !important;
+  min-width: 310px;
+  overflow: hidden;
+  padding: 8px !important;
+}
+
+body.imagnus-dashboard-ui .channel_my {
+  background: var(--layer-1);
+  border: 1px solid var(--dash-border-soft);
+  border-radius: 18px;
+  padding: 14px;
+}
+
+body.imagnus-dashboard-ui .profile_link {
+  align-items: center;
+  gap: 12px;
+}
+
+body.imagnus-dashboard-ui .pd_content h6 {
+  color: var(--dash-text) !important;
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+}
+
+body.imagnus-dashboard-ui .dashboard-account-logout {
+  align-items: center;
+  background: var(--layer-1);
+  border: 1px solid var(--dash-border);
+  border-radius: 16px;
+  color: var(--dash-muted);
+  cursor: pointer;
+  display: flex;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.92rem;
+  font-weight: 700;
+  justify-content: center;
+  margin-top: 8px;
+  min-height: 46px;
+  width: 100%;
+}
+
+body.imagnus-dashboard-ui .dashboard-account-logout:hover,
+body.imagnus-dashboard-ui .dashboard-account-logout:focus-visible {
+  background: var(--danger-soft);
+  border-color: rgba(var(--danger-rgb), 0.28);
+  color: var(--danger);
+  outline: none;
+}
+
+body.imagnus-dashboard-ui .dashboard-account-logout:hover {
+  box-shadow: 0 12px 28px rgba(var(--danger-rgb), 0.12);
+}
+
+body.imagnus-dashboard-ui .dashboard-account-logout:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+
+body.imagnus-dashboard-ui .vertical_nav {
+  border-radius: 0 26px 26px 0;
+  bottom: 18px;
+  box-shadow: 18px 28px 62px rgba(var(--brand-primary-rgb), 0.1);
+  left: -244px;
+  overflow: hidden;
+  padding-top: 14px;
+  top: 76px;
+  width: 244px;
+  z-index: 990;
+}
+
+body.imagnus-dashboard-ui .vertical_nav__opened {
+  left: 0 !important;
+}
+
+body.imagnus-dashboard-ui .vertical_nav__closed {
+  left: -244px !important;
+}
+
+body.imagnus-dashboard-ui .menu_left {
+  padding: 8px 0 18px;
+}
+
+body.imagnus-dashboard-ui .left_section {
+  border-bottom: 1px solid var(--dash-border-soft) !important;
+  padding-bottom: 12px;
+}
+
+body.imagnus-dashboard-ui .left_section:last-child {
+  border-bottom: 0 !important;
+  padding-top: 8px;
+}
+
+body.imagnus-dashboard-ui .dashboard-nav-label {
+  color: var(--text-muted);
+  margin: 12px 24px 10px;
+}
+
+body.imagnus-dashboard-ui .menu--item {
+  line-height: 1;
+  min-height: 0;
+}
+
+body.imagnus-dashboard-ui .menu--link {
+  align-items: center;
+  display: flex !important;
+  gap: 12px;
+  letter-spacing: 0;
+  margin: 6px 14px !important;
+  min-height: 52px;
+  overflow: hidden;
+  padding: 8px 12px !important;
+  position: relative;
+}
+
+body.imagnus-dashboard-ui .menu--link::before {
+  background: linear-gradient(180deg, var(--brand-primary), var(--brand-accent));
+  border-radius: 999px;
+  content: "";
+  height: 24px;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  top: 50%;
+  transform: translate(-6px, -50%);
+  transition:
+    opacity 0.24s ease,
+    transform 0.24s ease;
+  width: 4px;
+}
+
+body.imagnus-dashboard-ui .menu--link:hover,
+body.imagnus-dashboard-ui .menu--link.active {
+  box-shadow: 0 14px 30px rgba(var(--brand-primary-rgb), 0.1) !important;
+}
+
+body.imagnus-dashboard-ui .menu--link.active::before {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+
+body.imagnus-dashboard-ui .menu--icon {
+  align-items: center;
+  background: var(--layer-1);
+  border: 1px solid var(--dash-border-soft);
+  border-radius: 14px;
+  display: inline-flex !important;
+  flex: 0 0 38px;
+  float: none;
+  height: 38px;
+  justify-content: center;
+  line-height: 1;
+  width: 38px;
+}
+
+body.imagnus-dashboard-ui .menu--link.active .menu--icon,
+body.imagnus-dashboard-ui .menu--link:hover .menu--icon {
+  background: var(--accent-soft);
+  border-color: var(--accent-outline);
+}
+
+body.imagnus-dashboard-ui .menu--label {
+  height: auto;
+  line-height: 1.25;
+}
+
+body.imagnus-dashboard-ui .wrapper {
+  padding-top: 102px;
+}
+
+@media (min-width: 992px) {
+  body.imagnus-dashboard-ui .vertical_nav {
+    left: 0;
+  }
+
+  body.imagnus-dashboard-ui .wrapper {
+    margin-left: 244px;
+  }
+
+  body.imagnus-dashboard-ui .wrapper__minify {
+    margin-left: 76px;
+  }
+
+  body.imagnus-dashboard-ui .vertical_nav__minify {
+    width: 76px;
+  }
+
+  body.imagnus-dashboard-ui .vertical_nav__minify .dashboard-nav-label,
+  body.imagnus-dashboard-ui .vertical_nav__minify .menu--label {
+    display: none;
+  }
+
+  body.imagnus-dashboard-ui .vertical_nav__minify .menu--link {
+    justify-content: center;
+    margin: 6px 10px !important;
+    padding: 8px !important;
+  }
+}
+
+body.imagnus-dashboard-ui .sa4d25 {
+  padding: 38px 24px 64px !important;
+}
+
+body.imagnus-dashboard-ui .dashboard-shell .container-fluid {
+  max-width: 1480px;
+}
+
+body.imagnus-dashboard-ui .dashboard-shell .row {
+  row-gap: 24px;
+}
+
+body.imagnus-dashboard-ui .dashboard-page-head {
+  align-items: stretch;
+  background: var(--hero-gradient);
+  border-color: var(--dash-border) !important;
+  border-radius: 28px !important;
+  box-shadow: var(--shadow-hero);
+  gap: 32px;
+  margin-bottom: 34px;
+  min-height: 238px;
+  padding: 36px !important;
+}
+
+body.imagnus-dashboard-ui .dashboard-page-head::before {
+  background:
+    radial-gradient(circle at 12% 8%, rgba(var(--brand-primary-rgb), 0.24), transparent 34%),
+    radial-gradient(circle at 88% 12%, rgba(var(--brand-accent-rgb), 0.16), transparent 30%),
+    radial-gradient(circle at 72% 96%, rgba(var(--warning-rgb), 0.12), transparent 28%);
+  opacity: 0.92;
+}
+
+body.imagnus-dashboard-ui .dashboard-page-head::after {
+  background: linear-gradient(
+    90deg,
+    rgba(var(--brand-primary-rgb), 0.78),
+    rgba(var(--brand-accent-rgb), 0.56),
+    rgba(var(--warning-rgb), 0.34),
+    transparent
+  );
+  height: 6px;
+}
+
+body.imagnus-dashboard-ui .dashboard-page-head > div:first-child {
+  display: flex;
+  flex: 1 1 480px;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 760px;
+  min-width: 0;
+}
+
+body.imagnus-dashboard-ui .dashboard-page-kicker {
+  align-self: flex-start;
+  background: var(--surface-glass-strong);
+  box-shadow: inset 0 1px 0 rgba(var(--brand-primary-rgb), 0.08);
+  margin-bottom: 18px;
+  padding: 9px 15px;
+}
+
+body.imagnus-dashboard-ui .dashboard-page-title,
+body.imagnus-dashboard-ui .st_title,
+body.imagnus-dashboard-ui .title {
+  font-size: 2.7rem !important;
+  line-height: 1.05 !important;
+}
+
+body.imagnus-dashboard-ui .dashboard-page-copy {
+  font-size: 1.02rem;
+  line-height: 1.75;
+  max-width: 700px;
+}
+
+body.imagnus-dashboard-ui .dashboard-page-side {
+  align-self: stretch;
+  background: var(--surface-glass-strong);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--dash-border);
+  border-radius: 24px;
+  box-shadow: 0 20px 46px rgba(var(--brand-primary-rgb), 0.1);
+  justify-content: space-between;
+  min-width: 300px;
+  padding: 18px;
+}
+
+body.imagnus-dashboard-ui .dashboard-page-badges {
+  justify-content: flex-end;
+}
+
+body.imagnus-dashboard-ui .dashboard-page-badge {
+  align-items: center;
+  background: var(--layer-2);
+  border-color: var(--dash-border);
+  box-shadow: 0 10px 24px rgba(var(--brand-primary-rgb), 0.06);
+  color: var(--dash-text) !important;
+  gap: 8px;
+  min-height: 42px;
+}
+
+body.imagnus-dashboard-ui .dashboard-page-badge::before {
+  background: var(--brand-accent);
+  border-radius: 999px;
+  box-shadow: 0 0 0 4px rgba(var(--brand-accent-rgb), 0.12);
+  content: "";
+  height: 7px;
+  width: 7px;
+}
+
+body.imagnus-dashboard-ui .dashboard-action-button {
+  border-radius: 16px;
+  box-shadow: 0 12px 28px rgba(var(--brand-primary-rgb), 0.08);
+  min-height: 48px;
+  overflow: hidden;
+  position: relative;
+  transition:
+    background-color 0.24s ease,
+    border-color 0.24s ease,
+    box-shadow 0.24s ease,
+    color 0.24s ease,
+    transform 0.24s ease;
+}
+
+body.imagnus-dashboard-ui .dashboard-page-actions .dashboard-action-button:first-child {
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-strong));
+  border-color: rgba(var(--brand-primary-rgb), 0.34);
+  box-shadow: 0 18px 38px rgba(var(--brand-primary-rgb), 0.24);
+  color: var(--text-inverse) !important;
+}
+
+body.imagnus-dashboard-ui .dashboard-action-button:hover {
+  box-shadow: 0 20px 42px rgba(var(--brand-primary-rgb), 0.18);
+}
+
+body.imagnus-dashboard-ui .dashboard-page-actions .dashboard-action-button:first-child:hover {
+  box-shadow: 0 24px 48px rgba(var(--brand-primary-rgb), 0.3);
+}
+
+body.imagnus-dashboard-ui .dashboard-stat-card {
+  background:
+    radial-gradient(circle at top right, rgba(var(--brand-primary-rgb), 0.14), transparent 34%),
+    radial-gradient(circle at bottom left, rgba(var(--brand-accent-rgb), 0.1), transparent 34%),
+    var(--surface-gradient) !important;
+  border-radius: 24px !important;
+  box-shadow: var(--shadow-premium) !important;
+  display: flex;
+  min-height: 220px;
+  overflow: hidden;
+  padding: 28px !important;
+}
+
+body.imagnus-dashboard-ui .dashboard-stat-card::before {
+  background: linear-gradient(
+    90deg,
+    rgba(var(--brand-primary-rgb), 0.7),
+    rgba(var(--brand-accent-rgb), 0.44),
+    transparent
+  );
+  content: "";
+  height: 4px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+body.imagnus-dashboard-ui .dashboard-stat-card::after {
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 28px 28px;
+  content: "";
+  inset: 0;
+  opacity: 0.58;
+  pointer-events: none;
+  position: absolute;
+}
+
+body.imagnus-dashboard-ui .dashboard-stat-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+body.imagnus-dashboard-ui .dashboard-stat-icon {
+  background: linear-gradient(135deg, var(--accent-soft), rgba(var(--brand-accent-rgb), 0.12));
+  border-radius: 18px;
+  box-shadow: 0 14px 30px rgba(var(--brand-primary-rgb), 0.12);
+  height: 54px;
+  margin-bottom: 20px;
+  width: 54px;
+}
+
+body.imagnus-dashboard-ui .card_dash_left h5 {
+  color: var(--text-muted) !important;
+  font-size: 0.78rem !important;
+  letter-spacing: 0.11em;
+  margin-bottom: 10px !important;
+}
+
+body.imagnus-dashboard-ui .card_dash_left h2 {
+  font-size: 2.72rem !important;
+  letter-spacing: 0;
+  line-height: 1;
+  margin-bottom: 14px !important;
+}
+
+body.imagnus-dashboard-ui .dashboard-stat-card .card_dash_right {
+  opacity: 0.15;
+  right: 18px;
+  top: 22px;
+}
+
+body.imagnus-dashboard-ui .dashboard-stat-card .card_dash_right img {
+  max-width: 86px;
+}
+
+body.imagnus-dashboard-ui .dashboard-stat-trend {
+  margin-top: auto;
+}
+
+body.imagnus-dashboard-ui .crdbg_1,
+body.imagnus-dashboard-ui .crdbg_2,
+body.imagnus-dashboard-ui .crdbg_3,
+body.imagnus-dashboard-ui .crdbg_4 {
+  box-shadow: inset 0 1px 0 rgba(var(--brand-primary-rgb), 0.1);
+  min-height: 34px;
+}
+
+body.imagnus-dashboard-ui .dashboard-content-card,
+body.imagnus-dashboard-ui .card_dash,
+body.imagnus-dashboard-ui .card_dashh,
+body.imagnus-dashboard-ui .top_countries,
+body.imagnus-dashboard-ui .all_msg_bg,
+body.imagnus-dashboard-ui .chatbox_right,
+body.imagnus-dashboard-ui .msg_search,
+body.imagnus-dashboard-ui .group_messages,
+body.imagnus-dashboard-ui .ques_item,
+body.imagnus-dashboard-ui .test_timer_bg,
+body.imagnus-dashboard-ui .timer_time,
+body.imagnus-dashboard-ui .modal-content {
+  border-radius: 24px !important;
+}
+
+body.imagnus-dashboard-ui .dashboard-section-card {
+  background:
+    linear-gradient(180deg, var(--surface-glass-strong), transparent),
+    var(--surface-gradient) !important;
+  border-radius: 28px !important;
+  box-shadow: var(--shadow-premium) !important;
+  margin-bottom: 30px;
+  margin-top: 24px;
+  overflow: hidden;
+  padding: 30px !important;
+  position: relative;
+}
+
+body.imagnus-dashboard-ui .dashboard-section-card::before {
+  background: linear-gradient(90deg, rgba(var(--brand-primary-rgb), 0.28), transparent 64%);
+  content: "";
+  height: 1px;
+  left: 28px;
+  position: absolute;
+  right: 28px;
+  top: 0;
+}
+
+body.imagnus-dashboard-ui .review_all120 {
+  margin-bottom: 24px !important;
+}
+
+body.imagnus-dashboard-ui .review_item_course_title a,
+body.imagnus-dashboard-ui .dashboard-section-title {
+  font-size: 1.42rem !important;
+  line-height: 1.2;
+}
+
+body.imagnus-dashboard-ui .dashboard-section-title {
+  color: var(--dash-text) !important;
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0;
+  margin: 0;
+}
+
+body.imagnus-dashboard-ui .dashboard-section-note {
+  font-size: 0.94rem;
+  line-height: 1.7;
+  margin-top: 7px;
+  max-width: 780px;
+}
+
+body.imagnus-dashboard-ui .dashboard-media-card,
+body.imagnus-dashboard-ui .dashboard-topic-card,
+body.imagnus-dashboard-ui .dashboard-category-card {
+  border-radius: 22px !important;
+}
+
+body.imagnus-dashboard-ui .dashboard-media-card {
+  gap: 18px;
+  padding: 18px !important;
+}
+
+body.imagnus-dashboard-ui .dashboard-media-card .card_dashh,
+body.imagnus-dashboard-ui .dashboard-media-card .card_dashh img,
+body.imagnus-dashboard-ui .dashboard-video-shell iframe,
+body.imagnus-dashboard-ui .dashboard-player-shell .media-frame-16x9,
+body.imagnus-dashboard-ui .media-frame-16x9 {
+  border-radius: 18px !important;
+}
+
+body.imagnus-dashboard-ui .dashboard-card-footer {
+  background: var(--layer-1);
+  border: 1px solid var(--dash-border-soft);
+  border-radius: 16px;
+  justify-content: space-between;
+  margin-top: 6px;
+  min-height: 44px;
+  padding: 10px 12px;
+}
+
+body.imagnus-dashboard-ui .dashboard-card-footer i {
+  color: var(--dash-accent);
+}
+
+body.imagnus-dashboard-ui .card_category {
+  border-bottom: 1px solid var(--dash-border-soft) !important;
+  border-radius: 22px 22px 0 0;
+  padding: 24px !important;
+}
+
+body.imagnus-dashboard-ui .country_list {
+  padding: 16px !important;
+}
+
+body.imagnus-dashboard-ui .country_item {
+  border-radius: 16px !important;
+  margin-bottom: 12px;
+  min-height: 52px;
+  transition:
+    background-color 0.24s ease,
+    border-color 0.24s ease,
+    transform 0.24s ease;
+}
+
+body.imagnus-dashboard-ui .country_item:hover {
+  background: var(--layer-hover) !important;
+  border-color: var(--accent-outline) !important;
+  transform: translateY(-1px);
+}
+
+body.imagnus-dashboard-ui .nav-tabs,
+body.imagnus-dashboard-ui .nav-pills,
+body.imagnus-dashboard-ui .ui.secondary.menu,
+body.imagnus-dashboard-ui .ui.tabular.menu {
+  background: var(--surface-glass-strong) !important;
+  border: 1px solid var(--dash-border) !important;
+  border-radius: 20px !important;
+  box-shadow: inset 0 1px 0 rgba(var(--brand-primary-rgb), 0.08);
+  display: inline-flex;
+  gap: 6px;
+  padding: 6px;
+}
+
+body.imagnus-dashboard-ui .nav-tabs .nav-link,
+body.imagnus-dashboard-ui .nav-pills .nav-link,
+body.imagnus-dashboard-ui .ui.secondary.menu .item,
+body.imagnus-dashboard-ui .ui.tabular.menu .item {
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: 14px !important;
+  color: var(--dash-muted) !important;
+  font-family: "Space Grotesk", sans-serif !important;
+  font-weight: 700 !important;
+  min-height: 42px;
+  padding: 10px 16px !important;
+  transition:
+    background-color 0.24s ease,
+    border-color 0.24s ease,
+    box-shadow 0.24s ease,
+    color 0.24s ease,
+    transform 0.24s ease;
+}
+
+body.imagnus-dashboard-ui .nav-tabs .nav-link.active,
+body.imagnus-dashboard-ui .nav-tabs .nav-link:hover,
+body.imagnus-dashboard-ui .nav-pills .nav-link.active,
+body.imagnus-dashboard-ui .nav-pills .nav-link:hover,
+body.imagnus-dashboard-ui .ui.secondary.menu .active.item,
+body.imagnus-dashboard-ui .ui.secondary.menu .item:hover,
+body.imagnus-dashboard-ui .ui.tabular.menu .active.item,
+body.imagnus-dashboard-ui .ui.tabular.menu .item:hover {
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-strong)) !important;
+  border-color: rgba(var(--brand-primary-rgb), 0.34) !important;
+  box-shadow: 0 14px 28px rgba(var(--brand-primary-rgb), 0.2);
+  color: var(--text-inverse) !important;
+}
+
+body.imagnus-dashboard-ui .dashboard-empty-state {
+  background:
+    radial-gradient(circle at top, rgba(var(--brand-primary-rgb), 0.12), transparent 36%),
+    var(--layer-1);
+  border: 1px dashed var(--accent-outline);
+  border-radius: 28px !important;
+  box-shadow: inset 0 1px 0 rgba(var(--brand-primary-rgb), 0.08);
+  min-height: 270px;
+  overflow: hidden;
+  padding: 54px 30px;
+  position: relative;
+}
+
+body.imagnus-dashboard-ui .dashboard-empty-state::before {
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 32px 32px;
+  content: "";
+  inset: 0;
+  opacity: 0.7;
+  pointer-events: none;
+  position: absolute;
+}
+
+body.imagnus-dashboard-ui .dashboard-empty-state > * {
+  position: relative;
+  z-index: 1;
+}
+
+body.imagnus-dashboard-ui .dashboard-empty-icon {
+  border-radius: 24px;
+  box-shadow: 0 20px 42px rgba(var(--brand-primary-rgb), 0.14);
+  font-size: 2rem;
+  height: 84px;
+  width: 84px;
+}
+
+body.imagnus-dashboard-ui .dashboard-empty-state h4 {
+  font-size: 1.46rem;
+  line-height: 1.2;
+}
+
+body.imagnus-dashboard-ui .dashboard-empty-state p {
+  font-size: 0.96rem;
+  max-width: 600px;
+}
+
+body.imagnus-dashboard-ui .result-metric-card,
+body.imagnus-dashboard-ui .result-question-card,
+body.imagnus-dashboard-ui .answer-option-card,
+body.imagnus-dashboard-ui .solution-panel,
+body.imagnus-dashboard-ui .dashboard-pdf-frame,
+body.imagnus-dashboard-ui .dashboard-reader-frame,
+body.imagnus-dashboard-ui .chat__message__dt,
+body.imagnus-dashboard-ui .timer_time {
+  border-radius: 18px !important;
+}
+
+html[data-theme="light"] body.imagnus-dashboard-ui .header,
+html[data-theme="light"] body.imagnus-dashboard-ui .dashboard-page-side,
+html[data-theme="light"] body.imagnus-dashboard-ui .nav-tabs,
+html[data-theme="light"] body.imagnus-dashboard-ui .nav-pills,
+html[data-theme="light"] body.imagnus-dashboard-ui .ui.secondary.menu,
+html[data-theme="light"] body.imagnus-dashboard-ui .ui.tabular.menu {
+  box-shadow: 0 18px 46px rgba(var(--brand-primary-rgb), 0.08);
+}
+
+html[data-theme="dark"] body.imagnus-dashboard-ui .dashboard-page-side,
+html[data-theme="dark"] body.imagnus-dashboard-ui .dashboard-section-card,
+html[data-theme="dark"] body.imagnus-dashboard-ui .dashboard-stat-card {
+  border-color: var(--border-color) !important;
+}
+
+@media (max-width: 1199px) {
+  body.imagnus-dashboard-ui .dashboard-page-head {
+    padding: 32px !important;
+  }
+
+  body.imagnus-dashboard-ui .dashboard-page-title,
+  body.imagnus-dashboard-ui .st_title,
+  body.imagnus-dashboard-ui .title {
+    font-size: 2.38rem !important;
+  }
+
+  body.imagnus-dashboard-ui .dashboard-page-side {
+    min-width: 280px;
+  }
+}
+
+@media (max-width: 991px) {
+  body.imagnus-dashboard-ui .header {
+    height: 68px;
+    min-height: 68px;
+  }
+
+  body.imagnus-dashboard-ui .header::after {
+    left: 0;
+  }
+
+  body.imagnus-dashboard-ui .main_logo {
+    width: 190px;
+  }
+
+  body.imagnus-dashboard-ui .toggle_menu {
+    display: inline-flex;
+  }
+
+  body.imagnus-dashboard-ui .collapse_menu {
+    display: none;
+  }
+
+  body.imagnus-dashboard-ui .vertical_nav {
+    border-radius: 0 22px 22px 0;
+    top: 68px;
+  }
+
+  body.imagnus-dashboard-ui .wrapper {
+    padding-top: 88px;
+  }
+
+  body.imagnus-dashboard-ui .sa4d25 {
+    padding: 26px 14px 50px !important;
+  }
+
+  body.imagnus-dashboard-ui .dashboard-page-head {
+    gap: 22px;
+    min-height: auto;
+    padding: 28px !important;
+  }
+
+  body.imagnus-dashboard-ui .dashboard-page-side {
+    min-width: 100%;
+    width: 100%;
+  }
+
+  body.imagnus-dashboard-ui .dashboard-page-title,
+  body.imagnus-dashboard-ui .st_title,
+  body.imagnus-dashboard-ui .title {
+    font-size: 2.12rem !important;
+  }
+}
+
+@media (max-width: 767px) {
+  body.imagnus-dashboard-ui .header {
+    height: 64px;
+    min-height: 64px;
+    padding-right: 10px;
+  }
+
+  body.imagnus-dashboard-ui .main_logo {
+    padding: 0 10px;
+    width: 142px;
+  }
+
+  body.imagnus-dashboard-ui .header .logo {
+    max-height: 34px;
+  }
+
+  body.imagnus-dashboard-ui .option_links,
+  body.imagnus-dashboard-ui .opts_account {
+    height: 42px;
+    width: 42px;
+  }
+
+  body.imagnus-dashboard-ui .theme-toggle-header-item .imagnus-theme-toggle {
+    min-height: 42px;
+    padding: 7px 8px;
+    width: auto;
+  }
+
+  body.imagnus-dashboard-ui .theme-toggle-header-item .imagnus-theme-toggle__copy {
+    display: none;
+  }
+
+  body.imagnus-dashboard-ui .vertical_nav {
+    top: 64px;
+  }
+
+  body.imagnus-dashboard-ui .wrapper {
+    padding-top: 78px;
+  }
+
+  body.imagnus-dashboard-ui .dashboard-page-head {
+    border-radius: 24px !important;
+    padding: 24px !important;
+  }
+
+  body.imagnus-dashboard-ui .dashboard-page-title,
+  body.imagnus-dashboard-ui .st_title,
+  body.imagnus-dashboard-ui .title {
+    font-size: 1.82rem !important;
+    line-height: 1.12 !important;
+  }
+
+  body.imagnus-dashboard-ui .dashboard-page-copy {
+    font-size: 0.95rem;
+  }
+
+  body.imagnus-dashboard-ui .dashboard-page-side {
+    border-radius: 20px;
+    padding: 14px;
+  }
+
+  body.imagnus-dashboard-ui .dashboard-section-card {
+    border-radius: 24px !important;
+    padding: 20px !important;
+  }
+
+  body.imagnus-dashboard-ui .dashboard-stat-card {
+    min-height: 190px;
+    padding: 24px !important;
+  }
+
+  body.imagnus-dashboard-ui .card_dash_left h2 {
+    font-size: 2.28rem !important;
+  }
+
+  body.imagnus-dashboard-ui .nav-tabs,
+  body.imagnus-dashboard-ui .nav-pills,
+  body.imagnus-dashboard-ui .ui.secondary.menu,
+  body.imagnus-dashboard-ui .ui.tabular.menu {
+    display: flex;
+    width: 100%;
+  }
+
+  body.imagnus-dashboard-ui .nav-tabs .nav-item,
+  body.imagnus-dashboard-ui .nav-pills .nav-item {
+    flex: 1 1 auto;
+  }
+
+  body.imagnus-dashboard-ui .nav-tabs .nav-link,
+  body.imagnus-dashboard-ui .nav-pills .nav-link {
+    text-align: center;
+    width: 100%;
+  }
+
+  body.imagnus-dashboard-ui .dashboard-empty-state {
+    min-height: 240px;
+    padding: 42px 20px;
   }
 }
