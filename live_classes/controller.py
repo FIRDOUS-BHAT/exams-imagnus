@@ -1,35 +1,27 @@
+from functools import lru_cache
+from typing import Optional
+
 import vimeo
-import base64
-import requests
 
-client_id = 'REDACTED_VIMEO_CLIENT_ID'
-secret = 'REDACTED_VIMEO_CLIENT_SECRET'
-client = vimeo.VimeoClient(
-  token = 'REDACTED_VIMEO_ACCESS_TOKEN',
-  key=client_id,
-  secret= secret
-)
+from configs import appinfo
 
-# response = client.get(uri)
-# print(response.json())
-print(client)
 
-# Standard Base64 Encoding
+@lru_cache()
+def app_setting():
+    return appinfo.Setting()
 
-x = client_id.encode("utf-8")
-y = secret.encode("utf-8")
-encodedBytes = base64.b64encode(x+y)
-encodedStr = str(encodedBytes, "utf-8")
 
-print(encodedStr)
+def get_vimeo_client() -> Optional[vimeo.VimeoClient]:
+    settings = app_setting()
+    if not (
+        settings.vimeo_access_token
+        and settings.vimeo_client_id
+        and settings.vimeo_client_secret
+    ):
+        return None
 
-url = 'https://api.vimeo.com/me'
-
-headers = {
-            "Accept": "application/vnd.vimeo.*+json;version=3.4",
-            "Authorization": "bearer "+encodedStr
-        }
-
-response = requests.request("GET", url, headers=headers)
-
-print(response)
+    return vimeo.VimeoClient(
+        token=settings.vimeo_access_token,
+        key=settings.vimeo_client_id,
+        secret=settings.vimeo_client_secret,
+    )

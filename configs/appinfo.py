@@ -26,6 +26,19 @@ class Setting(BaseSettings):
     slack_webhook_url: str = ""
     app_type: str = "production"
     sms_api_key: str = ""
+    fcm_server_key: str = ""
+    vimeo_client_id: str = ""
+    vimeo_client_secret: str = ""
+    vimeo_access_token: str = ""
+    legacy_api_username: str = ""
+    legacy_api_password: str = ""
+    firebase_api_key: str = ""
+    firebase_auth_domain: str = ""
+    firebase_project_id: str = ""
+    firebase_storage_bucket: str = ""
+    firebase_messaging_sender_id: str = ""
+    firebase_app_id: str = ""
+    firebase_measurement_id: str = ""
 
     @field_validator("debug", mode="before")
     @classmethod

@@ -437,18 +437,19 @@
       // Your web app's Firebase configuration
       // For Firebase JS SDK v7.20.0 and later, measurementId is optional
       const firebaseConfig = {
-        apiKey: "REDACTED_GOOGLE_API_KEY",
-        authDomain: "imagnus-10fef.firebaseapp.com",
-        projectId: "imagnus-10fef",
-        storageBucket: "imagnus-10fef.appspot.com",
-        messagingSenderId: "912941505105",
-        appId: "1:912941505105:web:4b7605a135a586d1a03670",
-        measurementId: "G-ESD4BVNMC2",
+        apiKey: "{{ firebase_config.api_key }}",
+        authDomain: "{{ firebase_config.auth_domain }}",
+        projectId: "{{ firebase_config.project_id }}",
+        storageBucket: "{{ firebase_config.storage_bucket }}",
+        messagingSenderId: "{{ firebase_config.messaging_sender_id }}",
+        appId: "{{ firebase_config.app_id }}",
+        measurementId: "{{ firebase_config.measurement_id }}",
       };
 
-      // Initialize Firebase
-      const app = initializeApp(firebaseConfig);
-      const analytics = getAnalytics(app);
+      if (firebaseConfig.apiKey) {
+        const app = initializeApp(firebaseConfig);
+        getAnalytics(app);
+      }
     </script>
   </body>
 </html>

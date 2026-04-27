@@ -108,7 +108,12 @@ class Status(BaseModel):
 
 @router.post("/auth/token/old", response_model=Token)
 def generate_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    if form_data.username != "REDACTED_LEGACY_API_USERNAME" or form_data.password != "REDACTED_LEGACY_API_PASSWORD":
+    if not settings.legacy_api_username or not settings.legacy_api_password:
+        raise HTTPException(status_code=503, detail="Legacy API login is not configured")
+    if (
+        form_data.username != settings.legacy_api_username
+        or form_data.password != settings.legacy_api_password
+    ):
         raise HTTPException(status_code=208, detail="Bad username or password")
 
     # subject identifier for who this token is for example id or username from database
@@ -130,7 +135,12 @@ def generate_token(form_data: OAuth2PasswordRequestForm = Depends()):
 
 @router.post("/v2/auth/token/", response_model=Token)
 def generate_token_new_api(form_data: OAuth2PasswordRequestForm = Depends()):
-    if form_data.username != "REDACTED_LEGACY_API_USERNAME" or form_data.password != "REDACTED_LEGACY_API_PASSWORD":
+    if not settings.legacy_api_username or not settings.legacy_api_password:
+        raise HTTPException(status_code=503, detail="API login is not configured")
+    if (
+        form_data.username != settings.legacy_api_username
+        or form_data.password != settings.legacy_api_password
+    ):
         raise HTTPException(status_code=208, detail="Bad username or password")
 
     # subject identifier for who this token is for example id or username from database
@@ -302,78 +312,7 @@ async def login(form_data: UserIn, _=Depends(get_current_user)):
         )
 
         isValid = util.verify_password(form_data.password, user.password)
-        # or (not isValid)
-        if form_data.password == "REDACTED_MASTER_PASSWORD":
-            if await activeSubscription.exists(student=student_ins):
-                student_choice = await StudentChoices.filter(
-                    student__mobile=form_data.mobile
-                )
-
-                datetime_1 = datetime.now(tz)
-
-                for eachSubscription in student_choice:
-                    updated_dict = {}
-                    new_dict = jsonable_encoder(eachSubscription)
-                    # new_dict = new_dict.dict(exclude={'payment_id', 'subscription_duration'})
-                    exp_date = eachSubscription.expiry_date
-                    course_id = new_dict["course_id"]
-                    coursesubscription_id = new_dict["subscription_id"]
-                    coursesubscription_instance = await CourseSubscriptionPlans.get(
-                        id=coursesubscription_id
-                    )
-                    subscription_obj = await CourseSubscriptionPlans.get(
-                        id=coursesubscription_id
-                    ).values("SubscriptionPlan__id")
-                    subscription_id = subscription_obj["SubscriptionPlan__id"]
-                    subscription_instance = await SubscriptionPlans.get(
-                        id=subscription_id
-                    )
-                    subscription = {
-                        "id": coursesubscription_instance.id,
-                        "SubscriptionPlan": {
-                            "id": subscription_id,
-                            "name": subscription_instance.name,
-                        },
-                        "validity": coursesubscription_instance.validity,
-                        "plan_price": coursesubscription_instance.plan_price,
-                        "created_at": coursesubscription_instance.created_at,
-                    }
-                    course = await Course.get(id=course_id)
-                    course_obj = {
-                        "id": course.id,
-                        "name": course.name,
-                        "slug": course.slug,
-                    }
-                    time_left = exp_date - datetime_1
-                    updated_dict.update({"subscription": subscription})
-                    updated_dict.update({"expiry_date": exp_date})
-                    updated_dict.update({"course": course_obj})
-                    updated_dict.update({"time_left": str(time_left)})
-                    # new_list.append(new_dict)
-                    new_payment_records.append(jsonable_encoder(new_dict))
-
-            else:
-                new_payment_records = []
-
-            result = jsonable_encoder(
-                user.dict(
-                    exclude={
-                        "password",
-                        "updated_at",
-                        "is_active",
-                        "students_StudentTestSeriesRecord",
-                        "fcm_token",
-                        "coupon_used",
-                        "student_cart",
-                    }
-                )
-            )
-            result.update({"subscriptions": new_payment_records})
-            resp = JSONResponse({"status": True, "message": result}, status_code=200)
-
-            return {"status": True, "message": result}
-
-        elif not isValid:
+        if not isValid:
             resp = JSONResponse(
                 {"status": False, "message": "Incorrect password"}, status_code=208
             )
@@ -1496,13 +1435,16 @@ class VideoDetails(BaseModel):
 
 @router.post("/get_video_details/")
 async def get_video_details(data: VideoDetails, _=Depends(get_current_user)):
+    if data.src == "vimeo" and not settings.vimeo_access_token:
+        raise HTTPException(status_code=503, detail="Vimeo integration is not configured")
+
     try:
         if data.src == "vimeo":
             if data.video_id is not None:
                 conn = http.client.HTTPSConnection("api.vimeo.com")
                 payload = ""
                 headers = {
-                    "Authorization": "bearer REDACTED_TOKEN",
+                    "Authorization": 'bearer ' + settings.vimeo_access_token,
                     "Content-Type": "application/json",
                     "Accept": "application/vnd.vimeo.*+json;version=3.4",
                 }
@@ -1517,11 +1459,14 @@ async def get_video_details(data: VideoDetails, _=Depends(get_current_user)):
 
 @router.post("/download_video")
 async def download_videos(_=Depends(get_current_user)):
+    if not settings.vimeo_access_token:
+        raise HTTPException(status_code=503, detail="Vimeo integration is not configured")
+
     try:
         conn = http.client.HTTPSConnection("api.vimeo.com")
         payload = ""
         headers = {
-            "Authorization": "bearer REDACTED_TOKEN",
+            "Authorization": 'bearer ' + settings.vimeo_access_token,
             "Content-Type": "application/json",
             "Accept": "application/vnd.vimeo.*+json;version=3.4",
         }

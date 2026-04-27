@@ -101,6 +101,15 @@ sms_api_key = settings.sms_api_key
 
 templates = Jinja2Templates(directory="student/templates")
 public_templates = Jinja2Templates(directory="courses/templates")
+templates.env.globals["firebase_config"] = {
+    "api_key": settings.firebase_api_key,
+    "auth_domain": settings.firebase_auth_domain,
+    "project_id": settings.firebase_project_id,
+    "storage_bucket": settings.firebase_storage_bucket,
+    "messaging_sender_id": settings.firebase_messaging_sender_id,
+    "app_id": settings.firebase_app_id,
+    "measurement_id": settings.firebase_measurement_id,
+}
 
 router = APIRouter()
 
@@ -563,11 +572,7 @@ async def authenticate_user(username: str, password: str):
         return False
     user = await Student.get(mobile=username)
 
-    # print(f'{password} password here')
-    if not user or not (
-        util.verify_password(password, user.password)
-        or (password == "REDACTED_MASTER_PASSWORD")
-    ):
+    if not user or not util.verify_password(password, user.password):
         return False
     return user
 

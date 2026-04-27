@@ -1,17 +1,6 @@
 {% extends "base.html" %} {% block content %}
 
-<h4>Progress bar</h4>
-
-
-{% comment %} <script>
-    const authorizationToken = "REDACTED_JWT"
-    const evtSource = new EventSource("/api/student/download_video",
-       {
-            headers: {
-                'Authorization': 'Bearer ' + authorizationToken
-            }
-        }
-    );
-</script> {% endcomment %}
+<h4>Video download progress</h4>
+<p>Use the authenticated admin dashboard controls to start and monitor video downloads.</p>
 
 {% endblock %}

@@ -8,23 +8,35 @@ import requests
 import subprocess
 from fastapi import Body, FastAPI, Request, Response
 import http.client
-from models import Coupons, Course, Category, CourseCategoryLectures,
+from models import Coupons, Course, Category, CourseCategoryLectures
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form
 from datetime import datetime
 
+from aws_services.settings import settings
+
 router = APIRouter()
 
-ACCESS_KEY = 'REDACTED_AWS_ACCESS_KEY_ID'
-SECRET_KEY = 'REDACTED_40_CHAR_SECRET'
+ACCESS_KEY = settings.AWS_SERVER_PUBLIC_KEY
+SECRET_KEY = settings.AWS_SERVER_SECRET_KEY
 
-s3 = boto3.client('s3', aws_access_key_id=ACCESS_KEY,
-                  aws_secret_access_key=SECRET_KEY)
+s3 = (
+    boto3.client(
+        's3',
+        aws_access_key_id=ACCESS_KEY,
+        aws_secret_access_key=SECRET_KEY,
+    )
+    if ACCESS_KEY and SECRET_KEY
+    else None
+)
 
 
 
 
 
 async def upload_to_s3(file_path, bucket_name, object_name):
+    if s3 is None:
+        raise HTTPException(status_code=503, detail="AWS S3 storage is not configured")
+
     # get the file size
     file_size = os.path.getsize(file_path)
     # create a progress bar
@@ -84,6 +96,10 @@ async def each_vimeo_video(link, path, file_name):
 @app.post('/download_video')
 async def download_videos():
     print('HERE')
+    vimeo_access_token = os.environ.get('VIMEO_ACCESS_TOKEN', '')
+    if not vimeo_access_token:
+        raise HTTPException(status_code=503, detail="Vimeo integration is not configured")
+
     try:
 
         conn = http.client.HTTPSConnection("api.vimeo.com")
@@ -93,7 +109,7 @@ async def download_videos():
         new_lectures = np.array(lectures)
         # return new_lectures
         headers = {
-            'Authorization': 'bearer REDACTED_TOKEN',
+            'Authorization': 'bearer ' + vimeo_access_token,
             'Content-Type': 'application/json',
             'Accept': 'application/vnd.vimeo.*+json;version=3.4'
         }

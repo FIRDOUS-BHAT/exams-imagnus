@@ -1075,8 +1075,8 @@ async def send_repeated_notifications(course: str, category: str, topic: str, so
 
     return {'status': True}
 
-ACCESS_KEY = 'REDACTED_AWS_ACCESS_KEY_ID'
-SECRET_KEY = 'REDACTED_40_CHAR_SECRET'
+ACCESS_KEY = settings.AWS_SERVER_PUBLIC_KEY
+SECRET_KEY = settings.AWS_SERVER_SECRET_KEY
 
 
 def write_notification(email: str, message=""):
@@ -1141,7 +1141,7 @@ async def add_lectures_in_background(s3, course_id, category_id, topic_id, cours
         #     # """Fetch a video details"""
         #     requested_url = "https://api.vimeo.com/videos/" + video_id
 
-        #     headers = {'Authorization': 'bearer REDACTED_TOKEN',
+        #     headers = {'Authorization': 'bearer ' + settings.vimeo_access_token,
         #                'Content-Type': 'application/json',
         #                'Accept': 'application/vnd.vimeo.*+json;version=3.4'}
         #     print(requested_url+"==================")
@@ -1327,6 +1327,9 @@ async def edit_lectures(request: Request, edit_lid: str = Form(...), course_id: 
         video_duration = 0
         video_id = None
         if 'vimeo' in edit_mobile_video_url:
+            if not settings.vimeo_access_token:
+                flash(request, "Vimeo integration is not configured.", "danger")
+                return RedirectResponse(url='/admin/', status_code=status.HTTP_303_SEE_OTHER)
 
             video_id_query = edit_mobile_video_url.split('/')[-1]
             video_id = video_id_query.split('.')[0]
@@ -1334,7 +1337,7 @@ async def edit_lectures(request: Request, edit_lid: str = Form(...), course_id: 
             # """Fetch a video details"""
             requested_url = "https://api.vimeo.com/videos/" + video_id
 
-            headers = {'Authorization': 'bearer REDACTED_TOKEN',
+            headers = {'Authorization': 'bearer ' + settings.vimeo_access_token,
                        'Content-Type': 'application/json',
                        'Accept': 'application/vnd.vimeo.*+json;version=3.4'}
 
@@ -2176,9 +2179,12 @@ async def manual_order(request: Request, phone_number: str = Form(...), subscrip
             course_price = subscription.plan_price
         else:
             course_price = discount_price
+        if not settings.legacy_api_username or not settings.legacy_api_password:
+            flash(request, "Legacy API login is not configured.", "danger")
+            return RedirectResponse(url='/admin/place_order/', status_code=status.HTTP_303_SEE_OTHER)
         params = {
-            'username': 'REDACTED_LEGACY_API_USERNAME',
-            'password': 'REDACTED_LEGACY_API_PASSWORD'
+            'username': settings.legacy_api_username,
+            'password': settings.legacy_api_password
 
         }
         order_params = {

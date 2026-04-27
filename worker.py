@@ -10,9 +10,10 @@ from fastapi.encoders import jsonable_encoder
 import requests
 import json
 
+from aws_services.settings import settings
 
-ACCESS_KEY = 'REDACTED_AWS_ACCESS_KEY_ID'
-SECRET_KEY = 'REDACTED_40_CHAR_SECRET'
+ACCESS_KEY = settings.AWS_SERVER_PUBLIC_KEY
+SECRET_KEY = settings.AWS_SERVER_SECRET_KEY
 
 celery = Celery(__name__)
 celery.conf.broker_url = os.environ.get(
@@ -32,6 +33,8 @@ async def create_task(video_file):
 
 def upload_to_aws(s3_file):
    try:
+       if not ACCESS_KEY or not SECRET_KEY:
+           return {"message": "AWS S3 storage is not configured"}
        s3 = boto3.client('s3', aws_access_key_id=ACCESS_KEY,
                          aws_secret_access_key=SECRET_KEY)
 
